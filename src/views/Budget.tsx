@@ -26,8 +26,8 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
             const info = await budgetsStore.getBudget(identifier);
             if (info) {
                 this.setState({
-                   ...this.state,
-                   info 
+                    ...this.state,
+                    info 
                 });
             }
         } catch (e) {
@@ -42,7 +42,7 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                 this.setState({
                     ...this.state,
                     expenses 
-                 });
+                });
             }
         } catch (e) {
             console.error(e);
@@ -54,8 +54,8 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
             return (
                 <Paper elevation={3} >
 
-                { this.state.info && <Typography component="p">{this.state.info.name}</Typography>}
-                { this.state.expenses && <Typography component="p">Expenses {Object.keys(this.state.expenses).map(k => `${k},`)}</Typography>}
+                    { this.state.info && <Typography component="p">{this.state.info.name}</Typography>}
+                    { this.state.expenses && <Typography component="p">Expenses {Object.keys(this.state.expenses).map(k => `${k},`)}</Typography>}
                 </Paper>
 
             );

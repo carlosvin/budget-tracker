@@ -15,16 +15,16 @@ class App extends React.PureComponent {
     
     render() {
         return (
-        <Router>
-            <div>
-                <Header />
-                <Route exact path="/" component={BudgetList} />
-                <Route path="/about" component={About} />
-                <Route exact path="/budgets" component={BudgetList} />
-                <Route exact path='/budgets/:id' component={BudgetView} />
+            <Router>
+                <div>
+                    <Header />
+                    <Route exact path="/" component={BudgetList} />
+                    <Route path="/about" component={About} />
+                    <Route exact path="/budgets" component={BudgetList} />
+                    <Route exact path='/budgets/:id' component={BudgetView} />
 
-            </div>
-        </Router>);
+                </div>
+            </Router>);
     }
 }
 

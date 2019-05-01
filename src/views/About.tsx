@@ -6,14 +6,14 @@ export class About extends React.PureComponent {
 
     render() {
         return (<div>
-        <Paper elevation={1}>
-          <Typography variant="h5" component="h3">
+            <Paper elevation={1}>
+                <Typography variant="h5" component="h3">
             Budget tracker
-          </Typography>
-          <Typography component="p">
+                </Typography>
+                <Typography component="p">
             Version 1.2.3
-          </Typography>
-        </Paper>
+                </Typography>
+            </Paper>
         </div>);
     }
 }

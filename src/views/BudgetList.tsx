@@ -31,9 +31,9 @@ export class BudgetList extends React.PureComponent<BudgetListProps, BudgetListS
     render() {
         if (this.state) {
             return (
-            <List>
-                {this.elements}
-            </List>);
+                <List>
+                    {this.elements}
+                </List>);
         }
         return <CircularProgress/>;
     }

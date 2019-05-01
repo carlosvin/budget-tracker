@@ -7,7 +7,7 @@ class BudgetsStore {
     private expenses: {[identifier: string]: Expense};
 
     constructor(){
-       console.log('Instantiate store');
+        console.log('Instantiate store');
     }
 
     async getBudgets(): Promise<Budget[]> {
@@ -34,23 +34,24 @@ class BudgetsStore {
 
     private async fetchExpenses(identifier: string) {
         this.expenses = {
-            100000: this.createExpense_tmpRemove(100, 'SIM Card'),
-            200000: this.createExpense_tmpRemove(25, 'Dinner'),
-            300000: this.createExpense_tmpRemove(44, 'Lunch')
+            100000: this.createExpense(100, 'SIM Card ' + identifier),
+            200000: this.createExpense(25, 'Dinner'),
+            300000: this.createExpense(44, 'Lunch')
         };
         return Object.values(this.expenses);
     }
 
     private async fetchBudgets() {
         this.budgets = {
-            'asia': this.createBudget_tmpRemove('Asia'),
-            'latam': this.createBudget_tmpRemove('LATAM'),
-            'road-trip-es': this.createBudget_tmpRemove('Road trip ES')
+            'asia': this.createBudget('Asia'),
+            'latam': this.createBudget('LATAM'),
+            'road-trip-es': this.createBudget('Road trip ES')
         };
         return Object.values(this.budgets);
     }
 
-    private createBudget_tmpRemove(name: string): Budget {
+    // TODO remove
+    private createBudget(name: string): Budget {
         return {
             identifier: slugify(name),
             name: name,
@@ -61,7 +62,7 @@ class BudgetsStore {
         };
     }
 
-    private createExpense_tmpRemove(amount: number, desc: string): Expense {
+    private createExpense(amount: number, desc: string): Expense {
         return {
             amount: amount,
             currency: 'USD',

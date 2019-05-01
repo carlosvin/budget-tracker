@@ -6,7 +6,8 @@
   "scripts": {
     "start": "parcel src/index.html",
     "build": "parcel build src/index.html --public-url ./",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint --ext .jsx,.js,.tsx,.ts src --fix"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.3",
@@ -24,6 +25,10 @@
     "@babel/preset-env": "^7.4.4",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.3.3",
+    "@typescript-eslint/eslint-plugin": "^1.7.0",
+    "@typescript-eslint/parser": "^1.7.0",
+    "eslint": "^5.16.0",
+    "eslint-plugin-react": "^7.12.4",
     "jest": "^24.7.1",
     "parcel-bundler": "^1",
     "parcel-plugin-bundle-visualiser": "^1.2.0",

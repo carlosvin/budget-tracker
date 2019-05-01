@@ -7,9 +7,8 @@ import { Budget } from "../interfaces";
 import { dateDiff } from "../utils";
 import { MyLink } from "./MyLink";
 
-interface BudgetProps extends Budget {}
 
-export class BudgetListItem extends React.PureComponent<BudgetProps> {
+export class BudgetListItem extends React.PureComponent<Budget> {
     render(){
         return <ListItem 
             button 
@@ -19,11 +18,11 @@ export class BudgetListItem extends React.PureComponent<BudgetProps> {
                 primary={this.props.name} 
                 secondary={
                     <Grid
-                    container
-                    direction="row"
-                    justify="space-between"
-                    alignItems="center"
-                    component="span"
+                        container
+                        direction="row"
+                        justify="space-between"
+                        alignItems="center"
+                        component="span"
                     >
                         <Typography component="span" color="textPrimary">
                             {`${this.days} days`}
@@ -33,7 +32,7 @@ export class BudgetListItem extends React.PureComponent<BudgetProps> {
                         </Typography>
                     </Grid>
                 }
-                />
+            />
         </ListItem>;
     }
 

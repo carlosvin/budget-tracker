@@ -7,10 +7,10 @@ import { MyLink } from "./MyLink";
 export class Header extends React.PureComponent {
     render () {
         return <AppBar position="static">
-        <Toolbar>
-            <Button color='inherit' component={MyLink} href='/about' >About</Button>
-            <Button color='inherit' component={MyLink} href='/budgets'>Budgets</Button>
-        </Toolbar>
-      </AppBar>;
+            <Toolbar>
+                <Button color='inherit' component={MyLink} href='/about' >About</Button>
+                <Button color='inherit' component={MyLink} href='/budgets'>Budgets</Button>
+            </Toolbar>
+        </AppBar>;
     }
 }
