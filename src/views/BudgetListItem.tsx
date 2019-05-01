@@ -5,6 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
 import { Budget } from "../interfaces";
 import { dateDiff } from "../utils";
+import { MyLink } from "./MyLink";
 
 interface BudgetProps extends Budget {}
 
@@ -12,7 +13,7 @@ export class BudgetListItem extends React.PureComponent<BudgetProps> {
     render(){
         return <ListItem 
             button 
-            component="a" 
+            component={MyLink}
             href={`/budgets/${this.props.identifier}`}>
             <ListItemText 
                 primary={this.props.name} 
@@ -22,6 +23,7 @@ export class BudgetListItem extends React.PureComponent<BudgetProps> {
                     direction="row"
                     justify="space-between"
                     alignItems="center"
+                    component="span"
                     >
                         <Typography component="span" color="textPrimary">
                             {`${this.days} days`}

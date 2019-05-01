@@ -1,4 +1,5 @@
 
+
 export interface Budget {
     identifier: string;
     name: string;
@@ -6,4 +7,15 @@ export interface Budget {
     to: Date;
     total: number;
     currency: string;
+}
+
+export interface BudgetExpenses {
+    expenses: {[timestamp: number]: Expense};
+}
+
+export interface Expense {
+    amount: number;
+    currency: string;
+    category: string;
+    description: string;
 }

@@ -1,7 +1,7 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
-import { Route, RouteComponentProps } from "react-router";
-import { BudgetView } from './Budget';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { RouteComponentProps } from "react-router";
 import { budgetsStore } from '../BudgetsStore';
 import { Budget } from "../interfaces";
 import { BudgetListItem } from "./BudgetListItem";
@@ -35,7 +35,7 @@ export class BudgetList extends React.PureComponent<BudgetListProps, BudgetListS
                 {this.elements}
             </List>);
         }
-        return <p>Loading...</p>;
+        return <CircularProgress/>;
     }
 
     get elements() {

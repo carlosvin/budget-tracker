@@ -8,6 +8,11 @@ import 'babel-polyfill';
 import { BudgetView } from "./views/Budget";
 
 class App extends React.PureComponent {
+    constructor(props: {}){
+        super(props);
+        console.log('App instantiated');
+    }
+    
     render() {
         return (
         <Router>
