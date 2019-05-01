@@ -4,6 +4,7 @@ import { BudgetList } from "./views/BudgetList";
 import { Header } from "./views/Header";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { About } from "./views/About";
+import 'babel-polyfill';
 
 class App extends React.PureComponent {
     render() {
@@ -22,4 +23,3 @@ ReactDOM.render(
     <App />,
     document.getElementById("app")
 );
-

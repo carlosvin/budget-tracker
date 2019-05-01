@@ -1,5 +1,6 @@
 import * as React from "react";
-import { Paper, Typography } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import Paper from "@material-ui/core/Paper";
 import { RouteComponentProps } from "react-router";
 
 export class BudgetView extends React.PureComponent<RouteComponentProps<{id:string}>> {

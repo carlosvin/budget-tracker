@@ -1,34 +1,50 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
-import { ListItem, ListItemText  } from "@material-ui/core";
-import { RouterProps, Route, RouteComponentProps } from "react-router";
-import { BudgetView } from "./Budget";
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItem from '@material-ui/core/ListItem';
+import { Route, RouteComponentProps } from "react-router";
+import { BudgetView } from './Budget';
+import { budgetsStore } from '../stores/BudgetsStore';
 
-const TMP = {budgets: [
-    {name: 'A', identifier: 'a'}, 
-    {name: 'B', identifier: 'b'}]};
+interface BudgetListProps extends RouteComponentProps {}
 
-interface BudgetListProps extends RouteComponentProps {
+interface BudgetListState {
     budgets: BudgetProps[];
 }
 
-export class BudgetList extends React.PureComponent<BudgetListProps> {
+export class BudgetList extends React.PureComponent<BudgetListProps, BudgetListState> {
 
-    render(){
-        return <List>
-            {this.elements}
-            <Route path={`${this.props.match.path}/:id`} component={BudgetView} />
-            <Route
-                exact
-                path={this.props.match.path}
-                render={() => <h3>Please select a topic.</h3>}
-            />
-            </List>;
+    constructor(props: BudgetListProps){
+        super(props);
+        this.initBudgets();
+    }
 
+    private async initBudgets () {
+        try {
+            const budgets = await budgetsStore.getBudgets();
+            this.setState({budgets});
+        } catch(e) {
+            console.error(e);
+        }
+    }
+
+    render() {
+        if (this.state) {
+            return <List>
+                {this.elements}
+                <Route path={`${this.props.match.path}/:id`} component={BudgetView} />
+                <Route
+                    exact
+                    path={this.props.match.path}
+                    render={() => <h3>Please select a topic.</h3>}
+                />
+                </List>;
+        }
+        return <p>Loading...</p>;
     }
 
     get elements() {
-        return this.props.budgets && this.props.budgets.map(budget => <BudgetItem key={budget.identifier} {...budget} />);
+        return this.state.budgets && this.state.budgets.map(budget => <BudgetItem key={budget.identifier} {...budget} />);
     }
 }
 
@@ -42,7 +58,7 @@ class BudgetItem extends React.PureComponent<BudgetProps> {
         return <ListItem 
             button 
             component="a" 
-            href={this.props.identifier}>
+            href={`/budgets/${this.props.identifier}`}>
             <ListItemText primary={this.props.name} />
         </ListItem>;
     }

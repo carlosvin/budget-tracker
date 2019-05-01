@@ -1,7 +1,9 @@
 import * as React from "react";
-import { AppBar, Toolbar, IconButton, Typography, Button } from "@material-ui/core";
-import { NavLink, Link, LinkProps } from "react-router-dom";
-import { ButtonProps } from "@material-ui/core/Button";
+import { Link } from "react-router-dom";
+import Button from '@material-ui/core/Button';
+import { ButtonProps } from '@material-ui/core/Button';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
 
 export class Header extends React.PureComponent {
     render () {
