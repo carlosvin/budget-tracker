@@ -1,3 +1,6 @@
+// It seems they are not required by babel
+// import "core-js/stable/object";
+// import "regenerator-runtime/runtime";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { BudgetList } from "./views/BudgetList";
@@ -5,8 +8,6 @@ import { Header } from "./views/Header";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { About } from "./views/About";
 import { BudgetView } from "./views/Budget";
-import "core-js/stable";
-import "regenerator-runtime/runtime";
 
 class App extends React.PureComponent {
     constructor(props: {}){

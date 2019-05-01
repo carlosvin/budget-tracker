@@ -1,9 +1,14 @@
 // .babelrc
 {
     "presets": [
-        "@babel/env", 
+        ["@babel/preset-env", {
+            // "useBuiltIns": false, //"usage", // or "entry"
+            "corejs": 3
+        }],
         "@babel/react", 
         "@babel/preset-typescript"
     ],
-    "plugins": ["@babel/plugin-transform-runtime"]
+    "plugins": [["@babel/transform-runtime", {
+        "corejs": 3
+      }]]
 }

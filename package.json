@@ -10,6 +10,7 @@
     "lint": "eslint --ext .jsx,.js,.tsx,.ts src --fix"
   },
   "dependencies": {
+    "@babel/runtime-corejs3": "^7.4.4",
     "@material-ui/core": "^3.9.3",
     "@types/react": "^16",
     "@types/react-dom": "^16",
@@ -34,5 +35,17 @@
     "parcel-bundler": "^1",
     "parcel-plugin-bundle-visualiser": "^1.2.0",
     "typescript": "^3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
