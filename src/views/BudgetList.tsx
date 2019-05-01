@@ -4,12 +4,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import { Route, RouteComponentProps } from "react-router";
 import { BudgetView } from './Budget';
-import { budgetsStore } from '../stores/BudgetsStore';
+import { budgetsStore } from '../BudgetsStore';
+import { Budget } from "../interfaces";
 
 interface BudgetListProps extends RouteComponentProps {}
 
 interface BudgetListState {
-    budgets: BudgetProps[];
+    budgets: Budget[];
 }
 
 export class BudgetList extends React.PureComponent<BudgetListProps, BudgetListState> {
@@ -44,22 +45,21 @@ export class BudgetList extends React.PureComponent<BudgetListProps, BudgetListS
     }
 
     get elements() {
-        return this.state.budgets && this.state.budgets.map(budget => <BudgetItem key={budget.identifier} {...budget} />);
+        return this.state.budgets 
+            && this.state.budgets.map(
+                budget => <BudgeListItem key={budget.identifier} {...budget} />);
     }
 }
 
-interface BudgetProps {
-    name: string;
-    identifier: string;
-}
+interface BudgetProps extends Budget {}
 
-class BudgetItem extends React.PureComponent<BudgetProps> {
+class BudgeListItem extends React.PureComponent<BudgetProps> {
     render(){
         return <ListItem 
             button 
             component="a" 
             href={`/budgets/${this.props.identifier}`}>
-            <ListItemText primary={this.props.name} />
+            <ListItemText primary={this.props.name} secondary={ this.props.description }/>
         </ListItem>;
     }
 }
