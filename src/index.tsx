@@ -4,15 +4,16 @@ import { BudgetList } from "./views/BudgetList";
 import { Header } from "./views/Header";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { About } from "./views/About";
-import 'babel-polyfill';
 import { BudgetView } from "./views/Budget";
+import "core-js/stable";
+import "regenerator-runtime/runtime";
 
 class App extends React.PureComponent {
     constructor(props: {}){
         super(props);
         console.log('App instantiated');
     }
-    
+
     render() {
         return (
             <Router>
