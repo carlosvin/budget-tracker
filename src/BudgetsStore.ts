@@ -1,4 +1,4 @@
-import { Budget } from './interfaces';
+import { Budget } from "./interfaces";
 
 class BudgetsStore {
 
@@ -25,7 +25,9 @@ class BudgetsStore {
             identifier: name,
             name: name,
             from: new Date(2019, 14, 1),
-            to: new Date(2019, 2, 6)
+            to: new Date(2019, 2, 6),
+            total: name.length * 1000,
+            currency: 'EUR'
         };
     }
 }

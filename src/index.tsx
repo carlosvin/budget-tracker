@@ -5,17 +5,21 @@ import { Header } from "./views/Header";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { About } from "./views/About";
 import 'babel-polyfill';
+import { BudgetView } from "./views/Budget";
 
 class App extends React.PureComponent {
     render() {
-        return <Router>
+        return (
+        <Router>
             <div>
                 <Header />
                 <Route exact path="/" component={BudgetList} />
                 <Route path="/about" component={About} />
-                <Route path="/budgets" component={BudgetList} />
+                <Route exact path="/budgets" component={BudgetList} />
+                <Route exact path='/budgets/:id' component={BudgetView} />
+
             </div>
-        </Router>;
+        </Router>);
     }
 }
 
