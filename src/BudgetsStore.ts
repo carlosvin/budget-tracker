@@ -24,9 +24,8 @@ class BudgetsStore {
         return {
             identifier: name,
             name: name,
-            description: `Description for ${name}`,
-            from: new Date('5 Ago, 2019'),
-            to: new Date('1 Dec, 2019')
+            from: new Date(2019, 14, 1),
+            to: new Date(2019, 2, 6)
         };
     }
 }

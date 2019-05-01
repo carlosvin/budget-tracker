@@ -6,6 +6,7 @@ import { Route, RouteComponentProps } from "react-router";
 import { BudgetView } from './Budget';
 import { budgetsStore } from '../BudgetsStore';
 import { Budget } from "../interfaces";
+import { dateDiff } from "../utils";
 
 interface BudgetListProps extends RouteComponentProps {}
 
@@ -59,7 +60,14 @@ class BudgeListItem extends React.PureComponent<BudgetProps> {
             button 
             component="a" 
             href={`/budgets/${this.props.identifier}`}>
-            <ListItemText primary={this.props.name} secondary={ this.props.description }/>
+            <ListItemText 
+                primary={this.props.name} 
+                secondary={ `${this.days} days` }
+                />
         </ListItem>;
+    }
+
+    get days () {
+        return dateDiff(this.props.to, this.props.from);
     }
 }
