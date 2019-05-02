@@ -1,51 +1,21 @@
 import * as React from "react";
-import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
-import { Budget, Expense } from "../interfaces";
-import { budgetsStore } from "../BudgetsStore";
+import { Budget, Expense, Category } from "../interfaces";
+import { budgetsStore } from "../stores/BudgetsStore";
+import { currenciesStore } from "../stores/CurrenciesStore";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import SaveIcon from "@material-ui/icons/Save";
-
-const currencies = [
-    {
-        value: 'USD',
-        label: '$',
-    },
-    {
-        value: 'EUR',
-        label: '€',
-    },
-    {
-        value: 'BTC',
-        label: '฿',
-    },
-    {
-        value: 'JPY',
-        label: '¥',
-    },
-];
-
-
-const categories = [
-    {
-        value: 'General',
-        label: 'General',
-    },
-    {
-        value: 'Exchange',
-        label: 'Exchange',
-    }
-];
-
+import { categoriesStore } from "../stores/CategoriesStore";
 
 interface ExpenseViewProps extends RouteComponentProps<{ id: string, timestamp: string }> { }
 
 interface ExpenseViewState {
     expense: Partial<Expense>;
     budget: Budget;
+    currencies: string[];
 }
 
 export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseViewState> {
@@ -56,6 +26,22 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         this.initExpense(
             props.match.params.id,
             +props.match.params.timestamp);
+        this.initCurrencies();
+
+    }
+
+    private async initCurrencies() {
+        try {
+            const currencies = await currenciesStore.getCurrencies();
+            if (currencies) {
+                this.setState({
+                    ...this.state,
+                    currencies
+                });
+            }
+        } catch (e) {
+            console.trace(e);
+        }
     }
 
     private async initExpense(identifier: string, timestamp: number) {
@@ -68,7 +54,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 });
             }
         } catch (e) {
-            console.error(e);
+            console.trace(e);
         }
     }
 
@@ -82,7 +68,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 });
             }
         } catch (e) {
-            console.error(e);
+            console.trace(e);
         }
     }
 
@@ -96,11 +82,12 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     }
 
     render() {
+        const cats = categoriesStore.getCategories();
         if (this.state && this.state.expense) {
             return (
                 <form noValidate autoComplete="off">
                     <TextField
-                        id="description"
+                        id="text-field-description"
                         label="Description"
                         value={this.state.expense.description}
                         onChange={this.handleChange('description')}
@@ -112,11 +99,11 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                         value={this.state.expense.category}
                         onChange={this.handleChange('category')}
                         SelectProps={{ native: true }}
-                    // helperText="Please select a category"
                     >
-                        {categories.map(option => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
+                        { categoriesStore.getCategories()
+                            .map((c: Category) => (
+                            <option key={c.name} value={c.name}>
+                                {c.name}
                             </option>
                         ))}
                     </TextField>
@@ -127,6 +114,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                         value={this.state.expense.amount}
                         onChange={this.handleChange('amount')}
                     />
+                    {this.state.currencies &&
                     <TextField
                         id="standard-select-currency-native"
                         select
@@ -134,14 +122,14 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                         value={this.state.expense.currency || this.state.budget.currency}
                         onChange={this.handleChange('currency')}
                         SelectProps={{ native: true }}
-                    //helperText="Please select your currency"
                     >
-                        {currencies.map(option => (
-                            <option key={option.value} value={option.value}>
-                                {option.label}
+                        { this.state.currencies.map(option => (
+                            <option key={option} value={option}>
+                                {option}
                             </option>
                         ))}
                     </TextField>
+                    }
                     <IconButton aria-label="Delete">
                         <DeleteIcon />
                     </IconButton>
@@ -154,6 +142,5 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             );
         }
         return <CircularProgress />;
-
     }
 }

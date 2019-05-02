@@ -2,7 +2,7 @@ import * as React from "react";
 import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
-import { budgetsStore } from '../BudgetsStore';
+import { budgetsStore } from '../stores/BudgetsStore';
 import { Budget } from "../interfaces";
 import { BudgetListItem } from "./BudgetListItem";
 

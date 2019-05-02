@@ -4,7 +4,7 @@ import Paper from "@material-ui/core/Paper";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
 import { Budget, Expense } from "../interfaces";
-import { budgetsStore } from "../BudgetsStore";
+import { budgetsStore } from "../stores/BudgetsStore";
 import { ExpenseList } from "./ExpenseList";
 
 interface BudgetViewProps extends RouteComponentProps<{ id: string }>{}

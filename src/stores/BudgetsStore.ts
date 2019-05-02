@@ -1,5 +1,5 @@
-import { Budget, Expense } from "./interfaces";
-import { slugify } from "./utils";
+import { Budget, Expense } from "../interfaces";
+import { slugify } from "../utils";
 
 class BudgetsStore {
 

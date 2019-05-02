@@ -20,3 +20,14 @@ export interface Expense {
     description: string;
     timestamp: number;
 }
+
+export interface CurrencyRates {
+    base: string;
+    rates: {[name: string]: number};
+    date: Date;
+}
+
+export interface Category {
+    name: string;
+    iconName?: string;
+}
