@@ -35,8 +35,8 @@ class BudgetsStore {
     private async fetchExpenses(identifier: string) {
         this.expenses = {
             100000: this.createExpense(100, 'SIM Card ' + identifier),
-            200000: this.createExpense(25, 'Dinner'),
-            300000: this.createExpense(44, 'Lunch')
+            25000: this.createExpense(25, 'Dinner'),
+            44000: this.createExpense(44, 'Lunch')
         };
         return Object.values(this.expenses);
     }
@@ -67,7 +67,8 @@ class BudgetsStore {
             amount: amount,
             currency: 'USD',
             category: desc.slice(0, 10),
-            description: desc
+            description: desc,
+            timestamp: amount * 10000
         };
     }
 }

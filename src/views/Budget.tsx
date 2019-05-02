@@ -5,6 +5,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
 import { Budget, Expense } from "../interfaces";
 import { budgetsStore } from "../BudgetsStore";
+import { ExpenseList } from "./ExpenseList";
 
 interface BudgetViewProps extends RouteComponentProps<{ id: string }>{}
 
@@ -53,9 +54,9 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
         if (this.state) {
             return (
                 <Paper elevation={3} >
+                    { this.state.info && <Typography component="p">{this.state.info.name}</Typography> }
 
-                    { this.state.info && <Typography component="p">{this.state.info.name}</Typography>}
-                    { this.state.expenses && <Typography component="p">Expenses {Object.keys(this.state.expenses).map(k => `${k},`)}</Typography>}
+                    { this.state.expenses && <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }
                 </Paper>
 
             );
