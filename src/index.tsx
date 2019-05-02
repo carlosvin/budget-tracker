@@ -8,6 +8,8 @@ import { Header } from "./views/Header";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { About } from "./views/About";
 import { BudgetView } from "./views/Budget";
+import Grid from "@material-ui/core/Grid";
+import { ExpenseView } from "./views/Expense";
 
 class App extends React.PureComponent {
     constructor(props: {}){
@@ -18,14 +20,12 @@ class App extends React.PureComponent {
     render() {
         return (
             <Router>
-                <div>
-                    <Header />
-                    <Route exact path="/" component={BudgetList} />
-                    <Route path="/about" component={About} />
-                    <Route exact path="/budgets" component={BudgetList} />
-                    <Route exact path='/budgets/:id' component={BudgetView} />
-
-                </div>
+                <Header />
+                <Route exact path="/" component={BudgetList} />
+                <Route path="/about" component={About} />
+                <Route exact path="/budgets" component={BudgetList} />
+                <Route exact path='/budgets/:id' component={BudgetView} />
+                <Route exact path='/budgets/:id/expenses/:timestamp(\d+)' component={ExpenseView} />
             </Router>);
     }
 }

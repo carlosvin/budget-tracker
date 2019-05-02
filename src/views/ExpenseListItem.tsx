@@ -2,9 +2,6 @@ import * as React from "react";
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import Grid from "@material-ui/core/Grid";
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import { Budget, Expense } from "../interfaces";
 import { MyLink } from "./MyLink";
@@ -21,7 +18,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
             button 
             component={MyLink}
             href={this.href}>
-             <Avatar>
+            <Avatar>
                 <BeachAccessIcon />
             </Avatar>
             <ListItemText 

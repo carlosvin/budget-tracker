@@ -9,13 +9,13 @@ import { MyLink } from "./MyLink";
 
 
 export class BudgetListItem extends React.PureComponent<Budget> {
-    render(){
-        return <ListItem 
-            button 
+    render() {
+        return <ListItem
+            button
             component={MyLink}
             href={`/budgets/${this.props.identifier}`}>
-            <ListItemText 
-                primary={this.props.name} 
+            <ListItemText
+                primary={this.props.name}
                 secondary={
                     <Grid
                         container
@@ -36,7 +36,7 @@ export class BudgetListItem extends React.PureComponent<Budget> {
         </ListItem>;
     }
 
-    get days () {
+    get days() {
         return dateDiff(this.props.to, this.props.from);
     }
 }

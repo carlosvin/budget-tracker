@@ -4,7 +4,7 @@ import { slugify } from "./utils";
 class BudgetsStore {
 
     private budgets: {[identifier: string]: Budget};
-    private expenses: {[identifier: string]: Expense};
+    private expenses: {[identifier: string]: {[timestamp: number]: Expense}};
 
     constructor(){
         console.log('Instantiate store');
@@ -29,16 +29,23 @@ class BudgetsStore {
         if (this.expenses === undefined) {
             return this.fetchExpenses(identifier);
         }
-        return this.expenses;
+        return this.expenses[identifier];
+    }
+
+    async getExpense(identifier: string, timestamp: number) {
+        return this.expenses[identifier][timestamp];
     }
 
     private async fetchExpenses(identifier: string) {
-        this.expenses = {
+        if (this.expenses === undefined) {
+            this.expenses = {};
+        }
+        this.expenses[identifier] = {
             100000: this.createExpense(100, 'SIM Card ' + identifier),
             25000: this.createExpense(25, 'Dinner'),
             44000: this.createExpense(44, 'Lunch')
         };
-        return Object.values(this.expenses);
+        return this.expenses[identifier];
     }
 
     private async fetchBudgets() {
@@ -68,9 +75,10 @@ class BudgetsStore {
             currency: 'USD',
             category: desc.slice(0, 10),
             description: desc,
-            timestamp: amount * 10000
+            timestamp: amount * 1000
         };
     }
+
 }
 
 export const budgetsStore = new BudgetsStore();
