@@ -33,6 +33,9 @@ class BudgetsStore {
     }
 
     async getExpense(identifier: string, timestamp: number) {
+        if (this.expenses === undefined) {
+            await this.fetchExpenses(identifier);
+        }
         return this.expenses[identifier][timestamp];
     }
 

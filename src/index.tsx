@@ -8,13 +8,14 @@ import { Header } from "./views/Header";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { About } from "./views/About";
 import { BudgetView } from "./views/Budget";
-import Grid from "@material-ui/core/Grid";
 import { ExpenseView } from "./views/Expense";
 
+// TODO extract App to external file
 class App extends React.PureComponent {
     constructor(props: {}){
         super(props);
         console.log('App instantiated');
+        // TODO fetch currencies
     }
 
     render() {
