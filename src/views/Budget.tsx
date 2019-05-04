@@ -79,6 +79,7 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                                         </TableRow>
                                     </TableBody>
                                 </Table>
+                                { this.state.expenses && <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }
                             </CardContent>
                             <CardActions>
                                 <Button size="small">Learn More</Button>
@@ -86,7 +87,7 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                         </Card>
                     }
 
-                    { this.state.expenses && <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }
+                    
                 </React.Fragment>
 
             );

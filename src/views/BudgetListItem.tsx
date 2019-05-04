@@ -38,6 +38,6 @@ export class BudgetListItem extends React.PureComponent<Budget> {
     }
 
     get days() {
-        return dateDiff(this.props.to, this.props.from);
+        return dateDiff(this.props.from, this.props.to);
     }
 }
