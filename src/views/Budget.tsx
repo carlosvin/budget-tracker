@@ -5,6 +5,8 @@ import { RouteComponentProps } from "react-router";
 import { Budget, Expense } from "../interfaces";
 import { budgetsStore } from "../stores/BudgetsStore";
 import { ExpenseList } from "./ExpenseList";
+import { Card, CardContent, CardActions, Button, Grid, Table, TableHead, TableRow, TableBody, TableCell } from "@material-ui/core";
+import { dateDiff } from "../utils";
 
 interface BudgetViewProps extends RouteComponentProps<{ id: string }>{}
 
@@ -53,7 +55,36 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
         if (this.state) {
             return (
                 <React.Fragment>
-                    { this.state.info && <Typography component="p">{this.state.info.name}</Typography> }
+                    { this.state.info && 
+                        <Card>
+                            <CardContent>
+                                <Typography variant="h5" component="h2">
+                                {this.state.info.name}
+                                </Typography>
+                                <Table>
+                                    <TableHead>
+                                    <TableRow>
+                                        <TableCell>Total</TableCell>
+                                        <TableCell>Spent</TableCell>
+                                        <TableCell>Average</TableCell>
+                                        <TableCell>Days</TableCell>
+                                    </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TableRow key={1}>
+                                        <TableCell>{this.state.info.total}</TableCell>
+                                        <TableCell>{this.expensesTotal}</TableCell>
+                                        <TableCell>{this.expensesAverage}</TableCell>
+                                        <TableCell>{this.pastDays}</TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                            <CardActions>
+                                <Button size="small">Learn More</Button>
+                            </CardActions>
+                        </Card>
+                    }
 
                     { this.state.expenses && <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }
                 </React.Fragment>
@@ -62,5 +93,22 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
         }
         return <CircularProgress/>;
         
+    }
+
+    get expensesTotal () {
+        if (this.state.expenses) {
+            return Object.values(this.state.expenses)
+                .map(e => e.amount)
+                .reduce((total, num) => total + num);
+        }
+        return 0;
+    }
+
+    get expensesAverage () {
+        return Math.round(this.expensesTotal / this.pastDays);
+    }
+
+    get pastDays () {
+        return dateDiff(this.state.info.from, new Date());
     }
 }

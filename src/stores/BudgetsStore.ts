@@ -18,8 +18,11 @@ class BudgetsStore {
         return Object.values(this.budgets);
     }
 
-    async getBudget(identifier: string): Promise<Budget>{
-        if (this.budgets && identifier in this.budgets) {
+    async getBudget(identifier: string): Promise<Budget> {
+        if (this.budgets === undefined) {
+            await this.fetchBudgets();
+        }
+        if (identifier in this.budgets) {
             return this.budgets[identifier];
         }
         return null;
@@ -65,8 +68,8 @@ class BudgetsStore {
         return {
             identifier: slugify(name),
             name: name,
-            from: new Date(2019, 14, 1),
-            to: new Date(2019, 2, 6),
+            from: new Date(2019, 1, 1),
+            to: new Date(2019, 6, 6),
             total: name.length * 1000,
             currency: 'EUR'
         };
@@ -81,7 +84,6 @@ class BudgetsStore {
             timestamp: amount * 1000
         };
     }
-
 }
 
 export const budgetsStore = new BudgetsStore();
