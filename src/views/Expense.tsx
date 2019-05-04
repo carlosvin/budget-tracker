@@ -13,7 +13,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import { categoriesStore } from "../stores/CategoriesStore";
 import { WithStyles, createStyles, Theme } from '@material-ui/core';
 
-const styles = ({ palette, spacing }: Theme) => createStyles({
+const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
       flexGrow: 1,
     },
@@ -22,11 +22,11 @@ const styles = ({ palette, spacing }: Theme) => createStyles({
       textAlign: 'center',
       color: palette.text.secondary,
     },
-  });
+});
 
 interface ExpenseViewProps extends 
     RouteComponentProps<{ id: string; timestamp: string }>,
-    WithStyles<typeof styles>  { }
+    WithStyles<typeof myStyles>  { }
 
 interface ExpenseViewState {
     expense: Partial<Expense>;
@@ -102,7 +102,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     render() {
         if (this.state && this.state.expense) {
             return (
-                <form noValidate autoComplete="off">
+                <form noValidate autoComplete="off" >
                     <this.AmountInput />
                     <this.CategoryInput categories={this.categories} />
                     <this.TextInput label='Description' value={this.state.expense.description} />
@@ -115,19 +115,19 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
 
     private AmountInput = () => (
         <Grid container spacing={8}>
-                    <Grid item xl>
-
-            <this.TextInput
-                required
-                type='number'
-                label="Amount"
-                value={this.state.expense.amount}
-            />
+            <Grid item xl>
+                <this.TextInput
+                    required
+                    type='number'
+                    label="Amount"
+                    value={this.state.expense.amount}
+                />
             </Grid>
             <Grid item xs>
-            {this.state.currencies
-                && <this.CurrencyInput currencies={this.state.currencies} />}
-        </Grid></Grid>
+                {this.state.currencies
+                    && <this.CurrencyInput currencies={this.state.currencies} />}
+            </Grid>
+        </Grid>
     );
 
     private CategoryInput = (props: { categories: string[] }) => (
@@ -149,36 +149,34 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             
     private CurrencyInput = (props: {currencies: string[]}) => (
         <this.SelectBox
-                    options={props.currencies}
-                    label='Currency'
-                    value={this.state.expense.currency || this.state.budget.currency}
-                />
-                );
+            options={props.currencies}
+            label='Currency'
+            value={this.state.expense.currency || this.state.budget.currency}
+        />);
             
     private SelectBox = (props: {options: string[]; label: string; value: string }) => (
         <this.TextInput
-                    select
-                    required
-                    SelectProps={{ native: true }}
-                    label={props.label}
-                    value={props.value}
-                >
-                    {props.options.map(
-                        (opt: string) => (
-                            <option key={opt} value={opt}>{opt}</option>))}
-                </this.TextInput>
-                );
+            select
+            required
+            SelectProps={{ native: true }}
+            label={props.label}
+            value={props.value} >
+
+            {props.options.map(
+                (opt: string) => (
+                    <option key={opt} value={opt}>{opt}</option>))}
+        </this.TextInput>
+        );
             
-                private TextInput = (props: TextFieldProps) => (
+    private TextInput = (props: TextFieldProps) => (
         <TextField
-                    {...props}
-                    id={`input-field-${props.label}`}
-                    label={props.label}
-                    value={props.value}
-                    onChange={this.handleChange(props.label.toString().toLowerCase())}
-                    style={{ margin: 10 }}
-                />
-                );
+            {...props}
+            id={`input-field-${props.label}`}
+            label={props.label}
+            value={props.value}
+            onChange={this.handleChange(props.label.toString().toLowerCase())}
+            style={{ margin: 10 }}
+        />);
             
     private Actions = () => (
         <Grid container direction="row" justify='space-evenly' alignContent='center'>

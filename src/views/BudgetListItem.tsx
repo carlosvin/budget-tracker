@@ -12,6 +12,7 @@ export class BudgetListItem extends React.PureComponent<Budget> {
     render() {
         return <ListItem
             button
+            divider
             component={MyLink}
             href={`/budgets/${this.props.identifier}`}>
             <ListItemText

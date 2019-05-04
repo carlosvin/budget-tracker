@@ -15,6 +15,7 @@ interface ExpenseListItemProps {
 export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
     render(){
         return <ListItem 
+            divider
             button 
             component={MyLink}
             href={this.href}>
