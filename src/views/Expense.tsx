@@ -2,18 +2,31 @@ import * as React from "react";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
-import { Budget, Expense, Category } from "../interfaces";
+import { Budget, Expense } from "../interfaces";
 import { budgetsStore } from "../stores/BudgetsStore";
 import { currenciesStore } from "../stores/CurrenciesStore";
 import IconButton from "@material-ui/core/IconButton";
-import FormControl from "@material-ui/core/FormControl";
 import Grid from "@material-ui/core/Grid";
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddIcon from "@material-ui/icons/AddBoxRounded";
 import SaveIcon from "@material-ui/icons/Save";
 import { categoriesStore } from "../stores/CategoriesStore";
+import { WithStyles, createStyles, Theme } from '@material-ui/core';
 
-interface ExpenseViewProps extends RouteComponentProps<{ id: string; timestamp: string }> { }
+const styles = ({ palette, spacing }: Theme) => createStyles({
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      padding: spacing.unit * 2,
+      textAlign: 'center',
+      color: palette.text.secondary,
+    },
+  });
+
+interface ExpenseViewProps extends 
+    RouteComponentProps<{ id: string; timestamp: string }>,
+    WithStyles<typeof styles>  { }
 
 interface ExpenseViewState {
     expense: Partial<Expense>;
@@ -167,15 +180,14 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 />
                 );
             
-                private Actions = () => (
-        <Grid container direction="row">
-                    <IconButton aria-label="Delete">
-                        <DeleteIcon />
-                    </IconButton>
-                    <IconButton aria-label="Save">
-                        <SaveIcon />
-                    </IconButton>
-                </Grid>
-                );
+    private Actions = () => (
+        <Grid container direction="row" justify='space-evenly' alignContent='center'>
+            <IconButton aria-label="Delete">
+                <DeleteIcon />
+            </IconButton>
+            <IconButton aria-label="Save">
+                <SaveIcon />
+            </IconButton>
+        </Grid>);
             
-            }
+}
