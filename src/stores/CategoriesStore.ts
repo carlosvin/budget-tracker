@@ -14,7 +14,7 @@ class CategoriesStore {
 
     constructor() {
         const parsedCategories = JSON.parse(
-            localStorage.getItem(CategoriesStore.KEY)) as Array<Category>;
+            localStorage.getItem(CategoriesStore.KEY)) as Category[];
         
         const mergedCategories = parsedCategories ? 
             [...CategoriesStore.DEFAULT, ...parsedCategories] : 

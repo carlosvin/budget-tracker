@@ -9,6 +9,8 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import { About } from "./views/About";
 import { BudgetView } from "./views/Budget";
 import { ExpenseView } from "./views/Expense";
+import Grid from '@material-ui/core/Grid';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
 // TODO extract App to external file
 class App extends React.PureComponent {
@@ -21,12 +23,15 @@ class App extends React.PureComponent {
     render() {
         return (
             <Router>
+                <CssBaseline/>
                 <Header />
-                <Route exact path="/" component={BudgetList} />
-                <Route path="/about" component={About} />
-                <Route exact path="/budgets" component={BudgetList} />
-                <Route exact path='/budgets/:id' component={BudgetView} />
-                <Route exact path='/budgets/:id/expenses/:timestamp(\d+)' component={ExpenseView} />
+                <main>
+                    <Route exact path="/" component={BudgetList} />
+                    <Route path="/about" component={About} />
+                    <Route exact path="/budgets" component={BudgetList} />
+                    <Route exact path='/budgets/:id' component={BudgetView} />
+                    <Route exact path='/budgets/:id/expenses/:timestamp(\d+)' component={ExpenseView} />
+                </main>
             </Router>);
     }
 }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import TextField from "@material-ui/core/TextField";
+import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
 import { Budget, Expense, Category } from "../interfaces";
@@ -13,7 +13,7 @@ import AddIcon from "@material-ui/icons/AddBoxRounded";
 import SaveIcon from "@material-ui/icons/Save";
 import { categoriesStore } from "../stores/CategoriesStore";
 
-interface ExpenseViewProps extends RouteComponentProps<{ id: string, timestamp: string }> { }
+interface ExpenseViewProps extends RouteComponentProps<{ id: string; timestamp: string }> { }
 
 interface ExpenseViewState {
     expense: Partial<Expense>;
@@ -23,6 +23,8 @@ interface ExpenseViewState {
 
 export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseViewState> {
 
+    private readonly categories: string[];
+
     constructor(props: ExpenseViewProps) {
         super(props);
         this.initBudget(props.match.params.id);
@@ -30,6 +32,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             props.match.params.id,
             +props.match.params.timestamp);
         this.initCurrencies();
+        this.categories = categoriesStore.getCategories().map(c => c.name);
     }
 
     private async initCurrencies() {
@@ -84,73 +87,95 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     }
 
     render() {
-        const cats = categoriesStore.getCategories();
         if (this.state && this.state.expense) {
             return (
-                <form noValidate autoComplete="off" >
-                    
-
-                            <TextField
-                                id="text-field-description"
-                                label="Description"
-                                value={this.state.expense.description}
-                                onChange={this.handleChange('description')}
-                            />
-
-                            <TextField
-                                id="standard-select-category"
-                                select
-                                label="Category"
-                                value={this.state.expense.category}
-                                onChange={this.handleChange('category')}
-                                SelectProps={{ native: true }}
-                            >
-                                {categoriesStore.getCategories()
-                                    .map((c: Category) => (
-                                        <option key={c.name} value={c.name}>
-                                            {c.name}
-                                        </option>
-                                    ))}
-                            </TextField>
-                            <IconButton aria-label="Add category" >
-                                <AddIcon />
-                            </IconButton>
-                        <Grid container direction="row" >
-                            <TextField
-                                type="number"
-                                id="amount"
-                                label="Amount"
-                                value={this.state.expense.amount}
-                                onChange={this.handleChange('amount')}
-                            />
-                            {this.state.currencies &&
-                                <TextField
-                                    id="standard-select-currency-native"
-                                    select
-                                    label="Currency"
-                                    value={this.state.expense.currency || this.state.budget.currency}
-                                    onChange={this.handleChange('currency')}
-                                    SelectProps={{ native: true }}
-                                >
-                                    {this.state.currencies.map(option => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </TextField>
-                            }
-                        </Grid>
-                        <Grid container direction="row">
-                            <IconButton aria-label="Delete">
-                                <DeleteIcon />
-                            </IconButton>
-                            <IconButton aria-label="Save">
-                                <SaveIcon />
-                            </IconButton>
-                        </Grid>
+                <form noValidate autoComplete="off">
+                    <this.AmountInput />
+                    <this.CategoryInput categories={this.categories} />
+                    <this.TextInput label='Description' value={this.state.expense.description} />
+                    <this.Actions />
                 </form>
             );
         }
         return <CircularProgress />;
     }
-}
+
+    private AmountInput = () => (
+        <Grid container spacing={8}>
+                    <Grid item xl>
+
+            <this.TextInput
+                required
+                type='number'
+                label="Amount"
+                value={this.state.expense.amount}
+            />
+            </Grid>
+            <Grid item xs>
+            {this.state.currencies
+                && <this.CurrencyInput currencies={this.state.currencies} />}
+        </Grid></Grid>
+    );
+
+    private CategoryInput = (props: { categories: string[] }) => (
+        <Grid container spacing={8}>
+            <Grid item xl>
+                <this.SelectBox
+                    options={props.categories}
+                    label='Category'
+                    value={this.state.expense.category}
+                />
+            </Grid>
+            <Grid item xs>
+                <IconButton aria-label="Add category" >
+                    <AddIcon />
+                </IconButton>                
+            </Grid>
+        </Grid>
+    );
+            
+    private CurrencyInput = (props: {currencies: string[]}) => (
+        <this.SelectBox
+                    options={props.currencies}
+                    label='Currency'
+                    value={this.state.expense.currency || this.state.budget.currency}
+                />
+                );
+            
+    private SelectBox = (props: {options: string[]; label: string; value: string }) => (
+        <this.TextInput
+                    select
+                    required
+                    SelectProps={{ native: true }}
+                    label={props.label}
+                    value={props.value}
+                >
+                    {props.options.map(
+                        (opt: string) => (
+                            <option key={opt} value={opt}>{opt}</option>))}
+                </this.TextInput>
+                );
+            
+                private TextInput = (props: TextFieldProps) => (
+        <TextField
+                    {...props}
+                    id={`input-field-${props.label}`}
+                    label={props.label}
+                    value={props.value}
+                    onChange={this.handleChange(props.label.toString().toLowerCase())}
+                    style={{ margin: 10 }}
+                />
+                );
+            
+                private Actions = () => (
+        <Grid container direction="row">
+                    <IconButton aria-label="Delete">
+                        <DeleteIcon />
+                    </IconButton>
+                    <IconButton aria-label="Save">
+                        <SaveIcon />
+                    </IconButton>
+                </Grid>
+                );
+            
+            }
