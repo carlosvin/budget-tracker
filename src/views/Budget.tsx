@@ -1,6 +1,5 @@
 import * as React from "react";
 import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
 import { Budget, Expense } from "../interfaces";
@@ -53,11 +52,11 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
     render() {
         if (this.state) {
             return (
-                <Paper elevation={3} >
+                <React.Fragment>
                     { this.state.info && <Typography component="p">{this.state.info.name}</Typography> }
 
                     { this.state.expenses && <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }
-                </Paper>
+                </React.Fragment>
 
             );
         }

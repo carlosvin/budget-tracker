@@ -102,28 +102,42 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     render() {
         if (this.state && this.state.expense) {
             return (
-                <form noValidate autoComplete="off" >
-                    <this.AmountInput />
-                    <this.CategoryInput categories={this.categories} />
-                    <this.TextInput label='Description' value={this.state.expense.description} />
+                <React.Fragment>
+                    <form noValidate autoComplete="off" >
+                        <Grid container
+                            direction="row"
+                            justify="space-between"
+                            alignItems="center">
+                            <Grid item >
+                                <this.AmountInput />
+                            </Grid>
+                            <Grid item >
+                                <this.CategoryInput categories={this.categories} />
+                            </Grid>
+                            <Grid item >
+                                <this.TextInput label='Description' value={this.state.expense.description} />
+                            </Grid>
+                        </Grid>
+                    </form>
                     <this.Actions />
-                </form>
+                </React.Fragment>
             );
         }
         return <CircularProgress />;
     }
 
     private AmountInput = () => (
-        <Grid container spacing={8}>
-            <Grid item xl>
+        <Grid container direction='row'>
+            <Grid item >
                 <this.TextInput
+                    autoFocus
                     required
                     type='number'
-                    label="Amount"
+                    label='Amount'
                     value={this.state.expense.amount}
                 />
             </Grid>
-            <Grid item xs>
+            <Grid item >
                 {this.state.currencies
                     && <this.CurrencyInput currencies={this.state.currencies} />}
             </Grid>
@@ -131,15 +145,15 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     );
 
     private CategoryInput = (props: { categories: string[] }) => (
-        <Grid container spacing={8}>
-            <Grid item xl>
+        <Grid container direction='row'>
+            <Grid item>
                 <this.SelectBox
                     options={props.categories}
                     label='Category'
                     value={this.state.expense.category}
                 />
             </Grid>
-            <Grid item xs>
+            <Grid item>
                 <IconButton aria-label="Add category" >
                     <AddIcon />
                 </IconButton>                
@@ -157,11 +171,11 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     private SelectBox = (props: {options: string[]; label: string; value: string }) => (
         <this.TextInput
             select
-            required
+            required 
             SelectProps={{ native: true }}
             label={props.label}
             value={props.value} >
-
+            
             {props.options.map(
                 (opt: string) => (
                     <option key={opt} value={opt}>{opt}</option>))}
@@ -175,11 +189,12 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             label={props.label}
             value={props.value}
             onChange={this.handleChange(props.label.toString().toLowerCase())}
-            style={{ margin: 10 }}
+            style={{ margin: 8 }}
+            margin='dense'
         />);
             
     private Actions = () => (
-        <Grid container direction="row" justify='space-evenly' alignContent='center'>
+        <Grid container direction='row' justify='space-evenly' alignContent='center'>
             <IconButton aria-label="Delete">
                 <DeleteIcon />
             </IconButton>
