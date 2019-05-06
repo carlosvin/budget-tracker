@@ -35,6 +35,7 @@ class App extends React.PureComponent {
                             <Route path="/about" component={About} />
                             <Route exact path="/budgets" component={BudgetList} />
                             <Route exact path='/budgets/:id' component={BudgetView} />
+                            <Route exact path='/budgets/:id/expenses/add' component={ExpenseView} />
                             <Route exact path='/budgets/:id/expenses/:timestamp(\d+)' component={ExpenseView} />
                             <Route exact path='/categories' component={CategoryList} />
                             <Route exact path='/categories/add' component={AddCategory} />

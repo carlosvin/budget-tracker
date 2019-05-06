@@ -29,3 +29,31 @@ export const goBack = (history: History) => {
 export function timestampToDate(timestamp: number) {
     return new Date(timestamp).toDateString();
 }
+
+export class BudgetUrl {
+    private readonly budgetId: string;
+    readonly path: string;
+    readonly pathEdit: string;
+    readonly pathAddExpense: string;
+
+    constructor(budgetId: string) {
+        this.budgetId = budgetId;
+        this.path = `/budgets/${this.budgetId}`;
+        this.pathEdit= `${this.path}/edit`;
+        this.pathAddExpense = `${this.path}/expenses/add`;
+    }
+}
+
+export class ExpenseUrl {
+    private readonly budgetUrl: BudgetUrl;
+    private readonly timestamp: number;
+    readonly path: string;
+
+    constructor(budgetId: string, timestamp: number) {
+        this.budgetUrl = new BudgetUrl(budgetId);
+        this.timestamp = timestamp;
+        this.path = `${this.budgetUrl.path}/expenses/${this.timestamp}`;
+    }
+}
+
+export const TODAY_STRING = new Date().toISOString().slice(0,10);

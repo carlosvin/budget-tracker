@@ -12,7 +12,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import { categoriesStore } from "../../stores/CategoriesStore";
 import { WithStyles, createStyles, Theme, Link } from '@material-ui/core';
 import { MyLink } from "../MyLink";
-import { goBack } from "../../utils";
+import { TODAY_STRING, BudgetUrl } from "../../utils";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
@@ -37,13 +37,20 @@ interface ExpenseViewState {
 
 export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseViewState> {
 
+    private readonly budgetUrl: BudgetUrl;
+
     constructor(props: ExpenseViewProps) {
         super(props);
+        this.budgetUrl = new BudgetUrl(props.match.params.id);
         this.initBudget(props.match.params.id);
-        this.initExpense(
-            props.match.params.id,
-            +props.match.params.timestamp);
         this.initCurrencies();
+        if (props.match.params.timestamp) {
+            this.initExpense(
+                props.match.params.id,
+                +props.match.params.timestamp);    
+        } else {
+            this.state = {...this.state, expense: {amount: 0, description: ''}};
+        }
     }
 
     private get categories () {
@@ -105,16 +112,25 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         if (this.state && this.state.expense) {
             return (
                 <React.Fragment>
-                    <form noValidate autoComplete="off" >
+                    <form >
                         <Grid container
-                            direction="row"
                             justify="space-between"
-                            alignItems="center">
+                            alignItems="baseline"
+                            alignContent='stretch'>
                             <Grid item >
                                 <this.AmountInput />
                             </Grid>
                             <Grid item >
                                 <this.CategoryInput categories={this.categories} />
+                            </Grid>
+                            <Grid item>
+                                <this.TextInput
+                                    required
+                                    label='When'
+                                    type='date'
+                                    defaultValue={ TODAY_STRING }
+                                    InputLabelProps={{shrink: true,}}
+                                />
                             </Grid>
                             <Grid item >
                                 <this.TextInput label='Description' value={this.state.expense.description} />
@@ -159,7 +175,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         <this.SelectBox
             options={props.currencies}
             label='Currency'
-            value={this.state.expense.currency || this.state.budget.currency}
+            value={this.state.expense.currency || (this.state.budget && this.state.budget.currency) || 'USD'}
         />);
             
     private SelectBox = (props: TextFieldProps&{options: string[]}) => (
@@ -199,14 +215,14 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         budgetsStore.deleteExpense(
             this.state.budget.identifier, 
             this.state.expense.timestamp);
-        goBack(this.props.history);
+        this.props.history.replace(this.budgetUrl.path);
     }
 
     private handleSave = () => {
         budgetsStore.saveExpense(
             this.state.budget.identifier, 
             this.state.expense as Expense);
-        goBack(this.props.history);
+        this.props.history.replace(this.budgetUrl.path);
     }
             
 }
