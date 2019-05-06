@@ -32,7 +32,9 @@ class CategoriesStore {
             localStorage.setItem(
                 CategoriesStore.KEY, 
                 JSON.stringify(this.categories));
+            return true;
         }
+        return false;
     }
 }
 

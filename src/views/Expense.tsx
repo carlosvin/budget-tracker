@@ -12,6 +12,7 @@ import AddIcon from "@material-ui/icons/AddBoxRounded";
 import SaveIcon from "@material-ui/icons/Save";
 import { categoriesStore } from "../stores/CategoriesStore";
 import { WithStyles, createStyles, Theme } from '@material-ui/core';
+import { MyLink } from "./MyLink";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
@@ -36,7 +37,6 @@ interface ExpenseViewState {
 
 export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseViewState> {
 
-    private readonly categories: string[];
 
     constructor(props: ExpenseViewProps) {
         super(props);
@@ -45,7 +45,10 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             props.match.params.id,
             +props.match.params.timestamp);
         this.initCurrencies();
-        this.categories = categoriesStore.getCategories().map(c => c.name);
+    }
+
+    private get categories () {
+        return categoriesStore.getCategories().map(c => c.name);
     }
 
     private async initCurrencies() {
@@ -154,7 +157,10 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 />
             </Grid>
             <Grid item>
-                <IconButton aria-label="Add category" >
+                <IconButton 
+                    component={MyLink} 
+                    href='/categories/add' 
+                    aria-label="Add category" >
                     <AddIcon />
                 </IconButton>                
             </Grid>

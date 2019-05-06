@@ -11,6 +11,7 @@ import { BudgetView } from "./views/Budget";
 import { ExpenseView } from "./views/Expense";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Paper } from "@material-ui/core";
+import { AddCategory } from "./views/AddCategory";
 
 // TODO extract App to external file
 class App extends React.PureComponent {
@@ -32,6 +33,7 @@ class App extends React.PureComponent {
                         <Route exact path="/budgets" component={BudgetList} />
                         <Route exact path='/budgets/:id' component={BudgetView} />
                         <Route exact path='/budgets/:id/expenses/:timestamp(\d+)' component={ExpenseView} />
+                        <Route exact path='/categories/add' component={AddCategory} />
                     </Paper>
                 </main>
             </Router>);
