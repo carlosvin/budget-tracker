@@ -12,7 +12,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import { categoriesStore } from "../../stores/CategoriesStore";
 import { WithStyles, createStyles, Theme, Link } from '@material-ui/core';
 import { MyLink } from "../MyLink";
-import { TODAY_STRING, BudgetUrl } from "../../utils";
+import { TODAY_STRING, BudgetUrl, getDateString } from "../../utils";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
@@ -128,7 +128,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                                     required
                                     label='When'
                                     type='date'
-                                    defaultValue={ TODAY_STRING }
+                                    value={ this.date }
                                     InputLabelProps={{shrink: true,}}
                                 />
                             </Grid>
@@ -142,6 +142,14 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             );
         }
         return <CircularProgress />;
+    }
+
+    private get date(){
+        if (this.state.expense.timestamp){
+            return getDateString(new Date(this.state.expense.timestamp));
+        } else {
+            return TODAY_STRING;
+        }
     }
 
     private AmountInput = () => (

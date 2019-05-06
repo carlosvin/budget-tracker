@@ -56,4 +56,7 @@ export class ExpenseUrl {
     }
 }
 
-export const TODAY_STRING = new Date().toISOString().slice(0,10);
+export function getDateString (date = new Date()) {
+    return date.toISOString().slice(0,10);
+}
+export const TODAY_STRING = getDateString();
