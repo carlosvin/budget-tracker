@@ -48,7 +48,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     }
 
     private get categories () {
-        return categoriesStore.getCategories().map(c => c.name);
+        return categoriesStore.getCategories();
     }
 
     private async initCurrencies() {

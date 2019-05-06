@@ -22,12 +22,7 @@ export interface Expense {
 }
 
 export interface CurrencyRates {
-    base: string;
-    rates: {[name: string]: number};
-    date: Date;
-}
-
-export interface Category {
-    name: string;
-    iconName?: string;
+    readonly base: string;
+    readonly rates: {[name: string]: number};
+    readonly date: Date;
 }
