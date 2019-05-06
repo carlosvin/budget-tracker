@@ -2,12 +2,18 @@ import { CurrencyRates } from "../interfaces";
 import { currenciesApi } from "../api/CurrenciesApi";
 
 class CurrenciesStore {
+    static readonly BASE = 'EUR';
+
     private currencies: string[];
     private rates: { [currency: string]: CurrencyRates };
 
+    constructor(){
+        this.fetchRates(CurrenciesStore.BASE);
+    }
+
     async getCurrencies() {
         if (this.currencies === undefined) {
-            await this.fetchRates('EUR');
+            await this.fetchRates(CurrenciesStore.BASE);
         }
         return this.currencies;
     }
@@ -23,6 +29,7 @@ class CurrenciesStore {
         const rates = await currenciesApi.getRates(baseCurrency);
         if (this.currencies === undefined) {
             this.currencies = Object.keys(rates.data.rates);
+            this.currencies.push(baseCurrency);
         }
     }
 }
