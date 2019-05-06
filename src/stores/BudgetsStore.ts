@@ -42,6 +42,12 @@ class BudgetsStore {
         return this.expenses[identifier][timestamp];
     }
 
+    deleteExpense (identifier: string, timestamp: number) {
+        if (this.expenses) {
+            delete this.expenses[identifier][timestamp];
+        }
+    }
+
     private async fetchExpenses(identifier: string) {
         if (this.expenses === undefined) {
             this.expenses = {};

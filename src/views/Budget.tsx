@@ -4,7 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
 import { Budget, Expense } from "../interfaces";
 import { budgetsStore } from "../stores/BudgetsStore";
-import { ExpenseList } from "./ExpenseList";
+import { ExpenseList } from "./expenses/ExpenseList";
 import { Card, CardContent, CardActions, Button, Grid, Table, TableHead, TableRow, TableBody, TableCell } from "@material-ui/core";
 import { dateDiff } from "../utils";
 

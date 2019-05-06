@@ -3,8 +3,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import Avatar from '@material-ui/core/Avatar';
 import BeachAccessIcon from '@material-ui/icons/BeachAccess';
-import { Budget, Expense } from "../interfaces";
-import { MyLink } from "./MyLink";
+import { Budget, Expense } from "../../interfaces";
+import { MyLink } from "../MyLink";
 
 
 interface ExpenseListItemProps {

@@ -2,17 +2,17 @@ import * as React from "react";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
-import { Budget, Expense } from "../interfaces";
-import { budgetsStore } from "../stores/BudgetsStore";
-import { currenciesStore } from "../stores/CurrenciesStore";
+import { Budget, Expense } from "../../interfaces";
+import { budgetsStore } from "../../stores/BudgetsStore";
+import { currenciesStore } from "../../stores/CurrenciesStore";
 import IconButton from "@material-ui/core/IconButton";
 import Grid from "@material-ui/core/Grid";
 import DeleteIcon from "@material-ui/icons/Delete";
-import AddIcon from "@material-ui/icons/AddBoxRounded";
 import SaveIcon from "@material-ui/icons/Save";
-import { categoriesStore } from "../stores/CategoriesStore";
+import { categoriesStore } from "../../stores/CategoriesStore";
 import { WithStyles, createStyles, Theme, Link } from '@material-ui/core';
-import { MyLink } from "./MyLink";
+import { MyLink } from "../MyLink";
+import { goBack } from "../../utils";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
@@ -36,7 +36,6 @@ interface ExpenseViewState {
 }
 
 export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseViewState> {
-
 
     constructor(props: ExpenseViewProps) {
         super(props);
@@ -188,12 +187,19 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             
     private Actions = () => (
         <Grid container direction='row' justify='space-evenly' alignContent='center'>
-            <IconButton aria-label="Delete">
+            <IconButton aria-label='Delete' onClick={this.handleDelete}>
                 <DeleteIcon />
             </IconButton>
-            <IconButton aria-label="Save">
+            <IconButton aria-label='Save'>
                 <SaveIcon />
             </IconButton>
         </Grid>);
+
+    private handleDelete = () => {
+        budgetsStore.deleteExpense(
+            this.state.budget.identifier, 
+            this.state.expense.timestamp);
+        goBack(this.props.history);
+    }
             
 }

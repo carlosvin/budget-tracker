@@ -8,7 +8,7 @@ import { Header } from "./views/Header";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { About } from "./views/About";
 import { BudgetView } from "./views/Budget";
-import { ExpenseView } from "./views/Expense";
+import { ExpenseView } from "./views/expenses/Expense";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Paper } from "@material-ui/core";
 import { AddCategory } from "./views/categories/AddCategory";

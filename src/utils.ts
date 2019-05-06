@@ -1,3 +1,4 @@
+import { History } from "history";
 
 export function slugify(str: string) {
     const a = 'àáäâãåăæçèéëêǵḧìíïîḿńǹñòóöôœṕŕßśșțùúüûǘẃẍÿź·/_,:;';
@@ -15,4 +16,12 @@ export function slugify(str: string) {
 
 export function dateDiff(from: Date, to: Date) {
     return Math.round((to.getTime() - from.getTime())/(1000*60*60*24));
+}
+
+export const goBack = (history: History) => {
+    if (history.length > 2) {
+        history.goBack();
+    } else {
+        history.replace('/');
+    }
 }

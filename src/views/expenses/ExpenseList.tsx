@@ -1,7 +1,7 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Expense, Budget } from "../interfaces";
+import { Expense, Budget } from "../../interfaces";
 import { ExpenseListItem } from "./ExpenseListItem";
 
 interface ExpenseListProps {
