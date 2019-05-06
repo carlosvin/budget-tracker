@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { categoriesStore } from '../stores/CategoriesStore';
+import { categoriesStore } from '../../stores/CategoriesStore';
 import TextField, { TextFieldProps } from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from "@material-ui/icons/Save";
@@ -11,6 +11,8 @@ import { RouterProps } from 'react-router';
 interface CategoryFormProps extends RouterProps{
     name?: string;
     direction ?: GridDirection;
+    hideCancel?: boolean;
+    closeAfterSave?: boolean;
 }
 
 export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: string}> {
@@ -24,11 +26,13 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
 
     private handleSave = () => {
         this.store.addCategory(this.state.name);
-        this.close();
+        if (this.props.closeAfterSave) {
+            this.close();
+        }
     }
 
     private close = () => {
-        if (this.props.history.length > 1) {
+        if (this.props.history.length > 2) {
             this.props.history.goBack();
         } else {
             this.props.history.replace('/');
@@ -38,23 +42,26 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
     render () {
         return (
             <Grid container direction={this.direction}>
-                <this.TextInput 
-                    fullWidth
-                    label={ 'Category Name' }
-                    value={ this.state.name }
-                    onChange={this.handleChange('name')}
-                    style={{ margin: 8 }}
-                    margin='dense' />
-                <Grid container direction='row' justify='space-around'>
-                    <IconButton aria-label="Save" disabled={this.state.name === ''} onClick={this.handleSave}>
-                        <SaveIcon />
-                    </IconButton>
-                    <IconButton aria-label="Cancel" onClick={this.close} >
-                        <Cancel />
-                    </IconButton>
-                    { this.props.name && <IconButton aria-label="Delete" disabled={this.state.name === ''}>
-                        <Delete />
-                    </IconButton>}
+                <Grid item>
+                    <this.TextInput 
+                        label={ 'Category Name' }
+                        value={ this.state.name }
+                        onChange={this.handleChange('name')}
+                        style={{ margin: 8 }}
+                        margin='dense' />
+                    </Grid>
+                <Grid item>
+                    <Grid container direction='row' justify='space-around'>
+                        <IconButton aria-label="Save" disabled={this.state.name === ''} onClick={this.handleSave}>
+                            <SaveIcon />
+                        </IconButton>
+                        { this.props.name && <IconButton aria-label="Delete" disabled={this.state.name === ''}>
+                            <Delete />
+                        </IconButton>}
+                        { !this.props.hideCancel && <IconButton aria-label="Cancel" onClick={this.close} >
+                            <Cancel />
+                        </IconButton>}
+                    </Grid>
                 </Grid>
             </Grid> 
         );

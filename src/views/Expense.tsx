@@ -11,7 +11,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import AddIcon from "@material-ui/icons/AddBoxRounded";
 import SaveIcon from "@material-ui/icons/Save";
 import { categoriesStore } from "../stores/CategoriesStore";
-import { WithStyles, createStyles, Theme } from '@material-ui/core';
+import { WithStyles, createStyles, Theme, Link } from '@material-ui/core';
 import { MyLink } from "./MyLink";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
@@ -148,23 +148,12 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     );
 
     private CategoryInput = (props: { categories: string[] }) => (
-        <Grid container direction='row'>
-            <Grid item>
-                <this.SelectBox
-                    options={props.categories}
-                    label='Category'
-                    value={this.state.expense.category}
-                />
-            </Grid>
-            <Grid item>
-                <IconButton 
-                    component={MyLink} 
-                    href='/categories/add' 
-                    aria-label="Add category" >
-                    <AddIcon />
-                </IconButton>                
-            </Grid>
-        </Grid>
+        <this.SelectBox
+            options={props.categories}
+            label='Category'
+            value={this.state.expense.category}
+            helperText={<Link href='/categories/add' component={MyLink}>Add category</Link>}
+        />
     );
             
     private CurrencyInput = (props: {currencies: string[]}) => (
@@ -174,14 +163,12 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             value={this.state.expense.currency || this.state.budget.currency}
         />);
             
-    private SelectBox = (props: {options: string[]; label: string; value: string }) => (
+    private SelectBox = (props: TextFieldProps&{options: string[]}) => (
         <this.TextInput
+            {...props}
             select
             required 
-            SelectProps={{ native: true }}
-            label={props.label}
-            value={props.value} >
-            
+            SelectProps={{ native: true }} >
             {props.options.map(
                 (opt: string) => (
                     <option key={opt} value={opt}>{opt}</option>))}
@@ -196,7 +183,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             value={props.value}
             onChange={this.handleChange(props.label.toString().toLowerCase())}
             style={{ margin: 8 }}
-            margin='dense'
+            margin='dense'            
         />);
             
     private Actions = () => (
