@@ -187,11 +187,11 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             
     private Actions = () => (
         <Grid container direction='row' justify='space-evenly' alignContent='center'>
+            <IconButton aria-label='Save' onClick={this.handleSave}>
+                <SaveIcon />
+            </IconButton>
             <IconButton aria-label='Delete' onClick={this.handleDelete}>
                 <DeleteIcon />
-            </IconButton>
-            <IconButton aria-label='Save'>
-                <SaveIcon />
             </IconButton>
         </Grid>);
 
@@ -199,6 +199,13 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         budgetsStore.deleteExpense(
             this.state.budget.identifier, 
             this.state.expense.timestamp);
+        goBack(this.props.history);
+    }
+
+    private handleSave = () => {
+        budgetsStore.saveExpense(
+            this.state.budget.identifier, 
+            this.state.expense as Expense);
         goBack(this.props.history);
     }
             

@@ -66,11 +66,17 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
                     </Grid>
                 <Grid item>
                     <Grid container direction='row' justify='space-around'>
-                        <IconButton aria-label="Save" disabled={this.state.name === ''} onClick={this.handleSave}>
+                        <IconButton 
+                            aria-label="Save" 
+                            disabled={this.state.name === ''} 
+                            onClick={this.handleSave}>
                             <SaveIcon />
                         </IconButton>
                         { this.props.name && 
-                            <IconButton aria-label="Delete" disabled={this.state.name === ''} onClick={this.handleDelete}>
+                            <IconButton 
+                                aria-label="Delete" 
+                                disabled={this.state.name === ''} 
+                                onClick={this.handleDelete}>
                                 <Delete />
                             </IconButton>}
                         { !this.props.hideCancel && <IconButton aria-label="Cancel" onClick={this.close} >

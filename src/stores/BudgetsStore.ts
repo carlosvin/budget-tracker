@@ -48,6 +48,12 @@ class BudgetsStore {
         }
     }
 
+    saveExpense(identifier: string, expense: Expense){
+        if (this.expenses) {
+            this.expenses[identifier][expense.timestamp] = expense;
+        }
+    }
+
     private async fetchExpenses(identifier: string) {
         if (this.expenses === undefined) {
             this.expenses = {};
