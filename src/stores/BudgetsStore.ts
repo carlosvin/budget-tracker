@@ -61,7 +61,16 @@ class BudgetsStore {
         this.expenses[identifier] = {
             100000: this.createExpense(100, 'SIM Card ' + identifier),
             25000: this.createExpense(25, 'Dinner'),
-            44000: this.createExpense(44, 'Lunch')
+            44000: this.createExpense(44, 'Lunch'),
+            1: this.createExpense(1, 'Lunch'),
+            2: this.createExpense(2, 'Dinner'),
+            3: this.createExpense(3, 'Lunch'),
+            4: this.createExpense(4, 'Lunch'),
+            5: this.createExpense(5, 'Lunch'),
+            6: this.createExpense(6, 'Lunch'),
+            7: this.createExpense(7, 'Lunch'),
+            8: this.createExpense(8, 'Lunch'),
+            9: this.createExpense(9, 'Lunch'),
         };
         return this.expenses[identifier];
     }

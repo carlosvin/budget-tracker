@@ -24,7 +24,8 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
     get elements() {
         return this.props.expenses 
             && this.expensesArray.map(
-                (expense: Expense) => <ExpenseListItem 
+                (expense: Expense) => 
+                <ExpenseListItem 
                     key={expense.timestamp} 
                     expense={expense} 
                     budget={this.props.budget}/>);
