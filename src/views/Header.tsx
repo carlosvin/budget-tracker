@@ -8,9 +8,9 @@ export class Header extends React.PureComponent {
     render () {
         return <AppBar position="static">
             <Toolbar>
-                <Button color='inherit' component={MyLink} href='/about' >About</Button>
                 <Button color='inherit' component={MyLink} href='/budgets'>Budgets</Button>
                 <Button color='inherit' component={MyLink} href='/categories'>Categories</Button>
+                <Button color='inherit' component={MyLink} href='/about' >About</Button>
             </Toolbar>
         </AppBar>;
     }
