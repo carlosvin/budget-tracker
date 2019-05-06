@@ -3,11 +3,11 @@
 // import "regenerator-runtime/runtime";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { BudgetList } from "./views/BudgetList";
+import { BudgetList } from "./views/budgets/BudgetList";
 import { Header } from "./views/Header";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { About } from "./views/About";
-import { BudgetView } from "./views/Budget";
+import { BudgetView } from "./views/budgets/Budget";
 import { ExpenseView } from "./views/expenses/Expense";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Paper } from "@material-ui/core";

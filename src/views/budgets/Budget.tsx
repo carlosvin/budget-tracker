@@ -2,11 +2,11 @@ import * as React from "react";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
-import { Budget, Expense } from "../interfaces";
-import { budgetsStore } from "../stores/BudgetsStore";
-import { ExpenseList } from "./expenses/ExpenseList";
+import { Budget, Expense } from "../../interfaces";
+import { budgetsStore } from "../../stores/BudgetsStore";
+import { ExpenseList } from "../expenses/ExpenseList";
 import { Card, CardContent, CardActions, Button, Grid, Table, TableHead, TableRow, TableBody, TableCell } from "@material-ui/core";
-import { dateDiff } from "../utils";
+import { dateDiff } from "../../utils";
 
 interface BudgetViewProps extends RouteComponentProps<{ id: string }>{}
 
@@ -82,7 +82,7 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                                 { this.state.expenses && <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }
                             </CardContent>
                             <CardActions>
-                                <Button size="small">Learn More</Button>
+                                <Button size="small">Edit</Button>
                             </CardActions>
                         </Card>
                     }
