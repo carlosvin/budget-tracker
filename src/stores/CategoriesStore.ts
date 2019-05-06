@@ -25,15 +25,27 @@ class CategoriesStore {
         return [...this.categories];
     }
 
-    addCategory(category: string){
+    add(category: string){
         if (this.categories.has(category)) {
             return false;
         }
         this.categories.add(category);
+        this.save();
+        return true;
+    }
+
+    delete(category: string) {
+        if (this.categories.delete(category)) {
+            this.save();
+            return true;
+        }
+        return false;
+    }
+
+    private save() {
         localStorage.setItem(
             CategoriesStore.KEY, 
             JSON.stringify(Array.from(this.categories)));
-            return true;
     }
 }
 

@@ -13,6 +13,7 @@ interface CategoryFormProps extends RouterProps{
     direction ?: GridDirection;
     hideCancel?: boolean;
     closeAfterSave?: boolean;
+    onChange?: () => void;
 }
 
 export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: string}> {
@@ -25,12 +26,25 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
     }
 
     private handleSave = () => {
-        this.store.addCategory(this.state.name);
+        this.store.add(this.state.name);
+        if (this.props.onChange) {
+            this.props.onChange();
+        }
         if (this.props.closeAfterSave) {
             this.close();
         }
     }
 
+    private handleDelete = () => {
+        this.store.delete(this.state.name);
+        if (this.props.onChange) {
+            this.props.onChange();
+        }
+        if (this.props.closeAfterSave) {
+            this.close();
+        }
+    }
+    
     private close = () => {
         if (this.props.history.length > 2) {
             this.props.history.goBack();
@@ -44,7 +58,7 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
             <Grid container direction={this.direction}>
                 <Grid item>
                     <this.TextInput 
-                        label={ 'Category Name' }
+                        label={ this.direction === 'row' ? '' : 'Category Name' }
                         value={ this.state.name }
                         onChange={this.handleChange('name')}
                         style={{ margin: 8 }}
@@ -55,9 +69,10 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
                         <IconButton aria-label="Save" disabled={this.state.name === ''} onClick={this.handleSave}>
                             <SaveIcon />
                         </IconButton>
-                        { this.props.name && <IconButton aria-label="Delete" disabled={this.state.name === ''}>
-                            <Delete />
-                        </IconButton>}
+                        { this.props.name && 
+                            <IconButton aria-label="Delete" disabled={this.state.name === ''} onClick={this.handleDelete}>
+                                <Delete />
+                            </IconButton>}
                         { !this.props.hideCancel && <IconButton aria-label="Cancel" onClick={this.close} >
                             <Cancel />
                         </IconButton>}
