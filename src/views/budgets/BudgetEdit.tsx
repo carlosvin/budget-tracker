@@ -1,16 +1,14 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Budget, Expense } from "../../interfaces";
+import { Budget } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import TextField, { TextFieldProps } from "@material-ui/core/TextField";
-import CancelIcon from "@material-ui/icons/Cancel";
-import Button from '@material-ui/core/Button';
-import SaveIcon from '@material-ui/icons/Save';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BudgetUrl, getDateString, goBack } from "../../utils";
 import { currenciesStore } from "../../stores/CurrenciesStore";
 import { Grid } from "@material-ui/core";
 import { CurrencyInput } from "../CurrencyInput";
+import { SaveButton, CancelButton } from "../buttons";
 const uuid = require('uuid/v1');
 
 interface BudgetEditProps extends RouteComponentProps<{ id: string }>{}
@@ -95,12 +93,8 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
 
     private Actions = () => (
         <Grid container direction='row' justify='space-evenly'>
-            <Button size="small" color='primary' onClick={this.handleSave} >
-                <SaveIcon />
-            </Button>
-            <Button size="small" color='default' onClick={this.close}>
-                <CancelIcon />
-            </Button>
+            <SaveButton onClick={this.handleSave} />
+            <CancelButton onClick={this.close} />
         </Grid>
     );
 

@@ -1,12 +1,10 @@
 import * as React from 'react';
 import { categoriesStore } from '../../stores/CategoriesStore';
 import TextField, { TextFieldProps } from '@material-ui/core/TextField';
-import IconButton from '@material-ui/core/IconButton';
-import SaveIcon from "@material-ui/icons/Save";
-import Delete from "@material-ui/icons/Delete";
-import Cancel from "@material-ui/icons/Cancel";
+
 import Grid, { GridDirection } from '@material-ui/core/Grid';
 import { RouterProps } from 'react-router';
+import { SaveButton, CancelButton, DeleteButton } from '../buttons';
 
 interface CategoryFormProps extends RouterProps{
     name?: string;
@@ -66,22 +64,11 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
                     </Grid>
                 <Grid item>
                     <Grid container direction='row' justify='space-around'>
-                        <IconButton 
-                            aria-label="Save" 
-                            disabled={this.state.name === ''} 
-                            onClick={this.handleSave}>
-                            <SaveIcon />
-                        </IconButton>
-                        { this.props.name && 
-                            <IconButton 
-                                aria-label="Delete" 
-                                disabled={this.state.name === ''} 
-                                onClick={this.handleDelete}>
-                                <Delete />
-                            </IconButton>}
-                        { !this.props.hideCancel && <IconButton aria-label="Cancel" onClick={this.close} >
-                            <Cancel />
-                        </IconButton>}
+                        <SaveButton onClick={this.handleSave} disabled={this.state.name === ''} />
+                    { this.props.name && 
+                        <DeleteButton disabled={this.state.name === ''} onClick={this.handleDelete}/> }
+                    { !this.props.hideCancel &&
+                        <CancelButton  onClick={this.close} />}
                     </Grid>
                 </Grid>
             </Grid> 

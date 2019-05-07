@@ -11,13 +11,11 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
-import AddIcon from "@material-ui/icons/Add";
-import EditIcon from "@material-ui/icons/Edit";
-import Fab from "@material-ui/core/Fab";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { dateDiff, BudgetUrl } from "../../utils";
-import { MyLink } from "../MyLink";
+import { Grid } from "@material-ui/core";
+import { AddButton, EditButton } from "../buttons";
 
 interface BudgetViewProps extends RouteComponentProps<{ id: string }>{}
 
@@ -65,6 +63,13 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
         }
     }
 
+    private Actions = () => (
+        <Grid container justify='space-between'>
+            <EditButton href={this.url.pathEdit}/>
+            <AddButton href={this.url.pathAddExpense}/>
+        </Grid>
+    );
+
     render() {
         if (this.state) {
             return (
@@ -94,21 +99,8 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                                     </TableBody>
                                 </Table>
                             </CardContent>
-                            <CardActions >
-                                <Fab 
-                                    color="secondary" 
-                                    aria-label="Edit" 
-                                    component={MyLink} 
-                                    href={this.url.pathEdit}>
-                                    <EditIcon />
-                                </Fab>
-                                <Fab 
-                                    color="primary" 
-                                    aria-label="Add" 
-                                    component={MyLink} 
-                                    href={this.url.pathAddExpense}>
-                                    <AddIcon />
-                                </Fab>
+                            <CardActions>
+                                <this.Actions />
                             </CardActions>
                         </Card>
                     }

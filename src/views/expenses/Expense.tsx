@@ -4,15 +4,13 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
 import { Budget, Expense } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
-import IconButton from "@material-ui/core/IconButton";
 import Grid from "@material-ui/core/Grid";
-import DeleteIcon from "@material-ui/icons/Delete";
-import SaveIcon from "@material-ui/icons/Save";
 import { categoriesStore } from "../../stores/CategoriesStore";
 import { WithStyles, createStyles, Theme, Link } from '@material-ui/core';
 import { MyLink } from "../MyLink";
-import { TODAY_STRING, BudgetUrl, getDateString } from "../../utils";
+import { BudgetUrl, getDateString } from "../../utils";
 import { CurrencyInput } from "../CurrencyInput";
+import { SaveButton, DeleteButton } from "../buttons";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
@@ -224,13 +222,10 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             
     private Actions = () => (
         <Grid container direction='row' justify='space-evenly' alignContent='center'>
-            <IconButton aria-label='Save' onClick={this.handleSave}>
-                <SaveIcon />
-            </IconButton>
-            <IconButton aria-label='Delete' onClick={this.handleDelete}>
-                <DeleteIcon />
-            </IconButton>
-        </Grid>);
+            <SaveButton onClick={this.handleSave}/>
+            <DeleteButton onClick={this.handleDelete}/>
+        </Grid>
+    );
 
     private handleDelete = () => {
         budgetsStore.deleteExpense(
