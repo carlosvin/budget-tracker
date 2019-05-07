@@ -14,6 +14,7 @@ import { Paper } from "@material-ui/core";
 import { AddCategory } from "./views/categories/AddCategory";
 import { EditCategory } from "./views/categories/EditCategory";
 import { CategoryList } from "./views/categories/CategoryList";
+import { BudgetEdit } from "./views/budgets/BudgetEdit";
 
 // TODO extract App to external file
 class App extends React.PureComponent {
@@ -34,6 +35,8 @@ class App extends React.PureComponent {
                             <Route exact path="/" component={BudgetList} />
                             <Route path="/about" component={About} />
                             <Route exact path="/budgets" component={BudgetList} />
+                            <Route exact path='/budgets/add' component={BudgetEdit} />
+                            <Route exact path='/budgets/:id/edit' component={BudgetEdit} />
                             <Route exact path='/budgets/:id' component={BudgetView} />
                             <Route exact path='/budgets/:id/expenses/add' component={ExpenseView} />
                             <Route exact path='/budgets/:id/expenses/:timestamp(\d+)' component={ExpenseView} />

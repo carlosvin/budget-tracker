@@ -4,7 +4,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
 import { Budget, Expense } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
-import { currenciesStore } from "../../stores/CurrenciesStore";
 import IconButton from "@material-ui/core/IconButton";
 import Grid from "@material-ui/core/Grid";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -13,6 +12,7 @@ import { categoriesStore } from "../../stores/CategoriesStore";
 import { WithStyles, createStyles, Theme, Link } from '@material-ui/core';
 import { MyLink } from "../MyLink";
 import { TODAY_STRING, BudgetUrl, getDateString } from "../../utils";
+import { CurrencyInput } from "../CurrencyInput";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
@@ -43,7 +43,6 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         super(props);
         this.budgetUrl = new BudgetUrl(props.match.params.id);
         this.initBudget(props.match.params.id);
-        this.initCurrencies();
         if (props.match.params.timestamp) {
             this.initExpense(
                 props.match.params.id,
@@ -67,20 +66,6 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
 
     private get categories () {
         return categoriesStore.getCategories();
-    }
-
-    private async initCurrencies() {
-        try {
-            const currencies = await currenciesStore.getCurrencies();
-            if (currencies) {
-                this.setState({
-                    ...this.state,
-                    currencies
-                });
-            }
-        } catch (e) {
-            console.trace(e);
-        }
     }
 
     private async initExpense(identifier: string, timestamp: number) {
@@ -193,10 +178,16 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 />
             </Grid>
             <Grid item >
-                {this.state.currencies
-                    && <this.CurrencyInput currencies={this.state.currencies} />}
+                <CurrencyInput onCurrencyChange={this.handleCurrencyChange} />
             </Grid>
         </Grid>
+    );
+
+    private handleCurrencyChange = (currency: string) => (
+        this.setState({
+            expense: {
+                ...this.state.expense, 
+                currency}})
     );
 
     private CategoryInput = (props: { categories: string[] }) => (
@@ -207,13 +198,6 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             helperText={<Link href='/categories/add' component={MyLink}>Add category</Link>}
         />
     );
-            
-    private CurrencyInput = (props: {currencies: string[]}) => (
-        <this.SelectBox
-            options={props.currencies}
-            label='Currency'
-            value={this.state.expense.currency || (this.state.budget && this.state.budget.currency) || 'USD'}
-        />);
             
     private SelectBox = (props: TextFieldProps&{options: string[]}) => (
         <this.TextInput

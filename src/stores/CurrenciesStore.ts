@@ -30,7 +30,12 @@ class CurrenciesStore {
         if (this.currencies === undefined) {
             this.currencies = Object.keys(rates.data.rates);
             this.currencies.push(baseCurrency);
+            this.currencies.sort();
         }
+    }
+
+    get base(){
+        return CurrenciesStore.BASE;
     }
 }
 

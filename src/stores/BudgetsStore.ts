@@ -28,6 +28,13 @@ class BudgetsStore {
         return null;
     }
 
+    setBudget = (budget: Budget) => {
+        if (this.budgets === undefined) {
+            this.fetchBudgets();
+        }
+        this.budgets[budget.identifier] = budget;
+    }
+
     async getExpenses(identifier: string) {
         if (this.expenses === undefined) {
             return this.fetchExpenses(identifier);
