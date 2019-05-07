@@ -50,28 +50,20 @@ class BudgetsStore {
 
     saveExpense(identifier: string, expense: Expense){
         if (this.expenses) {
-            this.expenses[identifier][expense.timestamp] = expense;
+            this.expenses[identifier][expense.creation.getTime()] = expense;
         }
     }
 
     private async fetchExpenses(identifier: string) {
         if (this.expenses === undefined) {
             this.expenses = {};
+            this.expenses[identifier] = {};
+            let a = this.createExpense(100, 'SIM Card ' + identifier);
+            this.expenses[identifier][a.creation.getTime()] = a;
+            a = this.createExpense(200, 'Lunch');
+            this.expenses[identifier][a.creation.getTime()] = a;
         }
-        this.expenses[identifier] = {
-            100000: this.createExpense(100, 'SIM Card ' + identifier),
-            25000: this.createExpense(25, 'Dinner'),
-            44000: this.createExpense(44, 'Lunch'),
-            1000000000: this.createExpense(1000000, 'Lunch'),
-            2000000000: this.createExpense(2000000, 'Dinner'),
-            3000000000: this.createExpense(3000000, 'Lunch'),
-            4000000000: this.createExpense(4000000, 'Lunch'),
-            5000000000: this.createExpense(5000000, 'Lunch'),
-            6000000000: this.createExpense(6000000, 'Lunch'),
-            7000000000: this.createExpense(7000000, 'Lunch'),
-            8000000000: this.createExpense(8000000, 'Lunch'),
-            9000000000: this.createExpense(9000000, 'Lunch'),
-        };
+        
         return this.expenses[identifier];
     }
 
@@ -102,7 +94,9 @@ class BudgetsStore {
             currency: 'USD',
             category: desc.slice(0, 10),
             description: desc,
-            timestamp: amount * 1000
+            when: new Date(amount * 110000000),
+            creation: new Date(amount * 100000001),
+            
         };
     }
 }

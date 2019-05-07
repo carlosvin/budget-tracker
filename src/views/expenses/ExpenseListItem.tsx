@@ -13,6 +13,7 @@ interface ExpenseListItemProps {
 }
 
 export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
+    
     render(){
         return (
         <ListItem 
@@ -31,7 +32,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
     }
 
     get href () {
-        return `/budgets/${this.props.budget.identifier}/expenses/${this.props.expense.timestamp}`;
+        return `/budgets/${this.props.budget.identifier}/expenses/${this.props.expense.creation.getTime()}`;
     }
 
     get amount () {

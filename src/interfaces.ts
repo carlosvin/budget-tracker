@@ -17,8 +17,9 @@ export interface Expense {
     amount: number;
     currency: string;
     category: string;
-    description: string;
-    timestamp: number;
+    description?: string;
+    when: Date;
+    creation: Date;
 }
 
 export interface CurrencyRates {

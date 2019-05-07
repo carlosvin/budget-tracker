@@ -47,9 +47,9 @@ export const ExpenseList = withStyles(myStyles)(
         return this.props.expenses 
             && this.expensesArray.map(
                 (expense: Expense) => 
-                <li key={`section-${expense.timestamp}`} className={this.props.classes.listSection}>
+                <li key={`section-${expense.creation.getTime()}`} className={this.props.classes.listSection}>
                     <ul className={this.props.classes.ul}>
-                        <this.Subheader timestamp={expense.timestamp} />
+                        <this.Subheader date={expense.when} />
                         <ExpenseListItem 
                             expense={expense}
                             budget={this.props.budget}/>
@@ -57,15 +57,14 @@ export const ExpenseList = withStyles(myStyles)(
                 </li>);
     }
 
-    private Subheader = (props: {timestamp: number}) => {
-        const dateStr = new Date(props.timestamp).toDateString();
+    private Subheader = (props: {date: Date}) => {
+        const dateStr = props.date.toDateString();
         if (this.dates.has(dateStr)) {
             return null;
         } else {
             this.dates.add(dateStr);
             return <ListSubheader>{dateStr}</ListSubheader>
         }
-
     }
 
     get expensesArray(): Expense[] {

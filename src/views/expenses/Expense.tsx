@@ -49,8 +49,20 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 props.match.params.id,
                 +props.match.params.timestamp);    
         } else {
-            this.state = {...this.state, expense: {amount: 0, description: ''}};
+            this.state = {
+                ...this.state, 
+                expense: {
+                    amount: 0, 
+                    description: '', 
+                    creation: new Date(), 
+                    when: new Date(),
+                    category: categoriesStore.getCategories()[0]
+                }};
         }
+    }
+
+    private get isAddView(){
+        return this.props.match.params.timestamp === undefined;
     }
 
     private get categories () {
@@ -89,10 +101,14 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         try {
             const budget = await budgetsStore.getBudget(identifier);
             if (budget) {
-                this.setState({
+                const state = {
                     ...this.state,
                     budget
-                });
+                };
+                if (this.isAddView) {
+                    state.expense.currency = budget.currency;
+                }
+                this.setState(state);
             }
         } catch (e) {
             console.trace(e);
@@ -104,6 +120,15 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             expense: {
                 ...this.state.expense,
                 [name]: event.target.value
+            }
+        });
+    }
+
+    handleWhenChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({
+            expense: {
+                ...this.state.expense,
+                when: new Date(event.target.value)
             }
         });
     }
@@ -124,13 +149,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                                 <this.CategoryInput categories={this.categories} />
                             </Grid>
                             <Grid item>
-                                <this.TextInput
-                                    required
-                                    label='When'
-                                    type='date'
-                                    value={ this.date }
-                                    InputLabelProps={{shrink: true,}}
-                                />
+                                <this.WhenInput />
                             </Grid>
                             <Grid item >
                                 <this.TextInput label='Description' value={this.state.expense.description} />
@@ -145,12 +164,22 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     }
 
     private get date(){
-        if (this.state.expense.timestamp){
-            return getDateString(new Date(this.state.expense.timestamp));
-        } else {
-            return TODAY_STRING;
-        }
+        return getDateString(this.state.expense.when);
     }
+
+    private WhenInput = () => (
+        <TextField
+            required
+            label='When'
+            type='date'
+            value={ this.date }
+            InputLabelProps={{shrink: true,}}
+            id={'input-field-date'}
+            onChange={this.handleWhenChange}
+            style={{ margin: 8 }}
+            margin='dense'  
+        />
+    );
 
     private AmountInput = () => (
         <Grid container direction='row'>
@@ -222,7 +251,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     private handleDelete = () => {
         budgetsStore.deleteExpense(
             this.state.budget.identifier, 
-            this.state.expense.timestamp);
+            this.state.expense.creation.getTime());
         this.props.history.replace(this.budgetUrl.path);
     }
 
