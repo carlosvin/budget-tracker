@@ -1,8 +1,10 @@
 import { Budget, Expense } from "../interfaces";
-import { slugify } from "../utils";
 
 class BudgetsStore {
 
+    private static readonly KEY_BUDGETS = 'budgets';
+    private static readonly KEY_EXPENSES = 'expenses';
+    
     private budgets: {[identifier: string]: Budget};
     private expenses: {[identifier: string]: {[timestamp: number]: Expense}};
 
@@ -28,11 +30,12 @@ class BudgetsStore {
         return null;
     }
 
-    setBudget = (budget: Budget) => {
+    async setBudget(budget: Budget) {
         if (this.budgets === undefined) {
-            this.fetchBudgets();
+            await this.fetchBudgets();
         }
         this.budgets[budget.identifier] = budget;
+        await this.saveBudgets();
     }
 
     async getExpenses(identifier: string) {
@@ -49,62 +52,65 @@ class BudgetsStore {
         return this.expenses[identifier][timestamp];
     }
 
-    deleteExpense (identifier: string, timestamp: number) {
-        if (this.expenses) {
+    async deleteExpense (identifier: string, timestamp: number) {
+        if (this.expenses && identifier in this.expenses) {
             delete this.expenses[identifier][timestamp];
+            this.saveExpenses();
         }
     }
 
-    saveExpense(identifier: string, expense: Expense){
+    async setExpense(identifier: string, expense: Expense){
         if (this.expenses) {
-            this.expenses[identifier][expense.creation.getTime()] = expense;
+            this.expenses[identifier][expense.creation] = expense;
         }
+        this.saveExpenses();
     }
 
     private async fetchExpenses(identifier: string) {
         if (this.expenses === undefined) {
-            this.expenses = {};
-            this.expenses[identifier] = {};
-            let a = this.createExpense(100, 'SIM Card ' + identifier);
-            this.expenses[identifier][a.creation.getTime()] = a;
-            a = this.createExpense(200, 'Lunch');
-            this.expenses[identifier][a.creation.getTime()] = a;
+            const serializedExpenses = localStorage.getItem(BudgetsStore.KEY_EXPENSES);
+            if (serializedExpenses) {
+                this.expenses = JSON.parse(serializedExpenses);
+            } else {
+                this.expenses = {};
+                this.expenses[identifier] = {};
+                return null;
+            }
         }
         
         return this.expenses[identifier];
     }
 
     private async fetchBudgets() {
-        this.budgets = {
-            'asia': this.createBudget('Asia'),
-            'latam': this.createBudget('LATAM'),
-            'road-trip-es': this.createBudget('Road trip ES')
-        };
+        if (this.budgets === undefined) {
+            const serializedBudgets = localStorage.getItem(BudgetsStore.KEY_BUDGETS);
+            if (serializedBudgets) {
+                this.budgets = JSON.parse(serializedBudgets);
+            } else {
+                this.budgets = {};
+            }
+        }
         return Object.values(this.budgets);
     }
 
-    // TODO remove
-    private createBudget(name: string): Budget {
-        return {
-            identifier: slugify(name),
-            name: name,
-            from: new Date(2019, 1, 1),
-            to: new Date(2019, 6, 6),
-            total: name.length * 1000,
-            currency: 'EUR'
-        };
+    private async saveBudgets () {
+        if (this.budgets) {
+            localStorage.setItem(BudgetsStore.KEY_BUDGETS, this.serializedBudgets);
+        }
     }
 
-    private createExpense(amount: number, desc: string): Expense {
-        return {
-            amount: amount,
-            currency: 'USD',
-            category: desc.slice(0, 10),
-            description: desc,
-            when: new Date(amount * 110000000),
-            creation: new Date(amount * 100000001),
-            
-        };
+    private async saveExpenses () {
+        if (this.expenses) {
+            localStorage.setItem(BudgetsStore.KEY_EXPENSES, this.serializedExpenses);
+        }
+    }
+
+    private get serializedBudgets () {
+        return JSON.stringify(this.budgets);
+    }
+
+    private get serializedExpenses () {
+        return JSON.stringify(this.expenses);
     }
 }
 

@@ -1,21 +1,12 @@
 import { History } from "history";
 
-export function slugify(str: string) {
-    const a = 'àáäâãåăæçèéëêǵḧìíïîḿńǹñòóöôœṕŕßśșțùúüûǘẃẍÿź·/_,:;';
-    const b = 'aaaaaaaaceeeeghiiiimnnnoooooprssstuuuuuwxyz------';
-    const p = new RegExp(a.split('').join('|'), 'g');
-    return str.toString().toLowerCase()
-        .replace(/\s+/g, '-') // Replace spaces with -
-        .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
-        .replace(/&/g, '-and-') // Replace & with 'and'
-        .replace(/[^\w\-]+/g, '') // Remove all non-word characters
-        .replace(/\-\-+/g, '-') // Replace multiple - with single -
-        .replace(/^-+/, '') // Trim - from start of text
-        .replace(/-+$/, '');
-}
-
-export function dateDiff(from: Date, to: Date) {
-    return Math.round((to.getTime() - from.getTime())/(1000*60*60*24));
+/**
+ * Get difference between 2 dates in days
+ * @param from - Starting period timestamp
+ * @param to - Ending period timestamp
+ */
+export function dateDiff(from: number, to: number) {
+    return Math.round((to - from)/(1000*60*60*24));
 }
 
 export const goBack = (history: History) => {
@@ -31,16 +22,26 @@ export function timestampToDate(timestamp: number) {
 }
 
 export class BudgetUrl {
-    private readonly budgetId: string;
+
     readonly path: string;
     readonly pathEdit: string;
     readonly pathAddExpense: string;
 
+    private readonly budgetId: string;
+
     constructor(budgetId: string) {
         this.budgetId = budgetId;
-        this.path = `/budgets/${this.budgetId}`;
+        this.path = `${BudgetUrl.base}/${this.budgetId}`;
         this.pathEdit= `${this.path}/edit`;
         this.pathAddExpense = `${this.path}/expenses/add`;
+    }
+
+    static get base () {
+        return '/budgets';
+    }
+
+    static get add () {
+        return `${this.base}/add`;
     }
 }
 
@@ -56,6 +57,9 @@ export class ExpenseUrl {
     }
 }
 
+/** 
+ * @returns Date (no time) as string type in ISO format
+ */
 export function getDateString (date = new Date()) {
     return date.toISOString().slice(0,10);
 }

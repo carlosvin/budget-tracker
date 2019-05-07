@@ -1,10 +1,12 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, Redirect } from "react-router";
 import { budgetsStore } from '../../stores/BudgetsStore';
 import { Budget } from "../../interfaces";
 import { BudgetListItem } from "./BudgetListItem";
+import { AddButton } from "../buttons";
+import { BudgetUrl } from "../../utils";
 
 interface BudgetListProps extends RouteComponentProps {}
 
@@ -30,12 +32,21 @@ export class BudgetList extends React.PureComponent<BudgetListProps, BudgetListS
 
     render() {
         if (this.state) {
-            return (
-                <List>
-                    {this.elements}
-                </List>);
+            if (this.hasBudgets) {
+                return (
+                    <List>
+                        {this.elements}
+                        <AddButton href={BudgetUrl.add}/>
+                    </List>); 
+            } else {
+                return <Redirect to={BudgetUrl.add}/>;
+            }
         }
         return <CircularProgress/>;
+    }
+
+    get hasBudgets(){
+        return this.state.budgets.length > 0;
     }
 
     get elements() {

@@ -9,14 +9,21 @@ import { currenciesStore } from "../../stores/CurrenciesStore";
 import { Grid } from "@material-ui/core";
 import { CurrencyInput } from "../CurrencyInput";
 import { SaveButton, CancelButton } from "../buttons";
+import { validate } from "@babel/types";
 const uuid = require('uuid/v1');
 
-interface BudgetEditProps extends RouteComponentProps<{ id: string }>{}
+interface BudgetEditProps extends RouteComponentProps<{ id: string }>{
+}
 
-interface BudgetViewState extends Budget {}
+interface BudgetViewState extends Budget {
+    start: string;
+    end: string;
+    error?: string;
+}
 
 export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewState> {
-    
+    // TODO handle errors on type and on submit
+
     private readonly url: BudgetUrl;
     
     constructor(props: BudgetEditProps){
@@ -25,10 +32,13 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
             this.initBudget(props.match.params.id);
             this.url = new BudgetUrl(props.match.params.id);
         } else {
+            const now = new Date();
             this.state = {
                 currency: currenciesStore.base,
-                from: new Date(),
-                to: new Date(),
+                from: now.getTime(),
+                to: now.getTime(),
+                start: getDateString(now),
+                end: getDateString(now),
                 identifier: uuid(),
                 name: '',
                 total: 0 
@@ -41,7 +51,11 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
         try {
             const info = await budgetsStore.getBudget(identifier);
             if (info) {
-                this.setState({ ...info });
+                this.setState({ 
+                    ...info, 
+                    start: getDateString(new Date(info.from)), 
+                    end: getDateString(new Date(info.to)), 
+                });
             }
         } catch (e) {
             console.error(e);
@@ -52,22 +66,14 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
     handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
             ...this.state,
+            error: undefined,
             [name]: event.target.value
-        });
-    }
-
-    handleDateChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            ...this.state,
-            [name]: new Date(event.target.value)
         });
     }
 
     private TextInput = (props: TextFieldProps) => {
         const propertyName = props.label.toString().toLowerCase();
-        const handler = props.type === 'date' ? 
-            this.handleDateChange(propertyName) : 
-            this.handleChange(propertyName);
+        const handler = this.handleChange(propertyName);
         return (
             <TextField
                 {...props}
@@ -83,8 +89,26 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
     }
 
     private handleSave = () => {
-        budgetsStore.setBudget(this.state);
-        this.props.history.replace(this.url.path);
+        const budget: Budget = {
+            ...this.state,
+            to: new Date(this.state.end).getTime(),
+            from: new Date(this.state.start).getTime()
+        };
+        const error = this.validate(budget);
+        if (error) {
+            this.setState({error});
+        } else {
+            budgetsStore.setBudget(budget);
+            this.props.history.replace(this.url.path);
+        }
+        
+    }
+
+    private validate (budget: Budget) {
+        if (budget.from >= budget.to) {
+            return 'Invalid date range';
+        }
+        return null;
     }
 
     private close = () => {
@@ -98,14 +122,18 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
         </Grid>
     );
 
+    get hasError () {
+        return this.state.error!==undefined;
+    }
+
     render() {
         if (this.state) {
             return (
                 <form>
                     <this.TextInput label='Name' value={this.state.name} />
-                    <this.TextInput label='From' value={this.from} type='date'/>
-                    <this.TextInput label='To' value={this.to} type='date'/>
-                    <this.TextInput label='Total' value={this.state.total} type='number'/>
+                    <this.TextInput label='Start' value={this.state.start} type='date' error={this.hasError}/>
+                    <this.TextInput label='End' value={this.state.end} type='date' error={this.hasError}/>
+                    <this.TextInput label='Total' value={this.state.total} type='number' />
                     <CurrencyInput onCurrencyChange={this.handleCurrencyChange}  />
                     <this.Actions />
                 </form>
@@ -114,16 +142,7 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
         return <CircularProgress/>;
     }
 
-
     private handleCurrencyChange = (currency: string) => (
         this.setState({ currency })
     );
-
-    private get from(){
-        return getDateString(this.state.from);
-    }
-
-    private get to(){
-        return getDateString(this.state.to);
-    }
 }

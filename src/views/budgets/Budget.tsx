@@ -55,7 +55,7 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
             if (expenses) {
                 this.setState({
                     ...this.state,
-                    expenses 
+                    expenses
                 });
             }
         } catch (e) {
@@ -121,10 +121,16 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
     }
 
     get expensesAverage () {
-        return Math.round(this.expensesTotal / this.pastDays);
+        const total = this.expensesTotal;
+        const days = this.pastDays;
+        if (days > 0) {
+            return total > 0 ? Math.round(total / days) : 0;
+        } else {
+            return '-';
+        }
     }
 
     get pastDays () {
-        return dateDiff(this.state.info.from, new Date());
+        return dateDiff(this.state.info.from, new Date().getTime());
     }
 }

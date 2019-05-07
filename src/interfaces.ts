@@ -3,10 +3,12 @@
 export interface Budget {
     identifier: string;
     name: string;
-    from: Date;
-    to: Date;
     total: number;
     currency: string;
+    /** Timestamp for starting date */
+    from: number;
+    /** Timestamp for ending date */
+    to: number;
 }
 
 export interface BudgetExpenses {
@@ -18,8 +20,10 @@ export interface Expense {
     currency: string;
     category: string;
     description?: string;
-    when: Date;
-    creation: Date;
+    /** Timestamp when the expense applies */
+    when: number;
+    /** Timestamp when expense is registered in app */
+    creation: number;
 }
 
 export interface CurrencyRates {

@@ -51,8 +51,8 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 expense: {
                     amount: 0, 
                     description: '', 
-                    creation: new Date(), 
-                    when: new Date(),
+                    creation: new Date().getTime(), 
+                    when: new Date().getTime(),
                     category: categoriesStore.getCategories()[0]
                 }};
         }
@@ -111,7 +111,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         this.setState({
             expense: {
                 ...this.state.expense,
-                when: new Date(event.target.value)
+                when: new Date(event.target.value).getTime()
             }
         });
     }
@@ -147,7 +147,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     }
 
     private get date(){
-        return getDateString(this.state.expense.when);
+        return getDateString(new Date(this.state.expense.when));
     }
 
     private WhenInput = () => (
@@ -230,12 +230,12 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     private handleDelete = () => {
         budgetsStore.deleteExpense(
             this.state.budget.identifier, 
-            this.state.expense.creation.getTime());
+            this.state.expense.creation);
         this.props.history.replace(this.budgetUrl.path);
     }
 
     private handleSave = () => {
-        budgetsStore.saveExpense(
+        budgetsStore.setExpense(
             this.state.budget.identifier, 
             this.state.expense as Expense);
         this.props.history.replace(this.budgetUrl.path);

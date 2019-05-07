@@ -27,7 +27,6 @@ export class CurrencyInput extends React.PureComponent<CurrencyInputProps, Curre
     }
 
     private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(this.state);
         this.setState({
             ...this.state,
             selected: event.target.value
