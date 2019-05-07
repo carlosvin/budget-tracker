@@ -1,7 +1,1 @@
----
-layout: post
-title: Blogging Like a Hacker
----
-
-# Title
-Post text lorem ipsum...
+Travel expenses tracker: **Starting this project**
