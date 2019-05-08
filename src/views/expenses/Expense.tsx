@@ -28,7 +28,7 @@ interface ExpenseViewProps extends
     WithStyles<typeof myStyles>  { }
 
 interface ExpenseViewState {
-    expense: Partial<Expense>;
+    expense: {date: string}&Expense;
     budget: Budget;
     currencies: string[];
 }
@@ -46,14 +46,17 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 props.match.params.id,
                 +props.match.params.timestamp);    
         } else {
+            const now = new Date();
             this.state = {
                 ...this.state, 
                 expense: {
                     amount: 0, 
                     description: '', 
-                    creation: new Date().getTime(), 
-                    when: new Date().getTime(),
-                    category: categoriesStore.getCategories()[0]
+                    creation: now.getTime(), 
+                    when: now.getTime(),
+                    category: categoriesStore.getCategories()[0], 
+                    currency: 'EUR',
+                    date: getDateString(now)
                 }};
         }
     }
@@ -72,7 +75,10 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             if (expense) {
                 this.setState({
                     ...this.state,
-                    expense
+                    expense: {
+                        ...expense,
+                        date: getDateString(new Date(expense.when))
+                    }
                 });
             }
         } catch (e) {
@@ -111,7 +117,8 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         this.setState({
             expense: {
                 ...this.state.expense,
-                when: new Date(event.target.value).getTime()
+                when: new Date(event.target.value).getTime(),
+                date: event.target.value
             }
         });
     }
@@ -146,16 +153,12 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         return <CircularProgress />;
     }
 
-    private get date(){
-        return getDateString(new Date(this.state.expense.when));
-    }
-
     private WhenInput = () => (
         <TextField
             required
             label='When'
             type='date'
-            value={ this.date }
+            value={ this.state.expense.date }
             InputLabelProps={{shrink: true,}}
             id={'input-field-date'}
             onChange={this.handleWhenChange}
