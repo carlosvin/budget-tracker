@@ -1,7 +1,7 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import ListSubheader from '@material-ui/core/CircularProgress';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import { Expense, Budget } from "../../interfaces";
 import { ExpenseListItem } from "./ExpenseListItem";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
