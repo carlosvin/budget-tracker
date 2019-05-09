@@ -4,38 +4,41 @@ class CategoriesStore {
 
     // TODO sync localStorage with remote DB
 
-    private readonly categories: Set<string>;
-    static readonly KEY = 'categories';
-    static readonly DEFAULT = ['General', 'Lunch', 'Shopping'];
+    private readonly categories: {[key: string]: string};
 
     constructor() {
-        this.categories = new Set<string>(CategoriesStore.DEFAULT);
+        const categoriesStr = localStorage.getItem(CategoriesStore.key);
+        if (categoriesStr && categoriesStr.length > 0) {
+            this.categories = JSON.parse(categoriesStr) as {[key: string]: string};
+        } else {
+            this.categories = {
+                'General': 'General',    
+                'Lunch': 'Lunch',    
+                'Shopping': 'Shopping'
+            };
+        }   
+    }
 
-        const parsedCategories = JSON.parse(
-            localStorage.getItem(CategoriesStore.KEY)) as string[];
-
-        try {
-            parsedCategories.forEach( c => this.categories.add(c));
-        } catch (e) {
-            console.warn('Error loading categories, using defaults');
-        }
+    static get key() {
+        return 'categories';
     }
 
     getCategories() {
-        return [...this.categories];
+        return Object.values(this.categories);
     }
 
     add(category: string){
-        if (this.categories.has(category)) {
+        if (category in this.categories) {
             return false;
         }
-        this.categories.add(category);
+        this.categories[category] = undefined;
         this.save();
         return true;
     }
 
-    delete(category: string) {
-        if (this.categories.delete(category)) {
+    delete(categoryId: string) {
+        if (categoryId in this.categories) {
+            delete this.categories[categoryId];
             this.save();
             return true;
         }
@@ -44,8 +47,8 @@ class CategoriesStore {
 
     private save() {
         localStorage.setItem(
-            CategoriesStore.KEY, 
-            JSON.stringify(Array.from(this.categories)));
+            CategoriesStore.key, 
+            JSON.stringify(this.categories));
     }
 }
 
