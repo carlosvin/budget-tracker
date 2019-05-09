@@ -128,7 +128,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         if (this.state && this.state.expense) {
             return (
                 <React.Fragment>
-                    <form >
+                    <form onSubmit={this.handleSubmit}>
                         <Grid container
                             justify="space-between"
                             alignItems="baseline"
@@ -151,8 +151,8 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                                 <this.TextInput label='Description' value={this.state.expense.description} />
                             </Grid>
                         </Grid>
+                        <this.Actions />
                     </form>
-                    <this.Actions />
                 </React.Fragment>
             );
         }
@@ -214,7 +214,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             
     private Actions = () => (
         <Grid container direction='row' justify='space-evenly' alignContent='center'>
-            <SaveButton onClick={this.handleSave}/>
+            <SaveButton type='submit'/>
             <DeleteButton onClick={this.handleDelete}/>
         </Grid>
     );
@@ -226,7 +226,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         this.props.history.replace(this.budgetUrl.path);
     }
 
-    private handleSave = () => {
+    private handleSubmit = () => {
         budgetsStore.setExpense(
             this.state.budget.identifier, 
             this.state.expense as Expense);

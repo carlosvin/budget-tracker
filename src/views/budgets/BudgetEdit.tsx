@@ -82,7 +82,7 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
         );
     }
 
-    private handleSave = () => {
+    private handleSubmit = () => {
         const budget: Budget = {
             ...this.state,
             to: new Date(this.state.end).getTime(),
@@ -111,7 +111,7 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
 
     private Actions = () => (
         <Grid container direction='row' justify='space-evenly'>
-            <SaveButton onClick={this.handleSave} />
+            <SaveButton type='submit'/>
             <CancelButton onClick={this.close} />
         </Grid>
     );
@@ -123,7 +123,7 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
     render() {
         if (this.state) {
             return (
-                <form>
+                <form onSubmit={this.handleSubmit}>
                     <this.TextInput label='Name' value={this.state.name} />
                     <this.TextInput label='Start' value={this.state.start} type='date' error={this.hasError}/>
                     <this.TextInput label='End' value={this.state.end} type='date' error={this.hasError}/>
