@@ -3,11 +3,13 @@ import { currenciesApi } from "../api/CurrenciesApi";
 
 class CurrenciesStore {
     static readonly BASE = 'EUR';
+    static readonly KEY = 'currencyRates';
 
     private currencies: string[];
     private rates: { [currency: string]: CurrencyRates };
 
-    constructor(){
+    constructor() {
+        this.loadFromDisk();
         this.fetchRates(CurrenciesStore.BASE);
     }
 
@@ -28,8 +30,13 @@ class CurrenciesStore {
     private async fetchRates(baseCurrency: string) {
         if (this.currencies === undefined) {
             try {
-                const rates = await currenciesApi.getRates(baseCurrency);
-                this.currencies = Object.keys(rates.data.rates);
+                if (this.rates === undefined) {
+                    this.rates = {};
+                }
+                const ratesResponse = await currenciesApi.getRates(baseCurrency);
+                this.rates[baseCurrency] = ratesResponse.data;
+                this.currencies = Object.keys(this.rates[baseCurrency].rates);
+                this.saveToDisk();
             } catch (error) {
                 console.warn('Cannot read currencies: ', error);
                 this.currencies = [];
@@ -38,6 +45,21 @@ class CurrenciesStore {
                 this.currencies.sort();
             }
         }
+    }
+
+    private async loadFromDisk () {
+        const ratesStr = localStorage.getItem(CurrenciesStore.KEY);
+        if (ratesStr && ratesStr.length > 0) {
+            this.rates = JSON.parse(ratesStr);
+            const rate = Object.values(this.rates)[0];
+            this.currencies = Object.keys(rate.rates);
+            this.currencies.push(rate.base);
+            this.currencies.sort();
+        }
+    }
+
+    private async saveToDisk () {
+        localStorage.setItem(CurrenciesStore.KEY, JSON.stringify(this.rates));
     }
 
     get base(){
