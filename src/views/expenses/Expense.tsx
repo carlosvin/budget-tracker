@@ -127,33 +127,31 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     render() {
         if (this.state && this.state.expense) {
             return (
-                <React.Fragment>
-                    <form onSubmit={this.handleSubmit}>
-                        <Grid container
-                            justify="space-between"
-                            alignItems="baseline"
-                            alignContent='stretch'>
-                            <Grid item >
-                                <AmountWithCurrencyInput 
-                                    onAmountChange={this.handleAmountChange}
-                                    onCurrencyChange={this.handleCurrencyChange}
-                                    amount={this.state.expense.amount}
-                                    selectedCurrency={this.state.expense.currency}
-                                    />
-                            </Grid>
-                            <Grid item >
-                                <this.CategoryInput categories={this.categories} />
-                            </Grid>
-                            <Grid item>
-                                <this.WhenInput />
-                            </Grid>
-                            <Grid item >
-                                <this.TextInput label='Description' value={this.state.expense.description} />
-                            </Grid>
+                <form onSubmit={this.handleSubmit}>
+                    <Grid container
+                        justify="space-between"
+                        alignItems="baseline"
+                        alignContent='stretch'>
+                        <Grid item >
+                            <AmountWithCurrencyInput 
+                                onAmountChange={this.handleAmountChange}
+                                onCurrencyChange={this.handleCurrencyChange}
+                                amount={this.state.expense.amount}
+                                selectedCurrency={this.state.expense.currency}
+                                />
                         </Grid>
-                        <this.Actions />
-                    </form>
-                </React.Fragment>
+                        <Grid item >
+                            <this.CategoryInput categories={this.categories} />
+                        </Grid>
+                        <Grid item>
+                            <this.WhenInput />
+                        </Grid>
+                        <Grid item >
+                            <this.TextInput label='Description' value={this.state.expense.description} />
+                        </Grid>
+                    </Grid>
+                    <this.Actions />
+                </form>
             );
         }
         return <CircularProgress />;

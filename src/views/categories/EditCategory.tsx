@@ -8,9 +8,7 @@ export class EditCategory extends React.PureComponent<EditCategoryProps, {name: 
     
     render () {
         return (
-            <form>
-                <CategoryForm {...this.props} name={this.props.match.params.name} closeAfterSave/>
-            </form>
+            <CategoryForm {...this.props} name={this.props.match.params.name} closeAfterSave/>
         );
     }
 }

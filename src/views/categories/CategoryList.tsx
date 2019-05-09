@@ -12,7 +12,7 @@ export class CategoryList extends React.PureComponent<RouterProps> {
     
     render () {
         return (
-            <form>
+            <React.Fragment>
                 { categoriesStore.getCategories().map(c => 
                     <CategoryForm 
                         {...this.props} 
@@ -22,7 +22,7 @@ export class CategoryList extends React.PureComponent<RouterProps> {
                         key={c}
                         onChange={this.handleChange}/>
                 )}
-            </form>
+            </React.Fragment>
         );
     }
 }

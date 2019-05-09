@@ -5,10 +5,6 @@ import { CategoryForm } from './CategoryForm';
 export class AddCategory extends React.PureComponent<RouterProps, {name: string}> {
     
     render () {
-        return (
-            <form>
-                <CategoryForm {...this.props} closeAfterSave/>
-            </form>
-        );
+        return <CategoryForm {...this.props} closeAfterSave/>;
     }
 }

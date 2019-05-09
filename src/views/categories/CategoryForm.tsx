@@ -24,7 +24,7 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
         this.state = {name: props.name || ''};
     }
 
-    private handleSave = () => {
+    private handleSubmit = () => {
         this.store.add(this.state.name);
         if (this.props.onChange) {
             this.props.onChange();
@@ -54,25 +54,27 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
     
     render () {
         return (
-            <Grid container direction={this.direction}>
-                <Grid item>
-                    <this.TextInput 
-                        label={ this.direction === 'row' ? '' : 'Category Name' }
-                        value={ this.state.name }
-                        onChange={this.handleChange('name')}
-                        style={{ margin: 8 }}
-                        margin='dense' />
-                    </Grid>
-                <Grid item>
-                    <Grid container direction='row' justify='space-around'>
-                        <SaveButton onClick={this.handleSave} disabled={this.state.name === ''} />
-                    { this.props.name && 
-                        <DeleteButton disabled={this.state.name === ''} onClick={this.handleDelete}/> }
-                    { !this.props.hideCancel &&
-                        <CancelButton  onClick={this.close} />}
+            <form onSubmit={this.handleSubmit}>
+                <Grid container direction={this.direction}>
+                    <Grid item>
+                        <this.TextInput 
+                            label={ this.direction === 'row' ? '' : 'Category Name' }
+                            value={ this.state.name }
+                            onChange={this.handleChange('name')}
+                            style={{ margin: 8 }}
+                            margin='dense' />
+                        </Grid>
+                    <Grid item>
+                        <Grid container direction='row' justify='space-around'>
+                            <SaveButton type='submit' disabled={this.state.name === ''} />
+                        { this.props.name && 
+                            <DeleteButton disabled={this.state.name === ''} onClick={this.handleDelete}/> }
+                        { !this.props.hideCancel &&
+                            <CancelButton  onClick={this.close} />}
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid> 
+            </form>
         );
     }
 
