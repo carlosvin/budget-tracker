@@ -14,7 +14,7 @@ import TableCell from "@material-ui/core/TableCell";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { dateDiff, BudgetUrl } from "../../utils";
-import { Grid } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 import { AddButton, EditButton } from "../buttons";
 
 interface BudgetViewProps extends RouteComponentProps<{ id: string }>{}

@@ -5,7 +5,7 @@ import { budgetsStore } from "../../stores/BudgetsStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BudgetUrl, getDateString, goBack } from "../../utils";
 import { currenciesStore } from "../../stores/CurrenciesStore";
-import { Grid } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 import { SaveButton, CancelButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";

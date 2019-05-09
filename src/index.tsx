@@ -10,7 +10,7 @@ import { About } from "./views/About";
 import { BudgetView } from "./views/budgets/Budget";
 import { ExpenseView } from "./views/expenses/Expense";
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { Paper } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
 import { AddCategory } from "./views/categories/AddCategory";
 import { EditCategory } from "./views/categories/EditCategory";
 import { CategoryList } from "./views/categories/CategoryList";

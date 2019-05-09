@@ -1,7 +1,6 @@
 import * as React from "react";
-import TextField from "@material-ui/core/TextField";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Grid } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 import { CurrencyInput, CurrencyInputProps } from "./CurrencyInput";
 import { TextInput } from "./TextInput";
 

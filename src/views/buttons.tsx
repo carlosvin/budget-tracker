@@ -7,7 +7,8 @@ import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import { PropTypes } from '@material-ui/core';
+
+type Color = 'inherit' | 'primary' | 'secondary' | 'default';
 
 type IconType = 'edit'|'add'|'cancel'|'delete'|'save';
 
@@ -61,7 +62,7 @@ class AppButton extends React.PureComponent<AppButtonProps> {
         return this.props.icon === 'add' ? 'contained' : 'text';
     }
 
-    get color(): PropTypes.Color {
+    get color(): Color {
         return this.props.icon === 'add' ? 'primary' : 'default';
     }
 }

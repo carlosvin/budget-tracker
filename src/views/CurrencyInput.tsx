@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { currenciesStore } from '../stores/CurrenciesStore';
-import { CircularProgress } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import { TextInput } from './TextInput';
 
 interface CurrencyInputState {

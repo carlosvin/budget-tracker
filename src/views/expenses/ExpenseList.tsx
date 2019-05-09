@@ -1,10 +1,12 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ListSubheader from '@material-ui/core/CircularProgress';
 import { Expense, Budget } from "../../interfaces";
 import { ExpenseListItem } from "./ExpenseListItem";
-import { ListSubheader, Theme, createStyles, WithStyles, withStyles } from "@material-ui/core";
-
+import { Theme } from "@material-ui/core/styles/createMuiTheme";
+import createStyles from "@material-ui/core/styles/createStyles";
+import withStyles, {WithStyles} from "@material-ui/core/styles/withStyles";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
