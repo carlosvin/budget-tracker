@@ -2,14 +2,14 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Budget } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
-import TextField, { TextFieldProps } from "@material-ui/core/TextField";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BudgetUrl, getDateString, goBack } from "../../utils";
 import { currenciesStore } from "../../stores/CurrenciesStore";
 import { Grid } from "@material-ui/core";
-import { CurrencyInput } from "../CurrencyInput";
 import { SaveButton, CancelButton } from "../buttons";
-import { validate } from "@babel/types";
+import { AmountWithCurrencyInput } from "../AmountInput";
+import { TextInput } from "../TextInput";
+import { TextFieldProps } from "@material-ui/core/TextField";
 const uuid = require('uuid/v1');
 
 interface BudgetEditProps extends RouteComponentProps<{ id: string }>{
@@ -73,16 +73,10 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
 
     private TextInput = (props: TextFieldProps) => {
         const propertyName = props.label.toString().toLowerCase();
-        const handler = this.handleChange(propertyName);
         return (
-            <TextField
+            <TextInput
                 {...props}
-                id={`input-field-${props.label}`}
-                label={props.label}
-                value={props.value}
-                onChange={handler}
-                style={{ margin: 8 }}
-                margin='dense'
+                onChange={this.handleChange(propertyName)}
                 required      
             />
         );
@@ -133,8 +127,13 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
                     <this.TextInput label='Name' value={this.state.name} />
                     <this.TextInput label='Start' value={this.state.start} type='date' error={this.hasError}/>
                     <this.TextInput label='End' value={this.state.end} type='date' error={this.hasError}/>
-                    <this.TextInput label='Total' value={this.state.total} type='number' />
-                    <CurrencyInput onCurrencyChange={this.handleCurrencyChange}  />
+                    <AmountWithCurrencyInput 
+                                    onAmountChange={this.handleAmountChange}
+                                    onCurrencyChange={this.handleCurrencyChange}
+                                    amount={this.state.total}
+                                    selectedCurrency={this.state.currency}
+                                    label='Total'
+                                    />
                     <this.Actions />
                 </form>
             );
@@ -144,5 +143,9 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
 
     private handleCurrencyChange = (currency: string) => (
         this.setState({ currency })
+    );
+
+    private handleAmountChange = (total: number) => (
+        this.setState({ total })
     );
 }

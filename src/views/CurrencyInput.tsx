@@ -1,15 +1,16 @@
 import * as React from 'react';
-import TextField from "@material-ui/core/TextField";
 import { currenciesStore } from '../stores/CurrenciesStore';
 import { CircularProgress } from '@material-ui/core';
+import { TextInput } from './TextInput';
 
 interface CurrencyInputState {
     currencies: string[];
     selected?: string;
 }
 
-interface CurrencyInputProps  {
+export interface CurrencyInputProps  {
     onCurrencyChange: (selected: string) => void;
+    selectedCurrency?: string;
 }
 
 export class CurrencyInput extends React.PureComponent<CurrencyInputProps, CurrencyInputState> {
@@ -36,23 +37,25 @@ export class CurrencyInput extends React.PureComponent<CurrencyInputProps, Curre
         }
     }
 
+    get selected () {
+        return this.state.selected || this.props.selectedCurrency || this.state.currencies[0];
+    }
+
     render() {
         if (this.state && this.state.currencies) {
             return (
-                <TextField
-                    id='currencies-input-select'
+                <TextInput
                     label='Currency'
-                    style={{ margin: 8 }}
-                    margin='dense'  
                     select
                     SelectProps={{ native: true }}
                     onChange={this.handleChange}
-                    value={this.state.selected || this.state.currencies[0]}
+                    value={this.selected}
+                    required
                 >
                 { this.state.currencies.map(
                     (opt: string) => (
                         <option key={opt} value={opt}>{opt}</option>))}}
-                </TextField>
+                </TextInput>
             );
         }
         return <CircularProgress size='small'/>;

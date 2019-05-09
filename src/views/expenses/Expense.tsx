@@ -1,5 +1,5 @@
 import * as React from "react";
-import TextField, { TextFieldProps } from "@material-ui/core/TextField";
+import { TextFieldProps } from "@material-ui/core/TextField";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
 import { Budget, Expense } from "../../interfaces";
@@ -9,8 +9,9 @@ import { categoriesStore } from "../../stores/CategoriesStore";
 import { WithStyles, createStyles, Theme, Link } from '@material-ui/core';
 import { MyLink } from "../MyLink";
 import { BudgetUrl, getDateString } from "../../utils";
-import { CurrencyInput } from "../CurrencyInput";
 import { SaveButton, DeleteButton } from "../buttons";
+import { AmountWithCurrencyInput } from "../AmountInput";
+import { TextInput } from "../TextInput";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
@@ -103,7 +104,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             console.trace(e);
         }
     }
-
+    
     handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
             expense: {
@@ -133,7 +134,12 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                             alignItems="baseline"
                             alignContent='stretch'>
                             <Grid item >
-                                <this.AmountInput />
+                                <AmountWithCurrencyInput 
+                                    onAmountChange={this.handleAmountChange}
+                                    onCurrencyChange={this.handleCurrencyChange}
+                                    amount={this.state.expense.amount}
+                                    selectedCurrency={this.state.expense.currency}
+                                    />
                             </Grid>
                             <Grid item >
                                 <this.CategoryInput categories={this.categories} />
@@ -154,34 +160,14 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     }
 
     private WhenInput = () => (
-        <TextField
+        <TextInput
             required
             label='When'
             type='date'
             value={ this.state.expense.date }
             InputLabelProps={{shrink: true,}}
-            id={'input-field-date'}
             onChange={this.handleWhenChange}
-            style={{ margin: 8 }}
-            margin='dense'  
         />
-    );
-
-    private AmountInput = () => (
-        <Grid container direction='row'>
-            <Grid item >
-                <this.TextInput
-                    autoFocus
-                    required
-                    type='number'
-                    label='Amount'
-                    value={this.state.expense.amount}
-                />
-            </Grid>
-            <Grid item >
-                <CurrencyInput onCurrencyChange={this.handleCurrencyChange} />
-            </Grid>
-        </Grid>
     );
 
     private handleCurrencyChange = (currency: string) => (
@@ -190,6 +176,14 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 ...this.state.expense, 
                 currency}})
     );
+
+    private handleAmountChange = (amount: number) => (
+        this.setState({
+            expense: {
+                ...this.state.expense, 
+                amount}})
+    );
+    
 
     private CategoryInput = (props: { categories: string[] }) => (
         <this.SelectBox
@@ -213,14 +207,9 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         );
             
     private TextInput = (props: TextFieldProps) => (
-        <TextField
-            {...props}
-            id={`input-field-${props.label}`}
-            label={props.label}
-            value={props.value}
+        <TextInput
             onChange={this.handleChange(props.label.toString().toLowerCase())}
-            style={{ margin: 8 }}
-            margin='dense'            
+            {...props}
         />);
             
     private Actions = () => (

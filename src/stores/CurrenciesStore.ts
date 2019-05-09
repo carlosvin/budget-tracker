@@ -26,11 +26,17 @@ class CurrenciesStore {
     }
 
     private async fetchRates(baseCurrency: string) {
-        const rates = await currenciesApi.getRates(baseCurrency);
         if (this.currencies === undefined) {
-            this.currencies = Object.keys(rates.data.rates);
-            this.currencies.push(baseCurrency);
-            this.currencies.sort();
+            try {
+                const rates = await currenciesApi.getRates(baseCurrency);
+                this.currencies = Object.keys(rates.data.rates);
+            } catch (error) {
+                console.warn('Cannot read currencies: ', error);
+                this.currencies = [];
+            } finally {
+                this.currencies.push(baseCurrency);
+                this.currencies.sort();
+            }
         }
     }
 

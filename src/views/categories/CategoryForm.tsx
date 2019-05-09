@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { categoriesStore } from '../../stores/CategoriesStore';
-import TextField, { TextFieldProps } from '@material-ui/core/TextField';
 
 import Grid, { GridDirection } from '@material-ui/core/Grid';
 import { RouterProps } from 'react-router';
 import { SaveButton, CancelButton, DeleteButton } from '../buttons';
+import { TextInput } from '../TextInput';
+import { TextFieldProps } from '@material-ui/core/TextField';
 
 interface CategoryFormProps extends RouterProps{
     name?: string;
@@ -84,14 +85,9 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
     }
 
     private TextInput = (props: TextFieldProps) => (
-        <TextField
+        <TextInput
             {...props}
-            id={`input-field-${props.label}`}
-            label={props.label}
-            value={props.value}
             onChange={this.handleChange(props.label.toString().toLowerCase())}
-            style={{ margin: 8 }}
-            margin='dense'
         />);
             
 }
