@@ -16,6 +16,8 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    git config --global user.name "Azure deployer"
+    git config --global user.email "carlosvin@gmail.com"
     yarn install
     yarn deploy
   displayName: 'yarn deploy'
