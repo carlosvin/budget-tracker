@@ -29,4 +29,9 @@ jobs:
 
       - run: yarn lint
       - run: yarn test
-      - run: yarn deploy
+      - run: yarn clean
+      - run: yarn build
+      - run: git config user.email $GH_EMAIL
+      - run: git config user.name $GH_NAME
+      - run: yarn deploy-gh
+

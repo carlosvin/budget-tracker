@@ -9,7 +9,8 @@
     "build": "parcel build src/index.html --public-url ./",
     "test": "jest",
     "lint": "eslint --ext .jsx,.js,.tsx,.ts src --fix",
-    "deploy": "yarn clean && yarn build && gh-pages -d dist"
+    "deploy-gh": "gh-pages -d dist",
+    "deploy": "yarn clean && yarn build && yarn deploy-gh"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.4.4",
