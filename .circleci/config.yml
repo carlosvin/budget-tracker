@@ -9,7 +9,9 @@ jobs:
       - image: circleci/node:lts
 
     # working_directory: ~/repo
-
+    branches:
+      only:
+        - master
     steps:
       - checkout
 
