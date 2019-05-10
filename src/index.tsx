@@ -26,7 +26,7 @@ class App extends React.PureComponent {
 
     render() {
         return (
-            <Router>
+            <Router basename='/budget-tracker'>
                 <CssBaseline/>
                 <Header />
                 <main>
