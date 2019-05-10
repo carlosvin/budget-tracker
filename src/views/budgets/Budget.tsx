@@ -113,9 +113,12 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
 
     get expensesTotal () {
         if (this.state.expenses) {
-            return Object.values(this.state.expenses)
-                .map(e => e.amount)
-                .reduce((total, num) => total + num);
+            const values = Object.values(this.state.expenses);
+            if (values.length > 0) {
+                return Object.values(this.state.expenses)
+                    .map(e => e.amount)
+                    .reduce((total, num) => total + num);
+            }
         }
         return 0;
     }
