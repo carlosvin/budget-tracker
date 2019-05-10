@@ -5,16 +5,11 @@
 version: 2
 jobs:
   build:
+    docker:
+      - image: circleci/node:lts
     branches:
       only:
         - master
-      ignore:
-        - gh-pages
-    docker:
-      - image: circleci/node:lts
-
-    # working_directory: ~/repo
-    
     steps:
       - checkout
 
