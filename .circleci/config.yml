@@ -5,13 +5,14 @@
 version: 2
 jobs:
   build:
+    branches:
+      only:
+        - master
     docker:
       - image: circleci/node:lts
 
     # working_directory: ~/repo
-    branches:
-      only:
-        - master
+    
     steps:
       - checkout
 
