@@ -32,6 +32,6 @@ jobs:
       - run: yarn clean
       - run: yarn build
       - run: git config --global user.email $GH_EMAIL
-      - run: git config --global user.name $GH_NAME
+      - run: git config --global user.name "$GH_NAME"
       - run: yarn deploy-gh
 
