@@ -39,10 +39,10 @@ class AppButton extends React.PureComponent<AppButtonProps> {
     
     render(){
         return (
-        <Button {...this.derivedProps} {...this.props}>
-            { this.props.icon && <Icon type={this.props.icon}/>}
-            { this.props.text }
-        </Button>);
+            <Button {...this.derivedProps} {...this.props}>
+                { this.props.icon && <Icon type={this.props.icon}/>}
+                { this.props.text }
+            </Button>);
     }
 
     get derivedProps () {

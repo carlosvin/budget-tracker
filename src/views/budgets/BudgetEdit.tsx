@@ -10,7 +10,7 @@ import { SaveButton, CancelButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
 import { TextFieldProps } from "@material-ui/core/TextField";
-const uuid = require('uuid/v1');
+import uuid = require("uuid");
 
 interface BudgetEditProps extends RouteComponentProps<{ id: string }>{
 }
@@ -128,12 +128,12 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
                     <this.TextInput label='Start' value={this.state.start} type='date' error={this.hasError}/>
                     <this.TextInput label='End' value={this.state.end} type='date' error={this.hasError}/>
                     <AmountWithCurrencyInput 
-                                    onAmountChange={this.handleAmountChange}
-                                    onCurrencyChange={this.handleCurrencyChange}
-                                    amount={this.state.total}
-                                    selectedCurrency={this.state.currency}
-                                    label='Total'
-                                    />
+                        onAmountChange={this.handleAmountChange}
+                        onCurrencyChange={this.handleCurrencyChange}
+                        amount={this.state.total}
+                        selectedCurrency={this.state.currency}
+                        label='Total'
+                    />
                     <this.Actions />
                 </form>
             );

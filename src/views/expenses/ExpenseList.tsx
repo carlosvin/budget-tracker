@@ -8,7 +8,7 @@ import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import createStyles from "@material-ui/core/styles/createStyles";
 import withStyles, {WithStyles} from "@material-ui/core/styles/withStyles";
 
-const myStyles = ({ palette, spacing }: Theme) => createStyles({
+const myStyles = ({ palette }: Theme) => createStyles({
     root: {
         width: '100%',
         backgroundColor: palette.background.paper,
@@ -32,45 +32,47 @@ interface ExpenseListProps extends WithStyles<typeof myStyles>  {
 
 export const ExpenseList = withStyles(myStyles)(
     class extends React.PureComponent<ExpenseListProps> {
+        static displayName = 'ExpenseList';
+        private readonly dates = new Set<string>();
 
-    private readonly dates = new Set<string>();
-
-    render() {
-        if (this.props) {
-            return (
-                <List className={this.props.classes.root} subheader={<li />}>
-                    {this.elements}
-                </List>);
+        render() {
+            if (this.props) {
+                return (
+                    <List className={this.props.classes.root} subheader={<li />}>
+                        {this.elements}
+                    </List>);
+            }
+            return <CircularProgress/>;
         }
-        return <CircularProgress/>;
-    }
 
-    get elements() {
-        return this.props.expenses 
+        get elements() {
+            return this.props.expenses 
             && this.expensesArray.reverse().map(
                 (expense: Expense) => 
-                <li key={`section-${expense.creation}`} className={this.props.classes.listSection}>
-                    <ul className={this.props.classes.ul}>
-                        <this.Subheader date={new Date(expense.when)} />
-                        <ExpenseListItem 
-                            expense={expense}
-                            budget={this.props.budget}/>
-                    </ul>
-                </li>);
-    }
+                    <li key={`section-${expense.creation}`} className={this.props.classes.listSection}>
+                        <ul className={this.props.classes.ul}>
+                            <this.Subheader date={new Date(expense.when)} />
+                            <ExpenseListItem 
+                                expense={expense}
+                                budget={this.props.budget}/>
+                        </ul>
+                    </li>);
+        }
 
-    private Subheader = (props: {date: Date}) => {
-        const dateStr = props.date.toDateString();
-        if (this.dates.has(dateStr)) {
-            return null;
-        } else {
-            this.dates.add(dateStr);
-            return <ListSubheader>{dateStr}</ListSubheader>
+        private Subheader = (props: {date: Date}) => {
+            const dateStr = props.date.toDateString();
+            if (this.dates.has(dateStr)) {
+                return null;
+            } else {
+                this.dates.add(dateStr);
+                return <ListSubheader>{dateStr}</ListSubheader>
+            }
+        }
+
+        get expensesArray(): Expense[] {
+            return Object.values(this.props.expenses);
         }
     }
-
-    get expensesArray(): Expense[] {
-        return Object.values(this.props.expenses);
-    }
-}
 );
+
+ExpenseList.displayName = 'ExpenseList';

@@ -16,19 +16,19 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
     
     render(){
         return (
-        <ListItem 
-            divider
-            button 
-            component={MyLink}
-            href={this.href}>
-            <Avatar>
-                <BeachAccessIcon />
-            </Avatar>
-            <ListItemText 
-                primary={this.props.expense.description} 
-                secondary={this.props.expense.amount}
-            />
-        </ListItem>);
+            <ListItem 
+                divider
+                button 
+                component={MyLink}
+                href={this.href}>
+                <Avatar>
+                    <BeachAccessIcon />
+                </Avatar>
+                <ListItemText 
+                    primary={this.props.expense.description} 
+                    secondary={this.props.expense.amount}
+                />
+            </ListItem>);
     }
 
     get href () {

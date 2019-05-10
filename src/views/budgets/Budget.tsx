@@ -78,23 +78,23 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                         <Card>
                             <CardContent>
                                 <Typography variant="h5" component="h2">
-                                {this.state.info.name}
+                                    {this.state.info.name}
                                 </Typography>
                                 <Table>
                                     <TableHead>
-                                    <TableRow>
-                                        <TableCell>Total</TableCell>
-                                        <TableCell>Spent</TableCell>
-                                        <TableCell>Average</TableCell>
-                                        <TableCell>Days</TableCell>
-                                    </TableRow>
+                                        <TableRow>
+                                            <TableCell>Total</TableCell>
+                                            <TableCell>Spent</TableCell>
+                                            <TableCell>Average</TableCell>
+                                            <TableCell>Days</TableCell>
+                                        </TableRow>
                                     </TableHead>
                                     <TableBody>
                                         <TableRow key={1}>
-                                        <TableCell>{this.state.info.total}</TableCell>
-                                        <TableCell>{this.expensesTotal}</TableCell>
-                                        <TableCell>{this.expensesAverage}</TableCell>
-                                        <TableCell>{this.pastDays}</TableCell>
+                                            <TableCell>{this.state.info.total}</TableCell>
+                                            <TableCell>{this.expensesTotal}</TableCell>
+                                            <TableCell>{this.expensesAverage}</TableCell>
+                                            <TableCell>{this.pastDays}</TableCell>
                                         </TableRow>
                                     </TableBody>
                                 </Table>

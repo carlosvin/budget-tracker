@@ -18,12 +18,12 @@ import { TextInput } from "../TextInput";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
-      flexGrow: 1,
+        flexGrow: 1,
     },
     paper: {
-      padding: spacing.unit * 2,
-      textAlign: 'center',
-      color: palette.text.secondary,
+        padding: spacing.unit * 2,
+        textAlign: 'center',
+        color: palette.text.secondary,
     },
 });
 
@@ -141,7 +141,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                                 onCurrencyChange={this.handleCurrencyChange}
                                 amount={this.state.expense.amount}
                                 selectedCurrency={this.state.expense.currency}
-                                />
+                            />
                         </Grid>
                         <Grid item >
                             <this.CategoryInput categories={this.categories} />
@@ -205,7 +205,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 (opt: string) => (
                     <option key={opt} value={opt}>{opt}</option>))}
         </this.TextInput>
-        );
+    );
             
     private TextInput = (props: TextFieldProps) => (
         <TextInput

@@ -8,7 +8,7 @@ import { TextInput } from "./TextInput";
 interface AmountInputProps {
     label?: string;
     amount?: number;
-    onAmountChange?: (amount: number)=> void;
+    onAmountChange?: (amount: number) => void;
 }
 
 interface AmountInputState {
@@ -52,13 +52,13 @@ interface ExpenseAmountInputProps extends CurrencyInputProps, AmountInputProps {
 export class AmountWithCurrencyInput extends React.PureComponent<ExpenseAmountInputProps> {
     render () {
         return (
-        <Grid container direction='row' alignItems='baseline'>
-            <Grid item>
-                <AmountInput {...this.props}/>
-            </Grid>
-            <Grid item >
-                <CurrencyInput {...this.props} />
-            </Grid>
-        </Grid>);
+            <Grid container direction='row' alignItems='baseline'>
+                <Grid item>
+                    <AmountInput {...this.props}/>
+                </Grid>
+                <Grid item >
+                    <CurrencyInput {...this.props} />
+                </Grid>
+            </Grid>);
     }
 }

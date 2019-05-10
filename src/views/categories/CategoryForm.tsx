@@ -9,7 +9,7 @@ import { TextFieldProps } from '@material-ui/core/TextField';
 
 interface CategoryFormProps extends RouterProps{
     name?: string;
-    direction ?: GridDirection;
+    direction?: GridDirection;
     hideCancel?: boolean;
     closeAfterSave?: boolean;
     onChange?: () => void;
@@ -60,16 +60,16 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
                         <this.TextInput 
                             label={ this.direction === 'row' ? '' : 'Category Name' }
                             value={ this.state.name }
-                            onChange={this.handleChange('name')}
+                            onChange={this.handleChange}
                             style={{ margin: 8 }}
                             margin='dense' />
-                        </Grid>
+                    </Grid>
                     <Grid item>
                         <Grid container direction='row' justify='space-around'>
                             <SaveButton type='submit' disabled={this.state.name === ''} />
-                        { this.props.name && 
+                            { this.props.name && 
                             <DeleteButton disabled={this.state.name === ''} onClick={this.handleDelete}/> }
-                        { !this.props.hideCancel &&
+                            { !this.props.hideCancel &&
                             <CancelButton  onClick={this.close} />}
                         </Grid>
                     </Grid>
@@ -82,14 +82,14 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
         return this.props.direction || 'column';
     }
 
-    handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({ name: event.target.value });
     }
 
     private TextInput = (props: TextFieldProps) => (
         <TextInput
             {...props}
-            onChange={this.handleChange(props.label.toString().toLowerCase())}
+            onChange={this.handleChange}
         />);
             
 }

@@ -52,9 +52,9 @@ export class CurrencyInput extends React.PureComponent<CurrencyInputProps, Curre
                     value={this.selected}
                     required
                 >
-                { this.state.currencies.map(
-                    (opt: string) => (
-                        <option key={opt} value={opt}>{opt}</option>))}}
+                    { this.state.currencies.map(
+                        (opt: string) => (
+                            <option key={opt} value={opt}>{opt}</option>))}
                 </TextInput>
             );
         }
