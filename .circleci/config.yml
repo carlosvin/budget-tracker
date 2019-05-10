@@ -8,6 +8,8 @@ jobs:
     branches:
       only:
         - master
+      ignore:
+        - gh-pages
     docker:
       - image: circleci/node:lts
 
