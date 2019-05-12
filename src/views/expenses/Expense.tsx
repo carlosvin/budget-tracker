@@ -219,7 +219,8 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         this.props.history.replace(this.budgetUrl.path);
     }
 
-    private handleSubmit = () => {
+    private handleSubmit = (e: React.SyntheticEvent) => {
+        e.preventDefault();
         budgetsStore.setExpense(
             this.state.budget.identifier, 
             this.state.expense as Expense);

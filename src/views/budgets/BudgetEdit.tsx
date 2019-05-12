@@ -82,7 +82,8 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
         );
     }
 
-    private handleSubmit = () => {
+    private handleSubmit = (e: React.SyntheticEvent) => {
+        e.preventDefault();
         const budget: Budget = {
             ...this.state,
             to: new Date(this.state.end).getTime(),
