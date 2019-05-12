@@ -75,12 +75,18 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                     { this.state.info && 
                         <Card>
                             <CardContent>
+                                <Grid container direction='row' justify='space-between'>
                                 <Typography variant="h5" component="h2">
                                     {this.state.info.name}
                                 </Typography>
+                                <Typography color='textSecondary'>
+                                    {this.state.info.currency}
+                                </Typography>
+                                </Grid>
+                                
                                 <GridList cellHeight={110} cols={2} >
                                     <GridListTile key='total' >
-                                        <InfoField label='Total' value={this.state.info.total}/>
+                                        <InfoField label='Total' value={this.total}/>
                                     </GridListTile>
                                     <GridListTile key='Spent'>
                                         <InfoField label='Spent' value={this.expensesTotal}/>
@@ -105,7 +111,9 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
         return <CircularProgress/>;
     }
 
-    
+    get total () {
+        return `${this.state.info.total}`;
+    }
 
     get expensesTotal () {
         if (this.state.expenses) {
