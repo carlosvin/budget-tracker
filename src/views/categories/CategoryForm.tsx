@@ -6,41 +6,52 @@ import { RouterProps } from 'react-router';
 import { SaveButton, CancelButton, DeleteButton } from '../buttons';
 import { TextInput } from '../TextInput';
 import { TextFieldProps } from '@material-ui/core/TextField';
+import uuid = require('uuid');
 
 interface CategoryFormProps extends RouterProps{
     name?: string;
+    categoryId?: string;
     direction?: GridDirection;
     hideCancel?: boolean;
     closeAfterSave?: boolean;
-    onChange?: () => void;
+    onChange?: (categoryId: string) => void;
 }
 
-export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: string}> {
+export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: string, categoryId: string}> {
 
     private readonly store = categoriesStore;
 
     constructor(props: CategoryFormProps){
         super(props);
-        this.state = {name: props.name || ''};
+        this.state = {
+            name: props.name || '',
+            categoryId: props.categoryId || uuid()
+        };
     }
 
-    private handleSubmit = () => {
-        this.store.add(this.state.name);
-        if (this.props.onChange) {
-            this.props.onChange();
+    private handleSubmit = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        this.store.setCategory(this.state.categoryId, this.state.name);
+        this.onChange();
+        if (this.props.closeAfterSave) {
+            this.close();
+        }
+    }
+
+    private handleDelete = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+
+        if (this.store.delete(this.state.categoryId)){
+            this.onChange();
         }
         if (this.props.closeAfterSave) {
             this.close();
         }
     }
 
-    private handleDelete = () => {
-        this.store.delete(this.state.name);
+    private onChange = () => {
         if (this.props.onChange) {
-            this.props.onChange();
-        }
-        if (this.props.closeAfterSave) {
-            this.close();
+            this.props.onChange(this.state.categoryId);
         }
     }
     

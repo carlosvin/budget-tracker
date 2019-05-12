@@ -24,16 +24,12 @@ class CategoriesStore {
     }
 
     getCategories() {
-        return Object.values(this.categories);
+        return this.categories;
     }
 
-    add(category: string){
-        if (category in this.categories) {
-            return false;
-        }
-        this.categories[category] = undefined;
+    setCategory(categoryId: string, category: string) {
+        this.categories[categoryId] = category;
         this.save();
-        return true;
     }
 
     delete(categoryId: string) {

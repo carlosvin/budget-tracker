@@ -144,7 +144,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                             />
                         </Grid>
                         <Grid item >
-                            <this.CategoryInput categories={this.categories} />
+                            <this.CategoryInput />
                         </Grid>
                         <Grid item>
                             <this.WhenInput />
@@ -185,28 +185,20 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 amount}})
     );
     
-
-    private CategoryInput = (props: { categories: string[] }) => (
-        <this.SelectBox
-            options={props.categories}
+    private CategoryInput = () => (
+        <this.TextInput
             label='Category'
             value={this.state.expense.category}
             helperText={<Link href='/categories/add' component={MyLink}>Add category</Link>}
-        />
-    );
-            
-    private SelectBox = (props: TextFieldProps&{options: string[]}) => (
-        <this.TextInput
-            {...props}
             select
             required 
             SelectProps={{ native: true }} >
-            {props.options.map(
-                (opt: string) => (
-                    <option key={opt} value={opt}>{opt}</option>))}
+            {Object.entries(this.categories).map(
+                ([k, v]) => (
+                    <option key={k} value={v}>{v}</option>))}
         </this.TextInput>
     );
-            
+
     private TextInput = (props: TextFieldProps) => (
         <TextInput
             onChange={this.handleChange(props.label.toString().toLowerCase())}
