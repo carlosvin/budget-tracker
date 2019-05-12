@@ -6,16 +6,14 @@ import { ExpenseList } from "../expenses/ExpenseList";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
-import Table from "@material-ui/core/Table";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { dateDiff, BudgetUrl } from "../../utils";
 import Grid from "@material-ui/core/Grid";
 import { AddButton, EditButton } from "../buttons";
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+import { InfoField } from "../InfoField";
 
 interface BudgetViewProps extends RouteComponentProps<{ id: string }>{}
 
@@ -80,24 +78,20 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                                 <Typography variant="h5" component="h2">
                                     {this.state.info.name}
                                 </Typography>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Total</TableCell>
-                                            <TableCell>Spent</TableCell>
-                                            <TableCell>Average</TableCell>
-                                            <TableCell>Days</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        <TableRow key={1}>
-                                            <TableCell>{this.state.info.total}</TableCell>
-                                            <TableCell>{this.expensesTotal}</TableCell>
-                                            <TableCell>{this.expensesAverage}</TableCell>
-                                            <TableCell>{this.pastDays}</TableCell>
-                                        </TableRow>
-                                    </TableBody>
-                                </Table>
+                                <GridList cellHeight={110} cols={2} >
+                                    <GridListTile key='total' >
+                                        <InfoField label='Total' value={this.state.info.total}/>
+                                    </GridListTile>
+                                    <GridListTile key='Spent'>
+                                        <InfoField label='Spent' value={this.expensesTotal}/>
+                                    </GridListTile>
+                                    <GridListTile key='average'>
+                                        <InfoField label='Average' value={this.expensesAverage}/>
+                                    </GridListTile>
+                                    <GridListTile key='days'>
+                                        <InfoField label='Days' value={this.pastDays}/>
+                                    </GridListTile>
+                                </GridList>
                             </CardContent>
                             <CardActions>
                                 <this.Actions />
@@ -110,6 +104,8 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
         }
         return <CircularProgress/>;
     }
+
+    
 
     get expensesTotal () {
         if (this.state.expenses) {
