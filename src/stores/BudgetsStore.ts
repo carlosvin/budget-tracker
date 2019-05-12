@@ -60,9 +60,13 @@ class BudgetsStore {
     }
 
     async setExpense(identifier: string, expense: Expense){
-        if (this.expenses) {
-            this.expenses[identifier][expense.creation] = expense;
+        if (!this.expenses) {
+            this.expenses = {};
         }
+        if (!(identifier in this.expenses)) {
+            this.expenses[identifier] = {};
+        }
+        this.expenses[identifier][expense.creation] = expense;
         this.saveExpenses();
     }
 
