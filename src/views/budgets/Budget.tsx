@@ -14,12 +14,15 @@ import { AddButton, EditButton } from "../buttons";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import { InfoField } from "../InfoField";
+import { currenciesStore } from "../../stores/CurrenciesStore";
 
 interface BudgetViewProps extends RouteComponentProps<{ id: string }>{}
 
 interface BudgetViewState {
     info: Budget;
     expenses: {[timestamp: number]: Expense};
+    totalSpent?: number;
+    averageSpent?: number;
 }
 
 export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewState> {
@@ -55,10 +58,20 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                     ...this.state,
                     expenses
                 });
+                this.calculate();
             }
         } catch (e) {
             console.error(e);
         }
+    }
+
+    private async calculate() {
+        const et = await this.getExpensesTotal();
+        this.setState({
+            ...this.state,
+            totalSpent: Math.round(et),
+            averageSpent: Math.round(this.getExpensesAverage(et))
+        });
     }
 
     private Actions = () => (
@@ -89,10 +102,10 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                                         <InfoField label='Total' value={this.total}/>
                                     </GridListTile>
                                     <GridListTile key='Spent'>
-                                        <InfoField label='Spent' value={this.expensesTotal}/>
+                                        <InfoField label='Spent' value={this.state.totalSpent}/>
                                     </GridListTile>
                                     <GridListTile key='average'>
-                                        <InfoField label='Average' value={this.expensesAverage}/>
+                                        <InfoField label='Average' value={this.state.averageSpent}/>
                                     </GridListTile>
                                     <GridListTile key='days'>
                                         <InfoField label='Days' value={this.pastDays}/>
@@ -115,25 +128,36 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
         return `${this.state.info.total}`;
     }
 
-    get expensesTotal () {
+    async convertToBaseCurrency(expense: Expense){
+        if (expense.currency === this.state.info.currency) {
+            return expense.amount;
+        }
+        const rate = await currenciesStore.getRate(
+            this.state.info.currency, 
+            expense.currency);
+        return expense.amount / rate;
+    }
+
+    async getExpensesTotal () {
         if (this.state.expenses) {
             const values = Object.values(this.state.expenses);
             if (values.length > 0) {
-                return Object.values(this.state.expenses)
-                    .map(e => e.amount)
-                    .reduce((total, num) => total + num);
+                let total = 0;
+                for (const expense of values) {
+                    total = total + await this.convertToBaseCurrency(expense);
+                }
+                return total;
             }
         }
         return 0;
     }
 
-    get expensesAverage () {
-        const total = this.expensesTotal;
+    private getExpensesAverage (totalSpent: number) {
         const days = this.pastDays;
         if (days > 0) {
-            return total > 0 ? Math.round(total / days) : 0;
+            return totalSpent > 0 ? Math.round(totalSpent / days) : 0;
         } else {
-            return '-';
+            return undefined;
         }
     }
 

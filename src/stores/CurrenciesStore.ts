@@ -20,30 +20,28 @@ class CurrenciesStore {
         return this.currencies;
     }
 
-    async getRate(currencyFrom: string, currencyTo: string) {
-        if (this.rates === undefined || !(currencyFrom in this.rates)) {
-            await this.fetchRates(currencyFrom);
+    async getRate(baseCurrency: string, currencyTo: string) {
+        if (this.rates === undefined || !(baseCurrency in this.rates)) {
+            await this.fetchRates(baseCurrency);
         }
-        return this.rates[currencyFrom].rates[currencyTo];
+        return this.rates[baseCurrency].rates[currencyTo];
     }
 
     private async fetchRates(baseCurrency: string) {
-        if (this.currencies === undefined) {
-            try {
-                if (this.rates === undefined) {
-                    this.rates = {};
-                }
-                const ratesResponse = await currenciesApi.getRates(baseCurrency);
-                this.rates[baseCurrency] = ratesResponse.data;
-                this.currencies = Object.keys(this.rates[baseCurrency].rates);
-                this.saveToDisk();
-            } catch (error) {
-                console.warn('Cannot read currencies: ', error);
-                this.currencies = [];
-            } finally {
-                this.currencies.push(baseCurrency);
-                this.currencies.sort();
+        try {
+            if (this.rates === undefined) {
+                this.rates = {};
             }
+            const ratesResponse = await currenciesApi.getRates(baseCurrency);
+            this.rates[baseCurrency] = ratesResponse.data;
+            this.currencies = Object.keys(this.rates[baseCurrency].rates);
+            this.saveToDisk();
+        } catch (error) {
+            console.warn('Cannot read currencies: ', error);
+            this.currencies = [];
+        } finally {
+            this.currencies.push(baseCurrency);
+            this.currencies.sort();
         }
     }
 
