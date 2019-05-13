@@ -16,7 +16,6 @@ import { SaveButton, DeleteButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
 import uuid = require("uuid");
-import { currenciesStore } from "../../stores/CurrenciesStore";
 import { countriesStore } from "../../stores/CountriesStore";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
@@ -43,7 +42,7 @@ interface ExpenseViewState {
 export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseViewState> {
 
     private readonly budgetUrl: BudgetUrl;
-
+    
     constructor(props: ExpenseViewProps) {
         super(props);
         this.budgetUrl = new BudgetUrl(props.match.params.budgetId);
@@ -195,15 +194,19 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     private CountryInput = () => (
         <this.TextInput
             label='Country'
+            onChange={this.handleChange('countryCode')}
             value={this.state.expense.countryCode}
             select
             required 
             SelectProps={{ native: true }} >
             {
-                Object
-                    .entries(countriesStore.getCountries())
-                    .map(([k, v]) => (
-                        <option key={k} value={v}>{v}</option>))}
+                countriesStore.getCountries()
+                    .map(c => (
+                        <option 
+                            key={`country-option-${c.Code}`} 
+                            value={c.Code}>
+                                {c.Name}
+                        </option>))}
         </this.TextInput>
     );
 
@@ -215,10 +218,11 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             helperText={<Link href='/categories/add' component={MyLink}>Add category</Link>}
             select
             required 
+            onChange={this.handleChange('categoryId')}
             SelectProps={{ native: true }} >
             {Object.entries(this.categories).map(
                 ([k, v]) => (
-                    <option key={k} value={v}>{v}</option>))}
+                    <option key={`category-option-${k}`} value={v}>{v}</option>))}
         </this.TextInput>
     );
 
