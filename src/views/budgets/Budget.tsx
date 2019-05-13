@@ -144,7 +144,11 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
             if (values.length > 0) {
                 let total = 0;
                 for (const expense of values) {
-                    total = total + await this.convertToBaseCurrency(expense);
+                    if (expense.amountBaseCurrency !== undefined) {
+                        total = total + expense.amountBaseCurrency;
+                    } else {
+                        total = total + await this.convertToBaseCurrency(expense);
+                    }
                 }
                 return total;
             }
