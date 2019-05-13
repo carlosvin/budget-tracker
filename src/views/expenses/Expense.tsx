@@ -15,6 +15,8 @@ import { BudgetUrl, getDateString } from "../../utils";
 import { SaveButton, DeleteButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
+import uuid = require("uuid");
+import { currenciesStore } from "../../stores/CurrenciesStore";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
@@ -28,7 +30,7 @@ const myStyles = ({ palette, spacing }: Theme) => createStyles({
 });
 
 interface ExpenseViewProps extends 
-    RouteComponentProps<{ id: string; timestamp: string }>,
+    RouteComponentProps<{ budgetId: string; expenseId: string }>,
     WithStyles<typeof myStyles>  { }
 
 interface ExpenseViewState {
@@ -43,12 +45,12 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
 
     constructor(props: ExpenseViewProps) {
         super(props);
-        this.budgetUrl = new BudgetUrl(props.match.params.id);
-        this.initBudget(props.match.params.id);
-        if (props.match.params.timestamp) {
+        this.budgetUrl = new BudgetUrl(props.match.params.budgetId);
+        this.initBudget(props.match.params.budgetId);
+        if (props.match.params.expenseId) {
             this.initExpense(
-                props.match.params.id,
-                +props.match.params.timestamp);    
+                props.match.params.budgetId,
+                props.match.params.expenseId);    
         } else {
             const now = new Date();
             this.state = {
@@ -56,26 +58,27 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 expense: {
                     amount: 0, 
                     description: '', 
-                    creation: now.getTime(), 
+                    identifier: uuid(), 
                     when: now.getTime(),
-                    category: categoriesStore.getCategories()[0], 
-                    currency: 'EUR',
-                    date: getDateString(now)
+                    categoryId: Object.keys(categoriesStore.getCategories())[0], 
+                    currency: '',
+                    date: getDateString(now),
+                    countryCode: ''
                 }};
         }
     }
 
     private get isAddView(){
-        return this.props.match.params.timestamp === undefined;
+        return this.props.match.params.expenseId === undefined;
     }
 
     private get categories () {
         return categoriesStore.getCategories();
     }
 
-    private async initExpense(identifier: string, timestamp: number) {
+    private async initExpense(budgetId: string, expenseId: string) {
         try {
-            const expense = await budgetsStore.getExpense(identifier, timestamp);
+            const expense = await budgetsStore.getExpense(budgetId, expenseId);
             if (expense) {
                 this.setState({
                     ...this.state,
@@ -188,7 +191,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     private CategoryInput = () => (
         <this.TextInput
             label='Category'
-            value={this.state.expense.category}
+            value={this.state.expense.categoryId}
             helperText={<Link href='/categories/add' component={MyLink}>Add category</Link>}
             select
             required 
@@ -215,13 +218,13 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     private handleDelete = () => {
         budgetsStore.deleteExpense(
             this.state.budget.identifier, 
-            this.state.expense.creation);
+            this.state.expense.identifier);
         this.props.history.replace(this.budgetUrl.path);
     }
 
     private handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        budgetsStore.setExpense(
+        budgetsStore.saveExpense(
             this.state.budget.identifier, 
             this.state.expense as Expense);
         this.props.history.replace(this.budgetUrl.path);

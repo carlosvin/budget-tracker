@@ -49,7 +49,7 @@ export const ExpenseList = withStyles(myStyles)(
             return this.props.expenses 
             && this.expensesArray.reverse().map(
                 (expense: Expense) => 
-                    <li key={`section-${expense.creation}`} className={this.props.classes.listSection}>
+                    <li key={`section-${expense.identifier}`} className={this.props.classes.listSection}>
                         <ul className={this.props.classes.ul}>
                             <this.Subheader date={new Date(expense.when)} />
                             <ExpenseListItem 

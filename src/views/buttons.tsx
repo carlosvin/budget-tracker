@@ -7,10 +7,12 @@ import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
+import { Grid } from '@material-ui/core';
 
 type Color = 'inherit' | 'primary' | 'secondary' | 'default';
 
-type IconType = 'edit'|'add'|'cancel'|'delete'|'save';
+type IconType = 'edit'|'add'|'cancel'|'delete'|'save'|'import';
 
 class Icon extends React.PureComponent<{type: IconType}> {
     render () {
@@ -24,7 +26,9 @@ class Icon extends React.PureComponent<{type: IconType}> {
             case 'edit':
                 return <EditIcon/>;
             case 'save':
-                return <SaveIcon/>;  
+                return <SaveIcon/>;
+            case 'import':
+                return <ImportExportIcon/>;
         }
     }
 }
@@ -88,4 +92,8 @@ export const SaveButton = (props: AppButtonProps) => (
 
 export const TextButton = (props: AppButtonProps) => (
     <AppButton {...props} href={props.href} text={props.text}/>
+);
+
+export const ImportButton = (props: AppButtonProps) => (
+    <AppButton {...props} href={props.href} icon='import'/>
 );

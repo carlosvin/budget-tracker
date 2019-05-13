@@ -12,7 +12,7 @@ import { TextInput } from "../TextInput";
 import { TextFieldProps } from "@material-ui/core/TextField";
 import uuid = require("uuid");
 
-interface BudgetEditProps extends RouteComponentProps<{ id: string }>{
+interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>{
 }
 
 interface BudgetViewState extends Budget {
@@ -28,9 +28,9 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
     
     constructor(props: BudgetEditProps){
         super(props);
-        if (props.match.params.id) {
-            this.initBudget(props.match.params.id);
-            this.url = new BudgetUrl(props.match.params.id);
+        if (props.match.params.budgetId) {
+            this.initBudget(props.match.params.budgetId);
+            this.url = new BudgetUrl(props.match.params.budgetId);
         } else {
             const now = new Date();
             this.state = {

@@ -1,11 +1,12 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Grid from "@material-ui/core/Grid";
 import { RouteComponentProps, Redirect } from "react-router";
 import { budgetsStore } from '../../stores/BudgetsStore';
 import { Budget } from "../../interfaces";
 import { BudgetListItem } from "./BudgetListItem";
-import { AddButton } from "../buttons";
+import { AddButton, ImportButton} from "../buttons";
 import { BudgetUrl } from "../../utils";
 
 interface BudgetListProps extends RouteComponentProps {}
@@ -36,7 +37,10 @@ export class BudgetList extends React.PureComponent<BudgetListProps, BudgetListS
                 return (
                     <List>
                         {this.elements}
-                        <AddButton href={BudgetUrl.add}/>
+                        <Grid justify='space-between' container>
+                            <AddButton href={BudgetUrl.add}/>
+                            <ImportButton href={BudgetUrl.import}/>
+                        </Grid>
                     </List>); 
             } else {
                 return <Redirect to={BudgetUrl.add}/>;

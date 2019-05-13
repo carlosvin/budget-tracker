@@ -32,7 +32,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
     }
 
     get href () {
-        return `/budgets/${this.props.budget.identifier}/expenses/${this.props.expense.creation}`;
+        return `/budgets/${this.props.budget.identifier}/expenses/${this.props.expense.identifier}`;
     }
 
     get amount () {

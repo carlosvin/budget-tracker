@@ -1,4 +1,6 @@
-import { Budget, Expense } from "../interfaces";
+import { Budget, Expense, ImportedExpense } from "../interfaces";
+import { FilesApi } from "../api/FileApi";
+import uuid = require("uuid");
 
 class BudgetsStore {
 
@@ -6,7 +8,7 @@ class BudgetsStore {
     private static readonly KEY_EXPENSES = 'expenses';
     
     private budgets: {[identifier: string]: Budget};
-    private expenses: {[identifier: string]: {[timestamp: number]: Expense}};
+    private expenses: {[identifier: string]: {[identifier: string]: Expense}};
 
     constructor(){
         console.log('Instantiate store');
@@ -45,28 +47,32 @@ class BudgetsStore {
         return this.expenses[identifier];
     }
 
-    async getExpense(identifier: string, timestamp: number) {
+    async getExpense(budgetId: string, expenseId: string) {
         if (this.expenses === undefined) {
-            await this.fetchExpenses(identifier);
+            await this.fetchExpenses(budgetId);
         }
-        return this.expenses[identifier][timestamp];
+        return this.expenses[budgetId][expenseId];
     }
 
-    async deleteExpense (identifier: string, timestamp: number) {
-        if (this.expenses && identifier in this.expenses) {
-            delete this.expenses[identifier][timestamp];
+    async deleteExpense (budgetId: string, expenseId: string) {
+        if (this.expenses && budgetId in this.expenses) {
+            delete this.expenses[budgetId][expenseId];
             this.saveExpenses();
         }
     }
 
-    async setExpense(identifier: string, expense: Expense){
+    private async setExpense(budgetId: string, expense: Expense){
         if (!this.expenses) {
             this.expenses = {};
         }
-        if (!(identifier in this.expenses)) {
-            this.expenses[identifier] = {};
+        if (!(budgetId in this.expenses)) {
+            this.expenses[budgetId] = {};
         }
-        this.expenses[identifier][expense.creation] = expense;
+        this.expenses[budgetId][expense.identifier] = expense;
+    }
+
+    async saveExpense (budgetId: string, expense: Expense) {
+        this.setExpense(budgetId, expense);
         this.saveExpenses();
     }
 
@@ -115,6 +121,40 @@ class BudgetsStore {
 
     private get serializedExpenses () {
         return JSON.stringify(this.expenses);
+    }
+
+    async importBudget(file: File){
+        const content = await FilesApi.getFileContent(file);
+        const importedExpenses = JSON.parse(content) as ImportedExpense[];
+        const expenses = importedExpenses.map(e => BudgetsStore.convertToExpense(e));
+        const budget: Budget = {
+            currency: importedExpenses[0].homeCurrency,
+            from: expenses[expenses.length - 1].when,
+            to: expenses[0].when,
+            identifier: importedExpenses[0].tripId,
+            name: `Imported ${importedExpenses[0].homeCurrency}`,
+            total: importedExpenses.map(e => parseFloat(e.amountInHomeCurrency)).reduce((a, total) => a + total)
+        };
+        this.setBudget(budget);
+        expenses.sort((a, b) => a.when < b.when ? -1 : 1);
+        expenses.forEach(e => this.setExpense(budget.identifier, e));
+        this.saveExpenses();
+    }
+
+    static convertToExpense(imported: ImportedExpense): Expense {
+        const dateParts = imported.datePaid.split('-').map(d => parseInt(d));
+        const timestamp = new Date(dateParts[2], dateParts[1], dateParts[0]).getTime();
+        const expense: Expense = {
+            amount: parseFloat(imported.amount),
+            amountBaseCurrency: parseFloat(imported.amountInHomeCurrency),
+            categoryId: imported.categoryId, 
+            countryCode: imported.countryCode,
+            identifier: uuid(),
+            currency: imported.localCurrency,
+            description: imported.notes,
+            when: timestamp
+        };
+        return expense;
     }
 }
 

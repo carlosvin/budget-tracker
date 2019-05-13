@@ -16,7 +16,7 @@ import GridListTile from "@material-ui/core/GridListTile";
 import { InfoField } from "../InfoField";
 import { currenciesStore } from "../../stores/CurrenciesStore";
 
-interface BudgetViewProps extends RouteComponentProps<{ id: string }>{}
+interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>{}
 
 interface BudgetViewState {
     info: Budget;
@@ -31,9 +31,9 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
 
     constructor(props: BudgetViewProps){
         super(props);
-        this.initBudget(props.match.params.id);
-        this.initExpenses(props.match.params.id);
-        this.url = new BudgetUrl(props.match.params.id);
+        this.initBudget(props.match.params.budgetId);
+        this.initExpenses(props.match.params.budgetId);
+        this.url = new BudgetUrl(props.match.params.budgetId);
     }
 
     private async initBudget(identifier: string) {

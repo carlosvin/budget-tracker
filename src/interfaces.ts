@@ -17,17 +17,35 @@ export interface BudgetExpenses {
 
 export interface Expense {
     amount: number;
+    amountBaseCurrency?: number;
     currency: string;
-    category: string;
+    categoryId: string;
+    countryCode: string;
     description?: string;
+    identifier: string;
     /** Timestamp when the expense applies */
     when: number;
-    /** Timestamp when expense is registered in app */
-    creation: number;
 }
 
 export interface CurrencyRates {
     readonly base: string;
     readonly rates: {[name: string]: number};
     readonly date: Date;
+}
+
+export interface ImportedExpense {
+    amount: string,
+    amountInHomeCurrency: string,
+    category: string,
+    categoryId: string,
+    conversionRate: number,
+    country: string,
+    countryCode: string,
+    creditCard: boolean,
+    datePaid: string,
+    homeCurrency: string,
+    localCurrency: string,
+    notes: string,
+    paidBy: string,
+    tripId: string
 }
