@@ -203,9 +203,9 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 countriesStore.getCountries()
                     .map(c => (
                         <option 
-                            key={`country-option-${c.Code}`} 
-                            value={c.Code}>
-                                {c.Name}
+                            key={`country-option-${c.code}`} 
+                            value={c.code}>
+                                {c.name}
                         </option>))}
         </this.TextInput>
     );
