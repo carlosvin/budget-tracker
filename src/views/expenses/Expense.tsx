@@ -17,6 +17,7 @@ import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
 import uuid = require("uuid");
 import { currenciesStore } from "../../stores/CurrenciesStore";
+import { countriesStore } from "../../stores/CountriesStore";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
@@ -152,6 +153,9 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                         <Grid item>
                             <this.WhenInput />
                         </Grid>
+                        <Grid item>
+                            <this.CountryInput />
+                        </Grid>
                         <Grid item >
                             <this.TextInput label='Description' value={this.state.expense.description} />
                         </Grid>
@@ -187,6 +191,22 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 ...this.state.expense, 
                 amount}})
     );
+
+    private CountryInput = () => (
+        <this.TextInput
+            label='Country'
+            value={this.state.expense.countryCode}
+            select
+            required 
+            SelectProps={{ native: true }} >
+            {
+                Object
+                    .entries(countriesStore.getCountries())
+                    .map(([k, v]) => (
+                        <option key={k} value={v}>{v}</option>))}
+        </this.TextInput>
+    );
+
     
     private CategoryInput = () => (
         <this.TextInput
