@@ -64,8 +64,25 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                     currency: '',
                     date: getDateString(now),
                     countryCode: ''
-                }};
+                }
+            };
+            this.initCountry();
         }
+    }
+
+    private async initCountry(){
+        try {
+            const countryCode = await countriesStore.getCurrentCountry();
+            this.setState({
+                ...this.state,
+                expense: {
+                    ...this.state.expense,
+                    countryCode: countryCode
+                }
+            });
+        } catch (err) {
+            console.warn(err);
+        }        
     }
 
     private get isAddView(){

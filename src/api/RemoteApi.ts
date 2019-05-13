@@ -2,17 +2,12 @@ import axios, { AxiosInstance } from 'axios';
 
 export class RemoteApi {
     readonly baseUrl: string;
-    readonly rest: AxiosInstance;
+    readonly client: AxiosInstance;
 
     constructor(baseUrl: string) {
-        this.rest = axios.create({
+        this.client = axios.create({
             baseURL: baseUrl
         });
         this.baseUrl = baseUrl;
     }
-
-    get client(){
-        return this.rest;
-    }
-
 }
