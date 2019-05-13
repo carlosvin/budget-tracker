@@ -1,6 +1,5 @@
 import * as countries from './countries.json';
 
-
 export interface CountryEntry {
     code: string;
     name: string;
@@ -8,7 +7,7 @@ export interface CountryEntry {
 
 class CountriesStore {
 
-    private countries: CountryEntry[];
+    private readonly countries: CountryEntry[];
 
     constructor() {
         this.countries = Object.values(countries);

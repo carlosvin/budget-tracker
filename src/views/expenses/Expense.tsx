@@ -209,7 +209,6 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                         </option>))}
         </this.TextInput>
     );
-
     
     private CategoryInput = () => (
         <this.TextInput
