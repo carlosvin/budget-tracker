@@ -33,7 +33,7 @@ interface ExpenseListProps extends WithStyles<typeof myStyles>  {
 export const ExpenseList = withStyles(myStyles)(
     class extends React.PureComponent<ExpenseListProps> {
         static displayName = 'ExpenseList';
-        private readonly dates = new Set<string>();
+        private readonly dates: {[k: string] : string} = {};
 
         render() {
             if (this.props) {
@@ -61,10 +61,10 @@ export const ExpenseList = withStyles(myStyles)(
 
         private Subheader = (props: {date: Date}) => {
             const dateStr = props.date.toDateString();
-            if (this.dates.has(dateStr)) {
+            if (dateStr in this.dates) {
                 return null;
             } else {
-                this.dates.add(dateStr);
+                this.dates[dateStr] = dateStr;
                 return <ListSubheader>{dateStr}</ListSubheader>
             }
         }
