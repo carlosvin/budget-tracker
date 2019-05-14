@@ -11,6 +11,7 @@ interface AmountInputProps {
     label?: string;
     amount?: number;
     onAmountChange?: (amount: number) => void;
+    helperText?: string;
 }
 
 interface AmountInputState {
@@ -42,6 +43,7 @@ export class AmountInput extends React.PureComponent<AmountInputProps, AmountInp
                     value={this.state.amount}
                     inputProps={{ min: '0', step: '1', 'aria-required': true }}
                     onChange={this.handleAmountChange}
+                    helperText={this.props.helperText}
                 />
             );
         }
@@ -68,18 +70,18 @@ export class AmountWithCurrencyInput extends React.PureComponent<ExpenseAmountIn
         return (
             <Grid container direction='row' alignItems='baseline'>
                 <Grid item>
-                    <AmountInput {...this.props} onAmountChange={this.handleAmountChange}/>
+                    <AmountInput {...this.props} onAmountChange={this.handleAmountChange} helperText={this.baseAmount}/>
                 </Grid>
                 <Grid item >
                     <CurrencyInput {...this.props} onCurrencyChange={this.handleCurrencyChange}/>
                 </Grid>
-                <Grid item >
-                { this.isDifferentCurrency && 
-                    <Typography color='textSecondary'>
-                        {`${this.state.amountBaseCurrency} ${this.props.baseCurrency}`}
-                    </Typography> }
-                </Grid>
             </Grid>);
+    }
+
+    get baseAmount () {
+        if (this.isDifferentCurrency) {
+            return `${this.state.amountBaseCurrency} ${this.props.baseCurrency}`;
+        }
     }
 
     handleAmountChange = (amount: number) => {
