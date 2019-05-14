@@ -157,7 +157,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                         alignContent='stretch'>
                         <Grid item >
                             <AmountWithCurrencyInput 
-                                baseCurrency={this.state.budget.currency}
+                                baseCurrency={this.state.budget && this.state.budget.currency}
                                 onAmountChange={this.handleAmountChange}
                                 onCurrencyChange={this.handleCurrencyChange}
                                 amount={this.state.expense.amount}
