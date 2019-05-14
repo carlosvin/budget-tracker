@@ -61,6 +61,17 @@ class BudgetsStore {
         }
     }
 
+    async deleteBudget (budgetId: string) {
+        if (budgetId in this.budgets) {
+            delete this.budgets[budgetId];
+            this.saveBudgets();
+        }
+        if (budgetId in this.expenses) {
+            delete this.expenses[budgetId];
+            this.saveExpenses();
+        }
+    }
+
     private async setExpense(budgetId: string, expense: Expense){
         if (!this.expenses) {
             this.expenses = {};

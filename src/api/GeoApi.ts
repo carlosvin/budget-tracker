@@ -1,12 +1,5 @@
 import { RemoteApi } from "./RemoteApi";
 
-interface CountryResp {
-    languages: string,
-    distance: number,
-    countryCode: string,
-    countryName: string
-}
-
 export class GeoApi {
 
     private readonly api = new RemoteApi('https://nominatim.openstreetmap.org');

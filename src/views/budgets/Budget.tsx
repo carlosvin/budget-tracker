@@ -10,7 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { dateDiff, BudgetUrl } from "../../utils";
 import Grid from "@material-ui/core/Grid";
-import { AddButton, EditButton } from "../buttons";
+import { AddButton, EditButton, DeleteButton } from "../buttons";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import { InfoField } from "../InfoField";
@@ -77,9 +77,15 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
     private Actions = () => (
         <Grid container justify='space-between'>
             <EditButton href={this.url.pathEdit}/>
+            <DeleteButton onClick={this.handleDelete}/>
             <AddButton href={this.url.pathAddExpense}/>
         </Grid>
     );
+
+    private handleDelete = () => {
+        budgetsStore.deleteBudget(this.state.info.identifier);
+        this.props.history.replace(BudgetUrl.base);
+    }
 
     render() {
         if (this.state) {
