@@ -3,3 +3,4 @@ dist
 .cache
 yarn.lock
 .vscode/settings.json
+env.json

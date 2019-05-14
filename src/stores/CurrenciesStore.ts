@@ -40,7 +40,6 @@ class CurrenciesStore {
             console.warn('Cannot read currencies: ', error);
             this.currencies = [];
         } finally {
-            this.currencies.push(baseCurrency);
             this.currencies.sort();
         }
     }
@@ -51,7 +50,6 @@ class CurrenciesStore {
             this.rates = JSON.parse(ratesStr);
             const rate = Object.values(this.rates)[0];
             this.currencies = Object.keys(rate.rates);
-            this.currencies.push(rate.base);
             this.currencies.sort();
         }
     }

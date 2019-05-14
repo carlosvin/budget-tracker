@@ -1,21 +1,24 @@
 import { CurrencyRates } from "../interfaces";
 import axios, { AxiosInstance } from 'axios';
+import * as conf from '../../env.json';
 
 class CurrenciesApi {
 
-    readonly baseUrl: string;
     readonly rest: AxiosInstance;
-
-    constructor(baseUrl = 'https://api.exchangeratesapi.io/') {
+    
+    constructor() {
         this.rest = axios.create({
-            baseURL: baseUrl
+            baseURL: 'http://data.fixer.io'
         });
-        this.baseUrl = baseUrl;
     }
 
     async getRates(baseCurrency: string) {
         return this.rest.get<CurrencyRates>(
-            `/latest?base=${baseCurrency}`);
+            '/api/latest', 
+            { params: { 
+                base: baseCurrency,
+                access_key: conf.currencyApiKey
+            }});
     }
 }
 
