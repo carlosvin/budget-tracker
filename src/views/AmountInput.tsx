@@ -64,7 +64,7 @@ export class AmountWithCurrencyInput extends React.PureComponent<ExpenseAmountIn
     constructor(props: ExpenseAmountInputProps) {
         super(props);
         this.state = { };
-        if (props.selectedCurrency !== props.baseCurrency) {
+        if (AmountWithCurrencyInput.isDifferentCurrency(props)) {
             this.calculateBaseAmount(props.amount, props.selectedCurrency);
         }
     }
@@ -115,6 +115,11 @@ export class AmountWithCurrencyInput extends React.PureComponent<ExpenseAmountIn
     }
 
     get isDifferentCurrency () {
-        return this.props.baseCurrency !== this.props.selectedCurrency;
+        return AmountWithCurrencyInput.isDifferentCurrency(this.props);
+    }
+
+    static isDifferentCurrency (props: ExpenseAmountInputProps) {
+        return props.baseCurrency && props.baseCurrency !== props.selectedCurrency;
+
     }
 }
