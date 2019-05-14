@@ -17,7 +17,7 @@ class CurrenciesApi {
             '/api/latest', 
             { params: { 
                 base: baseCurrency,
-                access_key: conf.currencyApiKey
+                'access_key': conf.currencyApiKey
             }});
     }
 }

@@ -222,7 +222,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                         <option 
                             key={`country-option-${c.code}`} 
                             value={c.code}>
-                                {c.name}
+                            {c.name}
                         </option>))}
         </this.TextInput>
     );

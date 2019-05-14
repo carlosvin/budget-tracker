@@ -8,7 +8,6 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
-import { Grid } from '@material-ui/core';
 
 type Color = 'inherit' | 'primary' | 'secondary' | 'default';
 

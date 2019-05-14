@@ -1,5 +1,4 @@
 import { History } from "history";
-import { Expense } from "./interfaces";
 
 /**
  * Get difference between 2 dates in days

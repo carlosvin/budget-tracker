@@ -95,12 +95,12 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                         <Card>
                             <CardContent>
                                 <Grid container direction='row' justify='space-between'>
-                                <Typography variant="h5" component="h2">
-                                    {this.state.info.name}
-                                </Typography>
-                                <Typography color='textSecondary'>
-                                    {this.state.info.currency}
-                                </Typography>
+                                    <Typography variant="h5" component="h2">
+                                        {this.state.info.name}
+                                    </Typography>
+                                    <Typography color='textSecondary'>
+                                        {this.state.info.currency}
+                                    </Typography>
                                 </Grid>
                                 
                                 <GridList cellHeight={110} cols={2} >

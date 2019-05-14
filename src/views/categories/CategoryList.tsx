@@ -4,7 +4,7 @@ import { CategoryForm } from './CategoryForm';
 import { categoriesStore } from '../../stores/CategoriesStore';
 import { AddButton } from '../buttons';
 
-export class CategoryList extends React.PureComponent<RouterProps, {categories:[string, any][]}> {
+export class CategoryList extends React.PureComponent<RouterProps, {categories: [string, string][]}> {
 
     constructor(props: RouterProps){
         super(props);
@@ -29,7 +29,7 @@ export class CategoryList extends React.PureComponent<RouterProps, {categories:[
         );
     }
 
-    private handleChange = (categoryId: string) => {
+    private handleChange = () => {
         this.setState({
             categories: Object.entries(categoriesStore.getCategories())
         });

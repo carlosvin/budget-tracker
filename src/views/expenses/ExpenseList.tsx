@@ -33,7 +33,7 @@ interface ExpenseListProps extends WithStyles<typeof myStyles>  {
 export const ExpenseList = withStyles(myStyles)(
     class extends React.PureComponent<ExpenseListProps> {
         static displayName = 'ExpenseList';
-        private readonly dates: {[k: string] : string} = {};
+        private readonly dates: {[k: string]: string} = {};
 
         render() {
             if (this.props) {

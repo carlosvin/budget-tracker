@@ -1,15 +1,8 @@
 import * as React from "react";
-import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Grid from "@material-ui/core/Grid";
-import { RouteComponentProps, Redirect } from "react-router";
 import { budgetsStore } from '../../stores/BudgetsStore';
-import { Budget } from "../../interfaces";
-import { BudgetListItem } from "./BudgetListItem";
-import { AddButton, ImportButton, SaveButton} from "../buttons";
-import { BudgetUrl } from "../../utils";
 import { TextInput } from "../TextInput";
-import { string } from "prop-types";
+import { SaveButton } from "../buttons";
 
 interface ImportState {
     selectedFile?: File;
@@ -22,9 +15,9 @@ export class Import extends React.PureComponent<{},ImportState> {
         return (
             <form>
                 { 
-                this.processing ? 
-                    <CircularProgress /> :
-                    <TextInput type='file' onChange={this.handleChange}/>
+                    this.processing ? 
+                        <CircularProgress /> :
+                        <TextInput type='file' onChange={this.handleChange}/>
                 }
                 <SaveButton disabled={this.disabled} onClick={this.handleImport} />
             </form>);
@@ -48,7 +41,7 @@ export class Import extends React.PureComponent<{},ImportState> {
     }
 
     private async process () {
-        const content = await budgetsStore.importBudget(this.state.selectedFile);
+        await budgetsStore.importBudget(this.state.selectedFile);
         this.setState({
             processing: false
         });

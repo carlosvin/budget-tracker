@@ -17,7 +17,7 @@ interface CategoryFormProps extends RouterProps{
     onChange?: (categoryId: string) => void;
 }
 
-export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: string, categoryId: string}> {
+export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: string; categoryId: string}> {
 
     private readonly store = categoriesStore;
 

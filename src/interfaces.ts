@@ -34,18 +34,18 @@ export interface CurrencyRates {
 }
 
 export interface ImportedExpense {
-    amount: string,
-    amountInHomeCurrency: string,
-    category: string,
-    categoryId: string,
-    conversionRate: number,
-    country: string,
-    countryCode: string,
-    creditCard: boolean,
-    datePaid: string,
-    homeCurrency: string,
-    localCurrency: string,
-    notes: string,
-    paidBy: string,
-    tripId: string
+    amount: string;
+    amountInHomeCurrency: string;
+    category: string;
+    categoryId: string;
+    conversionRate: number;
+    country: string;
+    countryCode: string;
+    creditCard: boolean;
+    datePaid: string;
+    homeCurrency: string;
+    localCurrency: string;
+    notes: string;
+    paidBy: string;
+    tripId: string;
 }
