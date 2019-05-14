@@ -56,7 +56,7 @@ interface ExpenseAmountInputProps extends CurrencyInputProps, AmountInputProps {
 }
 
 interface ExpenseAmountInputState {
-    amountBaseCurrency?: number;
+    amountInBaseCurrency?: number;
 }
 
 export class AmountWithCurrencyInput extends React.PureComponent<ExpenseAmountInputProps, ExpenseAmountInputState> {
@@ -64,6 +64,9 @@ export class AmountWithCurrencyInput extends React.PureComponent<ExpenseAmountIn
     constructor(props: ExpenseAmountInputProps) {
         super(props);
         this.state = { };
+        if (props.selectedCurrency !== props.baseCurrency) {
+            this.calculateBaseAmount(props.amount, props.selectedCurrency);
+        }
     }
 
     render () {
@@ -79,8 +82,8 @@ export class AmountWithCurrencyInput extends React.PureComponent<ExpenseAmountIn
     }
 
     get baseAmount () {
-        if (this.isDifferentCurrency) {
-            return `${this.state.amountBaseCurrency} ${this.props.baseCurrency}`;
+        if (this.isDifferentCurrency && this.state.amountInBaseCurrency) {
+            return `${this.state.amountInBaseCurrency} ${this.props.baseCurrency}`;
         }
     }
 
@@ -89,7 +92,7 @@ export class AmountWithCurrencyInput extends React.PureComponent<ExpenseAmountIn
             this.props.onAmountChange(amount);
         }
         if (this.isDifferentCurrency) {
-            this.calculateBaseAmount();
+            this.calculateBaseAmount(amount, this.props.selectedCurrency);
         }
     }
 
@@ -98,16 +101,16 @@ export class AmountWithCurrencyInput extends React.PureComponent<ExpenseAmountIn
             this.props.onCurrencyChange(currency);
         }
         if (this.isDifferentCurrency) {
-            this.calculateBaseAmount();
+            this.calculateBaseAmount(this.props.amount, currency);
         }
     }
 
-    private async calculateBaseAmount () {
+    private async calculateBaseAmount (amount: number, currency: string) {
         const rate = await currenciesStore.getRate(
             this.props.baseCurrency, 
-            this.props.selectedCurrency);
+            currency);
         if (rate) {
-            this.setState({amountBaseCurrency: Math.round(this.props.amount *100 / rate) / 100 });
+            this.setState({amountInBaseCurrency: Math.round(amount *100 / rate) / 100 });
         }
     }
 
