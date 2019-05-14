@@ -1,24 +1,49 @@
 import { CurrencyRates } from "../interfaces";
-import axios, { AxiosInstance } from 'axios';
 import * as conf from '../../env.json';
+import { RemoteApi } from "./RemoteApi";
 
 class CurrenciesApi {
 
-    readonly rest: AxiosInstance;
-    
-    constructor() {
-        this.rest = axios.create({
-            baseURL: 'http://data.fixer.io'
-        });
+    private primaryApi: RemoteApi;
+    private backupApi: RemoteApi;
+
+    private get primary () {
+        if (this.primaryApi === undefined) {
+            this.primaryApi = new RemoteApi('https://api.exchangeratesapi.io');
+        }
+        return this.primaryApi;
     }
 
-    async getRates(baseCurrency: string) {
-        return this.rest.get<CurrencyRates>(
-            '/api/latest', 
-            { params: { 
+    private get backup () {
+        if (this.backupApi === undefined) {
+            this.backupApi = new RemoteApi('https://api.currencystack.io');
+        }
+        return this.backupApi;
+    }
+
+    private async getRatesPrimary (baseCurrency: string) {
+        return this.primary.client.get<CurrencyRates>(
+            `/latest?base=${baseCurrency}`);
+    }
+
+    private async getRatesBackup (baseCurrency: string, targetCurrencies: string[]) {
+        return this.primary.client.get<CurrencyRates>(`/currency`, 
+        {
+            params: {
                 base: baseCurrency,
-                'access_key': conf.currencyApiKey
-            }});
+                target: targetCurrencies,
+                apikey: conf.currencyApiKey
+            }
+        });
+    }
+    
+    async getRates(baseCurrency: string, availableCurrencies: string[]) {
+        try {
+            return this.getRatesPrimary(baseCurrency);
+        } catch (error) {
+            console.warn('Trying to fetch backup API', error);
+            return this.getRatesBackup(baseCurrency, availableCurrencies);
+        }
     }
 }
 

@@ -1,22 +1,29 @@
 import { CurrencyRates } from "../interfaces";
 import { currenciesApi } from "../api/CurrenciesApi";
+import * as currenciesConfig from './currency.json';
 
 class CurrenciesStore {
-    static readonly BASE = 'EUR';
     static readonly KEY = 'currencyRates';
 
-    private currencies: string[];
+    private currencies: { [currency: string]: string };
     private rates: { [currency: string]: CurrencyRates };
 
     constructor() {
-        this.loadFromDisk();
-        this.fetchRates(CurrenciesStore.BASE);
+        this.currencies = {};
+        Object
+            .values(currenciesConfig)
+            .filter( c => 
+                c.AlphabeticCode && 
+                (!c.AlphabeticCode.startsWith('X')) && 
+                c.AlphabeticCode.length === 3 && 
+                c.WithdrawalDate === null && 
+                c.Currency && 
+                c.Currency.length > 2)
+            .forEach( c => this.currencies[c.AlphabeticCode] = c.Currency);
+        this.loadRatesFromDisk();
     }
 
-    async getCurrencies() {
-        if (this.currencies === undefined) {
-            await this.fetchRates(CurrenciesStore.BASE);
-        }
+    getCurrencies() {
         return this.currencies;
     }
 
@@ -32,34 +39,23 @@ class CurrenciesStore {
             if (this.rates === undefined) {
                 this.rates = {};
             }
-            const ratesResponse = await currenciesApi.getRates(baseCurrency);
+            const ratesResponse = await currenciesApi.getRates(baseCurrency, Object.keys(this.currencies));
             this.rates[baseCurrency] = ratesResponse.data;
-            this.currencies = Object.keys(this.rates[baseCurrency].rates);
             this.saveToDisk();
         } catch (error) {
             console.warn('Cannot read currencies: ', error);
-            this.currencies = [];
-        } finally {
-            this.currencies.sort();
         }
     }
 
-    private async loadFromDisk () {
+    private async loadRatesFromDisk () {
         const ratesStr = localStorage.getItem(CurrenciesStore.KEY);
         if (ratesStr && ratesStr.length > 0) {
             this.rates = JSON.parse(ratesStr);
-            const rate = Object.values(this.rates)[0];
-            this.currencies = Object.keys(rate.rates);
-            this.currencies.sort();
         }
     }
 
     private async saveToDisk () {
         localStorage.setItem(CurrenciesStore.KEY, JSON.stringify(this.rates));
-    }
-
-    get base(){
-        return CurrenciesStore.BASE;
     }
 }
 
