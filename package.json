@@ -4,7 +4,7 @@
   "main": "index.html",
   "license": "MIT",
   "scripts": {
-    "start": "parcel src/index.html",
+    "start": "parcel src/index.html --https",
     "clean": "shx rm -rf dist",
     "build": "parcel build src/index.html --public-url ./",
     "test": "jest",
