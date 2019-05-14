@@ -105,7 +105,7 @@ export class AmountWithCurrencyInput extends React.PureComponent<ExpenseAmountIn
             this.props.baseCurrency, 
             this.props.selectedCurrency);
         if (rate) {
-            this.setState({amountBaseCurrency: this.props.amount * rate });
+            this.setState({amountBaseCurrency: Math.round(this.props.amount *100 / rate) / 100 });
         }
     }
 
