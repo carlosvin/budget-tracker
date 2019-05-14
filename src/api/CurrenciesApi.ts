@@ -39,7 +39,8 @@ class CurrenciesApi {
     
     async getRates(baseCurrency: string, availableCurrencies: string[]) {
         try {
-            return this.getRatesPrimary(baseCurrency);
+            const resp = this.getRatesPrimary(baseCurrency);
+            return resp;
         } catch (error) {
             console.warn('Trying to fetch backup API', error);
             return this.getRatesBackup(baseCurrency, availableCurrencies);
