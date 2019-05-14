@@ -34,7 +34,6 @@ jobs:
           name: "Generate env.json file"
           command: |
             echo '{ "currencyApiKey": "'$CURRENCIES_API_KEY'" }' > env.json
-            cat env.json
       - run: yarn build
       - run: git config --global user.email $GH_EMAIL
       - run: git config --global user.name "$GH_NAME"

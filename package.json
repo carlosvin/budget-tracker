@@ -5,11 +5,10 @@
   "license": "MIT",
   "scripts": {
     "start": "parcel src/index.html --https",
-    "clean": "shx rm -rf dist",
+    "clean": "shx rm -rf dist .cache",
     "build": "parcel build src/index.html --public-url ./",
     "test": "jest",
     "lint": "eslint --ext .jsx,.js,.tsx,.ts src --fix",
-    "generateEnv": "shx echo { \"currencyApiKey\": \"$CURRENCIES_API_KEY\" } > env.json",
     "deploy-gh": "gh-pages -d dist",
     "deploy": "yarn clean && yarn build && yarn deploy-gh"
   },
