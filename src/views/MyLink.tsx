@@ -1,8 +1,9 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
+import { ListItemProps } from "@material-ui/core/ListItem";
 
-export const MyLink = React.forwardRef((props: {href: string}, ref: React.LegacyRef<Link>) => (
-    <Link to={props.href} {...props} ref={ref} />
+export const MyLink = React.forwardRef((props: ListItemProps, ref: React.LegacyRef<Link>) => (
+    <Link to={props.href||'#error'} {...props}  ref={ref} />
 ));
 
 MyLink.displayName = 'MyLink';

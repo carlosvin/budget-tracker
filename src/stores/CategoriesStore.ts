@@ -32,6 +32,10 @@ class CategoriesStore {
         this.save();
     }
 
+    getCategory (categoryId: string) {
+        return this.categories[categoryId];
+    }
+
     delete(categoryId: string) {
         if (categoryId in this.categories) {
             delete this.categories[categoryId];
