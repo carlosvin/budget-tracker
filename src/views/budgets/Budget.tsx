@@ -69,8 +69,8 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
         const et = await this.getExpensesTotal();
         this.setState({
             ...this.state,
-            totalSpent: Math.round(et),
-            averageSpent: Math.round(this.getExpensesAverage(et))
+            totalSpent: et && Math.round(et),
+            averageSpent: et && this.getExpensesAverage(et)
         });
     }
 
@@ -105,7 +105,7 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                                 
                                 <GridList cellHeight={110} cols={2} >
                                     <GridListTile key='total' >
-                                        <InfoField label='Total' value={this.total}/>
+                                        <InfoField label='Total' value={this.state.info.total}/>
                                     </GridListTile>
                                     <GridListTile key='Spent'>
                                         <InfoField label='Spent' value={this.state.totalSpent}/>
@@ -130,20 +130,6 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
         return <CircularProgress/>;
     }
 
-    get total () {
-        return `${this.state.info.total}`;
-    }
-
-    async convertToBaseCurrency(expense: Expense){
-        if (expense.currency === this.state.info.currency) {
-            return expense.amount;
-        }
-        const rate = await currenciesStore.getRate(
-            this.state.info.currency, 
-            expense.currency);
-        return expense.amount / rate;
-    }
-
     async getExpensesTotal () {
         if (this.state.expenses) {
             const values = Object.values(this.state.expenses);
@@ -153,7 +139,7 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                     if (expense.amountBaseCurrency !== undefined) {
                         total = total + expense.amountBaseCurrency;
                     } else {
-                        total = total + await this.convertToBaseCurrency(expense);
+                        total = total + await this.getAmountInBaseCurrency(expense);
                     }
                 }
                 return total;
@@ -162,12 +148,24 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
         return 0;
     }
 
+    private async getAmountInBaseCurrency(expense: Expense): Promise<number> {
+        try {
+            return await currenciesStore.getAmountInBaseCurrency(
+                this.state.info.currency, 
+                expense.currency, 
+                expense.amount);
+        } catch (err) {
+            console.warn('Could not get rate: ', err);
+            return 0;
+        }
+    }
+
     private getExpensesAverage (totalSpent: number) {
         const days = this.pastDays;
         if (days > 0) {
             return totalSpent > 0 ? Math.round(totalSpent / days) : 0;
         } else {
-            return undefined;
+            return 0;
         }
     }
 

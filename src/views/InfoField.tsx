@@ -5,7 +5,7 @@ import Typography  from '@material-ui/core/Typography';
 
 interface InfoFieldProps {
     label: string;
-    value: string|number;
+    value?: string|number;
 }
 
 export class InfoField extends React.PureComponent<InfoFieldProps> {
@@ -18,9 +18,13 @@ export class InfoField extends React.PureComponent<InfoFieldProps> {
                         {this.props.label}
                     </Typography>
                     <Typography variant="h6" component="h3">
-                        {this.props.value}
+                        {this.value}
                     </Typography>
                 </CardContent>
             </Card>);
+    }
+
+    get value() {
+        return this.props.value || '-';
     }
 }
