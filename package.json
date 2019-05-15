@@ -24,8 +24,7 @@
     "react": "^16",
     "react-dom": "^16",
     "react-router-dom": "^5.0.0",
-    "regenerator-runtime": "^0.13.2",
-    "src": "^1.1.2"
+    "regenerator-runtime": "^0.13.2"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",
