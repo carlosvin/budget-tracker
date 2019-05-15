@@ -4,7 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { TextInput } from './TextInput';
 
 interface CurrencyInputState {
-    currencies: { [key: string]: string};
+    currencies: { [currency: string]: string};
     selected?: string;
 }
 
@@ -18,8 +18,16 @@ export class CurrencyInput extends React.PureComponent<CurrencyInputProps, Curre
     constructor(props: CurrencyInputProps) {
         super(props);
         this.state = {
-            currencies: currenciesStore.getCurrencies()
-        }
+            currencies: {}, 
+            selected: props.selectedCurrency};
+        this.initCurrencies();
+    }
+
+    private async initCurrencies () {
+        this.setState ({
+            ...this.state,
+            currencies: await currenciesStore.getCurrencies()
+        });
     }
 
     private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
