@@ -4,21 +4,19 @@ import { RemoteApi } from "./RemoteApi";
 
 class CurrenciesApi {
 
-    private primaryApi: RemoteApi;
-    private backupApi: RemoteApi;
+    private readonly primary: RemoteApi;
+    private _backup?: RemoteApi;
 
-    private get backup () {
-        if (this.backupApi === undefined) {
-            this.backupApi = new RemoteApi('https://api.exchangeratesapi.io');
-        }
-        return this.backupApi;
+    constructor () {
+        this.primary = new RemoteApi('https://api.currencystack.io');
     }
 
-    private get primary () {
-        if (this.primaryApi === undefined) {
-            this.primaryApi = new RemoteApi('https://api.currencystack.io');
+    // most likely it won't be instantiated, that's why it is lazy loaded
+    private get backup () {
+        if (this._backup === undefined) {
+            this._backup = new RemoteApi('https://api.exchangeratesapi.io');
         }
-        return this.primaryApi;
+        return this._backup;
     }
 
     private async getRatesBackup (baseCurrency: string) {
@@ -42,11 +40,17 @@ class CurrenciesApi {
         try {
             resp = await this.getRatesPrimary(baseCurrency, availableCurrencies);
         } catch (error) {
-            console.warn('Trying to fetch backup API', error);
+            console.warn('Trying to fetch backup API: ', error);
             resp = await this.getRatesBackup(baseCurrency);
         } finally {
-            if (expectedCurrencyMatch && !(expectedCurrencyMatch in resp.data.rates)) {
-                console.warn(`${expectedCurrencyMatch} not found`);
+            if (!resp) {
+                throw new Error(`There is no response for ${baseCurrency}`);
+            }
+            if (expectedCurrencyMatch && resp && !(expectedCurrencyMatch in resp.data.rates)) {
+                throw new Error(`There is no match for ${baseCurrency} => ${expectedCurrencyMatch}`);
+            }
+            if (Object.keys(resp.data.rates).length <= 0) {
+                throw new Error(`Empty response for ${baseCurrency}`);
             }
             return resp.data;
         }

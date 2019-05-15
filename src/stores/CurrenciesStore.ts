@@ -1,22 +1,28 @@
 import { CurrencyRates } from "../interfaces";
 import { currenciesApi } from "../api/CurrenciesApi";
+import { dateDiff } from "../utils";
 
 class CurrenciesStore {
     static readonly KEY = 'currencyRates';
-
+    static readonly KEY_TS = 'currencyTimestamps';
+    // TODO make this configurable
+    static readonly MAX_DAYS = 2;
+    
     private _currencies: { [currency: string]: string };
     private _areCurrenciesInitialized: boolean;
-    private _rates?: { [currency: string]: CurrencyRates };
+    private _rates: { [currency: string]: CurrencyRates };
+    private _timestamps: { [currency: string]: number };
 
     constructor() {
         this._areCurrenciesInitialized = false;
         this._currencies = {};
-        this.loadRatesFromDisk();
+        this._timestamps = this.getTimestampsFromDisk();
+        this._rates = this.getRatesFromDisk();
     }
 
     async getCurrencies() {
         if (this._areCurrenciesInitialized === false) {
-            this.importCurrencies();
+            await this.importCurrencies();
         }
         return this._currencies;
     }
@@ -26,12 +32,10 @@ class CurrenciesStore {
      * @throws Error when there is no rate for that pair of currencies
      */
     async getRate(baseCurrency: string, currencyTo: string) {
-        if (this._rates === undefined || !(baseCurrency in this._rates)) {
-            await this.fetchRates(baseCurrency);
+        if (this.shouldFetch(baseCurrency)) {
+            await this.fetchRates(baseCurrency, currencyTo);
         }
-        if (this._rates && 
-            baseCurrency in this._rates && 
-            currencyTo in this._rates[baseCurrency].rates) {
+        if (this.isPresent(baseCurrency, currencyTo)) {
             return this._rates[baseCurrency].rates[currencyTo];
         }
         throw Error(`Rate not found ${baseCurrency} => ${currencyTo}`);
@@ -51,9 +55,17 @@ class CurrenciesStore {
         return amount;
     }
 
+    private isUpdated(baseCurrency: string) {
+        return baseCurrency in this._timestamps && 
+            dateDiff(
+                this._timestamps[baseCurrency], 
+                new Date().getTime()
+            ) <= CurrenciesStore.MAX_DAYS;
+    }
+
     private async importCurrencies () {
         const importedCurrencies = (await import('./currency.json')) as 
-        {AlphabeticCode: string; WithdrawalDate: string; Currency: string}[];
+            {AlphabeticCode: string; WithdrawalDate: string; Currency: string}[];
         Object
             .values(importedCurrencies)
             .filter( c => 
@@ -67,30 +79,60 @@ class CurrenciesStore {
         this._areCurrenciesInitialized = true;
     }
 
-    private async fetchRates(baseCurrency: string) {
-        try {
-            if (this._rates === undefined) {
-                this._rates = {};
-            }
-            const rates = await currenciesApi.getRates(
-                baseCurrency, 
-                Object.keys(await this.getCurrencies()));
+    /** 
+     * @throws Error when it returns invalid response after fetching currencies  
+     */
+    private async fetchRates(baseCurrency: string, expectedCurrencyMatch?: string) {
+        if (this._rates === undefined) {
+            this._rates = {};
+        }
+        const currencies = await this.getCurrencies();
+        const rates = await currenciesApi.getRates(
+            baseCurrency, 
+            Object.keys(currencies),
+            expectedCurrencyMatch);
+        if (Object.keys(rates.rates).length > 0) {
             this._rates[baseCurrency] = rates;
-            this.saveToDisk();
-        } catch (error) {
-            console.warn('Cannot read currencies: ', error);
+            this._timestamps[baseCurrency] = new Date().getTime()
+            this.saveTimestampsToDisk();
+            this.saveRatesToDisk();
         }
     }
 
-    private loadRatesFromDisk () {
+    private shouldFetch (baseCurrency: string) {
+        return this._rates === undefined || 
+            !(baseCurrency in this._rates) || 
+            !this.isUpdated(baseCurrency);
+    }
+
+    private isPresent(baseCurrency: string, toCurrency: string){
+        return this._rates && 
+            baseCurrency in this._rates && 
+            toCurrency in this._rates[baseCurrency].rates;
+    }
+
+    private getRatesFromDisk () {
         const ratesStr = localStorage.getItem(CurrenciesStore.KEY);
         if (ratesStr && ratesStr.length > 0) {
-            this._rates = JSON.parse(ratesStr);
+            return JSON.parse(ratesStr);
         }
+        return {};
     }
 
-    private async saveToDisk () {
+    private getTimestampsFromDisk () {
+        const timestampsStr = localStorage.getItem(CurrenciesStore.KEY_TS);
+        if (timestampsStr && timestampsStr.length > 0) {
+            return JSON.parse(timestampsStr);
+        }
+        return {};
+    }
+
+    private saveRatesToDisk () {
         localStorage.setItem(CurrenciesStore.KEY, JSON.stringify(this._rates));
+    }
+
+    private saveTimestampsToDisk () {
+        localStorage.setItem(CurrenciesStore.KEY_TS, JSON.stringify(this._timestamps));
     }
 }
 
