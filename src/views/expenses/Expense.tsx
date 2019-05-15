@@ -11,12 +11,11 @@ import {WithStyles} from "@material-ui/core/styles/withStyles";
 import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import Link from '@material-ui/core/Link';
 import { MyLink } from "../MyLink";
-import { BudgetUrl, getDateString } from "../../utils";
+import { BudgetUrl, getDateString, uuid } from "../../utils";
 import { SaveButton, DeleteButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
-import uuid = require("uuid");
-import { countriesStore } from "../../stores/CountriesStore";
+import { countriesStore, CountryEntry } from "../../stores/CountriesStore";
 
 const myStyles = ({ palette, spacing }: Theme) => createStyles({
     root: {
@@ -37,6 +36,7 @@ interface ExpenseViewState {
     expense: {date: string}&Expense;
     budget: Budget;
     currencies: string[];
+    countries: CountryEntry[];
 }
 
 export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseViewState> {
@@ -46,43 +46,50 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     constructor(props: ExpenseViewProps) {
         super(props);
         this.budgetUrl = new BudgetUrl(props.match.params.budgetId);
-        this.initBudget(props.match.params.budgetId);
         if (props.match.params.expenseId) {
             this.initExpense(
                 props.match.params.budgetId,
                 props.match.params.expenseId);    
         } else {
-            const now = new Date();
             this.state = {
-                ...this.state, 
-                expense: {
-                    amount: 0, 
-                    description: '', 
-                    identifier: uuid(), 
-                    when: now.getTime(),
-                    categoryId: Object.keys(categoriesStore.getCategories())[0], 
-                    currency: '',
-                    date: getDateString(now),
-                    countryCode: ''
-                }
+                ...this.state,
+                countries: [],
+                expense: this.createDefaultExpense()
             };
-            this.initCountry();
         }
+        this.initCountries();
+        this.initCurrentCountry();
+        this.initBudget(props.match.params.budgetId);
     }
 
-    private async initCountry(){
-        try {
-            const countryCode = await countriesStore.getCurrentCountry();
-            this.setState({
-                ...this.state,
-                expense: {
-                    ...this.state.expense,
-                    countryCode: countryCode
-                }
-            });
-        } catch (err) {
-            console.warn(err);
-        }        
+    private createDefaultExpense (): {date: string}&Expense {
+        const now = new Date();
+        return {
+            amount: 0, 
+            description: '', 
+            identifier: uuid(), 
+            when: now.getTime(),
+            categoryId: Object.keys(categoriesStore.getCategories())[0], 
+            currency: '',
+            date: getDateString(now),
+            countryCode: ''
+        };
+    }
+
+    private async initCountries() {
+        const countries = await countriesStore.getCountries();
+        this.setState({...this.state, countries});
+    }
+
+    private async initCurrentCountry(){
+        const countryCode = await countriesStore.getCurrentCountry();
+        this.setState({
+            ...this.state,
+            expense: {
+                ...this.state.expense,
+                countryCode: countryCode
+            }
+        });
     }
 
     private get isAddView(){
@@ -172,9 +179,12 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                         <Grid item>
                             <this.WhenInput />
                         </Grid>
-                        <Grid item>
-                            <this.CountryInput />
-                        </Grid>
+                        { this.state.countries &&
+                            <Grid item>
+                                <this.CountryInput countries={this.state.countries}/>
+                            </Grid>
+                        }
+                        
                         <Grid item >
                             <this.TextInput label='Description' value={this.state.expense.description} />
                         </Grid>
@@ -218,7 +228,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                 amountBaseCurrency: amount}})
     );
 
-    private CountryInput = () => (
+    private CountryInput = (props: { countries: CountryEntry[]}) => (
         <this.TextInput
             label='Country'
             onChange={this.handleChange('countryCode')}
@@ -227,7 +237,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             required 
             SelectProps={{ native: true }} >
             {
-                countriesStore.getCountries()
+                props.countries
                     .map(c => (
                         <option 
                             key={`country-option-${c.code}`} 

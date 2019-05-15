@@ -72,3 +72,8 @@ export function round(quantity: number, digits = 2){
     const coefficient = Math.pow(10, digits);
     return Math.round(quantity * coefficient) / coefficient
 }
+
+export function uuid() {
+    // TODO generate uuid following spec
+    return new Date().getTime().toString();
+}

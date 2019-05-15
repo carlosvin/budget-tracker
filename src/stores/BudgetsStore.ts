@@ -1,6 +1,6 @@
 import { Budget, Expense, ImportedExpense } from "../interfaces";
 import { FilesApi } from "../api/FileApi";
-import uuid = require("uuid");
+import { uuid } from "../utils";
 
 class BudgetsStore {
 

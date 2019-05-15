@@ -1,4 +1,3 @@
-import * as countries from './countries.json';
 import { GeoApi } from '../api/GeoApi';
 
 export interface CountryEntry {
@@ -8,17 +7,19 @@ export interface CountryEntry {
 
 class CountriesStore {
 
-    private readonly countries: CountryEntry[];
+    private _countries: CountryEntry[];
     private readonly geoApi: GeoApi;
     private currentCountryCode?: string;
 
     constructor() {
-        this.countries = Object.values(countries);
         this.geoApi = new GeoApi();
     }
 
-    getCountries() {
-        return this.countries;
+    async getCountries() {
+        if (this._countries === undefined) {
+            this._countries = Object.values(await import('./countries.json'));
+        }
+        return this._countries;
     }
 
     async getCurrentCountry() {

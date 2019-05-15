@@ -6,7 +6,7 @@ import { RouterProps } from 'react-router';
 import { SaveButton, CancelButton, DeleteButton } from '../buttons';
 import { TextInput } from '../TextInput';
 import { TextFieldProps } from '@material-ui/core/TextField';
-import uuid = require('uuid');
+import { uuid } from '../../utils';
 
 interface CategoryFormProps extends RouterProps{
     name?: string;

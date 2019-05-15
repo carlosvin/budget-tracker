@@ -3,14 +3,13 @@ import { RouteComponentProps } from "react-router";
 import { Budget } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { BudgetUrl, getDateString, goBack } from "../../utils";
+import { BudgetUrl, getDateString, goBack, uuid } from "../../utils";
 import { currenciesStore } from "../../stores/CurrenciesStore";
 import Grid from "@material-ui/core/Grid";
 import { SaveButton, CancelButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
 import { TextFieldProps } from "@material-ui/core/TextField";
-import uuid = require("uuid");
 
 interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>{
 }
