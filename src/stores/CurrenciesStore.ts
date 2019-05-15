@@ -39,8 +39,8 @@ class CurrenciesStore {
             if (this.rates === undefined) {
                 this.rates = {};
             }
-            const ratesResponse = await currenciesApi.getRates(baseCurrency, Object.keys(this.currencies));
-            this.rates[baseCurrency] = ratesResponse.data;
+            const rates = await currenciesApi.getRates(baseCurrency, Object.keys(this.currencies));
+            this.rates[baseCurrency] = rates;
             this.saveToDisk();
         } catch (error) {
             console.warn('Cannot read currencies: ', error);

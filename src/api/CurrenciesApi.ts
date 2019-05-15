@@ -37,14 +37,18 @@ class CurrenciesApi {
             });
     }
     
-    async getRates(baseCurrency: string, availableCurrencies: string[], expectedCurrencyMap?: string) {
-        
+    async getRates(baseCurrency: string, availableCurrencies: string[], expectedCurrencyMatch?: string) {
+        let resp;
         try {
-            const resp = this.getRatesPrimary(baseCurrency, availableCurrencies);
-            return resp;
+            resp = await this.getRatesPrimary(baseCurrency, availableCurrencies);
         } catch (error) {
             console.warn('Trying to fetch backup API', error);
-            return this.getRatesBackup(baseCurrency);
+            resp = await this.getRatesBackup(baseCurrency);
+        } finally {
+            if (expectedCurrencyMatch && !(expectedCurrencyMatch in resp.data.rates)) {
+                console.warn(`${expectedCurrencyMatch} not found`);
+            }
+            return resp.data;
         }
     }
 }
