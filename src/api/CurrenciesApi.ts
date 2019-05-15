@@ -28,16 +28,17 @@ class CurrenciesApi {
 
     private async getRatesPrimary (baseCurrency: string, targetCurrencies: string[]) {
         return this.primary.client.get<CurrencyRates>(`/currency`, 
-        {
-            params: {
-                base: baseCurrency,
-                target: targetCurrencies.join(','),
-                apikey: conf.currencyApiKey
-            }
-        });
+            {
+                params: {
+                    base: baseCurrency,
+                    target: targetCurrencies.join(','),
+                    apikey: conf.currencyApiKey
+                }
+            });
     }
     
     async getRates(baseCurrency: string, availableCurrencies: string[], expectedCurrencyMap?: string) {
+        
         try {
             const resp = this.getRatesPrimary(baseCurrency, availableCurrencies);
             return resp;

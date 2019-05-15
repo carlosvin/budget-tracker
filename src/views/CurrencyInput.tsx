@@ -4,7 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { TextInput } from './TextInput';
 
 interface CurrencyInputState {
-    currencies: { [key: string] : string};
+    currencies: { [key: string]: string};
     selected?: string;
 }
 

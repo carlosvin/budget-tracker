@@ -159,8 +159,10 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                             <AmountWithCurrencyInput 
                                 baseCurrency={this.state.budget && this.state.budget.currency}
                                 onAmountChange={this.handleAmountChange}
+                                onAmountInBaseCurrencyChange={this.handleAmountInBaseCurrencyChange}
                                 onCurrencyChange={this.handleCurrencyChange}
                                 amount={this.state.expense.amount}
+                                amountInBaseCurrency={this.state.expense.amountBaseCurrency}
                                 selectedCurrency={this.state.expense.currency}
                             />
                         </Grid>
@@ -207,6 +209,13 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
             expense: {
                 ...this.state.expense, 
                 amount}})
+    );
+
+    private handleAmountInBaseCurrencyChange = (amount: number) => (
+        this.setState({
+            expense: {
+                ...this.state.expense, 
+                amountBaseCurrency: amount}})
     );
 
     private CountryInput = () => (

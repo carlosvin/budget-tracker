@@ -67,4 +67,8 @@ export class ExpenseUrl {
 export function getDateString (date = new Date()) {
     return date.toISOString().slice(0,10);
 }
-export const TODAY_STRING = getDateString();
+
+export function round(quantity: number, digits = 2){
+    const coefficient = Math.pow(10, digits);
+    return Math.round(quantity * coefficient) / coefficient
+}

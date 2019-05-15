@@ -57,6 +57,19 @@ class CurrenciesStore {
     private async saveToDisk () {
         localStorage.setItem(CurrenciesStore.KEY, JSON.stringify(this.rates));
     }
+
+    /** 
+     * @returns amount in base currency. \ 
+     * If baseCurrency == currency it returns the same input @param amount.
+     * It returns undefined if cannot get currency rate.
+     */
+    async getAmountInBaseCurrency (baseCurrency: string, currency: string, amount: number) {
+        if (baseCurrency && currency !== baseCurrency) {
+            const rate = await this.getRate(baseCurrency, currency);
+            return rate ? amount / rate : undefined;
+        }
+        return amount;
+    }
 }
 
 export const currenciesStore = new CurrenciesStore();
