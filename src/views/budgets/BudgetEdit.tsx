@@ -4,12 +4,10 @@ import { Budget } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BudgetUrl, getDateString, goBack, uuid } from "../../utils";
-import { currenciesStore } from "../../stores/CurrenciesStore";
 import Grid from "@material-ui/core/Grid";
 import { SaveButton, CancelButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
-import { TextFieldProps } from "@material-ui/core/TextField";
 
 interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>{
 }
@@ -33,7 +31,7 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
         } else {
             const now = new Date();
             this.state = {
-                currency: currenciesStore.base,
+                currency: 'EUR',
                 from: now.getTime(),
                 to: now.getTime(),
                 start: getDateString(now),
@@ -68,17 +66,6 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
             error: undefined,
             [name]: event.target.value
         });
-    }
-
-    private TextInput = (props: TextFieldProps) => {
-        const propertyName = props.label.toString().toLowerCase();
-        return (
-            <TextInput
-                {...props}
-                onChange={this.handleChange(propertyName)}
-                required      
-            />
-        );
     }
 
     private handleSubmit = (e: React.SyntheticEvent) => {
@@ -124,9 +111,9 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
         if (this.state) {
             return (
                 <form onSubmit={this.handleSubmit}>
-                    <this.TextInput label='Name' value={this.state.name} />
-                    <this.TextInput label='Start' value={this.state.start} type='date' error={this.hasError}/>
-                    <this.TextInput label='End' value={this.state.end} type='date' error={this.hasError}/>
+                    <TextInput label='Name' value={this.state.name} onChange={this.handleChange('name')} required />
+                    <TextInput label='Start' value={this.state.start} type='date' onChange={this.handleChange('start')} error={this.hasError} required/>
+                    <TextInput label='End' value={this.state.end} type='date' error={this.hasError} onChange={this.handleChange('end')}/>
                     <AmountWithCurrencyInput 
                         onAmountChange={this.handleAmountChange}
                         onCurrencyChange={this.handleCurrencyChange}

@@ -52,7 +52,7 @@ export class AmountInput extends React.PureComponent<AmountInputProps, AmountInp
 }
 
 interface AmountCurrencyInputProps extends CurrencyInputProps, AmountInputProps {
-    baseCurrency: string;
+    baseCurrency?: string;
     amountInBaseCurrency?: number;
     onAmountInBaseCurrencyChange?: (amount: number) => void;
 }
@@ -67,10 +67,11 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
         super(props);
         this.state = { amountInBaseCurrency: props.amountInBaseCurrency };
         if (!props.amountInBaseCurrency && 
+            props.baseCurrency &&
             props.selectedCurrency && 
             props.amount && 
             AmountWithCurrencyInput.isDifferentCurrency(props)) {
-            this.calculateAmountInBaseCurrency(props.amount, props.selectedCurrency);
+            this.calculateAmountInBaseCurrency(props.amount, props.baseCurrency, props.selectedCurrency);
         }
     }
 
@@ -96,8 +97,8 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
         if (this.props.onAmountChange) {
             this.props.onAmountChange(amount);
         }
-        if (this.props.selectedCurrency && this.isDifferentCurrency) {
-            this.calculateAmountInBaseCurrency(amount, this.props.selectedCurrency);
+        if (this.props.selectedCurrency && this.props.baseCurrency && this.isDifferentCurrency) {
+            this.calculateAmountInBaseCurrency(amount, this.props.baseCurrency, this.props.selectedCurrency);
         }
     }
 
@@ -105,14 +106,14 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
         if (this.props.onCurrencyChange) {
             this.props.onCurrencyChange(currency);
         }
-        if (this.props.amount && this.isDifferentCurrency) {
-            this.calculateAmountInBaseCurrency(this.props.amount, currency);
+        if (this.props.amount && this.props.baseCurrency && this.isDifferentCurrency) {
+            this.calculateAmountInBaseCurrency(this.props.amount, this.props.baseCurrency, currency);
         }
     }
 
-    private async calculateAmountInBaseCurrency (amount: number, currency: string) {
+    private async calculateAmountInBaseCurrency (amount: number, baseCurrency: string, currency: string) {
         const amountInBaseCurrency = await currenciesStore.getAmountInBaseCurrency(
-            this.props.baseCurrency, 
+            baseCurrency, 
             currency,
             amount);
         this.setState({amountInBaseCurrency: round(amountInBaseCurrency)});
