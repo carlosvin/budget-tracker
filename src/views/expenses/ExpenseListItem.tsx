@@ -40,7 +40,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
                             direction='column' 
                             alignItems='flex-end' 
                             justify='flex-end'>
-                            <Typography variant="subheading">
+                            <Typography variant="subtitle1">
                                 { this.primaryAmount }
                             </Typography>
                             { !this.isBaseCurrency && 
