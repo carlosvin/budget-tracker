@@ -4,8 +4,8 @@ import ListItem from '@material-ui/core/ListItem';
 import Avatar from '@material-ui/core/Avatar';
 import { Budget, Expense } from "../../interfaces";
 import { MyLink } from "../MyLink";
-import { getIcon } from "../categories/icons";
 import { categoriesStore } from "../../stores/CategoriesStore";
+import { iconsStore } from "../../stores/IconsStore";
 
 
 interface ExpenseListItemProps {
@@ -35,7 +35,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
     }
 
     get Icon (){
-        return getIcon(this.props.expense.categoryId);
+        return iconsStore.textSearchIcon(this.props.expense.categoryId);
     }
 
     get category () {
