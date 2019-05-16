@@ -1,5 +1,4 @@
 import * as React from "react";
-import { TextFieldProps } from "@material-ui/core/TextField";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
 import { Budget, Expense } from "../../interfaces";
@@ -186,7 +185,10 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                         }
                         
                         <Grid item >
-                            <this.TextInput label='Description' value={this.state.expense.description} />
+                            <TextInput 
+                                label='Description' 
+                                value={this.state.expense.description}
+                                onChange={this.handleChange('description')} />
                         </Grid>
                     </Grid>
                     <this.Actions />
@@ -229,7 +231,7 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
     );
 
     private CountryInput = (props: { countries: CountryEntry[]}) => (
-        <this.TextInput
+        <TextInput
             label='Country'
             onChange={this.handleChange('countryCode')}
             value={this.state.expense.countryCode}
@@ -244,29 +246,23 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
                             value={c.code}>
                             {c.name}
                         </option>))}
-        </this.TextInput>
+        </TextInput>
     );
     
     private CategoryInput = () => (
-        <this.TextInput
+        <TextInput
             label='Category'
+            onChange={this.handleChange('categoryId')}
             value={this.state.expense.categoryId}
-            helperText={<Link href='/categories/add' component={MyLink}>Add category</Link>}
+            helperText={<Link component={MyLink} href='/categories/add'>Add category</Link>}
             select
             required 
-            onChange={this.handleChange('categoryId')}
             SelectProps={{ native: true }} >
             {Object.entries(this.categories).map(
                 ([k, v]) => (
-                    <option key={`category-option-${k}`} value={v}>{v}</option>))}
-        </this.TextInput>
+                    <option key={`category-option-${k}`} value={v.id}>{v.name}</option>))}
+        </TextInput>
     );
-
-    private TextInput = (props: TextFieldProps) => (
-        <TextInput
-            onChange={this.handleChange(props.label.toString().toLowerCase())}
-            {...props}
-        />);
             
     private Actions = () => (
         <Grid container direction='row' justify='space-evenly' alignContent='center'>

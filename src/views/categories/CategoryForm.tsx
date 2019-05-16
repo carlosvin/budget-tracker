@@ -9,89 +9,47 @@ import { TextFieldProps } from '@material-ui/core/TextField';
 import { uuid } from '../../utils';
 import { CategoryIconButton } from './CategoryIconButton';
 import { IconsDialogSelector } from './IconsDialogSelector';
-import { iconsStore } from '../../stores/IconsStore';
+import { Category } from '../../interfaces';
 
-interface CategoryFormProps extends RouterProps{
-    name?: string;
-    categoryId?: string;
-    icon?: string;
+interface CategoryFormProps extends RouterProps, Partial<Category> {
     direction?: GridDirection;
     hideCancel?: boolean;
     closeAfterSave?: boolean;
     onChange?: (categoryId: string) => void;
 }
 
-interface CategoryFormState  {
-    name: string; 
-    categoryId: string;
+interface CategoryFormState extends Category {
     dialogOpen: boolean;
-    selectedIcon: string;
 }
 
 export class CategoryForm extends React.PureComponent<CategoryFormProps, CategoryFormState> {
-
-    private readonly store = categoriesStore;
 
     constructor(props: CategoryFormProps){
         super(props);
         this.state = {
             name: props.name || '',
-            categoryId: props.categoryId || uuid(),
-            dialogOpen: false,
-            selectedIcon: props.icon || iconsStore.defaultIconName
+            id: props.id || uuid(),
+            icon: props.icon || 'Label',
+            dialogOpen: false
         };
     }
 
-    private handleSubmit = (e: React.SyntheticEvent) => {
-        e.preventDefault();
-        this.store.setCategory(this.state.categoryId, this.state.name);
-        this.onChange();
-        if (this.props.closeAfterSave) {
-            this.close();
-        }
-    }
-
-    private handleDelete = (e: React.SyntheticEvent) => {
-        e.preventDefault();
-
-        if (this.store.delete(this.state.categoryId)){
-            this.onChange();
-        }
-        if (this.props.closeAfterSave) {
-            this.close();
-        }
-    }
-
-    private onChange = () => {
-        if (this.props.onChange) {
-            this.props.onChange(this.state.categoryId);
-        }
-    }
-    
-    private close = () => {
-        if (this.props.history.length > 2) {
-            this.props.history.goBack();
-        } else {
-            this.props.history.replace('/');
-        }
-    }
-    
     render () {
         return (
             <form onSubmit={this.handleSubmit}>
                 <Grid container direction={this.direction}>
                     <Grid item>
-                        <this.TextInput 
+                        <TextInput 
                             label={ this.direction === 'row' ? '' : 'Category Name' }
                             value={ this.state.name }
-                            onChange={this.handleChange}
+                            onChange={this.handleChangeName}
                             style={{ margin: 8 }}
                             margin='dense' />
                     </Grid>
                     <Grid item>
                         <CategoryIconButton 
-                            name={this.state.selectedIcon} 
-                            onClick={ this.handleIconChange } 
+                            name={this.state.icon} 
+                            onClick={ this.handleClickChangeIcon } 
                             />
                     </Grid>
                     
@@ -108,7 +66,7 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, Categor
                 <IconsDialogSelector 
                     onClose={this.handleCloseDialog} 
                     open={this.state && this.state.dialogOpen} 
-                    selectedValue={this.state.selectedIcon}/>
+                    selectedValue={this.state.icon}/>
             </form>
         );
     }
@@ -120,23 +78,51 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, Categor
     handleCloseDialog = (selectedIcon: string) => {
         this.setState({
             ...this.state,
-            selectedIcon,
+            icon: selectedIcon,
             dialogOpen: false
         });
     }
 
-    handleIconChange = () => {
-        this.setState({ dialogOpen: true });
+    handleClickChangeIcon = () => {
+        this.setState({ ...this.state, dialogOpen: true });
     }
 
-    handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({ name: event.target.value });
+    handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({ ...this.state, name: event.target.value });
     }
 
-    private TextInput = (props: TextFieldProps) => (
-        <TextInput
-            {...props}
-            onChange={this.handleChange}
-        />);
-            
+    private handleSubmit = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        categoriesStore.setCategory(this.state);
+        this.onChange();
+        if (this.props.closeAfterSave) {
+            this.close();
+        }
+    }
+
+    private handleDelete = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+
+        if (categoriesStore.delete(this.state.id)){
+            this.onChange();
+        }
+        if (this.props.closeAfterSave) {
+            this.close();
+        }
+    }
+
+    private onChange = () => {
+        if (this.props.onChange) {
+            this.props.onChange(this.state.id);
+        }
+    }
+    
+    private close = () => {
+        if (this.props.history.length > 2) {
+            this.props.history.goBack();
+        } else {
+            this.props.history.replace('/');
+        }
+    }
+    
 }

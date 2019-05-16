@@ -66,7 +66,10 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
     constructor(props: AmountCurrencyInputProps) {
         super(props);
         this.state = { amountInBaseCurrency: props.amountInBaseCurrency };
-        if (props.amountInBaseCurrency && AmountWithCurrencyInput.isDifferentCurrency(props)) {
+        if (!props.amountInBaseCurrency && 
+            props.selectedCurrency && 
+            props.amount && 
+            AmountWithCurrencyInput.isDifferentCurrency(props)) {
             this.calculateAmountInBaseCurrency(props.amount, props.selectedCurrency);
         }
     }
@@ -85,7 +88,7 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
 
     get baseAmount () {
         if (this.isDifferentCurrency && this.state.amountInBaseCurrency) {
-            return `${this.state.amountInBaseCurrency} ${this.props.baseCurrency}`;
+            return `${round(this.state.amountInBaseCurrency)} ${this.props.baseCurrency}`;
         }
     }
 
@@ -93,7 +96,7 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
         if (this.props.onAmountChange) {
             this.props.onAmountChange(amount);
         }
-        if (this.isDifferentCurrency) {
+        if (this.props.selectedCurrency && this.isDifferentCurrency) {
             this.calculateAmountInBaseCurrency(amount, this.props.selectedCurrency);
         }
     }
@@ -102,7 +105,7 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
         if (this.props.onCurrencyChange) {
             this.props.onCurrencyChange(currency);
         }
-        if (this.isDifferentCurrency) {
+        if (this.props.amount && this.isDifferentCurrency) {
             this.calculateAmountInBaseCurrency(this.props.amount, currency);
         }
     }

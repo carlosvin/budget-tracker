@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-export declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
-export declare type IconsMap = {[k: string]: LazyIcon};
+declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
+declare type IconsMap = {[k: string]: LazyIcon};
 
-export const Icons: IconsMap = {
+const Icons: IconsMap = {
     Beach: React.lazy(() => import('@material-ui/icons/BeachAccess')),
     Bar: React.lazy(() => import('@material-ui/icons/LocalBar')),
     Cafe: React.lazy(() => import('@material-ui/icons/LocalCafe')),
@@ -31,125 +31,23 @@ export const Icons: IconsMap = {
     Smoking: React.lazy(() => import('@material-ui/icons/SmokingRooms')),
     Mall: React.lazy(() => import('@material-ui/icons/LocalMall')),
     Pool: React.lazy(() => import('@material-ui/icons/Pool')),
+    Label: React.lazy(() => import('@material-ui/icons/Label')),
 };
 
 export class IconsStore {
-
-    public readonly icons: IconsMap = {
-        'beach':        Icons.Beach,
-        'vacations':    Icons.Beach,
-        'general':      Icons.Beach,
-        'default':      Icons.Beach,
-
-        'drink':        Icons.Bar,
-        'bar':          Icons.Bar,
-        'pub':          Icons.Bar,
-
-        'coffee':       Icons.Cafe,
-        'cafe':         Icons.Cafe,
-        'hotDrink':     Icons.Cafe, 
-
-        'flight':       Icons.Flight,
-
-        'train':        Icons.Train,
-        'transport':    Icons.Train,
-
-        'bus':          Icons.Bus,
-
-        'car':          Icons.Taxi,
-        'taxi':         Icons.Taxi,
-        'uber':         Icons.Taxi,
-
-        'boat':         Icons.Boat,
-
-        'atm':          Icons.Atm,
-        'currency':     Icons.Atm,
-        'fees':         Icons.Atm,
-        'exchange':     Icons.Atm,
-
-        'fastfood':     Icons.Fastfood,
-        'burger':       Icons.Fastfood,
-
-        'restaurants':  Icons.Restaurant,
-        'dinner':       Icons.Restaurant,
-        'lunch':        Icons.Restaurant,
-        'food':         Icons.Restaurant,
-
-        'laundry':      Icons.Laundry,
-
-        'grocery':      Icons.Grocery,
-
-        'gasStation':   Icons.GasStation,
-        'diesel':       Icons.GasStation,
-        'fuel':         Icons.GasStation,
-
-        'hospital':     Icons.Hospital,
-        'health':       Icons.Hospital,
-        'sickness':     Icons.Hospital,
-
-        'pharmacy':     Icons.Pharmacy,
-        'hygiene':      Icons.Pharmacy,
-
-        'movie':        Icons.Movies,
-        'cine':         Icons.Movies,
-
-        'parking':      Icons.Parking,
-
-        'wc':           Icons.WC,
-        'restrooms':    Icons.WC,
-
-        'school':       Icons.School,
-        'education':    Icons.School,
-        'learning':     Icons.School,
-
-        'smartphone':   Icons.Smartphone,
-        'phone':        Icons.Smartphone,
-        'internet':     Icons.Smartphone,
-        'sim':          Icons.Smartphone,
-
-        'activity':     Icons.Activity,
-        'activities':   Icons.Activity,
-        'tours':        Icons.Activity,
-        'tickets':      Icons.Activity,
-
-        'cigarette':    Icons.Smoking,
-        'smoke':        Icons.Smoking,
-
-        'sports':       Icons.Pool,
-        'pool':         Icons.Pool,
-
-        'mall':         Icons.Mall,
-        'shopping':     Icons.Mall,
-
-        'hotel':        Icons.Hotel,
-        'hostel':       Icons.Hotel,
-        'sleeping':     Icons.Hotel,
-        'hosting':      Icons.Hotel,
-        'accommodation':Icons.Hotel,
-    };
 
     getIconNames() {
         return Object.keys(Icons);
     }
 
-    textSearchIcon (text: string) {
-        // TODO improve searching algorithm
-        const inputText = text.toLowerCase();
-        for (const k of Object.keys(this.icons)) {
-            if (k.toLowerCase() === inputText) {
-                return this.icons[k];
-            }
-        }
-        return this.icons.default;
-    }
-
     getIcon (name: string) {
-        return name in Icons ? Icons[name] : Icons.Beach;
+        return name in Icons ? Icons[name] : this.defaultIcon;
     }
 
-    get defaultIconName () {
-        return 'Beach';
+    get defaultIcon () {
+        return Icons.Label;
     }
+
 }
 
 export const iconsStore = new IconsStore();

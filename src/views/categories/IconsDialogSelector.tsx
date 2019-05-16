@@ -3,7 +3,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
-import { Icons, iconsStore } from '../../stores/IconsStore';
+import { iconsStore } from '../../stores/IconsStore';
 import { CategoryIconButton } from './CategoryIconButton';
 
 interface IconsDialogSelectorProps {

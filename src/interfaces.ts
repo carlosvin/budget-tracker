@@ -49,3 +49,11 @@ export interface ImportedExpense {
     paidBy: string;
     tripId: string;
 }
+
+export interface Category {
+    id: string;
+    name: string;
+    icon: string;
+}
+
+export declare type Categories = {[key: string]: Category};

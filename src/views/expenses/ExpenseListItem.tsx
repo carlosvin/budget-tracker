@@ -6,7 +6,8 @@ import { Budget, Expense } from "../../interfaces";
 import { MyLink } from "../MyLink";
 import { categoriesStore } from "../../stores/CategoriesStore";
 import { iconsStore } from "../../stores/IconsStore";
-
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import {round} from '../../utils';
 
 interface ExpenseListItemProps {
     budget: Budget;
@@ -28,25 +29,53 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
                     </React.Suspense>
                 </Avatar>
                 <ListItemText 
-                    primary={this.props.expense.description} 
-                    secondary={this.props.expense.amount}
+                    primary={this.categoryName} 
+                    secondary={this.props.expense.description}
                 />
+                <ListItemSecondaryAction>
+                    <ListItemText {...this.amountProps} />  
+                </ListItemSecondaryAction>
             </ListItem>);
     }
 
-    get Icon (){
-        return iconsStore.textSearchIcon(this.props.expense.categoryId);
+    get amountProps () {
+        if (this.isBaseCurrency) {
+            return { primary: this.props.expense.amount };
+        } else {
+            return {
+                primary: this.amountBase,
+                secondary: this.amount
+            };
+        }
     }
 
-    get category () {
+    get amountBase () {
+        return this.props.expense.amountBaseCurrency && round(this.props.expense.amountBaseCurrency);
+    }
+
+    get amount () {
+        return `${round(this.props.expense.amount)} ${this.props.expense.currency}`;
+    }
+
+    get isBaseCurrency () {
+        return this.props.budget.currency === this.props.expense.currency;
+    }
+
+    get Icon () {
+        const c = this.getCategory();
+        return c ? iconsStore.getIcon(c.icon) : iconsStore.defaultIcon;
+    }
+
+    get categoryName () {
+        const c = this.getCategory();
+        return c && c.name;
+    }
+
+    getCategory () {
         return categoriesStore.getCategory(this.props.expense.categoryId);
     }
 
     get href () {
         return `/budgets/${this.props.budget.identifier}/expenses/${this.props.expense.identifier}`;
-    }
-
-    get amount () {
-        return `${this.props.expense.amount} ${this.props.expense.currency} - XX EUR`;
     }
 }

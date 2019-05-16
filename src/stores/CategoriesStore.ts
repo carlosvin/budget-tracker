@@ -1,22 +1,18 @@
-
+import { Categories, Category } from "../interfaces";
 
 class CategoriesStore {
 
     // TODO sync localStorage with remote DB
 
-    private readonly categories: {[key: string]: string};
+    private readonly categories: Categories;
 
     constructor() {
         const categoriesStr = localStorage.getItem(CategoriesStore.key);
         if (categoriesStr && categoriesStr.length > 0) {
-            this.categories = JSON.parse(categoriesStr) as {[key: string]: string};
+            this.categories = JSON.parse(categoriesStr) as Categories;
         } else {
-            this.categories = {
-                'General': 'General',    
-                'Lunch': 'Lunch',    
-                'Shopping': 'Shopping'
-            };
-        }   
+            this.categories = {};
+        }
     }
 
     static get key() {
@@ -27,12 +23,16 @@ class CategoriesStore {
         return this.categories;
     }
 
-    setCategory(categoryId: string, category: string) {
-        this.categories[categoryId] = category;
+    setCategory(category: Category) {
+        this.categories[category.id] = {
+            icon: category.icon,
+            name: category.name,
+            id: category.id
+        };
         this.save();
     }
 
-    getCategory (categoryId: string) {
+    getCategory(categoryId: string): Category|undefined { 
         return this.categories[categoryId];
     }
 

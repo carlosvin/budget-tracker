@@ -3,35 +3,53 @@ import { RouterProps } from 'react-router';
 import { CategoryForm } from './CategoryForm';
 import { categoriesStore } from '../../stores/CategoriesStore';
 import { AddButton } from '../buttons';
+import { Category } from '../../interfaces';
+import { InfoField } from '../InfoField';
 
-export class CategoryList extends React.PureComponent<RouterProps, {categories: [string, string][]}> {
+interface CategoryListState {
+    categories: Category[];
+}
+export class CategoryList extends React.PureComponent<RouterProps, CategoryListState> {
 
-    constructor(props: RouterProps){
+    constructor(props: RouterProps) {
         super(props);
-        this.state = {categories: Object.entries(categoriesStore.getCategories())};
+        this.state = {categories: Object.values(categoriesStore.getCategories())};
     }
     
     render () {
         return (
             <React.Fragment>
-                { this.state.categories.map(([k, v]) => 
-                    <CategoryForm 
-                        {...this.props} 
-                        categoryId={k}
-                        name={v} 
-                        direction='row' 
-                        hideCancel={true} 
-                        key={k} 
-                        onChange={ this.handleChange }/>
-                )}
+                <this.CategoriesMap />
                 <AddButton href='/categories/add'/>
             </React.Fragment>
         );
     }
 
+    private CategoriesMap = () => {
+        if (this.state.categories.length > 0) {
+            return (
+            <React.Fragment>
+            {this.state.categories.map(c => 
+                <CategoryForm 
+                    {...this.props} 
+                    {...c}
+                    direction='row' 
+                    hideCancel={true} 
+                    key={`category-entry-${c.id}`}
+                    onChange={ this.handleChange }/>)
+            }
+            </React.Fragment>);
+        } else {
+            return <InfoField 
+                label='There are no categories' 
+                value='Please add at least one'/>;
+        }
+    }
+
+
     private handleChange = () => {
         this.setState({
-            categories: Object.entries(categoriesStore.getCategories())
+            categories: Object.values(categoriesStore.getCategories())
         });
     }
 }

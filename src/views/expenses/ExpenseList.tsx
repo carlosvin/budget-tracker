@@ -46,7 +46,7 @@ export const ExpenseList = withStyles(myStyles)(
         }
 
         get elements() {
-            return this.props.expenses 
+            return this.props.expenses && this.props.budget
             && this.expensesArray.reverse().map(
                 (expense: Expense) => 
                     <li key={`section-${expense.identifier}`} className={this.props.classes.listSection}>
