@@ -1,6 +1,8 @@
 import * as React from "react";
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import { Budget, Expense } from "../../interfaces";
 import { MyLink } from "../MyLink";
@@ -33,20 +35,28 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
                     secondary={this.props.expense.description}
                 />
                 <ListItemSecondaryAction>
-                    <ListItemText {...this.amountProps} />  
+                    <ListItemText>
+                        <Grid container 
+                            direction='column' 
+                            alignItems='flex-end' 
+                            justify='flex-end'>
+                            <Typography variant="subheading">
+                                { this.primaryAmount }
+                            </Typography>
+                            { !this.isBaseCurrency && 
+                                <Typography variant="body1" color="textSecondary">
+                                    {this.amount}
+                                </Typography> 
+                            }
+                        </Grid>
+                    </ListItemText>  
                 </ListItemSecondaryAction>
             </ListItem>);
     }
 
-    get amountProps () {
-        if (this.isBaseCurrency) {
-            return { primary: this.props.expense.amount };
-        } else {
-            return {
-                primary: this.amountBase,
-                secondary: this.amount
-            };
-        }
+    get primaryAmount () {
+        // TODO if we always save base amount, we can save this condition
+        return this.isBaseCurrency ? this.props.expense.amount : this.amountBase;
     }
 
     get amountBase () {
