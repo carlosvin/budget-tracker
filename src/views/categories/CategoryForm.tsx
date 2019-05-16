@@ -7,17 +7,28 @@ import { SaveButton, CancelButton, DeleteButton } from '../buttons';
 import { TextInput } from '../TextInput';
 import { TextFieldProps } from '@material-ui/core/TextField';
 import { uuid } from '../../utils';
+import { CategoryIconButton } from './CategoryIconButton';
+import { IconsDialogSelector } from './IconsDialogSelector';
+import { iconsStore, Icons } from '../../stores/IconsStore';
 
 interface CategoryFormProps extends RouterProps{
     name?: string;
     categoryId?: string;
+    icon?: string;
     direction?: GridDirection;
     hideCancel?: boolean;
     closeAfterSave?: boolean;
     onChange?: (categoryId: string) => void;
 }
 
-export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: string; categoryId: string}> {
+interface CategoryFormState  {
+    name: string; 
+    categoryId: string;
+    dialogOpen: boolean;
+    selectedIcon: string;
+}
+
+export class CategoryForm extends React.PureComponent<CategoryFormProps, CategoryFormState> {
 
     private readonly store = categoriesStore;
 
@@ -25,7 +36,9 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
         super(props);
         this.state = {
             name: props.name || '',
-            categoryId: props.categoryId || uuid()
+            categoryId: props.categoryId || uuid(),
+            dialogOpen: false,
+            selectedIcon: iconsStore.defaultIconName
         };
     }
 
@@ -76,6 +89,14 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
                             margin='dense' />
                     </Grid>
                     <Grid item>
+                        <CategoryIconButton 
+                            name={this.state.selectedIcon} 
+                            onClick={ this.handleIconChange }
+                            icon={ iconsStore.getIcon(this.state.selectedIcon) } 
+                            />
+                    </Grid>
+                    
+                    <Grid item>
                         <Grid container direction='row' justify='space-around'>
                             <SaveButton type='submit' disabled={this.state.name === ''} />
                             { this.props.name && 
@@ -85,12 +106,28 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, {name: 
                         </Grid>
                     </Grid>
                 </Grid>
+                <IconsDialogSelector 
+                    onClose={this.handleCloseDialog} 
+                    open={this.state && this.state.dialogOpen} 
+                    selectedValue={this.state.selectedIcon}/>
             </form>
         );
     }
 
     get direction () {
         return this.props.direction || 'column';
+    }
+
+    handleCloseDialog = (selectedIcon: string) => {
+        this.setState({
+            ...this.state,
+            selectedIcon,
+            dialogOpen: false
+        });
+    }
+
+    handleIconChange = () => {
+        this.setState({ dialogOpen: true });
     }
 
     handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

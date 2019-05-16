@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-export const Icons = {
+export declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
+export declare type IconsMap = {[k: string]: LazyIcon};
+
+export const Icons: IconsMap = {
     Beach: React.lazy(() => import('@material-ui/icons/BeachAccess')),
     Bar: React.lazy(() => import('@material-ui/icons/LocalBar')),
     Cafe: React.lazy(() => import('@material-ui/icons/LocalCafe')),
@@ -32,7 +35,7 @@ export const Icons = {
 
 export class IconsStore {
 
-    public readonly icons: {[k: string]: React.LazyExoticComponent<React.ComponentType<SvgIconProps>>} = {
+    public readonly icons: IconsMap = {
         'beach':        Icons.Beach,
         'vacations':    Icons.Beach,
         'general':      Icons.Beach,
@@ -125,6 +128,10 @@ export class IconsStore {
         'accommodation':Icons.Hotel,
     };
 
+    getComponents() {
+        return Object.values(Icons);
+    }
+
     textSearchIcon (text: string) {
         // TODO improve searching algorithm
         const inputText = text.toLowerCase();
@@ -134,6 +141,14 @@ export class IconsStore {
             }
         }
         return this.icons.default;
+    }
+
+    getIcon (name: string) {
+        return name in Icons ? Icons[name] : Icons.Beach;
+    }
+
+    get defaultIconName () {
+        return 'Beach';
     }
 }
 
