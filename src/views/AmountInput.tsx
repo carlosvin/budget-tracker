@@ -41,7 +41,7 @@ export class AmountInput extends React.PureComponent<AmountInputProps, AmountInp
                     type='number'
                     label={this.props.label || 'Amount'}
                     value={this.state.amount}
-                    inputProps={{ min: '0', step: '1', 'aria-required': true }}
+                    inputProps={{ step: '.01', 'aria-required': true }}
                     onChange={this.handleAmountChange}
                     helperText={this.props.helperText}
                 />
