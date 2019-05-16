@@ -28,17 +28,17 @@ export class CategoryList extends React.PureComponent<RouterProps, CategoryListS
     private CategoriesMap = () => {
         if (this.state.categories.length > 0) {
             return (
-            <React.Fragment>
-            {this.state.categories.map(c => 
-                <CategoryForm 
-                    {...this.props} 
-                    {...c}
-                    direction='row' 
-                    hideCancel={true} 
-                    key={`category-entry-${c.id}`}
-                    onChange={ this.handleChange }/>)
-            }
-            </React.Fragment>);
+                <React.Fragment>
+                    {this.state.categories.map(c => 
+                        <CategoryForm 
+                            {...this.props} 
+                            {...c}
+                            direction='row' 
+                            hideCancel={true} 
+                            key={`category-entry-${c.id}`}
+                            onChange={ this.handleChange }/>)
+                    }
+                </React.Fragment>);
         } else {
             return <InfoField 
                 label='There are no categories' 

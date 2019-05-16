@@ -5,7 +5,6 @@ import Grid, { GridDirection } from '@material-ui/core/Grid';
 import { RouterProps } from 'react-router';
 import { SaveButton, CancelButton, DeleteButton } from '../buttons';
 import { TextInput } from '../TextInput';
-import { TextFieldProps } from '@material-ui/core/TextField';
 import { uuid } from '../../utils';
 import { CategoryIconButton } from './CategoryIconButton';
 import { IconsDialogSelector } from './IconsDialogSelector';
@@ -50,7 +49,7 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, Categor
                         <CategoryIconButton 
                             name={this.state.icon} 
                             onClick={ this.handleClickChangeIcon } 
-                            />
+                        />
                     </Grid>
                     
                     <Grid item>

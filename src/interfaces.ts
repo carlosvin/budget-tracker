@@ -56,4 +56,6 @@ export interface Category {
     icon: string;
 }
 
-export declare type Categories = {[key: string]: Category};
+export interface Categories {
+    [key: string]: Category;
+}

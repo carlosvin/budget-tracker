@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
 declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
-declare type IconsMap = {[k: string]: LazyIcon};
+interface IconsMap {[k: string]: LazyIcon};
 
 const Icons: IconsMap = {
     Beach: React.lazy(() => import('@material-ui/icons/BeachAccess')),

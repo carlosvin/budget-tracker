@@ -23,11 +23,11 @@ export class IconsDialogSelector extends React.PureComponent<IconsDialogSelector
                 <DialogTitle id={this.titleId}>Select icon for category</DialogTitle>
                 <DialogContent>
                     <Grid container direction='row' justify='center'>
-                    { iconsStore.getIconNames().map( name => 
-                        <CategoryIconButton 
-                            onClick={this.handleItemClick} 
-                            name={name} 
-                            key={`icon-${name}`} />)} 
+                        { iconsStore.getIconNames().map( name => 
+                            <CategoryIconButton 
+                                onClick={this.handleItemClick} 
+                                name={name} 
+                                key={`icon-${name}`} />)} 
                     </Grid>
                 </DialogContent>
             </Dialog>
