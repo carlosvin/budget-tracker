@@ -9,7 +9,7 @@ import { TextFieldProps } from '@material-ui/core/TextField';
 import { uuid } from '../../utils';
 import { CategoryIconButton } from './CategoryIconButton';
 import { IconsDialogSelector } from './IconsDialogSelector';
-import { iconsStore, Icons } from '../../stores/IconsStore';
+import { iconsStore } from '../../stores/IconsStore';
 
 interface CategoryFormProps extends RouterProps{
     name?: string;
@@ -38,7 +38,7 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, Categor
             name: props.name || '',
             categoryId: props.categoryId || uuid(),
             dialogOpen: false,
-            selectedIcon: iconsStore.defaultIconName
+            selectedIcon: props.icon || iconsStore.defaultIconName
         };
     }
 
@@ -91,8 +91,7 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, Categor
                     <Grid item>
                         <CategoryIconButton 
                             name={this.state.selectedIcon} 
-                            onClick={ this.handleIconChange }
-                            icon={ iconsStore.getIcon(this.state.selectedIcon) } 
+                            onClick={ this.handleIconChange } 
                             />
                     </Grid>
                     

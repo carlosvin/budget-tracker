@@ -128,8 +128,8 @@ export class IconsStore {
         'accommodation':Icons.Hotel,
     };
 
-    getComponents() {
-        return Object.values(Icons);
+    getIconNames() {
+        return Object.keys(Icons);
     }
 
     textSearchIcon (text: string) {
