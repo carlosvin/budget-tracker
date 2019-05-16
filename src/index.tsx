@@ -19,7 +19,7 @@ class App extends React.PureComponent {
         return (
             <Router basename='/budget-tracker'>
                 <CssBaseline/>
-                <Header />
+                <Header title='Change me'/>
                 <main>
                     <Container maxWidth='lg'>
                         <Box mt={2}>
