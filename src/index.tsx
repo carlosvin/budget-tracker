@@ -3,8 +3,9 @@ import * as ReactDOM from "react-dom";
 import { Header } from "./views/Header";
 import { BrowserRouter as Router } from "react-router-dom";
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Paper from "@material-ui/core/Paper";
 import { Routes } from "./routes";
+import Container from "@material-ui/core/Container";
+import Box from "@material-ui/core/Box";
 
 class App extends React.PureComponent {
 
@@ -20,9 +21,11 @@ class App extends React.PureComponent {
                 <CssBaseline/>
                 <Header />
                 <main>
-                    <Paper elevation={1}>
-                        <Routes />
-                    </Paper>
+                    <Container maxWidth='lg'>
+                        <Box mt={2}>
+                            <Routes />
+                        </Box>
+                    </Container>
                 </main>
             </Router>);
     }

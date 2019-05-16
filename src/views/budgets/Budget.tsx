@@ -3,9 +3,6 @@ import { RouteComponentProps } from "react-router";
 import { Budget, Expense } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import { ExpenseList } from "../expenses/ExpenseList";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { dateDiff, BudgetUrl } from "../../utils";
@@ -88,47 +85,46 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
     }
 
     render() {
-        if (this.state) {
+        if (this.state && this.state.info) {
             return (
                 <React.Fragment>
-                    { this.state.info && 
-                        <Card>
-                            <CardContent>
-                                <Grid container direction='row' justify='space-between'>
-                                    <Typography variant="h5" component="h2">
-                                        {this.state.info.name}
-                                    </Typography>
-                                    <Typography color='textSecondary'>
-                                        {this.state.info.currency}
-                                    </Typography>
-                                </Grid>
-                                
-                                <GridList cellHeight={110} cols={2} >
-                                    <GridListTile key='total' >
-                                        <InfoField label='Total' value={this.state.info.total}/>
-                                    </GridListTile>
-                                    <GridListTile key='Spent'>
-                                        <InfoField label='Spent' value={this.state.totalSpent}/>
-                                    </GridListTile>
-                                    <GridListTile key='average'>
-                                        <InfoField label='Average' value={this.state.averageSpent}/>
-                                    </GridListTile>
-                                    <GridListTile key='days'>
-                                        <InfoField label='Days' value={this.pastDays}/>
-                                    </GridListTile>
-                                </GridList>
-                            </CardContent>
-                            <CardActions>
-                                <this.Actions />
-                            </CardActions>
-                        </Card>
-                    }
-                    { this.state.expenses && <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }
+                    <this.Header/>
+                    { this.state.expenses && <this.Stats/> }
+                    <this.Actions />
+                    { this.state.expenses && 
+                        <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }
                 </React.Fragment>
             );
         }
         return <CircularProgress/>;
     }
+
+    private Header = () => (
+        <Grid container direction='row' justify='space-between'>
+            <Typography variant="h5" component="h2">
+                {this.state.info.name}
+            </Typography>
+            <Typography color='textSecondary'>
+                {this.state.info.currency}
+            </Typography>
+        </Grid>
+    );
+
+    private Stats = () => (
+        <GridList cellHeight={110} cols={2} >
+            <GridListTile key='total' >
+                <InfoField label='Total' value={this.state.info.total}/>
+            </GridListTile>
+            <GridListTile key='Spent'>
+                <InfoField label='Spent' value={this.state.totalSpent}/>
+            </GridListTile>
+            <GridListTile key='average'>
+                <InfoField label='Average' value={this.state.averageSpent}/>
+            </GridListTile>
+            <GridListTile key='days'>
+                <InfoField label='Days' value={this.pastDays}/>
+            </GridListTile>
+        </GridList>);
 
     async getExpensesTotal () {
         if (this.state.expenses && this.state.info) {
