@@ -29,10 +29,10 @@ export class AppButton extends React.PureComponent<AppButtonProps> {
     render() {
         return (
             <React.Suspense fallback={'loading'}>
-            <LazyButton {...this.derivedProps} {...this.props}>
-                { this.props.icon && <Icon type={this.props.icon}/> }
-                { this.props.text }
-            </LazyButton></React.Suspense>);
+                <LazyButton {...this.derivedProps} {...this.props}>
+                    { this.props.icon && <Icon type={this.props.icon}/> }
+                    { this.props.text }
+                </LazyButton></React.Suspense>);
     }
 
     get derivedProps () {
