@@ -14,7 +14,6 @@ const routes = {
     EditCategory: React.lazy(() => import('./views/categories/EditCategory'))
 };
 
-
 export class Routes extends React.PureComponent<TitleNotifierProps> {
     render() {
         return (

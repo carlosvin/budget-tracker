@@ -3,15 +3,15 @@ import { RouteComponentProps } from "react-router";
 import { Budget, Expense, TitleNotifierProps } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import { ExpenseList } from "../expenses/ExpenseList";
-import Typography from "@material-ui/core/Typography";
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { dateDiff, BudgetUrl } from "../../utils";
-import Grid from "@material-ui/core/Grid";
 import { AddButton, EditButton, DeleteButton } from "../buttons";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
 import { InfoField } from "../InfoField";
 import { currenciesStore } from "../../stores/CurrenciesStore";
+import Typography from "@material-ui/core/Typography";
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Grid from "@material-ui/core/Grid";
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, TitleNotifierProps{}
 
