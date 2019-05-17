@@ -3,7 +3,6 @@ import { Route, Switch } from "react-router";
 import { TitleNotifierProps } from "./interfaces";
 
 const routes = {
-    About: React.lazy(() => import('./views/About')),
     BudgetView: React.lazy(() => import('./views/budgets/Budget')),
     BudgetList: React.lazy(() => import('./views/budgets/BudgetList')),
     BudgetEdit: React.lazy(() => import('./views/budgets/BudgetEdit')),
@@ -18,7 +17,6 @@ export class Routes extends React.PureComponent<TitleNotifierProps> {
     render() {
         return (
             <Switch>
-                <Route path="/about" render={this.withRender(routes.About)} />
                 <Route exact path="/budgets" render={this.withRender(routes.BudgetList)} />
                 <Route exact path='/budgets/import' render={this.withRender(routes.BudgetImport)} />
                 <Route exact path='/budgets/add' render={this.withRender(routes.BudgetEdit)} />
