@@ -5,9 +5,6 @@ import { Budget, Expense, TitleNotifierProps } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import Grid from "@material-ui/core/Grid";
 import { categoriesStore } from "../../stores/CategoriesStore";
-import createStyles from "@material-ui/core/styles/createStyles";
-import {WithStyles} from "@material-ui/core/styles/withStyles";
-import { Theme } from "@material-ui/core/styles/createMuiTheme";
 import Link from '@material-ui/core/Link';
 import { MyLink } from "../MyLink";
 import { BudgetUrl, getDateString, uuid } from "../../utils";
@@ -16,21 +13,9 @@ import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
 import { countriesStore, CountryEntry } from "../../stores/CountriesStore";
 
-const myStyles = ({ palette, spacing }: Theme) => createStyles({
-    root: {
-        flexGrow: 1,
-    },
-    paper: {
-        padding: spacing.length * 2,
-        textAlign: 'center',
-        color: palette.text.secondary,
-    },
-});
 
-interface ExpenseViewProps extends 
-    RouteComponentProps<{ budgetId: string; expenseId: string }>,
-    TitleNotifierProps,
-    WithStyles<typeof myStyles> { }
+interface ExpenseViewProps extends TitleNotifierProps,
+    RouteComponentProps<{ budgetId: string; expenseId: string }> { }
 
 interface ExpenseViewState {
     expense: {date: string}&Expense;

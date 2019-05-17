@@ -3,7 +3,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import Avatar from '@material-ui/core/Avatar';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { Budget, Expense } from "../../interfaces";
 import { MyLink } from "../MyLink";
 import { categoriesStore } from "../../stores/CategoriesStore";
@@ -25,11 +25,11 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
                 button 
                 component={MyLink}
                 href={this.href}>
-                <Avatar>
+                <ListItemAvatar >
                     <React.Suspense fallback={'icon'}>
                         <this.Icon />
                     </React.Suspense>
-                </Avatar>
+                </ListItemAvatar>
                 <ListItemText 
                     primary={this.categoryName} 
                     secondary={this.props.expense.description}

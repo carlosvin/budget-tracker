@@ -1,8 +1,8 @@
 
 import * as React from 'react';
 import { MyLink } from './MyLink';
-import Button from '@material-ui/core/Button';
 import {iconsStore, IconName}  from '../stores/IconsStore';
+const LazyButton = React.lazy(() => import('@material-ui/core/Button'));
 
 type Color = 'inherit' | 'primary' | 'secondary' | 'default';
 type ButtonType = 'button' | 'submit' | 'reset';
@@ -28,10 +28,11 @@ export class AppButton extends React.PureComponent<AppButtonProps> {
     
     render() {
         return (
-            <Button {...this.derivedProps} {...this.props}>
+            <React.Suspense fallback={'loading'}>
+            <LazyButton {...this.derivedProps} {...this.props}>
                 { this.props.icon && <Icon type={this.props.icon}/> }
                 { this.props.text }
-            </Button>);
+            </LazyButton></React.Suspense>);
     }
 
     get derivedProps () {
