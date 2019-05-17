@@ -15,7 +15,6 @@ export class Routes extends React.PureComponent<TitleNotifierProps> {
     render() {
         return (
             <Switch>
-                <Route exact path="/" component={BudgetList} />
                 <Route path="/about" render={this._render(About)} />
                 <Route exact path="/budgets" render={this._render(BudgetList)} />
                 <Route exact path='/budgets/import' render={this._render(Import)} />
@@ -27,6 +26,7 @@ export class Routes extends React.PureComponent<TitleNotifierProps> {
                 <Route exact path='/categories' render={this._render(CategoryList)} />
                 <Route exact path='/categories/add' render={this._render(AddCategory)} />
                 <Route exact path='/categories/:name' render={this._render(EditCategory)} />
+                <Route exact path="/" render={this._render(BudgetList)} />
             </Switch>);
     }
 
