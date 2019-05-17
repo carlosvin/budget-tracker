@@ -1,6 +1,6 @@
 import * as React from 'react';
-import Button from '@material-ui/core/Button';
 import { iconsStore } from '../../stores/IconsStore';
+import { AppButton } from '../buttons';
 
 interface CategoryIconButtonProp {
     name: string;
@@ -13,11 +13,7 @@ export class CategoryIconButton extends React.PureComponent<CategoryIconButtonPr
     render () {
         const Icon = iconsStore.getIcon(this.props.name);
         return (
-            <Button onClick={this.handleClick}>
-                <React.Suspense fallback={this.props.name}>
-                    <Icon />
-                </React.Suspense>
-            </Button>
+            <AppButton onClick={this.handleClick} component={Icon}/>
         );
     }
 

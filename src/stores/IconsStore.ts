@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
+export declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
 interface IconsMap {[k: string]: LazyIcon};
 
 const Icons: IconsMap = {
@@ -38,6 +38,19 @@ const Icons: IconsMap = {
     Shopping: React.lazy(() => import('@material-ui/icons/ShoppingCart')),
 };
 
+export const enum IconsInternalType {
+    Add=1, Save, Cancel, Delete, Edit, ImportExport
+};
+
+const IconsInternal: {[k in IconsInternalType]: LazyIcon} = {
+    [IconsInternalType.Add]: React.lazy(() => import('@material-ui/icons/Add')),
+    [IconsInternalType.Save]: React.lazy(() => import('@material-ui/icons/Save')),
+    [IconsInternalType.Cancel]: React.lazy(() => import('@material-ui/icons/Cancel')),
+    [IconsInternalType.Delete]: React.lazy(() => import('@material-ui/icons/Delete')),
+    [IconsInternalType.Edit]: React.lazy(() => import('@material-ui/icons/Edit')),
+    [IconsInternalType.ImportExport]: React.lazy(() => import('@material-ui/icons/ImportExport'))
+};
+
 export class IconsStore {
 
     getIconNames() {
@@ -46,6 +59,14 @@ export class IconsStore {
 
     getIcon (name: string) {
         return name in Icons ? Icons[name] : this.defaultIcon;
+    }
+
+    getInternalIcon(name: IconsInternalType){
+        return IconsInternal[name];
+    }
+
+    getInternalIconNames () {
+        return Object.keys(IconsInternal);
     }
 
     get defaultIcon () {
