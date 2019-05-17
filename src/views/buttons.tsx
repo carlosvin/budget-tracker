@@ -2,13 +2,13 @@
 import * as React from 'react';
 import { MyLink } from './MyLink';
 import Button from '@material-ui/core/Button';
-import {iconsStore, IconsInternalType, LazyIcon}  from '../stores/IconsStore';
+import {iconsStore, IconName}  from '../stores/IconsStore';
 
 type Color = 'inherit' | 'primary' | 'secondary' | 'default';
 type ButtonType = 'button' | 'submit' | 'reset';
 
-const Icon = (props: {type: IconsInternalType}) => {
-    const InternalIcon = iconsStore.getInternalIcon(props.type);
+const Icon = (props: {type: IconName}) => {
+    const InternalIcon = iconsStore.getIcon(props.type);
     return  <React.Suspense fallback={props.type}>
         <InternalIcon/>
     </React.Suspense>;
@@ -16,8 +16,7 @@ const Icon = (props: {type: IconsInternalType}) => {
 
 export interface AppButtonProps {
     href?: string;
-    icon?: IconsInternalType;
-    component?: LazyIcon;
+    icon?: IconName;
     text?: string;
     disabled?: boolean;
     type?: ButtonType;
@@ -28,13 +27,9 @@ export interface AppButtonProps {
 export class AppButton extends React.PureComponent<AppButtonProps> {
     
     render() {
-        const Component = this.props.component;
         return (
             <Button {...this.derivedProps} {...this.props}>
-                { this.props.icon ? 
-                    <Icon type={this.props.icon}/> : 
-                    Component && <Component /> 
-                }
+                { this.props.icon && <Icon type={this.props.icon}/> }
                 { this.props.text }
             </Button>);
     }
@@ -53,31 +48,31 @@ export class AppButton extends React.PureComponent<AppButtonProps> {
     }
 
     get variant (): 'contained'|'text' {
-        return this.props.icon === IconsInternalType.Add ? 'contained' : 'text';
+        return this.props.icon === IconName.Add ? 'contained' : 'text';
     }
 
     get color(): Color {
-        return this.props.icon === IconsInternalType.Add ? 'primary' : 'default';
+        return this.props.icon === IconName.Add ? 'primary' : 'default';
     }
 }
 
 export const AddButton = (props: AppButtonProps) => (
-    <AppButton {...props} icon={IconsInternalType.Add} href={props.href}/>
+    <AppButton {...props} icon={IconName.Add} href={props.href}/>
 );
 
 export const EditButton = (props: AppButtonProps) => (
-    <AppButton {...props} icon={IconsInternalType.Edit} href={props.href}/>
+    <AppButton {...props} icon={IconName.Edit} href={props.href}/>
 );
 export const CancelButton = (props: AppButtonProps) => (
-    <AppButton {...props} icon={IconsInternalType.Cancel} href={props.href}/>
+    <AppButton {...props} icon={IconName.Cancel} href={props.href}/>
 );
 
 export const DeleteButton = (props: AppButtonProps) => (
-    <AppButton {...props} icon={IconsInternalType.Delete} href={props.href}/>
+    <AppButton {...props} icon={IconName.Delete} href={props.href}/>
 );
 
 export const SaveButton = (props: AppButtonProps) => (
-    <AppButton {...props} icon={IconsInternalType.Save} href={props.href}/>
+    <AppButton {...props} icon={IconName.Save} href={props.href}/>
 );
 
 export const TextButton = (props: AppButtonProps) => (
@@ -85,5 +80,5 @@ export const TextButton = (props: AppButtonProps) => (
 );
 
 export const ImportButton = (props: AppButtonProps) => (
-    <AppButton {...props} href={props.href} icon={IconsInternalType.ImportExport}/>
+    <AppButton {...props} href={props.href} icon={IconName.ImportExport}/>
 );

@@ -1,6 +1,7 @@
 import * as React from "react";
-import { Route, Switch, RouteComponentProps } from "react-router";
+import { Route, Switch } from "react-router";
 import { TitleNotifierProps } from "./interfaces";
+import { withSuspense } from "./utils/withSuspense";
 
 const routes = {
     About: React.lazy(() => import('./views/About')),
@@ -28,7 +29,7 @@ export class Routes extends React.PureComponent<TitleNotifierProps> {
                 <Route exact path='/budgets/:budgetId/expenses/:expenseId' render={this._render(routes.ExpenseView)} />
                 <Route exact path='/categories' render={this._render(routes.CategoryList)} />
                 <Route exact path='/categories/add' render={this._render(routes.AddCategory)} />
-                <Route exact path='/categories/:name' render={this._render(routes.EditCategory)} />
+                <Route exact path='/categories/:name' render={withSuspense(routes.EditCategory, this.props)} />
                 <Route exact path='/' render={this._render(routes.BudgetList)} />
             </Switch>);
     }
@@ -36,9 +37,6 @@ export class Routes extends React.PureComponent<TitleNotifierProps> {
     // Function to inject properties to components rendered by router
     // eslint-disable-next-line
     private _render = (ComponentType: React.ComponentType<any>) => (
-        // eslint-disable-next-line
-        (props: RouteComponentProps<any>) => <React.Suspense fallback='loading view'>
-            <ComponentType {...props} {...this.props}/>
-        </React.Suspense>
+        withSuspense(ComponentType, this.props)
     );
 }
