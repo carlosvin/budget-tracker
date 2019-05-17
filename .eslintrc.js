@@ -4,6 +4,7 @@ module.exports = {
         'plugin:react/recommended',  // Uses the recommended rules from @eslint-plugin-react
         'plugin:@typescript-eslint/recommended',  // Uses the recommended rules from @typescript-eslint/eslint-plugin
     ],
+    plugins: ["react-hooks"],
     env: {
         'browser': true,
         'jest': true
@@ -19,7 +20,8 @@ module.exports = {
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-member-accessibility": "off",
         "@typescript-eslint/no-empty-interface": "off",
-        
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn"
     },
     settings: {
         react: {
