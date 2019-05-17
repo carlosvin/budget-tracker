@@ -6,7 +6,7 @@
   "scripts": {
     "start": "parcel src/index.html --https",
     "clean": "shx rm -rf dist .cache",
-    "build": "parcel build src/index.html --public-url ./ --no-source-maps",
+    "build": "parcel build src/index.html --public-url ./",
     "test": "jest",
     "lint": "eslint --ext .jsx,.js,.tsx,.ts src --fix",
     "deploy-gh": "gh-pages -d dist",
