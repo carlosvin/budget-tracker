@@ -23,7 +23,7 @@ export class IconsDialogSelector extends React.PureComponent<IconsDialogSelector
                 <DialogTitle id={this.titleId}>Select icon for category</DialogTitle>
                 <DialogContent>
                     <Grid container direction='row' justify='center'>
-                        { iconsStore.getCategoryIcons().map( icon => 
+                        { iconsStore.categoryIcons.map( icon => 
                             <CategoryIconButton 
                                 onClick={this.handleItemClick} 
                                 icon={icon} 

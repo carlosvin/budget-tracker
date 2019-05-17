@@ -14,9 +14,6 @@ export const enum IconName {
 
 export declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
 
-// TODO try this out
-// const lazyUiImport = (name: string) => (React.lazy(() => import(`@material-ui/icons/${name}`));
-
 const Icons: {[k in IconName]: LazyIcon} = {
     // internal icons
     [IconName.Add]: React.lazy(() => import('@material-ui/icons/Add')),
@@ -60,12 +57,13 @@ const Icons: {[k in IconName]: LazyIcon} = {
     [IconName.Shopping]: React.lazy(() => import('@material-ui/icons/ShoppingCart'))
 };
 
-const categoryIconKeys = range(IconName.Beach, IconName.Shopping);
 
 export class IconsStore {
 
-    getCategoryIcons() {
-        return categoryIconKeys;
+    private readonly categoryIconKeys = range(IconName.Beach, IconName.Shopping);
+
+    get categoryIcons() {
+        return this.categoryIconKeys;
     }
 
     getIcon (name: IconName) {
