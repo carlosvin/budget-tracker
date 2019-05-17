@@ -4,12 +4,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from "@material-ui/core/Grid";
 import { RouteComponentProps, Redirect } from "react-router";
 import { budgetsStore } from '../../stores/BudgetsStore';
-import { Budget } from "../../interfaces";
+import { Budget, TitleNotifierProps } from "../../interfaces";
 import { BudgetListItem } from "./BudgetListItem";
 import { AddButton, ImportButton} from "../buttons";
 import { BudgetUrl } from "../../utils";
 
-interface BudgetListProps extends RouteComponentProps {}
+interface BudgetListProps extends RouteComponentProps, TitleNotifierProps {}
 
 interface BudgetListState {
     budgets: Budget[];
@@ -19,6 +19,7 @@ export class BudgetList extends React.PureComponent<BudgetListProps, BudgetListS
 
     constructor(props: BudgetListProps){
         super(props);
+        props.onTitleChange('Budgets');
         this.initBudgets();
     }
 

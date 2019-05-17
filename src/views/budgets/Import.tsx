@@ -1,59 +1,44 @@
-import * as React from "react";
+import * as React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { budgetsStore } from '../../stores/BudgetsStore';
 import { TextInput } from "../TextInput";
 import { SaveButton } from "../buttons";
+import { TitleNotifierProps } from "src/interfaces";
 
-interface ImportState {
-    selectedFile?: File;
-    processing?: boolean;
-}
+export const Import = (props: TitleNotifierProps) => {
 
-export class Import extends React.PureComponent<{},ImportState> {
+    const [selectedFile, setFile] = React.useState();
+    const [isProcessing, setProcessing] = React.useState(false);
 
-    render() {
-        return (
-            <form>
-                { 
-                    this.processing ? 
-                        <CircularProgress /> :
-                        <TextInput type='file' onChange={this.handleChange}/>
-                }
-                <SaveButton disabled={this.disabled} onClick={this.handleImport} />
-            </form>);
+    React.useEffect(() => {
+        props.onTitleChange('Import budget');
+    });
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        event.preventDefault();
+        setFile(event.target.files && event.target.files[0] || undefined);
     }
 
-
-
-    private handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        this.setState({
-            selectedFile: e.target.files[0]
-        });
+    const process = async () => {
+        await budgetsStore.importBudget(selectedFile);
+        setProcessing(false);
     }
 
-    private handleImport = (e: React.SyntheticEvent) => {
-        e.preventDefault();
-        this.setState({
-            processing: true
-        });
-        this.process();
+    const startProcess = () => {
+        process();
+        return true;
     }
 
-    private async process () {
-        await budgetsStore.importBudget(this.state.selectedFile);
-        this.setState({
-            processing: false
-        });
-    }
+    return (
+        <form>
+            { 
+                isProcessing ? 
+                    <CircularProgress /> :
+                    <TextInput type='file' onChange={handleFileChange}/>
+            }
+            <SaveButton 
+                disabled={!selectedFile || isProcessing} 
+                onClick={startProcess} />
+        </form>);
 
-    private get disabled () {
-        return  !this.state || 
-                !this.state.selectedFile ||
-                this.processing;
-    }
-
-    private get processing () {
-        return this.state && this.state.processing;
-    }
 }

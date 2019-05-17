@@ -1,7 +1,7 @@
 import * as React from "react";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
-import { Budget, Expense } from "../../interfaces";
+import { Budget, Expense, TitleNotifierProps } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import Grid from "@material-ui/core/Grid";
 import { categoriesStore } from "../../stores/CategoriesStore";
@@ -21,7 +21,7 @@ const myStyles = ({ palette, spacing }: Theme) => createStyles({
         flexGrow: 1,
     },
     paper: {
-        padding: spacing.unit * 2,
+        padding: spacing.length * 2,
         textAlign: 'center',
         color: palette.text.secondary,
     },
@@ -29,7 +29,8 @@ const myStyles = ({ palette, spacing }: Theme) => createStyles({
 
 interface ExpenseViewProps extends 
     RouteComponentProps<{ budgetId: string; expenseId: string }>,
-    WithStyles<typeof myStyles>  { }
+    TitleNotifierProps,
+    WithStyles<typeof myStyles> { }
 
 interface ExpenseViewState {
     expense: {date: string}&Expense;
@@ -46,10 +47,12 @@ export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseVi
         super(props);
         this.budgetUrl = new BudgetUrl(props.match.params.budgetId);
         if (props.match.params.expenseId) {
+            this.props.onTitleChange(`Edit expense`);
             this.initExpense(
                 props.match.params.budgetId,
                 props.match.params.expenseId);    
         } else {
+            props.onTitleChange(`Add expense`);
             this.state = {
                 ...this.state,
                 countries: [],

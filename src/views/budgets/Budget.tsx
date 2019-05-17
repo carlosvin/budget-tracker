@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Budget, Expense } from "../../interfaces";
+import { Budget, Expense, TitleNotifierProps } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import { ExpenseList } from "../expenses/ExpenseList";
 import Typography from "@material-ui/core/Typography";
@@ -13,7 +13,7 @@ import GridListTile from "@material-ui/core/GridListTile";
 import { InfoField } from "../InfoField";
 import { currenciesStore } from "../../stores/CurrenciesStore";
 
-interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>{}
+interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, TitleNotifierProps{}
 
 interface BudgetViewState {
     info: Budget;
@@ -41,6 +41,7 @@ export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewS
                     ...this.state,
                     info 
                 });
+                this.props.onTitleChange(info.name);
             }
         } catch (e) {
             console.error(e);

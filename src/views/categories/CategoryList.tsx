@@ -3,16 +3,17 @@ import { RouterProps } from 'react-router';
 import { CategoryForm } from './CategoryForm';
 import { categoriesStore } from '../../stores/CategoriesStore';
 import { AddButton } from '../buttons';
-import { Category } from '../../interfaces';
+import { Category, TitleNotifierProps } from '../../interfaces';
 import { InfoField } from '../InfoField';
 
 interface CategoryListState {
     categories: Category[];
 }
-export class CategoryList extends React.PureComponent<RouterProps, CategoryListState> {
+export class CategoryList extends React.PureComponent<RouterProps&TitleNotifierProps, CategoryListState> {
 
-    constructor(props: RouterProps) {
+    constructor(props: RouterProps&TitleNotifierProps) {
         super(props);
+        props.onTitleChange('Categories');
         this.state = {categories: Object.values(categoriesStore.getCategories())};
     }
     

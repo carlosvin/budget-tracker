@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Budget } from "../../interfaces";
+import { Budget, TitleNotifierProps } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BudgetUrl, getDateString, goBack, uuid } from "../../utils";
@@ -9,7 +9,7 @@ import { SaveButton, CancelButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
 
-interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>{
+interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>, TitleNotifierProps{
 }
 
 interface BudgetViewState extends Budget {
@@ -29,6 +29,7 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
             this.initBudget(props.match.params.budgetId);
             this.url = new BudgetUrl(props.match.params.budgetId);
         } else {
+            props.onTitleChange('New budget');
             const now = new Date();
             this.state = {
                 currency: 'EUR',
@@ -53,6 +54,7 @@ export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewS
                     start: getDateString(new Date(info.from)), 
                     end: getDateString(new Date(info.to)), 
                 });
+                this.props.onTitleChange(`Edit ${info.name}`);
             }
         } catch (e) {
             console.error(e);
