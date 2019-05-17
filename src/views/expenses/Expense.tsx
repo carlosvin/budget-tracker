@@ -39,7 +39,7 @@ interface ExpenseViewState {
     countries: CountryEntry[];
 }
 
-export class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseViewState> {
+export default class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseViewState> {
 
     private readonly budgetUrl: BudgetUrl;
     

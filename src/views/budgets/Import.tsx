@@ -5,7 +5,7 @@ import { TextInput } from "../TextInput";
 import { SaveButton } from "../buttons";
 import { TitleNotifierProps } from "src/interfaces";
 
-export const Import = (props: TitleNotifierProps) => {
+const Import = (props: TitleNotifierProps) => {
 
     const [selectedFile, setFile] = React.useState();
     const [isProcessing, setProcessing] = React.useState(false);
@@ -42,3 +42,5 @@ export const Import = (props: TitleNotifierProps) => {
         </form>);
 
 }
+
+export default Import;

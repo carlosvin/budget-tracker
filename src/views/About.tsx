@@ -2,7 +2,7 @@ import * as React from "react";
 import Typography from '@material-ui/core/Typography';
 import { TitleNotifierProps } from "src/interfaces";
 
-export const About = (props: TitleNotifierProps) => {
+const About = (props: TitleNotifierProps) => {
 
     React.useEffect(() => {
         props.onTitleChange('About');
@@ -18,3 +18,5 @@ export const About = (props: TitleNotifierProps) => {
             </Typography>
         </React.Fragment>);
 }
+
+export default About;

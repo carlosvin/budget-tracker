@@ -15,7 +15,7 @@ interface BudgetListState {
     budgets: Budget[];
 }
 
-export class BudgetList extends React.PureComponent<BudgetListProps, BudgetListState> {
+export default class BudgetList extends React.PureComponent<BudgetListProps, BudgetListState> {
 
     constructor(props: BudgetListProps){
         super(props);
@@ -60,3 +60,4 @@ export class BudgetList extends React.PureComponent<BudgetListProps, BudgetListS
                 budget => <BudgetListItem key={budget.identifier} {...budget} />);
     }
 }
+

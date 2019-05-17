@@ -18,7 +18,7 @@ interface BudgetViewState extends Budget {
     error?: string;
 }
 
-export class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewState> {
+export default class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewState> {
     // TODO handle errors on type and on submit
 
     private readonly url: BudgetUrl;

@@ -4,7 +4,7 @@ import { CategoryForm } from './CategoryForm';
 
 interface EditCategoryProps extends RouteComponentProps<{name: string}>{}
 
-export class EditCategory extends React.PureComponent<EditCategoryProps, {name: string}> {
+export default class EditCategory extends React.PureComponent<EditCategoryProps, {name: string}> {
     
     render () {
         return (

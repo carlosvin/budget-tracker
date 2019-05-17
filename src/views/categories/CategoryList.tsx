@@ -9,7 +9,9 @@ import { InfoField } from '../InfoField';
 interface CategoryListState {
     categories: Category[];
 }
-export class CategoryList extends React.PureComponent<RouterProps&TitleNotifierProps, CategoryListState> {
+
+export default class CategoryList 
+    extends React.PureComponent<RouterProps&TitleNotifierProps, CategoryListState> {
 
     constructor(props: RouterProps&TitleNotifierProps) {
         super(props);

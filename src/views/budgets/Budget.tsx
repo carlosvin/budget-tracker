@@ -22,7 +22,7 @@ interface BudgetViewState {
     averageSpent?: number;
 }
 
-export class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewState> {
+export default class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewState> {
     
     private readonly url: BudgetUrl;
 
