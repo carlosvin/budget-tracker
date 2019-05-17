@@ -14,7 +14,8 @@ const Icons: IconsMap = {
     Taxi: React.lazy(() => import('@material-ui/icons/LocalTaxi')),
     Boat: React.lazy(() => import('@material-ui/icons/DirectionsBoat')),
     Hotel: React.lazy(() => import('@material-ui/icons/Hotel')),
-    Atm: React.lazy(() => import('@material-ui/icons/LocalAtm')),
+    Exchange: React.lazy(() => import('@material-ui/icons/LocalAtm')),
+    Atm: React.lazy(() => import('@material-ui/icons/Atm')),
     Fastfood: React.lazy(() => import('@material-ui/icons/Fastfood')),
     Restaurant: React.lazy(() => import('@material-ui/icons/LocalDining')),
     Laundry: React.lazy(() => import('@material-ui/icons/LocalLaundryService')),
@@ -24,14 +25,17 @@ const Icons: IconsMap = {
     Pharmacy: React.lazy(() => import('@material-ui/icons/LocalPharmacy')),
     Movies: React.lazy(() => import('@material-ui/icons/LocalMovies')),
     Parking: React.lazy(() => import('@material-ui/icons/LocalParking')),
+    Sim: React.lazy(() => import('@material-ui/icons/SimCard')),
     WC: React.lazy(() => import('@material-ui/icons/Wc')),
     School: React.lazy(() => import('@material-ui/icons/School')),
     Smartphone: React.lazy(() => import('@material-ui/icons/Smartphone')),
-    Activity: React.lazy(() => import('@material-ui/icons/LocalActivity')),
+    Activity: React.lazy(() => import('@material-ui/icons/Rowing')),
+    Ticket: React.lazy(() => import('@material-ui/icons/LocalActivity')),
     Smoking: React.lazy(() => import('@material-ui/icons/SmokingRooms')),
     Mall: React.lazy(() => import('@material-ui/icons/LocalMall')),
     Pool: React.lazy(() => import('@material-ui/icons/Pool')),
     Label: React.lazy(() => import('@material-ui/icons/Label')),
+    Shopping: React.lazy(() => import('@material-ui/icons/ShoppingCart')),
 };
 
 export class IconsStore {
