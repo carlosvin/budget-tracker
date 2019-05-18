@@ -2,6 +2,14 @@ import * as React from 'react';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import { range } from '../utils';
 
+export declare type IconType =  'Add' | 'Save';
+
+// Implement Icons as IconsProof
+const IconsProof: {[k in IconType]: LazyIcon} = {
+    'Add': React.lazy(() => import('@material-ui/icons/Add')),
+    'Save': React.lazy(() => import('@material-ui/icons/Add'))
+};
+
 export const enum IconName {
     // Internal Icons
     Add = 1, Save, Cancel, Delete, Edit, ImportExport, 
