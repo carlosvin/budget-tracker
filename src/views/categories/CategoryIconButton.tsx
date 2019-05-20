@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { IconName } from '../../stores/IconsStore';
+import { CategoryIconType } from '../../stores/IconsStore';
 import { AppButton } from '../buttons';
 
 interface CategoryIconButtonProp {
-    icon: IconName;
-    onClick: (icon: IconName) => void;
+    icon: CategoryIconType;
+    onClick: (icon: CategoryIconType) => void;
 };
 
 // TODO this component might be reused for any react component

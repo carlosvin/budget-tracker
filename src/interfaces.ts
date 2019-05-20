@@ -1,4 +1,4 @@
-import { IconName } from "./stores/IconsStore";
+import { CategoryIconType } from "./stores/IconsStore";
 
 
 export interface Budget {
@@ -54,7 +54,7 @@ export interface ImportedExpense {
 export interface Category {
     id: string;
     name: string;
-    icon: IconName;
+    icon: CategoryIconType;
 }
 
 export interface Categories {
