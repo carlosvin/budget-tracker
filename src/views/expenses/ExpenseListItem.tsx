@@ -73,8 +73,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
 
     get Icon () {
         const c = this.getCategory();
-        const iconType = c ? c.icon : 'Label';
-        return iconsStore.getCategoryIcon(iconType);
+        return c ? iconsStore.getIcon(c.icon) : iconsStore.defaultIcon;
     }
 
     get categoryName () {

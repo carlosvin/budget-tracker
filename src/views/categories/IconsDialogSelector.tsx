@@ -3,13 +3,13 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
-import { iconsStore, CategoryIconType } from '../../stores/IconsStore';
+import { iconsStore } from '../../stores/IconsStore';
 import { CategoryIconButton } from './CategoryIconButton';
 
 interface IconsDialogSelectorProps {
-    selectedValue: CategoryIconType;
+    selectedValue: string;
     open: boolean;
-    onClose: (selectedValue: CategoryIconType) => void;
+    onClose: (selectedValue: string) => void;
 };
 
 export class IconsDialogSelector extends React.PureComponent<IconsDialogSelectorProps> {
@@ -23,11 +23,11 @@ export class IconsDialogSelector extends React.PureComponent<IconsDialogSelector
                 <DialogTitle id={this.titleId}>Select icon for category</DialogTitle>
                 <DialogContent>
                     <Grid container direction='row' justify='center'>
-                        { iconsStore.categoryIcons.map( icon => 
+                        { iconsStore.getIconNames().map( name => 
                             <CategoryIconButton 
                                 onClick={this.handleItemClick} 
-                                icon={icon} 
-                                key={`dialog-icon-${icon}`} />)} 
+                                name={name} 
+                                key={`icon-${name}`} />)} 
                     </Grid>
                 </DialogContent>
             </Dialog>
@@ -38,7 +38,7 @@ export class IconsDialogSelector extends React.PureComponent<IconsDialogSelector
         this.props.onClose(this.props.selectedValue);
     };
 
-    handleItemClick = (value: CategoryIconType) => {
+    handleItemClick = (value: string) => {
         this.props.onClose(value);
     };
 }

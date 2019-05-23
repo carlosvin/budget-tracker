@@ -77,6 +77,3 @@ export function uuid() {
     // TODO generate uuid following spec
     return new Date().getTime().toString();
 }
-
-export const range = (start: number, end: number, length = end - start) =>
-    Array.from({ length }, (_, i) => start + i)

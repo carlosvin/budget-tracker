@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Route, Switch } from "react-router";
+import { Route, Switch, RouteComponentProps } from "react-router";
 import { TitleNotifierProps } from "./interfaces";
 
 const routes = {
@@ -17,27 +17,26 @@ export class Routes extends React.PureComponent<TitleNotifierProps> {
     render() {
         return (
             <Switch>
-                <Route exact path="/budgets" render={this.withRender(routes.BudgetList)} />
-                <Route exact path='/budgets/import' render={this.withRender(routes.BudgetImport)} />
-                <Route exact path='/budgets/add' render={this.withRender(routes.BudgetEdit)} />
-                <Route exact path='/budgets/:budgetId/edit' render={this.withRender(routes.BudgetEdit)} />
-                <Route exact path='/budgets/:budgetId' render={this.withRender(routes.BudgetView)} />
-                <Route exact path='/budgets/:budgetId/expenses/add' render={this.withRender(routes.ExpenseView)} />
-                <Route exact path='/budgets/:budgetId/expenses/:expenseId' render={this.withRender(routes.ExpenseView)} />
-                <Route exact path='/categories' render={this.withRender(routes.CategoryList)} />
-                <Route exact path='/categories/add' render={this.withRender(routes.AddCategory)} />
-                <Route exact path='/categories/:name' render={this.withRender(routes.EditCategory)} />
-                <Route exact path='/' render={this.withRender(routes.BudgetList)} />
+                <Route exact path="/budgets" render={this._render(routes.BudgetList)} />
+                <Route exact path='/budgets/import' render={this._render(routes.BudgetImport)} />
+                <Route exact path='/budgets/add' render={this._render(routes.BudgetEdit)} />
+                <Route exact path='/budgets/:budgetId/edit' render={this._render(routes.BudgetEdit)} />
+                <Route exact path='/budgets/:budgetId' render={this._render(routes.BudgetView)} />
+                <Route exact path='/budgets/:budgetId/expenses/add' render={this._render(routes.ExpenseView)} />
+                <Route exact path='/budgets/:budgetId/expenses/:expenseId' render={this._render(routes.ExpenseView)} />
+                <Route exact path='/categories' render={this._render(routes.CategoryList)} />
+                <Route exact path='/categories/add' render={this._render(routes.AddCategory)} />
+                <Route exact path='/categories/:name' render={this._render(routes.EditCategory)} />
+                <Route exact path='/' render={this._render(routes.BudgetList)} />
             </Switch>);
     }
 
     // Function to inject properties to components rendered by router
     // eslint-disable-next-line
-    private withRender = (ComponentType: React.ComponentType<any>) => (
-        (props: {}) => (
-            <React.Suspense fallback='loading view'>
-                <ComponentType {...props} {...this.props}/>
-            </React.Suspense>
-        )
+    private _render = (ComponentType: React.ComponentType<any>) => (
+        // eslint-disable-next-line
+        (props: RouteComponentProps<any>) => <React.Suspense fallback='loading view'>
+            <ComponentType {...props} {...this.props}/>
+        </React.Suspense>
     );
 }

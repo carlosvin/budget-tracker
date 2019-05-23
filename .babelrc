@@ -2,7 +2,7 @@
 {
     "presets": [
         ["@babel/preset-env", {
-            "useBuiltIns": "usage", // false, //, // or "entry"
+            // "useBuiltIns": false, //"usage", // or "entry"
             "corejs": 3
         }],
         "@babel/react", 

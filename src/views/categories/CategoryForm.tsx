@@ -9,7 +9,6 @@ import { uuid } from '../../utils';
 import { CategoryIconButton } from './CategoryIconButton';
 import { IconsDialogSelector } from './IconsDialogSelector';
 import { Category } from '../../interfaces';
-import { CategoryIconType } from '../../stores/IconsStore';
 
 interface CategoryFormProps extends RouterProps, Partial<Category> {
     direction?: GridDirection;
@@ -48,7 +47,7 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, Categor
                     </Grid>
                     <Grid item>
                         <CategoryIconButton 
-                            icon={this.state.icon} 
+                            name={this.state.icon} 
                             onClick={ this.handleClickChangeIcon } 
                         />
                     </Grid>
@@ -75,7 +74,7 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, Categor
         return this.props.direction || 'column';
     }
 
-    handleCloseDialog = (selectedIcon: CategoryIconType) => {
+    handleCloseDialog = (selectedIcon: string) => {
         this.setState({
             ...this.state,
             icon: selectedIcon,
