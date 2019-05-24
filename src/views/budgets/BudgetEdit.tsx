@@ -4,10 +4,10 @@ import { Budget, TitleNotifierProps } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BudgetUrl, getDateString, goBack, uuid } from "../../utils";
-import Grid from "@material-ui/core/Grid";
 import { SaveButton, CancelButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
+import Actions from "../Actions";
 
 interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>, TitleNotifierProps{
 }
@@ -99,10 +99,10 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
     }
 
     private Actions = () => (
-        <Grid container direction='row' justify='space-evenly'>
+        <Actions>
             <SaveButton type='submit'/>
             <CancelButton onClick={this.close} />
-        </Grid>
+        </Actions>
     );
 
     get hasError () {

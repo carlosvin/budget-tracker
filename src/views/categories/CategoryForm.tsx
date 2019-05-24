@@ -9,6 +9,7 @@ import { uuid } from '../../utils';
 import { CategoryIconButton } from './CategoryIconButton';
 import { IconsDialogSelector } from './IconsDialogSelector';
 import { Category } from '../../interfaces';
+import Actions from '../Actions';
 
 interface CategoryFormProps extends RouterProps, Partial<Category> {
     direction?: GridDirection;
@@ -45,20 +46,18 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, Categor
                             style={{ margin: 8 }}
                             margin='dense' />
                     </Grid>
-                    <Grid item>
-                        <CategoryIconButton 
-                            name={this.state.icon} 
-                            onClick={ this.handleClickChangeIcon } 
-                        />
-                    </Grid>
                     
                     <Grid item>
-                        <Grid container direction='row' justify='space-around'>
+                        <Actions>
+                            <CategoryIconButton 
+                                name={this.state.icon} 
+                                onClick={ this.handleClickChangeIcon } 
+                            />
                             <SaveButton type='submit' disabled={this.state.name === ''} />
                             <DeleteButton disabled={this.state.name === ''} onClick={this.handleDelete}/>
                             { !this.props.hideCancel &&
                             <CancelButton onClick={this.close} />}
-                        </Grid>
+                        </Actions>
                     </Grid>
                 </Grid>
                 <IconsDialogSelector 

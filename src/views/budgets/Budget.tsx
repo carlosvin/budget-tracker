@@ -12,6 +12,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from "@material-ui/core/Grid";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
+import Actions from "../Actions";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, TitleNotifierProps{}
 
@@ -73,11 +74,11 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
     }
 
     private Actions = () => (
-        <Grid container justify='space-between'>
+        <Actions>
             <EditButton href={this.url.pathEdit}/>
             <DeleteButton onClick={this.handleDelete}/>
             <AddButton href={this.url.pathAddExpense}/>
-        </Grid>
+        </Actions>
     );
 
     private handleDelete = () => {

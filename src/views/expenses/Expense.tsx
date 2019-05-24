@@ -12,6 +12,7 @@ import { SaveButton, DeleteButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
 import { countriesStore, CountryEntry } from "../../stores/CountriesStore";
+import Actions from "../Actions";
 
 
 interface ExpenseViewProps extends TitleNotifierProps,
@@ -249,10 +250,10 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
     );
             
     private Actions = () => (
-        <Grid container direction='row' justify='space-evenly' alignContent='center'>
+        <Actions>
             <SaveButton type='submit'/>
             <DeleteButton onClick={this.handleDelete}/>
-        </Grid>
+        </Actions>
     );
 
     private handleDelete = () => {
