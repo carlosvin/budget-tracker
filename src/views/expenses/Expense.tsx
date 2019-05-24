@@ -39,10 +39,12 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
                 props.match.params.expenseId);    
         } else {
             props.onTitleChange(`Add expense`);
+            const expense = this.createDefaultExpense();
             this.state = {
                 ...this.state,
                 countries: [],
-                expense: this.createDefaultExpense()
+                expense,
+                expenseDate: getDateString()
             };
         }
         this.initCountries();
@@ -50,7 +52,7 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
         this.initBudget(props.match.params.budgetId);
     }
 
-    private createDefaultExpense (): {date: string}&Expense {
+    private createDefaultExpense (): Expense {
         const now = new Date();
         return {
             amount: 0, 
@@ -59,7 +61,6 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
             when: now.getTime(),
             categoryId: Object.keys(categoriesStore.getCategories())[0], 
             currency: '',
-            date: getDateString(now),
             countryCode: ''
         };
     }
@@ -89,16 +90,13 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
     }
 
     private async initExpense(budgetId: string, expenseId: string) {
-        try {
-            const expense = await budgetsStore.getExpense(budgetId, expenseId);
-            if (expense) {
-                this.setState({
-                    ...this.state,
-                    expenseDate: getDateString(new Date(expense.when))
-                });
-            }
-        } catch (e) {
-            console.trace(e);
+        const expense = await budgetsStore.getExpense(budgetId, expenseId);
+        if (expense) {
+            this.setState({
+                ...this.state,
+                expense,
+                expenseDate: getDateString(new Date(expense.when))
+            });
         }
     }
 
