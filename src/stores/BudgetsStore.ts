@@ -7,34 +7,40 @@ class BudgetsStore {
     private static readonly KEY_BUDGETS = 'budgets';
     private static readonly KEY_EXPENSES = 'expenses';
     
-    private budgets: {[identifier: string]: Budget};
-    private expenses: {[identifier: string]: {[identifier: string]: Expense}};
+    private budgets?: {[identifier: string]: Budget};
+    private expenses?: {[identifier: string]: {[identifier: string]: Expense}};
 
     constructor(){
         console.log('Instantiate store');
     }
 
     async getBudgets(): Promise<Budget[]> {
-        if (this.budgets === undefined) {
-            return this.fetchBudgets();
+        if (this.budgets === undefined){
+            this.budgets = await this.fetchBudgets();
         }
 
-        return Object.values(this.budgets);
+        if (this.budgets) {
+            return Object.values(this.budgets);
+        } 
+        return [];
     }
 
     async getBudget(identifier: string): Promise<Budget> {
         if (this.budgets === undefined) {
             await this.fetchBudgets();
         }
-        if (identifier in this.budgets) {
+        if (this.budgets && identifier in this.budgets) {
             return this.budgets[identifier];
         }
-        return null;
+        throw new Error(`Budget nof found: ${identifier}`);
     }
 
     async setBudget(budget: Budget) {
         if (this.budgets === undefined) {
             await this.fetchBudgets();
+        }
+        if (!this.budgets) {
+            this.budgets = {};
         }
         this.budgets[budget.identifier] = budget;
         await this.saveBudgets();
@@ -47,11 +53,12 @@ class BudgetsStore {
         return this.expenses[identifier];
     }
 
-    async getExpense(budgetId: string, expenseId: string) {
-        if (this.expenses === undefined) {
-            await this.fetchExpenses(budgetId);
+    async getExpense(budgetId: string, expenseId: string): Promise<Expense> {
+        if (this.expenses) {
+            return this.expenses[budgetId][expenseId];
         }
-        return this.expenses[budgetId][expenseId];
+        const expenses = await this.fetchExpenses(budgetId);
+        return expenses[expenseId];
     }
 
     async deleteExpense (budgetId: string, expenseId: string) {
@@ -62,11 +69,11 @@ class BudgetsStore {
     }
 
     async deleteBudget (budgetId: string) {
-        if (budgetId in this.budgets) {
+        if (this.budgets && budgetId in this.budgets) {
             delete this.budgets[budgetId];
             this.saveBudgets();
         }
-        if (budgetId in this.expenses) {
+        if (this.expenses && budgetId in this.expenses) {
             delete this.expenses[budgetId];
             this.saveExpenses();
         }
@@ -88,30 +95,29 @@ class BudgetsStore {
     }
 
     private async fetchExpenses(identifier: string) {
-        if (this.expenses === undefined) {
-            const serializedExpenses = localStorage.getItem(BudgetsStore.KEY_EXPENSES);
-            if (serializedExpenses) {
-                this.expenses = JSON.parse(serializedExpenses);
-            } else {
-                this.expenses = {};
-                this.expenses[identifier] = {};
-                return null;
-            }
+        const serializedExpenses = localStorage.getItem(BudgetsStore.KEY_EXPENSES);
+        if (serializedExpenses) {
+            this.expenses = JSON.parse(serializedExpenses);
+        } else {
+            this.expenses = {};
+            this.expenses[identifier] = {};
         }
-        
-        return this.expenses[identifier];
+
+        if (this.expenses) {
+            return this.expenses[identifier];
+        } else {
+            throw new Error('Fetching expenses');
+        }
     }
 
-    private async fetchBudgets() {
+    private async fetchBudgets(): Promise<{[identifier: string]: Budget}> {
         if (this.budgets === undefined) {
             const serializedBudgets = localStorage.getItem(BudgetsStore.KEY_BUDGETS);
             if (serializedBudgets) {
-                this.budgets = JSON.parse(serializedBudgets);
-            } else {
-                this.budgets = {};
+                return JSON.parse(serializedBudgets);
             }
         }
-        return Object.values(this.budgets);
+        return {};
     }
 
     private async saveBudgets () {

@@ -1,51 +1,33 @@
 {
-  "name": "pause-and-roll-app",
-  "version": "1.0.0",
-  "main": "index.html",
-  "license": "MIT",
-  "scripts": {
-    "start": "parcel src/index.html --https",
-    "clean": "shx rm -rf dist .cache",
-    "build": "parcel build src/index.html --public-url ./ --no-source-maps",
-    "test": "jest",
-    "lint": "eslint --ext .jsx,.js,.tsx,.ts src --fix",
-    "deploy-gh": "gh-pages -d dist",
-    "deploy": "yarn clean && yarn build && yarn deploy-gh"
-  },
+  "name": "budget-tracker",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://carlosvin.github.io/budget-tracker",
   "dependencies": {
-    "@babel/runtime-corejs3": "^7.4.4",
-    "@material-ui/core": "^4.0.0-beta.2",
-    "@material-ui/icons": "^4.0.0-beta.0",
-    "@types/react": "^16",
-    "@types/react-dom": "^16",
-    "@types/react-router-dom": "^4.3.2",
+    "@material-ui/core": "^4.0.0-rc.0",
+    "@material-ui/icons": "^4.0.0-rc.0",
+    "@types/jest": "24.0.13",
+    "@types/node": "12.0.2",
+    "@types/react": "16.8.18",
+    "@types/react-dom": "16.8.4",
     "axios": "^0.18.0",
-    "core-js": "^3.0.1",
-    "react": "^16",
-    "react-dom": "^16",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.0",
-    "regenerator-runtime": "^0.13.2"
+    "react-scripts": "3.0.1",
+    "typescript": "3.4.5"
   },
-  "devDependencies": {
-    "@babel/core": "^7.0.0-0",
-    "@babel/plugin-transform-runtime": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/preset-typescript": "^7.3.3",
-    "@types/jest": "^24.0.13",
-    "@types/mocha": "^5.2.6",
-    "@types/node": "^12.0.0",
-    "@typescript-eslint/eslint-plugin": "^1.7.0",
-    "@typescript-eslint/parser": "^1.7.0",
-    "eslint": "^5.16.0",
-    "eslint-plugin-react": "^7.12.4",
-    "eslint-plugin-react-hooks": "^1.6.0",
-    "gh-pages": "^2.0.1",
-    "jest": "^24.7.1",
-    "parcel-bundler": "^1",
-    "parcel-plugin-bundle-visualiser": "^1.2.0",
-    "shx": "^0.3.2",
-    "typescript": "^3"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "serve": "serve -s build",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
   },
   "browserslist": {
     "production": [
@@ -58,5 +40,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-router-dom": "^4.3.3",
+    "gh-pages": "^2.0.1",
+    "serve": "^11.0.0"
   }
 }

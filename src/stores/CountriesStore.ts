@@ -12,12 +12,15 @@ class CountriesStore {
     private currentCountryCode?: string;
 
     constructor() {
+        this._countries = [];
         this.geoApi = new GeoApi();
     }
 
     async getCountries() {
-        if (this._countries === undefined) {
-            this._countries = Object.values(await import('./countries.json'));
+        if (this._countries.length === 0) {
+            const cs = await import('./countries.json');
+
+            this._countries = cs.default;
         }
         return this._countries;
     }

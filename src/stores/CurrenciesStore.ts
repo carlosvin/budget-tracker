@@ -64,10 +64,9 @@ class CurrenciesStore {
     }
 
     private async importCurrencies () {
-        const importedCurrencies = (await import('./currency.json')) as 
-            {AlphabeticCode: string; WithdrawalDate: string; Currency: string}[];
-        Object
-            .values(importedCurrencies)
+        const importedCurrencies = await import('./currency.json');
+        importedCurrencies
+            .default
             .filter( c => 
                 c.AlphabeticCode && 
                 (!c.AlphabeticCode.startsWith('X')) && 
@@ -75,7 +74,7 @@ class CurrenciesStore {
                 c.WithdrawalDate === null && 
                 c.Currency && 
                 c.Currency.length > 2)
-            .forEach( c => this._currencies[c.AlphabeticCode] = c.Currency);
+            .forEach( c => this._currencies[c.AlphabeticCode || 'null'] = c.Currency);
         this._areCurrenciesInitialized = true;
     }
 

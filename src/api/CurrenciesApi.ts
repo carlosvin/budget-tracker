@@ -1,5 +1,5 @@
 import { CurrencyRates } from "../interfaces";
-import * as conf from '../../env.json';
+import * as conf from '../env.json';
 import { RemoteApi } from "./RemoteApi";
 
 class CurrenciesApi {

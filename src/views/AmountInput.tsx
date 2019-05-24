@@ -91,6 +91,7 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
         if (this.isDifferentCurrency && this.state.amountInBaseCurrency) {
             return `${round(this.state.amountInBaseCurrency)} ${this.props.baseCurrency}`;
         }
+        return '?';
     }
 
     handleAmountChange = (amount: number) => {

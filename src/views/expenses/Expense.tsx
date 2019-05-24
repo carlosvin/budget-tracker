@@ -18,10 +18,11 @@ interface ExpenseViewProps extends TitleNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
 
 interface ExpenseViewState {
-    expense: {date: string}&Expense;
+    expense: Expense;
     budget: Budget;
     currencies: string[];
     countries: CountryEntry[];
+    expenseDate: string;
 }
 
 export default class ExpenseView extends React.PureComponent<ExpenseViewProps, ExpenseViewState> {
@@ -93,10 +94,7 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
             if (expense) {
                 this.setState({
                     ...this.state,
-                    expense: {
-                        ...expense,
-                        date: getDateString(new Date(expense.when))
-                    }
+                    expenseDate: getDateString(new Date(expense.when))
                 });
             }
         } catch (e) {
@@ -191,7 +189,7 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
             required
             label='When'
             type='date'
-            value={ this.state.expense.date }
+            value={ this.state.expenseDate }
             InputLabelProps={{shrink: true,}}
             onChange={this.handleWhenChange}
         />

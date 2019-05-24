@@ -3,7 +3,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { budgetsStore } from '../../stores/BudgetsStore';
 import { TextInput } from "../TextInput";
 import { SaveButton } from "../buttons";
-import { TitleNotifierProps } from "src/interfaces";
+import { TitleNotifierProps } from "../../interfaces";
 
 const Import = (props: TitleNotifierProps) => {
 
@@ -16,7 +16,7 @@ const Import = (props: TitleNotifierProps) => {
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
-        setFile(event.target.files && event.target.files[0] || undefined);
+        setFile((event.target.files && event.target.files[0]) || undefined);
     }
 
     const process = async () => {
