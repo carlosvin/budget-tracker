@@ -37,7 +37,7 @@ export default class CategoryList
                             {...this.props} 
                             {...c}
                             direction='row' 
-                            hideCancel={true} 
+                            delete 
                             key={`category-entry-${c.id}`}
                             onChange={ this.handleChange }/>)
                     }

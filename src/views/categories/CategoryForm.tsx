@@ -13,7 +13,9 @@ import Actions from '../Actions';
 
 interface CategoryFormProps extends RouterProps, Partial<Category> {
     direction?: GridDirection;
-    hideCancel?: boolean;
+    cancel?: boolean;
+    delete?: boolean;
+    save?: boolean;
     closeAfterSave?: boolean;
     onChange?: (categoryId: string) => void;
 }
@@ -51,9 +53,9 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, Categor
                                 name={this.state.icon} 
                                 onClick={ this.handleClickChangeIcon } 
                             />
-                            <SaveButton type='submit' disabled={this.state.name === ''} />
-                            <DeleteButton disabled={this.state.name === ''} onClick={this.handleDelete}/>
-                            { !this.props.hideCancel &&
+                            { this.props.save && <SaveButton type='submit' disabled={this.state.name === ''} />}
+                            { this.props.delete && <DeleteButton disabled={this.state.name === ''} onClick={this.handleDelete}/> }
+                            { this.props.cancel &&
                             <CancelButton onClick={this.close} />}
                         </Actions>
                     </Grid>

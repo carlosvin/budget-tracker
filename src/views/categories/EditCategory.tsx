@@ -4,11 +4,8 @@ import { CategoryForm } from './CategoryForm';
 
 interface EditCategoryProps extends RouteComponentProps<{name: string}>{}
 
-export default class EditCategory extends React.PureComponent<EditCategoryProps, {name: string}> {
-    
-    render () {
-        return (
-            <CategoryForm {...this.props} name={this.props.match.params.name} closeAfterSave/>
-        );
-    }
-}
+export const EditCategory: React.FC<EditCategoryProps> = (props) => (
+    <CategoryForm {...props} cancel delete save name={props.match.params.name} closeAfterSave/>
+);
+
+export default EditCategory;
