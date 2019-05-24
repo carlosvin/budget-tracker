@@ -1,45 +1,32 @@
 import * as React from 'react';
 import { RouterProps } from 'react-router';
-import { CategoryForm } from './CategoryForm';
 import { categoriesStore } from '../../stores/CategoriesStore';
-import { AddButton } from '../buttons';
-import { Category, TitleNotifierProps } from '../../interfaces';
+import { AddButton, SaveButton, CancelButton } from '../buttons';
+import { Category, TitleNotifierProps, Categories } from '../../interfaces';
 import { InfoField } from '../InfoField';
+import CategoryInput from './CategoryInput';
+import Actions from '../Actions';
 
-interface CategoryListState {
-    categories: Category[];
-}
 
-export default class CategoryList 
-    extends React.PureComponent<RouterProps&TitleNotifierProps, CategoryListState> {
+export const CategoryList: React.FC<RouterProps&TitleNotifierProps> = (props) => {
+    props.onTitleChange('Categories');
 
-    constructor(props: RouterProps&TitleNotifierProps) {
-        super(props);
-        props.onTitleChange('Categories');
-        this.state = {categories: Object.values(categoriesStore.getCategories())};
-    }
-    
-    render () {
-        return (
-            <React.Fragment>
-                <this.CategoriesMap />
-                <AddButton href='/categories/add'/>
-            </React.Fragment>
-        );
-    }
+    const [categories, setCategories] = React.useState<Categories>(categoriesStore.getCategories());
+    const [changed, setChanged] = React.useState(false);
 
-    private CategoriesMap = () => {
-        if (this.state.categories.length > 0) {
+    const CategoriesMap = () => {
+        if (Object.values(categories).length > 0) {
             return (
                 <React.Fragment>
-                    {this.state.categories.map(c => 
-                        <CategoryForm 
-                            {...this.props} 
+                    {Object.values(categories).map(c => 
+                        <CategoryInput 
+                            {...props} 
                             {...c}
                             direction='row' 
                             delete 
                             key={`category-entry-${c.id}`}
-                            onChange={ this.handleChange }/>)
+                            onChange={ handleChange }
+                            onDelete={ handleDelete }/>)
                     }
                 </React.Fragment>);
         } else {
@@ -48,11 +35,37 @@ export default class CategoryList
                 value='Please add at least one'/>;
         }
     }
-
-
-    private handleChange = () => {
-        this.setState({
-            categories: Object.values(categoriesStore.getCategories())
-        });
+    
+    const handleChange = (category: Category) => {
+        const cats = {...categories};
+        cats[category.id] = category;
+        setCategories(cats);
+        setChanged(true);
     }
+
+    const handleDelete = (id: string) => {
+        const cats = {...categories};
+        delete cats[id];
+        setCategories(cats);
+        setChanged(true);
+    }
+
+    const handleSubmit = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        categoriesStore.setCategories(categories);
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <CategoriesMap />
+            <Actions>
+                <AddButton href='/categories/add'/>
+                <SaveButton type='submit' disabled={!changed}/>
+                <CancelButton onClick={props.history.goBack}/>
+            </Actions>
+        </form>
+    );
+
 }
+
+export default CategoryList;

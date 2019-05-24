@@ -5,7 +5,7 @@ class CategoriesStore {
     // TODO sync localStorage with remote DB
 
     private static KEY = 'categories';
-    private readonly categories: Categories;
+    private categories: Categories;
 
     constructor() {
         this.categories = {};
@@ -30,6 +30,11 @@ class CategoriesStore {
             name: category.name,
             id: category.id
         };
+        this.save();
+    }
+
+    setCategories(categories: Categories) {
+        this.categories = categories;
         this.save();
     }
 
