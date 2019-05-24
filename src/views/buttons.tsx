@@ -45,29 +45,29 @@ class AppButton extends React.PureComponent<AppButtonProps> {
 }
 
 export const AddButton = (props: AppButtonProps) => (
-    <AppButton {...props} icon={AddIcon} color='primary' variant='contained'/>
+    <AppButton icon={AddIcon} color='primary' variant='contained' aria-label='Add' {...props} />
 );
 
 export const EditButton = (props: AppButtonProps) => (
-    <AppButton {...props} icon={EditIcon} />
+    <AppButton icon={EditIcon} {...props} />
 );
 
 export const CancelButton = (props: AppButtonProps) => (
-    <AppButton {...props} icon={CancelIcon}/>
+    <AppButton icon={CancelIcon} aria-label='Cancel' {...props} />
 );
 
 export const DeleteButton = (props: AppButtonProps) => (
-    <AppButton {...props} icon={DeleteIcon}/>
+    <AppButton icon={DeleteIcon} aria-label='Delete' {...props}/>
 );
 
 export const SaveButton = (props: AppButtonProps) => (
-    <AppButton {...props} icon={SaveIcon}/>
+    <AppButton icon={SaveIcon} aria-label='Save' {...props}/>
 );
 
 export const TextButton = (props: AppButtonProps) => (
-    <AppButton {...props} href={props.href} variant='text'/>
+    <AppButton href={props.href} variant='text' aria-label={props.text} {...props} />
 );
 
 export const ImportButton = (props: AppButtonProps) => (
-    <AppButton {...props} href={props.href} icon={ImportExportIcon} />
+    <AppButton href={props.href} icon={ImportExportIcon} aria-label='Import' {...props} />
 );
