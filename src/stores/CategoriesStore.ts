@@ -4,19 +4,20 @@ class CategoriesStore {
 
     // TODO sync localStorage with remote DB
 
+    private static KEY = 'categories';
     private readonly categories: Categories;
 
     constructor() {
-        const categoriesStr = localStorage.getItem(CategoriesStore.key);
+        this.categories = {};
+        const categoriesStr = localStorage.getItem(CategoriesStore.KEY);
         if (categoriesStr && categoriesStr.length > 0) {
-            this.categories = JSON.parse(categoriesStr) as Categories;
-        } else {
-            this.categories = {};
-        }
-    }
+            const categories = JSON.parse(categoriesStr) as Categories;
+            Object
+                .entries(categories)
+                .filter((e) => e[1].name && e[1].icon)
+                .forEach(([k, v]) => this.categories[k] = v);
 
-    static get key() {
-        return 'categories';
+        }
     }
 
     getCategories() {
@@ -47,7 +48,7 @@ class CategoriesStore {
 
     private save() {
         localStorage.setItem(
-            CategoriesStore.key, 
+            CategoriesStore.KEY, 
             JSON.stringify(this.categories));
     }
 }
