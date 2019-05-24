@@ -27,7 +27,7 @@ class BudgetsStore {
 
     async getBudget(identifier: string): Promise<Budget> {
         if (this.budgets === undefined) {
-            await this.fetchBudgets();
+            this.budgets = await this.fetchBudgets();
         }
         if (this.budgets && identifier in this.budgets) {
             return this.budgets[identifier];
