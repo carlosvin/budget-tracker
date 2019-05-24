@@ -4,7 +4,7 @@ import Grid from "@material-ui/core/Grid";
 
 const Actions: React.FC<{children: React.ReactNode}> = (props) => (
     <Box mt={2}>
-        <Grid justify='space-between' container >
+        <Grid justify='space-between' container wrap='nowrap'>
             { props.children }
         </Grid>
     </Box>

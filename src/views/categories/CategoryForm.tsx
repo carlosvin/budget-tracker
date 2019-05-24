@@ -37,14 +37,12 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, Categor
     render () {
         return (
             <form onSubmit={this.handleSubmit}>
-                <Grid container direction={this.direction}>
+                <Grid container direction={this.direction} wrap='nowrap'>
                     <Grid item>
                         <TextInput 
                             label={ this.direction === 'row' ? '' : 'Category Name' }
                             value={ this.state.name }
-                            onChange={this.handleChangeName}
-                            style={{ margin: 8 }}
-                            margin='dense' />
+                            onChange={this.handleChangeName}/>
                     </Grid>
                     
                     <Grid item>

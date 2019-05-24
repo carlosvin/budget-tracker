@@ -13,7 +13,7 @@ export class CategoryIconButton extends React.PureComponent<CategoryIconButtonPr
     render () {
         const Icon = iconsStore.getIcon(this.props.name);
         return (
-            <Button onClick={this.handleClick}>
+            <Button onClick={this.handleClick} variant='outlined'>
                 <React.Suspense fallback={this.props.name}>
                     <Icon />
                 </React.Suspense>
