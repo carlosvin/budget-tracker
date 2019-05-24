@@ -21,7 +21,6 @@ jobs:
             - v1-dependencies-
 
       - run: yarn install
-
       - save_cache:
           paths:
             - node_modules
@@ -30,6 +29,7 @@ jobs:
           name: "Generate env.json file"
           command: |
             echo '{ "currencyApiKey": "'$CURRENCIES_API_KEY'" }' > src/env.json
+      - run: yarn test
       - run: git config --global user.email $GH_EMAIL
       - run: git config --global user.name "$GH_NAME"
       - run: yarn deploy
