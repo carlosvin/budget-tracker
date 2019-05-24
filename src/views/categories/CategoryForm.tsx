@@ -55,10 +55,9 @@ export class CategoryForm extends React.PureComponent<CategoryFormProps, Categor
                     <Grid item>
                         <Grid container direction='row' justify='space-around'>
                             <SaveButton type='submit' disabled={this.state.name === ''} />
-                            { this.props.name && 
-                            <DeleteButton disabled={this.state.name === ''} onClick={this.handleDelete}/> }
+                            <DeleteButton disabled={this.state.name === ''} onClick={this.handleDelete}/>
                             { !this.props.hideCancel &&
-                            <CancelButton  onClick={this.close} />}
+                            <CancelButton onClick={this.close} />}
                         </Grid>
                     </Grid>
                 </Grid>
