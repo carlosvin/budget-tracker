@@ -7,23 +7,15 @@ interface CategoryIconButtonProp {
     onClick: (name: string) => void;
 };
 
-// TODO this component might be reused for any react component
-export class CategoryIconButton extends React.PureComponent<CategoryIconButtonProp> {
-
-    render () {
-        const Icon = iconsStore.getIcon(this.props.name);
-        return (
-            <Button onClick={this.handleClick} variant='outlined'>
-                <React.Suspense fallback={this.props.name}>
-                    <Icon />
-                </React.Suspense>
-            </Button>
-        );
-    }
-
-    private handleClick = () => {
-        this.props.onClick(this.props.name);
-    }
-
+export const CategoryIconButton: React.FC<CategoryIconButtonProp> = (props) => {
+    const Icon = iconsStore.getIcon(props.name);
+    return (
+        <Button onClick={() => props.onClick(props.name)} variant='outlined'>
+            <React.Suspense fallback={props.name}>
+                <Icon />
+            </React.Suspense>
+        </Button>
+    );
 }
 
+export default CategoryIconButton;

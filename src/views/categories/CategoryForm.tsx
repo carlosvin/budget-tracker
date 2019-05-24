@@ -6,7 +6,7 @@ import { RouterProps } from 'react-router';
 import { SaveButton, CancelButton, DeleteButton } from '../buttons';
 import { TextInput } from '../TextInput';
 import { uuid } from '../../utils';
-import { CategoryIconButton } from './CategoryIconButton';
+import CategoryIconButton from './CategoryIconButton';
 import { IconsDialogSelector } from './IconsDialogSelector';
 import { Category } from '../../interfaces';
 import Actions from '../Actions';
