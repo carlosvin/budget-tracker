@@ -27,7 +27,7 @@ class AppButton extends React.PureComponent<AppButtonProps> {
     
     render(){
         return (
-            <Button {...this.props} {...this.derivedProps}>
+            <Button color='inherit' {...this.props} {...this.derivedProps}>
                 { this.props.icon && <this.props.icon />}
                 { this.props.text }
             </Button>);
@@ -45,7 +45,7 @@ class AppButton extends React.PureComponent<AppButtonProps> {
 }
 
 export const AddButton = (props: AppButtonProps) => (
-    <AppButton icon={AddIcon} color='primary' variant='contained' aria-label='Add' {...props} />
+    <AppButton icon={AddIcon} aria-label='Add' {...props} />
 );
 
 export const EditButton = (props: AppButtonProps) => (

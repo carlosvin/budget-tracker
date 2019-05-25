@@ -1,13 +1,18 @@
 import * as React from 'react';
 import { RouterProps } from 'react-router';
 import { categoriesStore } from '../../stores/CategoriesStore';
-import { Category, TitleNotifierProps } from '../../interfaces';
+import { Category } from '../../interfaces';
 import { uuid } from '../../utils';
 import CategoryInput from './CategoryInput';
+import { HeaderNotifierProps } from '../../routes';
 
-export const AddCategory: React.FC<RouterProps&TitleNotifierProps> = (props) => {
-    props.onTitleChange('Add category');
+export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
+
     const [category, setCategory] = React.useState<Category>({name: '', icon: 'Label', id: uuid()});
+
+    React.useEffect(() => {
+        props.onTitleChange('Add category');
+    });
 
     const close = () => {
         if (props.history.length > 2) {

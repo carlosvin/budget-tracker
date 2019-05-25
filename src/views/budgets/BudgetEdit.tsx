@@ -1,15 +1,15 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Budget, TitleNotifierProps } from "../../interfaces";
+import { Budget } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BudgetUrl, getDateString, goBack, uuid } from "../../utils";
 import { SaveButton, CancelButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
-import Actions from "../Actions";
+import { HeaderNotifierProps } from "../../routes";
 
-interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>, TitleNotifierProps{
+interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{
 }
 
 interface BudgetViewState extends Budget {
@@ -43,6 +43,12 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
             };
             this.url = new BudgetUrl(this.state.identifier);
         }
+        props.onActions(
+            <React.Fragment>
+                <SaveButton type='submit'/>
+                <CancelButton onClick={this.close} />
+            </React.Fragment>
+        );
     }
 
     private async initBudget(identifier: string) {
@@ -98,13 +104,6 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
         goBack(this.props.history);
     }
 
-    private Actions = () => (
-        <Actions>
-            <SaveButton type='submit'/>
-            <CancelButton onClick={this.close} />
-        </Actions>
-    );
-
     get hasError () {
         return this.state.error!==undefined;
     }
@@ -123,7 +122,6 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
                         selectedCurrency={this.state.currency}
                         label='Total'
                     />
-                    <this.Actions />
                 </form>
             );
         }

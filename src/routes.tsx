@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Route, Switch, RouteComponentProps } from "react-router";
-import { TitleNotifierProps } from "./interfaces";
 
 const routes = {
     BudgetView: React.lazy(() => import('./views/budgets/Budget')),
@@ -13,7 +12,12 @@ const routes = {
     About: React.lazy(() => import('./views/About'))
 };
 
-export class Routes extends React.PureComponent<TitleNotifierProps> {
+export interface HeaderNotifierProps {
+    onTitleChange: (title: string) => void;
+    onActions: (actions: React.ReactNode) => void;
+}
+
+export class Routes extends React.PureComponent<HeaderNotifierProps> {
     render() {
         return (
             <Switch>

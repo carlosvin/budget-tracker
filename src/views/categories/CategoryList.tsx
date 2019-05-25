@@ -2,17 +2,31 @@ import * as React from 'react';
 import { RouterProps } from 'react-router';
 import { categoriesStore } from '../../stores/CategoriesStore';
 import { AddButton, SaveButton, CancelButton } from '../buttons';
-import { Category, TitleNotifierProps, Categories } from '../../interfaces';
+import { Category, Categories } from '../../interfaces';
 import { InfoField } from '../InfoField';
 import CategoryInput from './CategoryInput';
-import Actions from '../Actions';
+import { HeaderNotifierProps } from '../../routes';
 
 
-export const CategoryList: React.FC<RouterProps&TitleNotifierProps> = (props) => {
-    props.onTitleChange('Categories');
+export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
+   
+    const [changed, setChanged] = React.useState(false);
+    const { history, onActions, onTitleChange } = props;
+
+
+    React.useEffect(
+        () => {
+            onTitleChange('Categories');
+            onActions(<React.Fragment>
+                <AddButton href='/categories/add'/>
+                <SaveButton type='submit' disabled={!changed}/>
+                <CancelButton onClick={history.goBack}/>
+            </React.Fragment>);
+        }, [onActions, onTitleChange, changed, history.goBack]
+      );
 
     const [categories, setCategories] = React.useState<Categories>(categoriesStore.getCategories());
-    const [changed, setChanged] = React.useState(false);
+
 
     const CategoriesMap = () => {
         if (Object.values(categories).length > 0) {
@@ -58,11 +72,6 @@ export const CategoryList: React.FC<RouterProps&TitleNotifierProps> = (props) =>
     return (
         <form onSubmit={handleSubmit}>
             <CategoriesMap />
-            <Actions>
-                <AddButton href='/categories/add'/>
-                <SaveButton type='submit' disabled={!changed}/>
-                <CancelButton onClick={props.history.goBack}/>
-            </Actions>
         </form>
     );
 

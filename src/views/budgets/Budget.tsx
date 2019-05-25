@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Budget, Expense, TitleNotifierProps } from "../../interfaces";
+import { Budget, Expense } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import { ExpenseList } from "../expenses/ExpenseList";
 import { dateDiff, BudgetUrl } from "../../utils";
@@ -12,9 +12,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from "@material-ui/core/Grid";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
-import Actions from "../Actions";
+import { HeaderNotifierProps } from "../../routes";
 
-interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, TitleNotifierProps{}
+interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
 interface BudgetViewState {
     info: Budget;
@@ -73,17 +73,19 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         });
     }
 
-    private Actions = () => (
-        <Actions>
-            <EditButton href={this.url.pathEdit}/>
-            <DeleteButton onClick={this.handleDelete}/>
-            <AddButton href={this.url.pathAddExpense}/>
-        </Actions>
-    );
-
     private handleDelete = () => {
         budgetsStore.deleteBudget(this.state.info.identifier);
         this.props.history.replace(BudgetUrl.base);
+    }
+
+    componentDidMount(){
+        this.props.onActions(
+            <React.Fragment>
+                <EditButton href={this.url.pathEdit}/>
+                <DeleteButton onClick={this.handleDelete}/>
+                <AddButton href={this.url.pathAddExpense}/>
+            </React.Fragment>
+        );
     }
 
     render() {
@@ -92,7 +94,6 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                 <React.Fragment>
                     <this.Header/>
                     { this.state.expenses && <this.Stats/> }
-                    <this.Actions />
                     { this.state.expenses && 
                         <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }
                 </React.Fragment>

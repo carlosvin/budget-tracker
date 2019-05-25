@@ -3,15 +3,20 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { budgetsStore } from '../../stores/BudgetsStore';
 import { TextInput } from "../TextInput";
 import { SaveButton } from "../buttons";
-import { TitleNotifierProps } from "../../interfaces";
+import { HeaderNotifierProps } from '../../routes';
 
-const Import = (props: TitleNotifierProps) => {
+const Import = (props: HeaderNotifierProps) => {
 
     const [selectedFile, setFile] = React.useState();
     const [isProcessing, setProcessing] = React.useState(false);
 
     React.useEffect(() => {
         props.onTitleChange('Import budget');
+        props.onActions(
+            <SaveButton 
+                disabled={!selectedFile || isProcessing} 
+                onClick={startProcess} />
+        );
     });
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,9 +41,6 @@ const Import = (props: TitleNotifierProps) => {
                     <CircularProgress /> :
                     <TextInput type='file' onChange={handleFileChange}/>
             }
-            <SaveButton 
-                disabled={!selectedFile || isProcessing} 
-                onClick={startProcess} />
         </form>);
 
 }

@@ -1,21 +1,21 @@
 import * as React from "react";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps } from "react-router";
-import { Budget, Expense, TitleNotifierProps } from "../../interfaces";
+import { Budget, Expense } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import Grid from "@material-ui/core/Grid";
 import { categoriesStore } from "../../stores/CategoriesStore";
 import Link from '@material-ui/core/Link';
 import { MyLink } from "../MyLink";
 import { BudgetUrl, getDateString, uuid } from "../../utils";
-import { SaveButton, DeleteButton } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
 import { countriesStore, CountryEntry } from "../../stores/CountriesStore";
-import Actions from "../Actions";
+import { HeaderNotifierProps } from "../../routes";
+import { SaveButton, DeleteButton } from "../buttons";
 
 
-interface ExpenseViewProps extends TitleNotifierProps,
+interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
 
 interface ExpenseViewState {
@@ -51,6 +51,15 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
         this.initCountries();
         this.initCurrentCountry();
         this.initBudget(props.match.params.budgetId);
+    }
+
+    componentDidMount(){
+        this.props.onActions(
+            <React.Fragment>
+                <SaveButton type='submit'/>
+                <DeleteButton onClick={this.handleDelete}/>
+            </React.Fragment>
+        );
     }
 
     private createDefaultExpense (): Expense {
@@ -176,7 +185,6 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
                                 onChange={this.handleChange('description')} />
                         </Grid>
                     </Grid>
-                    <this.Actions />
                 </form>
             );
         }
@@ -247,13 +255,6 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
                 ([k, v]) => (
                     <option key={`category-option-${k}`} value={v.id}>{v.name}</option>))}
         </TextInput>
-    );
-            
-    private Actions = () => (
-        <Actions>
-            <SaveButton type='submit'/>
-            <DeleteButton onClick={this.handleDelete}/>
-        </Actions>
     );
 
     private handleDelete = () => {

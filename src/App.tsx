@@ -7,16 +7,17 @@ import Box from "@material-ui/core/Box";
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 const App: React.FC = () => {
-  const [title, setTitle] = React.useState('Budget tracker');
+    const [title, setTitle] = React.useState('Budget tracker');
+    const [actions, setActions] = React.useState();
     
   return (
       <Router basename='/budget-tracker'>
           <CssBaseline />
-          <Header title={title} />
+          <Header title={title} actions={actions} />
           <main>
               <Container maxWidth='lg'>
                   <Box mt={2}>
-                      <Routes onTitleChange={setTitle} />
+                      <Routes onTitleChange={setTitle} onActions={setActions}/>
                   </Box>
               </Container>
           </main>

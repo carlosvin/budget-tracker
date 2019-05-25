@@ -3,13 +3,13 @@ import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps, Redirect } from "react-router";
 import { budgetsStore } from '../../stores/BudgetsStore';
-import { Budget, TitleNotifierProps } from "../../interfaces";
+import { Budget } from "../../interfaces";
 import { BudgetListItem } from "./BudgetListItem";
 import { AddButton, ImportButton} from "../buttons";
 import { BudgetUrl } from "../../utils";
-import Actions from "../Actions";
+import { HeaderNotifierProps } from "../../routes";
 
-interface BudgetListProps extends RouteComponentProps, TitleNotifierProps {}
+interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
 
 interface BudgetListState {
     budgets: Budget[];
@@ -21,6 +21,15 @@ export default class BudgetList extends React.PureComponent<BudgetListProps, Bud
         super(props);
         props.onTitleChange('Budgets');
         this.initBudgets();
+    }
+
+    componentDidMount(){
+        this.props.onActions(
+            <React.Fragment>
+                <ImportButton href={BudgetUrl.import}/>
+                <AddButton href={BudgetUrl.add}/>
+            </React.Fragment>
+        );
     }
 
     private async initBudgets () {
@@ -38,10 +47,6 @@ export default class BudgetList extends React.PureComponent<BudgetListProps, Bud
                 return (
                     <List>
                         {this.elements}
-                        <Actions>
-                            <ImportButton href={BudgetUrl.import}/>
-                            <AddButton href={BudgetUrl.add}/>
-                        </Actions>
                     </List>);
             } else {
                 return <Redirect to={BudgetUrl.add}/>;
