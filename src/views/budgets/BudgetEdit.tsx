@@ -4,7 +4,7 @@ import { Budget } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BudgetUrl, getDateString, goBack, uuid } from "../../utils";
-import { SaveButton, CancelButton } from "../buttons";
+import { CloseButton, SaveButtonFab } from "../buttons";
 import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
 import { HeaderNotifierProps } from "../../routes";
@@ -43,12 +43,7 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
             };
             this.url = new BudgetUrl(this.state.identifier);
         }
-        props.onActions(
-            <React.Fragment>
-                <SaveButton type='submit'/>
-                <CancelButton onClick={this.close} />
-            </React.Fragment>
-        );
+        props.onActions(<CloseButton onClick={this.close} />);
     }
 
     private async initBudget(identifier: string) {
@@ -76,7 +71,7 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
         });
     }
 
-    private handleSubmit = (e: React.SyntheticEvent) => {
+    private handleSave = (e: React.SyntheticEvent) => {
         e.preventDefault();
         const budget: Budget = {
             ...this.state,
@@ -111,7 +106,7 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
     render() {
         if (this.state) {
             return (
-                <form onSubmit={this.handleSubmit}>
+                <form onSubmit={this.handleSave}>
                     <TextInput label='Name' value={this.state.name} onChange={this.handleChange('name')} required />
                     <TextInput label='Start' value={this.state.start} type='date' onChange={this.handleChange('start')} error={this.hasError} required/>
                     <TextInput label='End' value={this.state.end} type='date' error={this.hasError} onChange={this.handleChange('end')}/>
@@ -122,6 +117,7 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
                         selectedCurrency={this.state.currency}
                         label='Total'
                     />
+                    <SaveButtonFab color='primary' type='submit'/>
                 </form>
             );
         }

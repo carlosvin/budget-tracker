@@ -5,6 +5,7 @@ import { Category } from '../../interfaces';
 import { uuid } from '../../utils';
 import CategoryInput from './CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
+import { CloseButton, SaveButtonFab } from '../buttons';
 
 export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
 
@@ -12,6 +13,7 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
 
     React.useEffect(() => {
         props.onTitleChange('Add category');
+        props.onActions(<CloseButton onClick={close} />);
     });
 
     const close = () => {
@@ -22,22 +24,22 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
         }
     }
     
-    const handleSubmit = (e: React.SyntheticEvent) => {
+    const handleSave = (e: React.SyntheticEvent) => {
         e.preventDefault();
         categoriesStore.setCategory(category);
         close();
     }
     
     return (
-    <form onSubmit={handleSubmit}>
-        <CategoryInput 
-            icon={category.icon} 
-            name={category.name} 
-            id={category.id} 
-            save cancel 
-            onChange={setCategory}
-            onCancel={close}/>
-    </form>);
+        <form onSubmit={handleSave}>
+            <CategoryInput 
+                icon={category.icon} 
+                name={category.name} 
+                id={category.id} 
+                onChange={setCategory}
+                />
+            <SaveButtonFab type='submit' disabled={category.name === ''} />
+        </form>);
 }
 
 export default AddCategory;

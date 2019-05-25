@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { RouterProps } from 'react-router';
 import { categoriesStore } from '../../stores/CategoriesStore';
-import { AddButton, SaveButton, CancelButton } from '../buttons';
+import { AddButton, CloseButton, SaveButtonFab } from '../buttons';
 import { Category, Categories } from '../../interfaces';
 import { InfoField } from '../InfoField';
 import CategoryInput from './CategoryInput';
@@ -13,19 +13,16 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
     const [changed, setChanged] = React.useState(false);
     const { history, onActions, onTitleChange } = props;
 
-
     React.useEffect(
         () => {
             onTitleChange('Categories');
-            onActions(<React.Fragment>
-                <AddButton href='/categories/add'/>
-                <SaveButton type='submit' disabled={!changed}/>
-                <CancelButton onClick={history.goBack}/>
-            </React.Fragment>);
-        }, [onActions, onTitleChange, changed, history.goBack]
+            onActions(<CloseButton onClick={history.goBack}/>);
+        }, 
+        [onActions, onTitleChange, history.goBack]
       );
 
-    const [categories, setCategories] = React.useState<Categories>(categoriesStore.getCategories());
+    const [categories, setCategories] = React.useState<Categories>(
+        categoriesStore.getCategories());
 
 
     const CategoriesMap = () => {
@@ -37,7 +34,6 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
                             {...props} 
                             {...c}
                             direction='row' 
-                            delete 
                             key={`category-entry-${c.id}`}
                             onChange={ handleChange }
                             onDelete={ handleDelete }/>)
@@ -64,14 +60,17 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
         setChanged(true);
     }
 
-    const handleSubmit = (e: React.SyntheticEvent) => {
+    const handleSave = (e: React.SyntheticEvent) => {
         e.preventDefault();
         categoriesStore.setCategories(categories);
+        setChanged(false);
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSave}>
             <CategoriesMap />
+            <AddButton href='/categories/add'/>
+            <SaveButtonFab type='submit' disabled={!changed}/>
         </form>
     );
 

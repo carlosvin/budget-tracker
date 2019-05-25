@@ -4,7 +4,7 @@ import { Budget, Expense } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import { ExpenseList } from "../expenses/ExpenseList";
 import { dateDiff, BudgetUrl } from "../../utils";
-import { AddButton, EditButton, DeleteButton } from "../buttons";
+import { EditButton, DeleteButton, AddButton } from "../buttons";
 import { InfoField } from "../InfoField";
 import { currenciesStore } from "../../stores/CurrenciesStore";
 import Typography from "@material-ui/core/Typography";
@@ -83,7 +83,6 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
             <React.Fragment>
                 <EditButton href={this.url.pathEdit}/>
                 <DeleteButton onClick={this.handleDelete}/>
-                <AddButton href={this.url.pathAddExpense}/>
             </React.Fragment>
         );
     }
@@ -95,7 +94,8 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                     <this.Header/>
                     { this.state.expenses && <this.Stats/> }
                     { this.state.expenses && 
-                        <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }
+                        <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }          
+                    <AddButton href={this.url.pathAddExpense}/>
                 </React.Fragment>
             );
         }

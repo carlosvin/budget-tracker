@@ -12,7 +12,7 @@ import { AmountWithCurrencyInput } from "../AmountInput";
 import { TextInput } from "../TextInput";
 import { countriesStore, CountryEntry } from "../../stores/CountriesStore";
 import { HeaderNotifierProps } from "../../routes";
-import { SaveButton, DeleteButton } from "../buttons";
+import { SaveButtonFab, DeleteButton } from "../buttons";
 
 
 interface ExpenseViewProps extends HeaderNotifierProps,
@@ -55,11 +55,7 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
 
     componentDidMount(){
         this.props.onActions(
-            <React.Fragment>
-                <SaveButton type='submit'/>
-                <DeleteButton onClick={this.handleDelete}/>
-            </React.Fragment>
-        );
+            <DeleteButton onClick={this.handleDelete}/> );
     }
 
     private createDefaultExpense (): Expense {
@@ -185,6 +181,7 @@ export default class ExpenseView extends React.PureComponent<ExpenseViewProps, E
                                 onChange={this.handleChange('description')} />
                         </Grid>
                     </Grid>
+                    <SaveButtonFab type='submit' color='primary'/>
                 </form>
             );
         }
