@@ -14,6 +14,10 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
     React.useEffect(() => {
         props.onTitleChange('Add category');
         props.onActions(<CloseButton onClick={close} />);
+        return function () {
+            props.onActions([]);
+            props.onTitleChange('');
+        }
     });
 
     const close = () => {

@@ -17,6 +17,10 @@ const Import = (props: HeaderNotifierProps) => {
                 disabled={!selectedFile || isProcessing} 
                 onClick={startProcess} />
         );
+        return function () {
+            props.onActions([]);
+            props.onTitleChange('');
+        }
     });
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

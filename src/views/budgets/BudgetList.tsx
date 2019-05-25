@@ -19,11 +19,11 @@ export default class BudgetList extends React.PureComponent<BudgetListProps, Bud
 
     constructor(props: BudgetListProps){
         super(props);
-        props.onTitleChange('Budgets');
         this.initBudgets();
     }
 
     componentDidMount(){
+        this.props.onTitleChange('Budget list');
         this.props.onActions(
             <React.Fragment>
                 <ImportButton href={BudgetUrl.import}/>
@@ -32,6 +32,10 @@ export default class BudgetList extends React.PureComponent<BudgetListProps, Bud
         );
     }
 
+    componentWillUnmount(){
+        this.props.onActions([]);
+    }
+    
     private async initBudgets () {
         try {
             const budgets = await budgetsStore.getBudgets();

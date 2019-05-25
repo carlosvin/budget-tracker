@@ -29,7 +29,6 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
             this.initBudget(props.match.params.budgetId);
             this.url = new BudgetUrl(props.match.params.budgetId);
         } else {
-            props.onTitleChange('New budget');
             const now = new Date();
             this.state = {
                 currency: 'EUR',
@@ -43,7 +42,6 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
             };
             this.url = new BudgetUrl(this.state.identifier);
         }
-        props.onActions(<CloseButton onClick={this.close} />);
     }
 
     private async initBudget(identifier: string) {
@@ -55,11 +53,23 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
                     start: getDateString(new Date(info.from)), 
                     end: getDateString(new Date(info.to)), 
                 });
-                this.props.onTitleChange(`Edit ${info.name}`);
             }
         } catch (e) {
             console.error(e);
         }
+    }
+
+    componentDidMount () {
+        if (this.props.match.params.budgetId) {
+            this.props.onTitleChange(`Edit ${this.state.name}`);
+        } else {
+            this.props.onTitleChange('New budget');
+        }
+        this.props.onActions(<CloseButton onClick={this.close} />);
+    }
+
+    componentWillUnmount(){
+        this.props.onActions([]);
     }
 
     // TODO unify handling using type as argument. I have to research how to do it in TS

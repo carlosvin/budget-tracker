@@ -1,29 +1,25 @@
 import * as React from 'react';
 import { RouterProps } from 'react-router';
 import { categoriesStore } from '../../stores/CategoriesStore';
-import { AddButton, CloseButton, SaveButtonFab } from '../buttons';
+import { AddButton, SaveButtonFab } from '../buttons';
 import { Category, Categories } from '../../interfaces';
 import { InfoField } from '../InfoField';
 import CategoryInput from './CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
 
-
 export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
-   
+
+    React.useEffect(() => {
+        props.onTitleChange('Categories');
+        return function () {
+            props.onTitleChange('');
+        };
+    });
+
     const [changed, setChanged] = React.useState(false);
-    const { history, onActions, onTitleChange } = props;
-
-    React.useEffect(
-        () => {
-            onTitleChange('Categories');
-            onActions(<CloseButton onClick={history.goBack}/>);
-        }, 
-        [onActions, onTitleChange, history.goBack]
-      );
-
+  
     const [categories, setCategories] = React.useState<Categories>(
         categoriesStore.getCategories());
-
 
     const CategoriesMap = () => {
         if (Object.values(categories).length > 0) {
