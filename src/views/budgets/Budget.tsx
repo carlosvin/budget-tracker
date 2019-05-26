@@ -7,9 +7,7 @@ import { dateDiff, BudgetUrl } from "../../utils";
 import { EditButton, DeleteButton, AddButton } from "../buttons";
 import { InfoField } from "../InfoField";
 import { currenciesStore } from "../../stores/CurrenciesStore";
-import Typography from "@material-ui/core/Typography";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Grid from "@material-ui/core/Grid";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import { HeaderNotifierProps } from "../../routes";
@@ -42,7 +40,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                     ...this.state,
                     info 
                 });
-                this.props.onTitleChange(info.name);
+                this.props.onTitleChange(`${info.name} ${info.currency}`);
             }
         } catch (e) {
             console.error(e);
@@ -87,11 +85,14 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         );
     }
 
+    componentWillUnmount(){
+        this.props.onActions([]);
+    }
+
     render() {
         if (this.state && this.state.info) {
             return (
                 <React.Fragment>
-                    <this.Header/>
                     { this.state.expenses && <this.Stats/> }
                     { this.state.expenses && 
                         <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }          
@@ -101,17 +102,6 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         }
         return <CircularProgress/>;
     }
-
-    private Header = () => (
-        <Grid container direction='row' justify='space-between'>
-            <Typography variant="h5" component="h2">
-                {this.state.info.name}
-            </Typography>
-            <Typography color='textSecondary'>
-                {this.state.info.currency}
-            </Typography>
-        </Grid>
-    );
 
     private Stats = () => (
         <GridList cellHeight={110} cols={2} >
