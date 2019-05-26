@@ -61,7 +61,7 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
 
     componentDidMount () {
         if (this.props.match.params.budgetId) {
-            this.props.onTitleChange(`Edit ${this.state.name}`);
+            this.props.onTitleChange(`Edit budget`);
         } else {
             this.props.onTitleChange('New budget');
         }
