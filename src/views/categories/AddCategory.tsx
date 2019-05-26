@@ -42,7 +42,7 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
                 id={category.id} 
                 onChange={setCategory}
                 />
-            <SaveButtonFab type='submit' disabled={category.name === ''} />
+            <SaveButtonFab type='submit' color='primary' disabled={category.name === ''} />
         </form>);
 }
 
