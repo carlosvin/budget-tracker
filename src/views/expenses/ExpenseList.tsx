@@ -4,6 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { Expense, Budget } from "../../interfaces";
 import { ExpenseListItem } from "./ExpenseListItem";
+import './ExpenseList.css';
 
 interface ExpenseListProps {
     expenses: {[timestamp: number]: Expense};
@@ -17,7 +18,7 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
     render() {
         if (this.props) {
             return (
-                <List>
+                <List disablePadding className='expenseListRoot'>
                     {this.elements}
                 </List>);
         }
@@ -42,7 +43,9 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
             return null;
         } else {
             this.dates[dateStr] = dateStr;
-            return <ListSubheader >{dateStr}</ListSubheader>
+            return <ListSubheader id={`ts-${props.date.getTime()}`}>
+                {dateStr}
+                </ListSubheader>;
         }
     }
 

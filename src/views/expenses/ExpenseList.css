@@ -1,0 +1,6 @@
+.expenseListRoot {
+    max-height: 400px;
+    background-color: #fff;
+    position: relative;
+    overflow: auto;
+}
