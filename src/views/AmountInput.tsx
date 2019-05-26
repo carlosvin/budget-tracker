@@ -70,7 +70,8 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
             props.baseCurrency &&
             props.selectedCurrency && 
             props.amount && 
-            AmountWithCurrencyInput.isDifferentCurrency(props)) {
+            AmountWithCurrencyInput.isDifferentCurrency(
+                props.baseCurrency, props.selectedCurrency)) {
             this.calculateAmountInBaseCurrency(props.amount, props.baseCurrency, props.selectedCurrency);
         }
     }
@@ -91,14 +92,14 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
         if (this.isDifferentCurrency && this.state.amountInBaseCurrency) {
             return `${round(this.state.amountInBaseCurrency)} ${this.props.baseCurrency}`;
         }
-        return '?';
+        return undefined;
     }
 
     handleAmountChange = (amount: number) => {
         if (this.props.onAmountChange) {
             this.props.onAmountChange(amount);
         }
-        if (this.props.selectedCurrency && this.props.baseCurrency && this.isDifferentCurrency) {
+        if (this.props.selectedCurrency && this.props.baseCurrency && this.isDifferentCurrency(this.props.baseCurrency)) {
             this.calculateAmountInBaseCurrency(amount, this.props.baseCurrency, this.props.selectedCurrency);
         }
     }
@@ -107,7 +108,7 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
         if (this.props.onCurrencyChange) {
             this.props.onCurrencyChange(currency);
         }
-        if (this.props.amount && this.props.baseCurrency && this.isDifferentCurrency) {
+        if (this.props.amount && this.props.baseCurrency && this.isDifferentCurrency(currency)) {
             this.calculateAmountInBaseCurrency(this.props.amount, this.props.baseCurrency, currency);
         }
     }
@@ -124,11 +125,12 @@ export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyI
         }
     }
 
-    get isDifferentCurrency () {
-        return AmountWithCurrencyInput.isDifferentCurrency(this.props);
+    static isDifferentCurrency (base?: string, selected?: string) {
+        return base && base !== selected;
     }
 
-    static isDifferentCurrency (props: AmountCurrencyInputProps) {
-        return props.baseCurrency && props.baseCurrency !== props.selectedCurrency;
+    isDifferentCurrency(selected?: string) {
+        return AmountWithCurrencyInput.isDifferentCurrency(
+            this.props.baseCurrency, selected);
     }
 }
