@@ -1,5 +1,4 @@
 import * as React from "react";
-import CircularProgress from '@material-ui/core/CircularProgress';
 import Grid from "@material-ui/core/Grid";
 import { CurrencyInput, CurrencyInputProps } from "./CurrencyInput";
 import { TextInput } from "./TextInput";
@@ -14,41 +13,28 @@ interface AmountInputProps {
     helperText?: string;
 }
 
-interface AmountInputState {
-    amount: string;
-}
-
-export class AmountInput extends React.PureComponent<AmountInputProps, AmountInputState> {
-
-    constructor(props: AmountInputProps) {
-        super(props);
-        this.state = {amount: props.amount ? `${props.amount}` : ''};
-    }
-
-    private handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({amount: event.target.value});
-        if (this.props.onAmountChange) {
-            this.props.onAmountChange(parseFloat(event.target.value));
-        }
-    }
+export const AmountInput: React.FC<AmountInputProps> = (props) => {
     
-    render() {
-        if (this.state) {
-            return (
-                <TextInput 
-                    autoFocus
-                    required
-                    type='number'
-                    label={this.props.label || 'Amount'}
-                    value={this.state.amount}
-                    inputProps={{ step: '.01', 'aria-required': true }}
-                    onChange={this.handleAmountChange}
-                    helperText={this.props.helperText}
-                />
-            );
+    const [amount, setAmount] = React.useState(props.amount || '');
+
+    const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setAmount(event.target.value);
+        if (props.onAmountChange) {
+            props.onAmountChange(parseFloat(event.target.value));
         }
-        return <CircularProgress />;
-    }           
+    }
+    return (
+        <TextInput 
+            autoFocus
+            required
+            type='number'
+            label={props.label || 'Amount'}
+            value={amount}
+            inputProps={{ step: '.01', 'aria-required': true }}
+            onChange={handleAmountChange}
+            helperText={props.helperText}
+        />
+    );           
 }
 
 interface AmountCurrencyInputProps extends CurrencyInputProps, AmountInputProps {
@@ -57,80 +43,72 @@ interface AmountCurrencyInputProps extends CurrencyInputProps, AmountInputProps 
     onAmountInBaseCurrencyChange?: (amount: number) => void;
 }
 
-interface AmountCurrencyInputState {
-    amountInBaseCurrency?: number;
-}
+export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (props) => {
+    const [amountInBaseCurrency, setAmountInBaseCurrency] = React.useState<number|undefined>(props.amountInBaseCurrency);
 
-export class AmountWithCurrencyInput extends React.PureComponent<AmountCurrencyInputProps, AmountCurrencyInputState> {
+    const [currency, setCurrency] = React.useState<string|undefined>(props.selectedCurrency);
+    const [amount, setAmount] = React.useState<number|undefined>(props.amount);
 
-    constructor(props: AmountCurrencyInputProps) {
-        super(props);
-        this.state = { amountInBaseCurrency: props.amountInBaseCurrency };
-        if (!props.amountInBaseCurrency && 
-            props.baseCurrency &&
-            props.selectedCurrency && 
-            props.amount && 
-            AmountWithCurrencyInput.isDifferentCurrency(
-                props.baseCurrency, props.selectedCurrency)) {
-            this.calculateAmountInBaseCurrency(props.amount, props.baseCurrency, props.selectedCurrency);
+    const {onAmountInBaseCurrencyChange, baseCurrency} = props;
+
+    // TODO review if it is needed
+    React.useEffect(() => {
+        const calculateAmountInBaseCurrency = async (
+            amount: number, 
+            baseCurrency: string, 
+            currency: string) => {
+            const calculatedAmount = await currenciesStore.getAmountInBaseCurrency(
+                baseCurrency, 
+                currency,
+                amount);
+            setAmountInBaseCurrency(round(calculatedAmount));
+    
+            if (onAmountInBaseCurrencyChange) {
+                onAmountInBaseCurrencyChange(calculatedAmount);
+            }
+        }
+
+        if (baseCurrency &&
+            currency && 
+            amount && 
+            baseCurrency !== currency) {
+            calculateAmountInBaseCurrency(
+                amount, 
+                baseCurrency, 
+                currency);
+        }
+    }, [baseCurrency, currency, amount, onAmountInBaseCurrencyChange]);
+
+    const handleAmountChange = (amount: number) => {
+        if (props.onAmountChange) {
+            props.onAmountChange(amount);
+        }
+        setAmount(amount);
+    }
+
+    const handleCurrencyChange = (selectedCurrency: string) => {
+        setCurrency(selectedCurrency);
+        if (props.onCurrencyChange) {
+            props.onCurrencyChange(selectedCurrency);
         }
     }
 
-    render () {
-        return (
-            <Grid container direction='row' alignItems='baseline'>
-                <Grid item>
-                    <AmountInput {...this.props} onAmountChange={this.handleAmountChange} helperText={this.baseAmount}/>
-                </Grid>
-                <Grid item >
-                    <CurrencyInput {...this.props} onCurrencyChange={this.handleCurrencyChange}/>
-                </Grid>
-            </Grid>);
-    }
-
-    get baseAmount () {
-        if (this.isDifferentCurrency && this.state.amountInBaseCurrency) {
-            return `${round(this.state.amountInBaseCurrency)} ${this.props.baseCurrency}`;
+    const baseAmount = () => {
+        if (baseCurrency !== currency && amountInBaseCurrency) {
+            return `${round(amountInBaseCurrency)} ${baseCurrency}`;
         }
         return undefined;
     }
 
-    handleAmountChange = (amount: number) => {
-        if (this.props.onAmountChange) {
-            this.props.onAmountChange(amount);
-        }
-        if (this.props.selectedCurrency && this.props.baseCurrency && this.isDifferentCurrency(this.props.baseCurrency)) {
-            this.calculateAmountInBaseCurrency(amount, this.props.baseCurrency, this.props.selectedCurrency);
-        }
-    }
-
-    handleCurrencyChange = (currency: string) => {
-        if (this.props.onCurrencyChange) {
-            this.props.onCurrencyChange(currency);
-        }
-        if (this.props.amount && this.props.baseCurrency && this.isDifferentCurrency(currency)) {
-            this.calculateAmountInBaseCurrency(this.props.amount, this.props.baseCurrency, currency);
-        }
-    }
-
-    private async calculateAmountInBaseCurrency (amount: number, baseCurrency: string, currency: string) {
-        const amountInBaseCurrency = await currenciesStore.getAmountInBaseCurrency(
-            baseCurrency, 
-            currency,
-            amount);
-        this.setState({amountInBaseCurrency: round(amountInBaseCurrency)});
-
-        if (this.props.onAmountInBaseCurrencyChange) {
-            this.props.onAmountInBaseCurrencyChange(amountInBaseCurrency);
-        }
-    }
-
-    static isDifferentCurrency (base?: string, selected?: string) {
-        return base && base !== selected;
-    }
-
-    isDifferentCurrency(selected?: string) {
-        return AmountWithCurrencyInput.isDifferentCurrency(
-            this.props.baseCurrency, selected);
-    }
+    return (
+        <Grid container direction='row' alignItems='baseline'>
+            <Grid item>
+                <AmountInput {...props} onAmountChange={handleAmountChange} helperText={baseAmount()}/>
+            </Grid>
+            <Grid item >
+                <CurrencyInput {...props} onCurrencyChange={handleCurrencyChange}/>
+            </Grid>
+        </Grid>);
 }
+
+export default AmountWithCurrencyInput;

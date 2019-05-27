@@ -5,7 +5,7 @@ import { budgetsStore } from "../../stores/BudgetsStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BudgetUrl, getDateString, goBack, uuid } from "../../utils";
 import { CloseButton, SaveButtonFab } from "../buttons";
-import { AmountWithCurrencyInput } from "../AmountInput";
+import AmountWithCurrencyInput from "../AmountInput";
 import { TextInput } from "../TextInput";
 import { HeaderNotifierProps } from "../../routes";
 

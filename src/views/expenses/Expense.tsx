@@ -8,7 +8,7 @@ import { categoriesStore } from "../../stores/CategoriesStore";
 import Link from '@material-ui/core/Link';
 import { MyLink } from "../MyLink";
 import { BudgetUrl, getDateString, uuid } from "../../utils";
-import { AmountWithCurrencyInput } from "../AmountInput";
+import AmountWithCurrencyInput from "../AmountInput";
 import { TextInput } from "../TextInput";
 import { countriesStore, CountryEntry } from "../../stores/CountriesStore";
 import { HeaderNotifierProps } from "../../routes";
