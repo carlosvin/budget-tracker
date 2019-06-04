@@ -1,28 +1,31 @@
 import * as React from "react";
 import Grid from "@material-ui/core/Grid";
-import { CurrencyInput, CurrencyInputProps } from "./CurrencyInput";
+import { CurrencyInput } from "./CurrencyInput";
 import { TextInput } from "./TextInput";
 import { currenciesStore } from "../stores/CurrenciesStore";
 import { round } from "../utils";
 
-
 interface AmountInputProps {
     label?: string;
-    amount?: number;
-    onAmountChange?: (amount: number) => void;
+    amountInput?: number;
+    onAmountChange: (amount: number) => void;
     helperText?: string;
 }
 
 export const AmountInput: React.FC<AmountInputProps> = (props) => {
-    
-    const [amount, setAmount] = React.useState(props.amount || '');
+
+    const [amount, setAmount] = React.useState<number|string>(props.amountInput||'');
+
+    React.useEffect(() => {
+        setAmount(props.amountInput||'');
+    }, [props.amountInput])
 
     const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setAmount(event.target.value);
-        if (props.onAmountChange) {
-            props.onAmountChange(parseFloat(event.target.value));
-        }
+        const amountFloat = parseFloat(event.target.value);
+        setAmount(amountFloat);
+        props.onAmountChange(amountFloat);
     }
+
     return (
         <TextInput 
             autoFocus
@@ -37,21 +40,30 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
     );           
 }
 
-interface AmountCurrencyInputProps extends CurrencyInputProps, AmountInputProps {
+interface AmountCurrencyInputProps  {
     baseCurrency?: string;
     amountInBaseCurrency?: number;
-    onAmountInBaseCurrencyChange?: (amount: number) => void;
+    onChange: (amount: number, currency: string, amountBase?: number) => void;
+    selectedCurrency?: string;
+    amountInput?: number;
+    label?: string;
 }
 
 export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (props) => {
+
     const [amountInBaseCurrency, setAmountInBaseCurrency] = React.useState<number|undefined>(props.amountInBaseCurrency);
+    const [currency, setCurrency] = React.useState<string>(props.selectedCurrency||props.baseCurrency||'EUR');
+    const [amount, setAmount] = React.useState<number|undefined>(props.amountInput);
 
-    const [currency, setCurrency] = React.useState<string|undefined>(props.selectedCurrency);
-    const [amount, setAmount] = React.useState<number|undefined>(props.amount);
+    React.useEffect(() => { 
+        setAmount(props.amountInput);
+    }, [props.amountInput]);
+    
+    React.useEffect(() => {
+        setCurrency(props.selectedCurrency||props.baseCurrency||'EUR');
+    }, [props.selectedCurrency, props.baseCurrency]);
 
-    const {onAmountInBaseCurrencyChange, baseCurrency} = props;
-
-    // TODO review if it is needed
+    // calculate amount in base currency
     React.useEffect(() => {
         const calculateAmountInBaseCurrency = async (
             amount: number, 
@@ -62,40 +74,35 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                 currency,
                 amount);
             setAmountInBaseCurrency(round(calculatedAmount));
-    
-            if (onAmountInBaseCurrencyChange) {
-                onAmountInBaseCurrencyChange(calculatedAmount);
-            }
+            props.onChange(amount, currency, calculatedAmount);
         }
-
-        if (baseCurrency &&
+        if (props.baseCurrency &&
             currency && 
-            amount && 
-            baseCurrency !== currency) {
-            calculateAmountInBaseCurrency(
-                amount, 
-                baseCurrency, 
-                currency);
+            amount!==undefined && 
+            props.baseCurrency !== currency) {
+            calculateAmountInBaseCurrency(amount, props.baseCurrency, currency);
         }
-    }, [baseCurrency, currency, amount, onAmountInBaseCurrencyChange]);
+    }, 
+    // eslint-disable-next-line
+    [
+        props.baseCurrency, amount, currency
+    ]);
 
     const handleAmountChange = (amount: number) => {
-        if (props.onAmountChange) {
-            props.onAmountChange(amount);
-        }
+        props.onChange(amount, currency, amountInBaseCurrency);
         setAmount(amount);
     }
 
     const handleCurrencyChange = (selectedCurrency: string) => {
         setCurrency(selectedCurrency);
-        if (props.onCurrencyChange) {
-            props.onCurrencyChange(selectedCurrency);
+        if (amount) {
+            props.onChange(amount, selectedCurrency, amountInBaseCurrency);
         }
     }
 
     const baseAmount = () => {
-        if (baseCurrency !== currency && amountInBaseCurrency) {
-            return `${round(amountInBaseCurrency)} ${baseCurrency}`;
+        if (props.baseCurrency !== currency && amountInBaseCurrency) {
+            return `${round(amountInBaseCurrency)} ${props.baseCurrency}`;
         }
         return undefined;
     }
@@ -103,10 +110,15 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     return (
         <Grid container direction='row' alignItems='baseline'>
             <Grid item>
-                <AmountInput {...props} onAmountChange={handleAmountChange} helperText={baseAmount()}/>
+                <AmountInput 
+                    amountInput={amount}
+                    label={props.label}
+                    onAmountChange={handleAmountChange} helperText={baseAmount()}/>
             </Grid>
             <Grid item >
-                <CurrencyInput {...props} onCurrencyChange={handleCurrencyChange}/>
+                <CurrencyInput 
+                    selectedCurrency={currency}
+                    onCurrencyChange={handleCurrencyChange}/>
             </Grid>
         </Grid>);
 }

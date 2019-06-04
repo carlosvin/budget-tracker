@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { currenciesStore } from '../stores/CurrenciesStore';
-import CircularProgress from '@material-ui/core/CircularProgress';
 import { TextInput } from './TextInput';
 
 interface CurrencyInputState {
@@ -21,6 +20,10 @@ export class CurrencyInput extends React.PureComponent<CurrencyInputProps, Curre
             currencies: {}, 
             selected: props.selectedCurrency};
         this.initCurrencies();
+    }
+
+    static getDerivedStateFromProps(nextProps: CurrencyInputProps, prevState: CurrencyInputState){
+        return {selected: nextProps.selectedCurrency || prevState.selected };
     }
 
     private async initCurrencies () {
@@ -61,6 +64,6 @@ export class CurrencyInput extends React.PureComponent<CurrencyInputProps, Curre
                 </TextInput>
             );
         }
-        return <CircularProgress size='small'/>;
+        return null;
     }
 }

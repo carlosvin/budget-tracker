@@ -121,11 +121,10 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
                     <TextInput label='Start' value={this.state.start} type='date' onChange={this.handleChange('start')} error={this.hasError} required/>
                     <TextInput label='End' value={this.state.end} type='date' error={this.hasError} onChange={this.handleChange('end')}/>
                     <AmountWithCurrencyInput 
-                        onAmountChange={this.handleAmountChange}
-                        onCurrencyChange={this.handleCurrencyChange}
-                        amount={this.state.total}
+                        amountInput={this.state.total}
                         selectedCurrency={this.state.currency}
                         label='Total'
+                        onChange={this.handleAmountChange}
                     />
                     <SaveButtonFab color='primary' type='submit'/>
                 </form>
@@ -134,11 +133,7 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
         return <CircularProgress/>;
     }
 
-    private handleCurrencyChange = (currency: string) => (
-        this.setState({ currency })
-    );
-
-    private handleAmountChange = (total: number) => (
-        this.setState({ total })
+    private handleAmountChange = (total: number, currency: string) => (
+        this.setState({ total, currency })
     );
 }

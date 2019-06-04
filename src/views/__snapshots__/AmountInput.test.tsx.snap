@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AmountInput value is 11 1`] = `
+<div
+  className="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root"
+  style={
+    Object {
+      "margin": 8,
+    }
+  }
+>
+  <label
+    className="MuiFormLabel-root MuiFormLabel-filled Mui-required Mui-required MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense"
+    data-shrink={true}
+    htmlFor="input-field-Amount"
+  >
+    Amount
+    <span
+      className="MuiFormLabel-asterisk MuiInputLabel-asterisk"
+    >
+       
+      *
+    </span>
+  </label>
+  <div
+    className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense"
+    onClick={[Function]}
+  >
+    <input
+      aria-invalid={false}
+      aria-required={true}
+      autoFocus={true}
+      className="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+      disabled={false}
+      id="input-field-Amount"
+      onBlur={[Function]}
+      onChange={[Function]}
+      onFocus={[Function]}
+      required={true}
+      step=".01"
+      type="number"
+      value={11}
+    />
+  </div>
+</div>
+`;
+
+exports[`Link renders correctly 1`] = `
+<div
+  className="MuiFormControl-root MuiFormControl-marginDense MuiTextField-root"
+  style={
+    Object {
+      "margin": 8,
+    }
+  }
+>
+  <label
+    className="MuiFormLabel-root MuiFormLabel-filled Mui-required Mui-required MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense"
+    data-shrink={true}
+    htmlFor="input-field-Amount"
+  >
+    Amount
+    <span
+      className="MuiFormLabel-asterisk MuiInputLabel-asterisk"
+    >
+       
+      *
+    </span>
+  </label>
+  <div
+    className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense"
+    onClick={[Function]}
+  >
+    <input
+      aria-invalid={false}
+      aria-required={true}
+      autoFocus={true}
+      className="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+      disabled={false}
+      id="input-field-Amount"
+      onBlur={[Function]}
+      onChange={[Function]}
+      onFocus={[Function]}
+      required={true}
+      step=".01"
+      type="number"
+      value={11}
+    />
+  </div>
+</div>
+`;
