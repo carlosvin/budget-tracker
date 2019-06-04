@@ -20,6 +20,14 @@ export const CountryInput: React.FC<CountryInputProps> = (props) => {
         initCountries();
     }, []);
 
+    React.useEffect(() => {
+        if (props.selectedCountry.length === 2) {
+            setCountry(props.selectedCountry);
+        } else {
+            console.warn('invalid country code: ', props.selectedCountry);
+        }
+    }, [props.selectedCountry]);
+
     const handleCountryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCountry(e.target.value);
         props.onCountryChange(e.target.value);
@@ -28,7 +36,7 @@ export const CountryInput: React.FC<CountryInputProps> = (props) => {
     return (<TextInput
         label='Country'
         onChange={handleCountryChange}
-        value={country||props.selectedCountry}
+        value={country}
         select
         required 
         SelectProps={{ native: true }} >

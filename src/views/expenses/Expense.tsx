@@ -23,11 +23,9 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const categories = Object.entries(categoriesStore.getCategories());
 
     const [budget, setBudget] = React.useState();
-    const [expense, setExpense] = React.useState<Expense>({
+    const [expense, setExpense] = React.useState<Partial<Expense>>({
         currency: 'EUR',
-        amount: 0,
         categoryId: categories[0][0],
-        countryCode: '',
         identifier: uuid(),
         when: new Date().getTime()
     });
@@ -41,6 +39,16 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const isAddView = expenseId === undefined;
 
     React.useEffect(() => {
+        const initBudget = async () => {
+            const b = await budgetsStore.getBudget(budgetId);
+            setBudget(b);
+        }
+        initBudget();
+
+        // eslint-disable-next-line
+    }, [budgetId]);
+
+    React.useEffect(() => {
         const handleDelete = () => {
             budgetsStore.deleteExpense(budgetId, expenseId);
             replace(budgetUrl.path);
@@ -48,41 +56,52 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
         const initAdd = async () => {
             onTitleChange(`Add expense`);
-            const [b, c] =  await Promise.all([
-                budgetsStore.getBudget(budgetId), 
-                countriesStore.getCurrentCountry(),
-            ]);
-            setBudget(b);
-            setExpense({...expense, currency: b.currency, countryCode: c});
+            const currentCountry =  await countriesStore.getCurrentCountry();
+            setExpense({...expense, countryCode: currentCountry});
         }
     
         const initEdit = async () => {
             onTitleChange(`Edit expense`);
-            const [b, e] = await Promise.all([
-                budgetsStore.getBudget(budgetId),
-                budgetsStore.getExpense(budgetId, expenseId),
-            ]);
-            setBudget(b);
+            const e = await budgetsStore.getExpense(budgetId, expenseId);
             setExpense(e);
             setDateString(getDateString(new Date(e.when)));
         }
 
-        onActions(<DeleteButton onClick={handleDelete}/>);
         if (isAddView) {
             initAdd();
         } else {
             initEdit();
         }
+        onActions(<DeleteButton onClick={handleDelete}/>);
+
         return function () {
             onActions([]);
         }
         // eslint-disable-next-line
-    }, [budgetId, expenseId]);
+    }, [expenseId]);
 
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        budgetsStore.saveExpense(budgetId, {...expense, when: new Date(dateString).getTime()});
-        props.history.replace(budgetUrl.path);
+        if (expense.amount && 
+            expense.categoryId && 
+            expense.currency && 
+            expense.countryCode && 
+            expense.identifier) {
+            budgetsStore.saveExpense(
+                budgetId, 
+                {   ...expense, 
+                    amount: expense.amount, 
+                    categoryId: expense.categoryId,
+                    currency: expense.currency,
+                    countryCode: expense.countryCode,
+                    identifier: expense.identifier,
+                    when: new Date(dateString).getTime()
+                });
+            props.history.replace(budgetUrl.path);
+        } else {
+            throw new Error(`Invalid expense data: ${expense}`);
+        }
+        
     }
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => (
@@ -152,9 +171,11 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 <Grid item>
                     <WhenInput />
                 </Grid>
-                <Grid item>
-                    <CountryInput selectedCountry={ expense.countryCode } onCountryChange={ handleCountry }/>
-                </Grid>
+                { expense.countryCode && <Grid item>
+                    <CountryInput 
+                        selectedCountry={ expense.countryCode } 
+                        onCountryChange={ handleCountry }/>
+                </Grid> }
                 <Grid item >
                     <TextInput 
                         label='Description' 
