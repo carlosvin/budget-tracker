@@ -32,4 +32,6 @@ jobs:
       - run: CI=true yarn test
       - run: git config --global user.email $GH_EMAIL
       - run: git config --global user.name "$GH_NAME"
+      - run: yarn version --patch
+      - run: git push
       - run: yarn deploy
