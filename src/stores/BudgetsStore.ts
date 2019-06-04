@@ -1,6 +1,7 @@
 import { Budget, Expense, ImportedExpense } from "../interfaces";
 import { FilesApi } from "../api/FileApi";
 import { uuid } from "../utils";
+import { currenciesStore } from "./CurrenciesStore";
 
 class BudgetsStore {
 
@@ -42,8 +43,25 @@ class BudgetsStore {
         if (!this.budgets) {
             this.budgets = {};
         }
+        if (budget.identifier in this.budgets && 
+            this.budgets[budget.identifier].currency !== budget.currency) {
+            // currency was changed, so we have to recalculate expenses base amount
+            await this.updateBaseAmount(budget.identifier, budget.currency);
+        }
         this.budgets[budget.identifier] = budget;
         await this.saveBudgets();
+    }
+
+    private async updateBaseAmount(budgetId: string, baseCurrency: string) {
+        if (this.expenses && budgetId in this.expenses) {
+            const budgetExpenses = this.expenses[budgetId];
+            for (const k in budgetExpenses) {
+                budgetExpenses[k].amountBaseCurrency = await currenciesStore.getAmountInBaseCurrency(
+                    baseCurrency, 
+                    budgetExpenses[k].currency, 
+                    budgetExpenses[k].amount);
+            }
+        }
     }
 
     async getExpenses(identifier: string) {

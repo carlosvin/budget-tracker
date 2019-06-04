@@ -16,6 +16,7 @@ interface BudgetViewState extends Budget {
     start: string;
     end: string;
     error?: string;
+    saving?: boolean;
 }
 
 export default class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewState> {
@@ -81,7 +82,7 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
         });
     }
 
-    private handleSave = (e: React.SyntheticEvent) => {
+    private handleSave = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const budget: Budget = {
             ...this.state,
@@ -92,7 +93,8 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
         if (error) {
             this.setState({error});
         } else {
-            budgetsStore.setBudget(budget);
+            this.setState({ saving: true });
+            await budgetsStore.setBudget(budget);
             this.props.history.replace(this.url.path);
         }
         
@@ -115,6 +117,9 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
 
     render() {
         if (this.state) {
+            if (this.state.saving) { 
+                return <CircularProgress>Saving...</CircularProgress>
+            } 
             return (
                 <form onSubmit={this.handleSave}>
                     <TextInput label='Name' value={this.state.name} onChange={this.handleChange('name')} required />
@@ -130,7 +135,7 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
                 </form>
             );
         }
-        return <CircularProgress/>;
+        return <CircularProgress />;
     }
 
     private handleAmountChange = (total: number, currency: string) => (
