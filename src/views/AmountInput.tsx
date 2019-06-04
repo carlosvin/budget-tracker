@@ -14,15 +14,8 @@ interface AmountInputProps {
 
 export const AmountInput: React.FC<AmountInputProps> = (props) => {
 
-    const [amount, setAmount] = React.useState<number|string>(props.amountInput||'');
-
-    React.useEffect(() => {
-        setAmount(props.amountInput||'');
-    }, [props.amountInput])
-
     const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const amountFloat = parseFloat(event.target.value);
-        setAmount(amountFloat);
         props.onAmountChange(amountFloat);
     }
 
@@ -32,7 +25,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
             required
             type='number'
             label={props.label || 'Amount'}
-            value={amount}
+            value={props.amountInput || ''}
             inputProps={{ step: '.01', 'aria-required': true }}
             onChange={handleAmountChange}
             helperText={props.helperText}
@@ -44,7 +37,7 @@ interface AmountCurrencyInputProps  {
     baseCurrency?: string;
     amountInBaseCurrency?: number;
     onChange: (amount: number, currency: string, amountBase?: number) => void;
-    selectedCurrency?: string;
+    selectedCurrency: string;
     amountInput?: number;
     label?: string;
 }
@@ -52,17 +45,7 @@ interface AmountCurrencyInputProps  {
 export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (props) => {
 
     const [amountInBaseCurrency, setAmountInBaseCurrency] = React.useState<number|undefined>(props.amountInBaseCurrency);
-    const [currency, setCurrency] = React.useState<string>(props.selectedCurrency||props.baseCurrency||'EUR');
-    const [amount, setAmount] = React.useState<number|undefined>(props.amountInput);
-
-    React.useEffect(() => { 
-        setAmount(props.amountInput);
-    }, [props.amountInput]);
     
-    React.useEffect(() => {
-        setCurrency(props.selectedCurrency||props.baseCurrency||'EUR');
-    }, [props.selectedCurrency, props.baseCurrency]);
-
     // calculate amount in base currency
     React.useEffect(() => {
         const calculateAmountInBaseCurrency = async (
@@ -77,31 +60,29 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
             props.onChange(amount, currency, calculatedAmount);
         }
         if (props.baseCurrency &&
-            currency && 
-            amount!==undefined && 
-            props.baseCurrency !== currency) {
-            calculateAmountInBaseCurrency(amount, props.baseCurrency, currency);
+            props.selectedCurrency && 
+            props.amountInput && 
+            props.baseCurrency !== props.selectedCurrency) {
+            calculateAmountInBaseCurrency(props.amountInput, props.baseCurrency, props.selectedCurrency);
         }
     }, 
     // eslint-disable-next-line
     [
-        props.baseCurrency, amount, currency
+        props.baseCurrency, props.amountInput, props.selectedCurrency
     ]);
 
     const handleAmountChange = (amount: number) => {
-        props.onChange(amount, currency, amountInBaseCurrency);
-        setAmount(amount);
+        props.onChange(amount, props.selectedCurrency, amountInBaseCurrency);
     }
 
     const handleCurrencyChange = (selectedCurrency: string) => {
-        setCurrency(selectedCurrency);
-        if (amount) {
-            props.onChange(amount, selectedCurrency, amountInBaseCurrency);
+        if (props.amountInput) {
+            props.onChange(props.amountInput, selectedCurrency, amountInBaseCurrency);
         }
     }
 
     const baseAmount = () => {
-        if (props.baseCurrency !== currency && amountInBaseCurrency) {
+        if (props.baseCurrency !== props.selectedCurrency && amountInBaseCurrency) {
             return `${round(amountInBaseCurrency)} ${props.baseCurrency}`;
         }
         return undefined;
@@ -111,13 +92,13 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         <Grid container direction='row' alignItems='baseline'>
             <Grid item>
                 <AmountInput 
-                    amountInput={amount}
+                    amountInput={props.amountInput}
                     label={props.label}
                     onAmountChange={handleAmountChange} helperText={baseAmount()}/>
             </Grid>
             <Grid item >
                 <CurrencyInput 
-                    selectedCurrency={currency}
+                    selectedCurrency={props.selectedCurrency}
                     onCurrencyChange={handleCurrencyChange}/>
             </Grid>
         </Grid>);

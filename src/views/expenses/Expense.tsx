@@ -1,6 +1,5 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Expense } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import Grid from "@material-ui/core/Grid";
 import { categoriesStore } from "../../stores/CategoriesStore";
@@ -23,14 +22,15 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const categories = Object.entries(categoriesStore.getCategories());
 
     const [budget, setBudget] = React.useState();
-    const [expense, setExpense] = React.useState<Partial<Expense>>({
-        currency: 'EUR',
-        categoryId: categories[0][0],
-        identifier: uuid(),
-        when: new Date().getTime()
-    });
 
+    const [currency, setCurrency] = React.useState<string>();
+    const [amount, setAmount] = React.useState<number>();
+    const [countryCode, setCountryCode] = React.useState<string>();
     const [dateString, setDateString] = React.useState(getDateString());
+    const [identifier, setIdentifier] = React.useState(uuid());
+    const [categoryId, setCategoryId] = React.useState(categories[0][0]);
+    const [amountBaseCurrency, setAmountBaseCurrency] = React.useState<number>();
+    const [description, setDescription] = React.useState<string>();
 
     const {budgetId, expenseId} = props.match.params;
     const {onActions, onTitleChange, history} = props;
@@ -42,6 +42,9 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         const initBudget = async () => {
             const b = await budgetsStore.getBudget(budgetId);
             setBudget(b);
+            if (isAddView) {
+                setCurrency(b.currency);
+            }
         }
         initBudget();
 
@@ -56,15 +59,21 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
         const initAdd = async () => {
             onTitleChange(`Add expense`);
-            const currentCountry =  await countriesStore.getCurrentCountry();
-            setExpense({...expense, countryCode: currentCountry});
+            const currentCountry = await countriesStore.getCurrentCountry();
+            setCountryCode(currentCountry);
         }
     
         const initEdit = async () => {
             onTitleChange(`Edit expense`);
             const e = await budgetsStore.getExpense(budgetId, expenseId);
-            setExpense(e);
+            setAmount(e.amount);
+            e.amountBaseCurrency && setAmountBaseCurrency(e.amountBaseCurrency);
+            setCategoryId(e.categoryId);
+            setCountryCode(e.countryCode);
+            setCurrency(e.currency);
+            setDescription(e.description);
             setDateString(getDateString(new Date(e.when)));
+            setIdentifier(e.identifier);
         }
 
         if (isAddView) {
@@ -82,37 +91,39 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        if (expense.amount && 
-            expense.categoryId && 
-            expense.currency && 
-            expense.countryCode && 
-            expense.identifier) {
+        if (amount && 
+            categoryId && 
+            currency && 
+            countryCode && 
+            identifier && 
+            dateString) {
             budgetsStore.saveExpense(
                 budgetId, 
-                {   ...expense, 
-                    amount: expense.amount, 
-                    categoryId: expense.categoryId,
-                    currency: expense.currency,
-                    countryCode: expense.countryCode,
-                    identifier: expense.identifier,
-                    when: new Date(dateString).getTime()
+                {   amount: amount, 
+                    categoryId: categoryId,
+                    currency: currency,
+                    countryCode: countryCode,
+                    identifier: identifier,
+                    when: new Date(dateString).getTime(),
+                    amountBaseCurrency: amountBaseCurrency,
+                    description: description
                 });
             props.history.replace(budgetUrl.path);
         } else {
-            throw new Error(`Invalid expense data: ${expense}`);
+            throw new Error(`Invalid expense data`);
         }
         
     }
 
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => (
-        setExpense({...expense, categoryId: e.target.value})
+        setCategoryId(e.target.value)
     );
     
     const CategoryInput = () => (
         <TextInput
             label='Category'
             onChange={handleCategoryChange}
-            value={expense.categoryId}
+            value={categoryId}
             helperText={<Link component={MyLink} href='/categories/add'>Add category</Link>}
             select
             required 
@@ -139,16 +150,18 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     );
 
     const handleDescription = (e: React.ChangeEvent<HTMLInputElement>) => (
-        setExpense({...expense, description: e.target.value})
+        setDescription(e.target.value)
     );
 
     const handleCountry = (countryCode: string) => (
-        setExpense({...expense, countryCode})
+        setCountryCode(countryCode)
     );
 
-    const handleAmountChange = (amount: number, currency: string, amountBaseCurrency?:number) => (
-        setExpense({...expense, amount, currency, amountBaseCurrency})
-    );
+    const handleAmountChange = (amount: number, currency: string, amountBaseCurrency?:number) => {
+        setCurrency(currency);
+        setAmount(amount);
+        setAmountBaseCurrency(amountBaseCurrency);
+    }
 
     return (
         <form onSubmit={handleSubmit}>
@@ -157,13 +170,13 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 alignItems='baseline'
                 alignContent='stretch'>
                 <Grid item >
-                    <AmountWithCurrencyInput 
-                        amountInput={expense.amount}
-                        amountInBaseCurrency={expense.amountBaseCurrency}
+                    { currency && <AmountWithCurrencyInput 
+                        amountInput={amount}
+                        amountInBaseCurrency={amountBaseCurrency}
                         baseCurrency={budget && budget.currency}
-                        selectedCurrency={expense.currency}
+                        selectedCurrency={currency}
                         onChange={handleAmountChange}
-                    />
+                    /> }
                 </Grid>
                 <Grid item >
                     <CategoryInput />
@@ -171,15 +184,15 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 <Grid item>
                     <WhenInput />
                 </Grid>
-                { expense.countryCode && <Grid item>
+                <Grid item>
                     <CountryInput 
-                        selectedCountry={ expense.countryCode } 
+                        selectedCountry={ countryCode || 'ES' } 
                         onCountryChange={ handleCountry }/>
-                </Grid> }
+                </Grid>
                 <Grid item >
                     <TextInput 
                         label='Description' 
-                        value={ expense.description || '' }
+                        value={ description }
                         onChange={ handleDescription } />
                 </Grid>
             </Grid>

@@ -9,7 +9,6 @@ interface CountryInputProps {
 
 export const CountryInput: React.FC<CountryInputProps> = (props) => {
 
-    const [country, setCountry] = React.useState(props.selectedCountry);
     const [countries, setCountries] = React.useState<CountryEntry[]>([]);
 
     React.useEffect(() => {
@@ -20,35 +19,30 @@ export const CountryInput: React.FC<CountryInputProps> = (props) => {
         initCountries();
     }, []);
 
-    React.useEffect(() => {
-        if (props.selectedCountry.length === 2) {
-            setCountry(props.selectedCountry);
-        } else {
-            console.warn('invalid country code: ', props.selectedCountry);
-        }
-    }, [props.selectedCountry]);
-
     const handleCountryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCountry(e.target.value);
         props.onCountryChange(e.target.value);
     }
 
-    return (<TextInput
-        label='Country'
-        onChange={handleCountryChange}
-        value={country}
-        select
-        required 
-        SelectProps={{ native: true }} >
-        {
-            countries
-                .map(c => (
-                    <option 
-                        key={`country-option-${c.code}`} 
-                        value={c.code}>
-                        {c.name}
-                    </option>))}
-    </TextInput>);
+    if (countries && countries.length > 0) {
+        return (<TextInput
+            label='Country'
+            onChange={handleCountryChange}
+            value={props.selectedCountry}
+            select
+            required 
+            SelectProps={{ native: true }} >
+            {
+                countries
+                    .map(c => (
+                        <option 
+                            key={`country-option-${c.code}`} 
+                            value={c.code}>
+                            {c.name}
+                        </option>))}
+        </TextInput>);
+    } else {
+        return <span>Loading countries...</span>;
+    }
 }
 
 export default CountryInput;
