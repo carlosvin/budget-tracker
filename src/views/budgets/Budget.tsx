@@ -11,6 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import { HeaderNotifierProps } from "../../routes";
+import Typography from "@material-ui/core/Typography";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -49,7 +50,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
 
     private async initExpenses(identifier: string) {
         try {
-            const expenses = await budgetsStore.getExpenses(identifier);
+            const expenses = await budgetsStore.getExpenses(identifier) || {};
             if (expenses) {
                 this.setState({
                     ...this.state,
@@ -93,9 +94,12 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         if (this.state && this.state.info) {
             return (
                 <React.Fragment>
-                    { this.state.expenses && <this.Stats/> }
                     { this.state.expenses && 
-                        <ExpenseList expenses={this.state.expenses} budget={this.state.info}/> }          
+                        <React.Fragment>
+                            <this.Stats/> 
+                            <ExpenseList expenses={this.state.expenses} budget={this.state.info}/>
+                        </React.Fragment> } 
+                    { !this.state.totalSpent && <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
                     <AddButton href={this.url.pathAddExpense}/>
                 </React.Fragment>
             );
