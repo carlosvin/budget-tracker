@@ -192,7 +192,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 <Grid item >
                     <TextInput 
                         label='Description' 
-                        value={ description }
+                        value={ description || '' }
                         onChange={ handleDescription } />
                 </Grid>
             </Grid>
