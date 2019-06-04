@@ -19,18 +19,20 @@ interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
 
 export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
-    
+
+    const categories = Object.entries(categoriesStore.getCategories());
+
     const [budget, setBudget] = React.useState();
     const [expense, setExpense] = React.useState<Expense>({
         currency: 'EUR',
         amount: 0,
-        categoryId: 'Label',
+        categoryId: categories[0][0],
         countryCode: '',
         identifier: uuid(),
         when: new Date().getTime()
     });
 
-   const [dateString, setDateString] = React.useState(getDateString());
+    const [dateString, setDateString] = React.useState(getDateString());
 
     const {budgetId, expenseId} = props.match.params;
     const {onActions, onTitleChange, history} = props;
@@ -77,8 +79,6 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         // eslint-disable-next-line
     }, [budgetId, expenseId]);
 
-    const categories = categoriesStore.getCategories();
-
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         budgetsStore.saveExpense(budgetId, {...expense, when: new Date(dateString).getTime()});
@@ -98,7 +98,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             select
             required 
             SelectProps={{ native: true }} >
-            {Object.entries(categories).map(
+            {categories.map(
                 ([k, v]) => (
                     <option key={`category-option-${k}`} value={v.id}>{v.name}</option>))}
         </TextInput>
