@@ -25,7 +25,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     const [currency, setCurrency] = React.useState<string>();
     const [amount, setAmount] = React.useState<number>();
-    const [countryCode, setCountryCode] = React.useState<string>();
+    const [countryCode, setCountryCode] = React.useState<string>('ES');
     const [dateString, setDateString] = React.useState(getDateString());
     const [identifier, setIdentifier] = React.useState(uuid());
     const [categoryId, setCategoryId] = React.useState(categories[0][0]);
@@ -58,9 +58,9 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         }
 
         const initAdd = async () => {
-            onTitleChange(`Add expense`);
             const currentCountry = await countriesStore.getCurrentCountry();
             setCountryCode(currentCountry);
+            onTitleChange(`Add expense`);
         }
     
         const initEdit = async () => {
@@ -186,7 +186,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 </Grid>
                 <Grid item>
                     <CountryInput 
-                        selectedCountry={ countryCode || 'ES' } 
+                        selectedCountry={ countryCode } 
                         onCountryChange={ handleCountry }/>
                 </Grid>
                 <Grid item >
