@@ -12,6 +12,7 @@ import { countriesStore } from "../../stores/CountriesStore";
 import { HeaderNotifierProps } from "../../routes";
 import { SaveButtonFab, DeleteButton } from "../buttons";
 import CountryInput from "../CountryInput";
+import { currenciesStore } from "../../stores/CurrenciesStore";
 
 
 interface ExpenseViewProps extends HeaderNotifierProps,
@@ -61,6 +62,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             const currentCountry = await countriesStore.getCurrentCountry();
             setCountryCode(currentCountry);
             onTitleChange(`Add expense`);
+            setCurrency(await currenciesStore.getFromCountry(currentCountry));
         }
     
         const initEdit = async () => {

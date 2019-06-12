@@ -12,6 +12,7 @@ class CurrenciesStore {
     private _areCurrenciesInitialized: boolean;
     private _rates: { [currency: string]: CurrencyRates };
     private _timestamps: { [currency: string]: number };
+    private _countriesCurrencyMap?: {[country: string]: string};
 
     constructor() {
         this._areCurrenciesInitialized = false;
@@ -132,6 +133,14 @@ class CurrenciesStore {
 
     private saveTimestampsToDisk () {
         localStorage.setItem(CurrenciesStore.KEY_TS, JSON.stringify(this._timestamps));
+    }
+
+    async getFromCountry (countryCode: string) {
+        if (!this._countriesCurrencyMap) {
+            const cs = await import('./countryCurrency.json');
+            this._countriesCurrencyMap = cs.default;    
+        }
+        return this._countriesCurrencyMap[countryCode];
     }
 }
 
