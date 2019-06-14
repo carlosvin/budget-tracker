@@ -5,6 +5,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import { Expense, Budget } from "../../interfaces";
 import { ExpenseListItem } from "./ExpenseListItem";
 import './ExpenseList.css';
+import { Grid } from "@material-ui/core";
 
 interface ExpenseListProps {
     expenses: {[timestamp: number]: Expense};
@@ -13,46 +14,59 @@ interface ExpenseListProps {
 
 export class ExpenseList extends React.PureComponent<ExpenseListProps> {
     static displayName = 'ExpenseList';
-    private readonly dates: {[k: string]: string} = {};
 
     render() {
         if (this.props) {
             return (
                 <List disablePadding className='expenseListRoot'>
-                    {this.elements}
+                    {Object.entries(this.expensesGroupedByDate)
+                        .map(([date, expenses]) => 
+                            <this.ListGroup key={`lg-${date}`} date={date} expenses={expenses}/>)}
                 </List>);
         }
         return <CircularProgress/>;
     }
 
-    get elements() {
-        return this.props.expenses && this.props.budget
-            && this.expensesArray.reverse().map(
-                (expense: Expense) => 
-                    <React.Fragment key={`exp-elem-${expense.identifier}`}>
-                        <this.Subheader date={new Date(expense.when)} />
-                        <ExpenseListItem 
-                            expense={expense}
-                            budget={this.props.budget}/>
-                    </React.Fragment>);
-    }
-
-    private Subheader = (props: {date: Date}) => {
-        const dateStr = props.date.toDateString();
-        if (dateStr in this.dates) {
-            return null;
-        } else {
-            this.dates[dateStr] = dateStr;
-            return <ListSubheader id={`ts-${props.date.getTime()}`}>
-                {dateStr}
-                </ListSubheader>;
+    get expensesGroupedByDate () {
+        const group: {[k: string]: Expense[]} = {};
+        for (const ts in this.props.expenses) {
+            const expense = this.props.expenses[ts];
+            const kGroup = new Date(expense.when).toDateString();
+            if (!(kGroup in group)) {
+                group[kGroup] = [];
+            }
+            group[kGroup].push(expense);
         }
+        return group;
     }
 
-    get expensesArray(): Expense[] {
-        return Object.values(this.props.expenses);
-    }
+    private ListGroup = (props: {date: string, expenses: Expense[]}) => (
+        <React.Fragment>
+            <this.SubHeader {...props}/>
+            {
+                props.expenses.map((expense) => (
+                    <ExpenseListItem 
+                        key={`expense-${expense.identifier}`}
+                        expense={expense}
+                        budget={this.props.budget}/>
+                ))
+            }
+        </React.Fragment>
+    );
+
+    private SubHeader = (props: {date: string, expenses: Expense[]}) => (
+        <ListSubheader id={`date-${props.date}`}>
+            <Grid container direction='row' justify='space-between'>
+                <Grid item>
+                    {props.date}
+                </Grid>
+                <Grid item>
+                    {Math.round(props.expenses.map(e => e.amountBaseCurrency || e.amount).reduce((a, b) => a + b))}
+                </Grid>
+            </Grid>
+
+        </ListSubheader>
+    );
 }
-
 
 ExpenseList.displayName = 'ExpenseList';
