@@ -71,12 +71,18 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
                     {props.date}
                 </Grid>
                 <Grid item>
-                    {Math.round(props.expenses.map(e => e.amountBaseCurrency || e.amount).reduce((a, b) => a + b))}
+                    {Math.round(props.expenses.map(e => this.getAmount(e)).reduce((a, b) => a + b))}
                 </Grid>
             </Grid>
 
         </ListSubheader>
     );
+
+    private getAmount(expense: Expense) {
+        return this.props.budget.currency !== expense.currency ?
+            expense.amountBaseCurrency || expense.amount : 
+            expense.amount;
+    }
 }
 
 ExpenseList.displayName = 'ExpenseList';
