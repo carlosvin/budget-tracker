@@ -48,6 +48,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     
     // calculate amount in base currency
     React.useEffect(() => {
+        let isSubscribed = true;
         const calculateAmountInBaseCurrency = async (
             amount: number, 
             baseCurrency: string, 
@@ -59,12 +60,14 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
             setAmountInBaseCurrency(round(calculatedAmount));
             props.onChange(amount, currency, calculatedAmount);
         }
-        if (props.baseCurrency &&
+        if (isSubscribed &&
+            props.baseCurrency &&
             props.selectedCurrency && 
             props.amountInput && 
             props.baseCurrency !== props.selectedCurrency) {
             calculateAmountInBaseCurrency(props.amountInput, props.baseCurrency, props.selectedCurrency);
         }
+        return () => {isSubscribed = false};
     }, 
     // eslint-disable-next-line
     [
