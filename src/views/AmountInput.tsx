@@ -66,6 +66,9 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
             props.amountInput && 
             props.baseCurrency !== props.selectedCurrency) {
             calculateAmountInBaseCurrency(props.amountInput, props.baseCurrency, props.selectedCurrency);
+        } else {
+            setAmountInBaseCurrency(props.amountInput);
+            props.onChange(props.amountInput || 0, props.selectedCurrency, props.amountInput);
         }
         return () => {isSubscribed = false};
     }, 
