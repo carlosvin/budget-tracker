@@ -27,17 +27,27 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
         return <CircularProgress/>;
     }
 
+    get groups () {
+        const groups = new Set<number>();
+        Object.values(this.props.expenses).forEach(e => groups.add(e.when));
+        return Array
+            .from(groups)
+            .sort((a, b) => b - a)
+            .map(when => new Date(when).toDateString());
+    }
+
     get expensesGroupedByDate () {
-        const group: {[k: string]: Expense[]} = {};
-        for (const ts in this.props.expenses) {
-            const expense = this.props.expenses[ts];
-            const kGroup = new Date(expense.when).toDateString();
-            if (!(kGroup in group)) {
-                group[kGroup] = [];
-            }
-            group[kGroup].push(expense);
+        // TODO improve performance: maybe by saving in correct order
+        const groupedExpenses: {[k: string]: Expense[]} = {};
+        for (const g of this.groups) {
+            groupedExpenses[g] = [];
         }
-        return group;
+        for (const id in this.props.expenses) {
+            const expense = this.props.expenses[id];
+            const kGroup = new Date(expense.when).toDateString();
+            groupedExpenses[kGroup].push(expense);
+        }
+        return groupedExpenses;
     }
 
     private ListGroup = (props: {date: string, expenses: Expense[]}) => (
