@@ -36,6 +36,17 @@ const Icons: IconsMap = {
     Pool: React.lazy(() => import('@material-ui/icons/Pool')),
     Label: React.lazy(() => import('@material-ui/icons/Label')),
     Shopping: React.lazy(() => import('@material-ui/icons/ShoppingCart')),
+    Commute: React.lazy(() => import('@material-ui/icons/Commute')),
+    Euro: React.lazy(() => import('@material-ui/icons/EuroSymbol')),
+    Build: React.lazy(() => import('@material-ui/icons/Build')),
+    Motorcycle: React.lazy(() => import('@material-ui/icons/Motorcycle')),
+    Pets: React.lazy(() => import('@material-ui/icons/Pets')),
+    ShoppingBasket: React.lazy(() => import('@material-ui/icons/ShoppingBasket')),
+    Theaters: React.lazy(() => import('@material-ui/icons/Theaters')),
+    MusicVideo: React.lazy(() => import('@material-ui/icons/MusicVideo')),
+    Call: React.lazy(() => import('@material-ui/icons/Call')),
+    DevicesOther: React.lazy(() => import('@material-ui/icons/DevicesOther')),
+    FitnessCenter: React.lazy(() => import('@material-ui/icons/FitnessCenter')),
 };
 
 export class IconsStore {
