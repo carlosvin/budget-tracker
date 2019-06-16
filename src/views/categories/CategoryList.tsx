@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { RouterProps } from 'react-router';
 import { categoriesStore } from '../../stores/CategoriesStore';
-import { AddButton, SaveButtonFab } from '../buttons';
+import { AddButton, SaveButtonFab } from '../../components/buttons';
 import { Category, Categories } from '../../interfaces';
-import { InfoField } from '../InfoField';
+import { InfoField } from '../../components/InfoField';
 import CategoryInput from './CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
 

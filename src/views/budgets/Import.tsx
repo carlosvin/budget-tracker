@@ -1,8 +1,8 @@
 import * as React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { budgetsStore } from '../../stores/BudgetsStore';
-import { TextInput } from "../TextInput";
-import { SaveButton } from "../buttons";
+import { TextInput } from "../../components/TextInput";
+import { SaveButton } from "../../components/buttons";
 import { HeaderNotifierProps } from '../../routes';
 
 const Import = (props: HeaderNotifierProps) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Header } from "./views/Header";
+import { Header } from "./components/Header";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Routes } from "./routes";
 import Container from "@material-ui/core/Container";

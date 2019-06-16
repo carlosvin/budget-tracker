@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 import Grid, { GridDirection } from '@material-ui/core/Grid';
-import { TextInput } from '../TextInput';
+import { TextInput } from '../../components/TextInput';
 import { uuid } from '../../utils';
 import CategoryIconButton from './CategoryIconButton';
 import { IconsDialogSelector } from './IconsDialogSelector';
 import { Category } from '../../interfaces';
-import { DeleteButton } from '../buttons';
+import { DeleteButton } from '../../components/buttons';
 
 interface CategoryInputProps extends Category {
     direction?: GridDirection;

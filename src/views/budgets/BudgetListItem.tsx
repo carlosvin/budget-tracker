@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
 import { Budget } from "../../interfaces";
 import { dateDiff } from "../../utils";
-import { MyLink } from "../MyLink";
+import { MyLink } from "../../components/MyLink";
 
 
 export class BudgetListItem extends React.PureComponent<Budget> {

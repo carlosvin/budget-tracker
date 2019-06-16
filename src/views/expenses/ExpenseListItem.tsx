@@ -5,7 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { Budget, Expense } from "../../interfaces";
-import { MyLink } from "../MyLink";
+import { MyLink } from "../../components/MyLink";
 import { categoriesStore } from "../../stores/CategoriesStore";
 import { iconsStore } from "../../stores/IconsStore";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";

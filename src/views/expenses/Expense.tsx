@@ -4,14 +4,14 @@ import { budgetsStore } from "../../stores/BudgetsStore";
 import Grid from "@material-ui/core/Grid";
 import { categoriesStore } from "../../stores/CategoriesStore";
 import Link from '@material-ui/core/Link';
-import { MyLink } from "../MyLink";
+import { MyLink } from "../../components/MyLink";
 import { BudgetUrl, getDateString, uuid } from "../../utils";
-import AmountWithCurrencyInput from "../AmountInput";
-import { TextInput } from "../TextInput";
+import AmountWithCurrencyInput from "../../components/AmountInput";
+import { TextInput } from "../../components/TextInput";
 import { countriesStore } from "../../stores/CountriesStore";
 import { HeaderNotifierProps } from "../../routes";
-import { SaveButtonFab, DeleteButton } from "../buttons";
-import CountryInput from "../CountryInput";
+import { SaveButtonFab, DeleteButton } from "../../components/buttons";
+import CountryInput from "../../components/CountryInput";
 import { currenciesStore } from "../../stores/CurrenciesStore";
 
 

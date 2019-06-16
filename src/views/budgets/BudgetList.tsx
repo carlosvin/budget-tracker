@@ -5,7 +5,7 @@ import { RouteComponentProps, Redirect } from "react-router";
 import { budgetsStore } from '../../stores/BudgetsStore';
 import { Budget } from "../../interfaces";
 import { BudgetListItem } from "./BudgetListItem";
-import { AddButton, ImportButton} from "../buttons";
+import { AddButton, ImportButton} from "../../components/buttons";
 import { BudgetUrl } from "../../utils";
 import { HeaderNotifierProps } from "../../routes";
 

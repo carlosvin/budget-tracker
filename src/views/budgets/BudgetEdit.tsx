@@ -4,9 +4,9 @@ import { Budget } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BudgetUrl, getDateString, goBack, uuid } from "../../utils";
-import { CloseButton, SaveButtonFab } from "../buttons";
-import AmountWithCurrencyInput from "../AmountInput";
-import { TextInput } from "../TextInput";
+import { CloseButton, SaveButtonFab } from "../../components/buttons";
+import AmountWithCurrencyInput from "../../components/AmountInput";
+import { TextInput } from "../../components/TextInput";
 import { HeaderNotifierProps } from "../../routes";
 
 interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{

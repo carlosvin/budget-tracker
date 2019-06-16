@@ -5,7 +5,7 @@ import { Category } from '../../interfaces';
 import { uuid } from '../../utils';
 import CategoryInput from './CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
-import { CloseButton, SaveButtonFab } from '../buttons';
+import { CloseButton, SaveButtonFab } from '../../components/buttons';
 
 export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
 
