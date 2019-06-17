@@ -34,32 +34,24 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
     }
 
     private async initBudget(identifier: string) {
-        try {
-            const info = await budgetsStore.getBudget(identifier);
-            if (info) {
-                this.setState({
-                    ...this.state,
-                    info 
-                });
-                this.props.onTitleChange(`${info.name} ${info.currency}`);
-            }
-        } catch (e) {
-            console.error(e);
+        const info = await budgetsStore.getBudget(identifier);
+        if (info) {
+            this.setState({
+                ...this.state,
+                info 
+            });
+            this.props.onTitleChange(`${info.name} ${info.currency}`);
         }
     }
 
     private async initExpenses(identifier: string) {
-        try {
-            const expenses = await budgetsStore.getExpenses(identifier) || {};
-            if (expenses) {
-                this.setState({
-                    ...this.state,
-                    expenses
-                });
-                this.calculate();
-            }
-        } catch (e) {
-            console.error(e);
+        const expenses = await budgetsStore.getExpenses(identifier) || {};
+        if (expenses) {
+            this.setState({
+                ...this.state,
+                expenses
+            });
+            this.calculate();
         }
     }
 
@@ -94,6 +86,13 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         this.props.onActions([]);
     }
 
+    get numberOfExpenses () {
+        if (this.state.expenses) {
+            return Object.keys(this.state.expenses).length;
+        }
+        return 0;           
+    }
+
     render() {
         if (this.state && this.state.info) {
             return (
@@ -102,8 +101,10 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                         <React.Fragment>
                             <this.Stats/> 
                             <ExpenseList expenses={this.state.expenses} budget={this.state.info}/>
-                        </React.Fragment> } 
-                    { !this.state.totalSpent && <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
+                        </React.Fragment> 
+                    } 
+                    { this.numberOfExpenses === 0 && 
+                        <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
                     <AddButton href={this.url.pathAddExpense}/>
                 </React.Fragment>
             );

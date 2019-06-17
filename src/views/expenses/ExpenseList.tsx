@@ -74,7 +74,6 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
                     {Math.round(props.expenses.map(e => this.getAmount(e)).reduce((a, b) => a + b))}
                 </Grid>
             </Grid>
-
         </ListSubheader>
     );
 
