@@ -5,13 +5,13 @@ import { budgetsStore } from "../../stores/BudgetsStore";
 import { ExpenseList } from "../expenses/ExpenseList";
 import { dateDiff, BudgetUrl } from "../../utils";
 import { EditButton, DeleteButton, AddButton } from "../../components/buttons";
-import { InfoField } from "../../components/InfoField";
 import { currenciesStore } from "../../stores/CurrenciesStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import { HeaderNotifierProps } from "../../routes";
 import Typography from "@material-ui/core/Typography";
+import { VersusInfo } from "../../components/VersusInfo";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -77,6 +77,10 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         this.props.history.replace(BudgetUrl.base);
     }
 
+    get expectedDailyExpensesAverage () {
+        return Math.round(this.state.info.total / this.totalDays);
+    }
+
     componentDidMount(){
         this.props.onActions(
             <React.Fragment>
@@ -108,19 +112,25 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
     }
 
     private Stats = () => (
-        <GridList cellHeight={110} cols={2} >
-            <GridListTile key='total' >
-                <InfoField label='Total' value={this.state.info.total}/>
+        <GridList cellHeight={50} cols={2} >
+            <GridListTile key='total' cols={2}>
+                <VersusInfo 
+                    total={this.state.info.total}
+                    spent={this.state.totalSpent || 0}
+                    title='Spent'/>
             </GridListTile>
-            <GridListTile key='Spent'>
-                <InfoField label='Spent' value={this.state.totalSpent}/>
+            <GridListTile key='days' cols={2}>
+                <VersusInfo 
+                    total={this.totalDays}
+                    spent={this.pastDays} 
+                    title='Days'/>
             </GridListTile>
-            <GridListTile key='average'>
-                <InfoField label='Average' value={this.state.averageSpent}/>
-            </GridListTile>
-            <GridListTile key='days'>
-                <InfoField label='Days' value={this.pastDays}/>
-            </GridListTile>
+            { this.state.averageSpent && <GridListTile key='average' cols={2}>
+                <VersusInfo 
+                    total={this.expectedDailyExpensesAverage} 
+                    spent={this.state.averageSpent}
+                    title='Daily Average'/>
+            </GridListTile> }
         </GridList>);
 
     async getExpensesTotal () {
@@ -164,5 +174,9 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
 
     get pastDays () {
         return dateDiff(this.state.info.from, new Date().getTime());
+    }
+
+    get totalDays () {
+        return dateDiff(this.state.info.from, this.state.info.to);
     }
 }

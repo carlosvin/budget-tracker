@@ -3,9 +3,9 @@ import { RouterProps } from 'react-router';
 import { categoriesStore } from '../../stores/CategoriesStore';
 import { AddButton, SaveButtonFab } from '../../components/buttons';
 import { Category, Categories } from '../../interfaces';
-import { InfoField } from '../../components/InfoField';
 import CategoryInput from './CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
+import { Typography } from '@material-ui/core';
 
 export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
 
@@ -36,9 +36,7 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
                     }
                 </React.Fragment>);
         } else {
-            return <InfoField 
-                label='There are no categories' 
-                value='Please add at least one'/>;
+            return  <Typography variant='h5' color='textSecondary'>There are no categories</Typography>;
         }
     }
     
