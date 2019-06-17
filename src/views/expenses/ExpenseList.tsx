@@ -5,12 +5,19 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import { Expense, Budget } from "../../interfaces";
 import { ExpenseListItem } from "./ExpenseListItem";
 import './ExpenseList.css';
-import { Grid } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 
 interface ExpenseListProps {
     expenses: {[timestamp: number]: Expense};
     budget: Budget;
+    expectedDailyAvg: number;
 }
+
+interface ListGroupProps {
+    date: string;
+    expenses: Expense[];
+    expectedDailyAvg: number;
+};
 
 export class ExpenseList extends React.PureComponent<ExpenseListProps> {
     static displayName = 'ExpenseList';
@@ -21,7 +28,11 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
                 <List disablePadding className='expenseListRoot'>
                     {Object.entries(this.expensesGroupedByDate)
                         .map(([date, expenses]) => 
-                            <this.ListGroup key={`lg-${date}`} date={date} expenses={expenses}/>)}
+                            <this.ListGroup 
+                                key={`lg-${date}`} 
+                                date={date} 
+                                expenses={expenses}
+                                expectedDailyAvg={this.props.expectedDailyAvg}/>)}
                 </List>);
         }
         return <CircularProgress/>;
@@ -50,7 +61,7 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
         return groupedExpenses;
     }
 
-    private ListGroup = (props: {date: string, expenses: Expense[]}) => (
+    private ListGroup = (props: ListGroupProps&{expectedDailyAvg:number}) => (
         <React.Fragment>
             <this.SubHeader {...props}/>
             {
@@ -64,23 +75,38 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
         </React.Fragment>
     );
 
-    private SubHeader = (props: {date: string, expenses: Expense[]}) => (
-        <ListSubheader id={`date-${props.date}`}>
-            <Grid container direction='row' justify='space-between'>
+    private SubHeader = (props: ListGroupProps) => {
+        const {date, expenses} = props;
+
+        const sum = React.useMemo(
+            () => (Math.round(
+                expenses.map(
+                    e => this.getAmount(e)).reduce((a, b) => a + b))), 
+            [expenses]);
+
+        const color = props.expectedDailyAvg < sum ? 'subHeaderErr' : '';
+
+        return (<ListSubheader id={`date-${date}`}>
+            <Grid container direction='row' justify='space-between' >
                 <Grid item>
-                    {props.date}
+                    {date}
                 </Grid>
-                <Grid item>
-                    {Math.round(props.expenses.map(e => this.getAmount(e)).reduce((a, b) => a + b))}
+                <Grid item className={color}>
+                    {sum}
                 </Grid>
             </Grid>
-        </ListSubheader>
-    );
+        </ListSubheader>);
+    }
 
     private getAmount(expense: Expense) {
-        return this.props.budget.currency !== expense.currency ?
-            expense.amountBaseCurrency || expense.amount : 
-            expense.amount;
+        // This is legacy code, because previous saved data might not have amountBaseCurrency
+        if (this.props.budget.currency === expense.currency) {
+            return expense.amount;
+        }
+        if (expense.amountBaseCurrency !== undefined) {
+            return expense.amountBaseCurrency;
+        }
+        throw new Error('There is no amount in base currency');
     }
 }
 

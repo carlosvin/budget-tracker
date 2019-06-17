@@ -100,7 +100,10 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                     { this.state.expenses && 
                         <React.Fragment>
                             <this.Stats/> 
-                            <ExpenseList expenses={this.state.expenses} budget={this.state.info}/>
+                            <ExpenseList 
+                                expenses={this.state.expenses} 
+                                budget={this.state.info}
+                                expectedDailyAvg={this.expectedDailyExpensesAverage} />
                         </React.Fragment> 
                     } 
                     { this.numberOfExpenses === 0 && 
