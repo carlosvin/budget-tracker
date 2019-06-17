@@ -5,9 +5,9 @@ import { budgetsStore } from "../../stores/BudgetsStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { BudgetUrl, getDateString, goBack, uuid } from "../../utils";
 import { CloseButton, SaveButtonFab } from "../../components/buttons";
-import AmountWithCurrencyInput from "../../components/AmountInput";
 import { TextInput } from "../../components/TextInput";
 import { HeaderNotifierProps } from "../../routes";
+import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
 
 interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{
 }
@@ -125,7 +125,7 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
                     <TextInput label='Name' value={this.state.name} onChange={this.handleChange('name')} required />
                     <TextInput label='Start' value={this.state.start} type='date' onChange={this.handleChange('start')} error={this.hasError} required/>
                     <TextInput label='End' value={this.state.end} type='date' error={this.hasError} onChange={this.handleChange('end')}/>
-                    <AmountWithCurrencyInput 
+                    <AmountWithCurrencyInput
                         amountInput={this.state.total}
                         selectedCurrency={this.state.currency}
                         label='Total'

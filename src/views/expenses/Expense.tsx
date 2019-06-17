@@ -6,13 +6,13 @@ import { categoriesStore } from "../../stores/CategoriesStore";
 import Link from '@material-ui/core/Link';
 import { MyLink } from "../../components/MyLink";
 import { BudgetUrl, getDateString, uuid } from "../../utils";
-import AmountWithCurrencyInput from "../../components/AmountInput";
 import { TextInput } from "../../components/TextInput";
 import { countriesStore } from "../../stores/CountriesStore";
 import { HeaderNotifierProps } from "../../routes";
 import { SaveButtonFab, DeleteButton } from "../../components/buttons";
 import CountryInput from "../../components/CountryInput";
 import { currenciesStore } from "../../stores/CurrenciesStore";
+import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
 
 
 interface ExpenseViewProps extends HeaderNotifierProps,
@@ -172,7 +172,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 alignItems='baseline'
                 alignContent='stretch'>
                 <Grid item >
-                    { currency && <AmountWithCurrencyInput 
+                    { currency && <AmountWithCurrencyInput
                         amountInput={amount}
                         amountInBaseCurrency={amountBaseCurrency}
                         baseCurrency={budget && budget.currency}
