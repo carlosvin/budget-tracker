@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Snackbar from '@material-ui/core/Snackbar';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
@@ -22,6 +21,7 @@ export class ErrorBoundary extends React.Component<{}, { error: string | null }>
 
     private handleClose = () => {
         this.setState({ error: null });
+        window.location.reload();
     }
 
     render() {
@@ -35,9 +35,6 @@ export class ErrorBoundary extends React.Component<{}, { error: string | null }>
                     ContentProps={{ 'aria-describedby': 'message-id', }}
                     message={<span id="message-id">{this.state.error}</span>}
                     action={[
-                        <Button key="undo" color="secondary" size="small" onClick={this.handleClose}>
-                            Close
-                        </Button>,
                         <IconButton
                             key="close"
                             aria-label="Close"
