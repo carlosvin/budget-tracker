@@ -21,7 +21,6 @@ export class ErrorBoundary extends React.Component<{}, { error: string | null }>
 
     private handleClose = () => {
         this.setState({ error: null });
-        window.location.reload();
     }
 
     render() {
