@@ -46,17 +46,13 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
     }
 
     private async initBudget(identifier: string) {
-        try {
-            const info = await budgetsStore.getBudget(identifier);
-            if (info) {
-                this.setState({ 
-                    ...info, 
-                    start: getDateString(new Date(info.from)), 
-                    end: getDateString(new Date(info.to)), 
-                });
-            }
-        } catch (e) {
-            console.error(e);
+        const info = await budgetsStore.getBudget(identifier);
+        if (info) {
+            this.setState({ 
+                ...info, 
+                start: getDateString(new Date(info.from)), 
+                end: getDateString(new Date(info.to)), 
+            });
         }
     }
 
@@ -112,7 +108,7 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
     }
 
     get hasError () {
-        return this.state.error!==undefined;
+        return this.state.error !== undefined;
     }
 
     render() {
