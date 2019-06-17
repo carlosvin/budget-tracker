@@ -16,7 +16,10 @@ interface AmountCurrencyInputProps  {
 
 export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (props) => {
 
-    const [amountInBaseCurrency, setAmountInBaseCurrency] = React.useState<number|undefined>(props.amountInBaseCurrency);
+    const [
+        amountInBaseCurrency, 
+        setAmountInBaseCurrency
+    ] = React.useState<number|undefined>(props.amountInBaseCurrency);
     
     // calculate amount in base currency
     React.useEffect(() => {
@@ -58,7 +61,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     }
 
     const baseAmount = () => {
-        if (props.baseCurrency !== props.selectedCurrency && amountInBaseCurrency) {
+        if (props.baseCurrency && props.baseCurrency !== props.selectedCurrency && amountInBaseCurrency) {
             return `${round(amountInBaseCurrency)} ${props.baseCurrency}`;
         }
         return undefined;
