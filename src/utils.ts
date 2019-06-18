@@ -77,3 +77,31 @@ export function uuid() {
     // TODO generate uuid following spec
     return new Date().getTime().toString();
 }
+
+export function hash(str: string) {
+    let hash = 0;
+    if (str.length === 0) {
+        return hash;
+    }
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash<<5)-hash) /* same as hash *31 */ + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+}
+
+export function stringToColor (text: string) {
+    let hashed = Math.abs(hash(text));
+    const r = hashed % 255;
+    hashed = hashed / 255;
+    const g = hashed % 255;
+    hashed = hashed / 255;
+    const b = hashed % 255;
+    return {r, g, b};
+}
+
+export function stringToColorCss (text: string) {
+    const rgb = stringToColor(text);
+    return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+}

@@ -9,7 +9,7 @@ import { MyLink } from "../../components/MyLink";
 import { categoriesStore } from "../../stores/CategoriesStore";
 import { iconsStore } from "../../stores/IconsStore";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import {round} from '../../utils';
+import {round, stringToColorCss} from '../../utils';
 
 interface ExpenseListItemProps {
     budget: Budget;
@@ -19,6 +19,7 @@ interface ExpenseListItemProps {
 export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
     
     render(){
+        const category = this.getCategory();
         return (
             <ListItem 
                 divider
@@ -27,7 +28,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
                 href={this.href}>
                 <ListItemAvatar >
                     <React.Suspense fallback={'icon'}>
-                        <this.Icon />
+                        <this.Icon style={{color: `${stringToColorCss(category ? category.icon : '')}`}}/>
                     </React.Suspense>
                 </ListItemAvatar>
                 <ListItemText 
