@@ -12,7 +12,7 @@ interface IconsDialogSelectorProps {
     onClose: (selectedValue: string) => void;
 };
 
-export class IconsDialogSelector extends React.PureComponent<IconsDialogSelectorProps> {
+class IconsDialogSelector extends React.PureComponent<IconsDialogSelectorProps> {
     private readonly titleId = 'dialog-title';
 
     render (){
@@ -43,3 +43,4 @@ export class IconsDialogSelector extends React.PureComponent<IconsDialogSelector
     };
 }
 
+export default IconsDialogSelector;

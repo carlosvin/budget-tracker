@@ -18,7 +18,8 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
             props.onActions([]);
             props.onTitleChange('');
         }
-    });
+    // eslint-disable-next-line
+    }, []);
 
     const close = () => {
         if (props.history.length > 2) {

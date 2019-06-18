@@ -21,7 +21,8 @@ const Import = (props: HeaderNotifierProps) => {
             props.onActions([]);
             props.onTitleChange('');
         }
-    });
+    // eslint-disable-next-line
+    }, []);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();

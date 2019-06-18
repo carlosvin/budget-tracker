@@ -14,7 +14,8 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
         return function () {
             props.onTitleChange('');
         };
-    });
+    // eslint-disable-next-line
+    }, []);
 
     const [changed, setChanged] = React.useState(false);
   
