@@ -93,11 +93,11 @@ export function hash(str: string) {
 
 export function stringToColor (text: string) {
     let hashed = Math.abs(hash(text));
-    const r = hashed % 255;
-    hashed = hashed / 255;
-    const g = hashed % 255;
-    hashed = hashed / 255;
-    const b = hashed % 255;
+    const r = hashed % 200;
+    hashed = hashed >> 7;
+    const g = hashed % 200;
+    hashed = hashed >> 7;
+    const b = hashed % 200;
     return {r, g, b};
 }
 
