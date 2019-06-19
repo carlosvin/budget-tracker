@@ -4,7 +4,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { RouteComponentProps, Redirect } from "react-router";
 import { budgetsStore } from '../../stores/BudgetsStore';
 import { Budget } from "../../interfaces";
-import { BudgetListItem } from "./BudgetListItem";
+import { BudgetListItem } from "../../components/BudgetListItem";
 import { AddButton, ImportButton} from "../../components/buttons";
 import { BudgetUrl } from "../../utils";
 import { HeaderNotifierProps } from "../../routes";

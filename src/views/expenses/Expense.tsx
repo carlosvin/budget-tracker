@@ -59,10 +59,18 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         }
 
         const initAdd = async () => {
-            const currentCountry = await countriesStore.getCurrentCountry();
-            setCountryCode(currentCountry);
             onTitleChange(`Add expense`);
-            setCurrency(await currenciesStore.getFromCountry(currentCountry));
+            const setCurrentCountry = async (currentCountry: string) => {
+                setCountryCode(currentCountry);
+                setCurrency(await currenciesStore.getFromCountry(currentCountry));
+            }
+            const currentCountry = countriesStore.currentCountryCode;
+            setCurrentCountry(currentCountry);
+
+            const currentCountryFetched = await countriesStore.getCurrentCountry();
+            if (currentCountry !== currentCountryFetched) {
+                setCurrentCountry(currentCountryFetched);
+            }
         }
     
         const initEdit = async () => {

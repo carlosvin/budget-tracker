@@ -3,7 +3,7 @@ import { RouterProps } from 'react-router';
 import { categoriesStore } from '../../stores/CategoriesStore';
 import { Category } from '../../interfaces';
 import { uuid } from '../../utils';
-import CategoryInput from './CategoryInput';
+import CategoryInput from '../../components/CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
 import { CloseButton, SaveButtonFab } from '../../components/buttons';
 

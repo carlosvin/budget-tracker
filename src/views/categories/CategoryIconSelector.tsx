@@ -4,15 +4,15 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import { iconsStore } from '../../stores/IconsStore';
-import { CategoryIconButton } from './CategoryIconButton';
+import { CategoryIconButton } from '../../components/CategoryIconButton';
 
-interface IconsDialogSelectorProps {
+interface CategoryIconSelectorProps {
     selectedValue: string;
     open: boolean;
     onClose: (selectedValue: string) => void;
 };
 
-class IconsDialogSelector extends React.PureComponent<IconsDialogSelectorProps> {
+class CategoryIconSelector extends React.PureComponent<CategoryIconSelectorProps> {
     private readonly titleId = 'dialog-title';
 
     render (){
@@ -43,4 +43,4 @@ class IconsDialogSelector extends React.PureComponent<IconsDialogSelectorProps> 
     };
 }
 
-export default IconsDialogSelector;
+export default CategoryIconSelector;

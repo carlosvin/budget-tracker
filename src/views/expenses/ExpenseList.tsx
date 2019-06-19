@@ -3,7 +3,7 @@ import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { Expense, Budget } from "../../interfaces";
-import { ExpenseListItem } from "./ExpenseListItem";
+import { ExpenseListItem } from "../../components/ExpenseListItem";
 import './ExpenseList.css';
 import Grid from "@material-ui/core/Grid";
 

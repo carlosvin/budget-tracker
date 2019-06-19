@@ -58,6 +58,10 @@ class CountriesStore {
             JSON.stringify(this.currentCountry));
     }
 
+    get currentCountryCode () {
+        return this.currentCountry.code;
+    }
+
     async getCurrentCountry () {
         if (this.currentCountry.code && 
             this.currentCountry.timestamp &&

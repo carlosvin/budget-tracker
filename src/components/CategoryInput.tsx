@@ -1,12 +1,12 @@
 import * as React from 'react';
 
 import Grid, { GridDirection } from '@material-ui/core/Grid';
-import { TextInput } from '../../components/TextInput';
-import { uuid } from '../../utils';
+import { TextInput } from './TextInput';
+import { uuid } from '../utils';
 import CategoryIconButton from './CategoryIconButton';
-import IconsDialogSelector from './IconsDialogSelector';
-import { Category } from '../../interfaces';
-import { DeleteButton } from '../../components/buttons';
+import CategoryIconSelector from '../views/categories/CategoryIconSelector';
+import { Category } from '../interfaces';
+import { DeleteButton } from './buttons';
 
 interface CategoryInputProps extends Category {
     direction?: GridDirection;
@@ -66,7 +66,7 @@ export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
                 </Grid>
                 { props.onDelete && <Grid item><DeleteButton onClick={handleDelete}/></Grid> }
             </Grid>
-            <IconsDialogSelector 
+            <CategoryIconSelector 
                 onClose={handleCloseDialog} 
                 open={dialogOpen} 
                 selectedValue={category.icon}/>

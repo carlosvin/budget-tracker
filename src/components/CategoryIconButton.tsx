@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
-import { iconsStore } from '../../stores/IconsStore';
-import { stringToColorCss } from '../../utils';
+import { iconsStore } from '../stores/IconsStore';
+import { stringToColorCss } from '../utils';
 
 interface CategoryIconButtonProp {
     name: string;

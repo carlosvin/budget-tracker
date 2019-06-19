@@ -3,7 +3,7 @@ import { RouterProps } from 'react-router';
 import { categoriesStore } from '../../stores/CategoriesStore';
 import { AddButton, SaveButtonFab } from '../../components/buttons';
 import { Category, Categories } from '../../interfaces';
-import CategoryInput from './CategoryInput';
+import CategoryInput from '../../components/CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
 import { Typography } from '@material-ui/core';
 
