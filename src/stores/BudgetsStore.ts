@@ -3,7 +3,7 @@ import { FilesApi } from "../api/FileApi";
 import { uuid } from "../utils";
 import { currenciesStore } from "./CurrenciesStore";
 
-class BudgetsStore {
+export class BudgetsStore {
 
     private static readonly KEY_BUDGETS = 'budgets';
     private static readonly KEY_EXPENSES = 'expenses';

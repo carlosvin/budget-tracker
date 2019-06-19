@@ -1,25 +1,23 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Budget, Expense } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import { ExpenseList } from "../expenses/ExpenseList";
-import { dateDiff, BudgetUrl } from "../../utils";
+import { BudgetUrl } from "../../utils";
 import { EditButton, DeleteButton, AddButton } from "../../components/buttons";
-import { currenciesStore } from "../../stores/CurrenciesStore";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import { HeaderNotifierProps } from "../../routes";
 import Typography from "@material-ui/core/Typography";
 import { VersusInfo } from "../../components/VersusInfo";
+import { BudgetModel } from "../../BudgetModel";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
 interface BudgetViewState {
-    info: Budget;
-    expenses: {[timestamp: number]: Expense};
     totalSpent?: number;
-    averageSpent?: number;
+    dailyAverage?: number;
+    budgetModel?: BudgetModel;
 }
 
 export default class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewState> {
@@ -28,49 +26,52 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
 
     constructor(props: BudgetViewProps){
         super(props);
-        this.initBudget(props.match.params.budgetId);
-        this.initExpenses(props.match.params.budgetId);
+        this.state = {};
         this.url = new BudgetUrl(props.match.params.budgetId);
+        this.init(props.match.params.budgetId);
+    }
+
+    private async init(budgetId: string) {
+        const [info, expenses] = await Promise.all([
+            this.initBudget(budgetId), 
+            this.initExpenses(budgetId)]);
+        this.props.onTitleChange(`${info.name} ${info.currency}`);
+        const budgetModel = new BudgetModel(info, expenses);
+
+        this.setState({
+            ...this.state,
+            budgetModel
+        });
+        this.setState({
+            ...this.state,
+            totalSpent: await budgetModel.getTotalExpenses(),
+            dailyAverage: await budgetModel.getAverage(),
+        });
     }
 
     private async initBudget(identifier: string) {
         const info = await budgetsStore.getBudget(identifier);
         if (info) {
-            this.setState({
-                ...this.state,
-                info 
-            });
-            this.props.onTitleChange(`${info.name} ${info.currency}`);
+            return info;
         }
+        throw new Error('Is not possible to load budget: ' + identifier);
     }
 
     private async initExpenses(identifier: string) {
         const expenses = await budgetsStore.getExpenses(identifier) || {};
         if (expenses) {
-            this.setState({
-                ...this.state,
-                expenses
-            });
-            this.calculate();
+            return expenses;
         }
-    }
-
-    private async calculate() {
-        const et = await this.getExpensesTotal();
-        this.setState({
-            ...this.state,
-            totalSpent: et && Math.round(et),
-            averageSpent: et && this.getExpensesAverage(et)
-        });
+        throw new Error('Is not possible to load expenses for budget: ' + identifier);
     }
 
     private handleDelete = () => {
-        budgetsStore.deleteBudget(this.state.info.identifier);
-        this.props.history.replace(BudgetUrl.base);
-    }
-
-    get expectedDailyExpensesAverage () {
-        return Math.round(this.state.info.total / this.totalDays);
+        if (this.state.budgetModel) {
+            budgetsStore.deleteBudget(this.state.budgetModel.identifier);
+            this.props.history.replace(BudgetUrl.base);
+        } else {
+            throw new Error('Budget is undefined');
+        }
     }
 
     componentDidMount(){
@@ -86,27 +87,28 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         this.props.onActions([]);
     }
 
-    get numberOfExpenses () {
-        if (this.state.expenses) {
-            return Object.keys(this.state.expenses).length;
-        }
-        return 0;           
-    }
-
     render() {
-        if (this.state && this.state.info) {
+        if (this.state.budgetModel) {
+            const budgetModel = this.state.budgetModel;
             return (
                 <React.Fragment>
-                    { this.state.expenses && 
+                    { this.state.budgetModel.expenses && 
                         <React.Fragment>
-                            <this.Stats/> 
+                            <this.Stats 
+                                dailyAverage={this.state.dailyAverage}
+                                expectedDailyAverage={budgetModel.expectedDailyExpensesAverage}
+                                passedDays={budgetModel.days}
+                                totalDays={budgetModel.totalDays}
+                                totalBudget={budgetModel.info.total}
+                                totalSpent={this.state.totalSpent || 0}
+                                /> 
                             <ExpenseList 
-                                expenses={this.state.expenses} 
-                                budget={this.state.info}
-                                expectedDailyAvg={this.expectedDailyExpensesAverage} />
+                                expenses={this.state.budgetModel.expenses} 
+                                budget={this.state.budgetModel.info}
+                                expectedDailyAvg={this.state.budgetModel.expectedDailyExpensesAverage} />
                         </React.Fragment> 
                     } 
-                    { this.numberOfExpenses === 0 && 
+                    { this.state.budgetModel.numberOfExpenses === 0 && 
                         <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
                     <AddButton href={this.url.pathAddExpense}/>
                 </React.Fragment>
@@ -115,72 +117,33 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         return <CircularProgress/>;
     }
 
-    private Stats = () => (
+    private Stats = (props: {
+        totalBudget: number,
+        totalSpent: number,
+        totalDays: number,
+        passedDays: number,
+        expectedDailyAverage: number,
+        dailyAverage?: number
+    }) => (
         <GridList cellHeight={50} cols={2} >
             <GridListTile key='total' cols={2}>
                 <VersusInfo 
-                    total={this.state.info.total}
-                    spent={this.state.totalSpent || 0}
+                    total={props.totalBudget}
+                    spent={props.totalSpent}
                     title='Spent'/>
             </GridListTile>
             <GridListTile key='days' cols={2}>
                 <VersusInfo 
-                    total={this.totalDays}
-                    spent={this.pastDays} 
+                    total={props.totalDays}
+                    spent={props.passedDays} 
                     title='Days'/>
             </GridListTile>
-            { this.state.averageSpent && <GridListTile key='average' cols={2}>
+            { props.dailyAverage !== undefined && <GridListTile key='average' cols={2}>
                 <VersusInfo 
-                    total={this.expectedDailyExpensesAverage} 
-                    spent={this.state.averageSpent}
+                    total={props.expectedDailyAverage} 
+                    spent={props.dailyAverage}
                     title='Daily Average'/>
             </GridListTile> }
         </GridList>);
 
-    async getExpensesTotal () {
-        if (this.state.expenses && this.state.info) {
-            const values = Object.values(this.state.expenses);
-            if (values.length > 0) {
-                let total = 0;
-                for (const expense of values) {
-                    if (expense.amountBaseCurrency !== undefined) {
-                        total = total + expense.amountBaseCurrency;
-                    } else {
-                        total = total + await this.getAmountInBaseCurrency(expense);
-                    }
-                }
-                return total;
-            }
-        }
-        return 0;
-    }
-
-    private async getAmountInBaseCurrency(expense: Expense): Promise<number> {
-        try {
-            return await currenciesStore.getAmountInBaseCurrency(
-                this.state.info.currency, 
-                expense.currency, 
-                expense.amount);
-        } catch (err) {
-            console.warn('Could not get rate: ', err);
-            return 0;
-        }
-    }
-
-    private getExpensesAverage (totalSpent: number) {
-        const days = this.pastDays;
-        if (days > 0) {
-            return totalSpent > 0 ? Math.round(totalSpent / days) : 0;
-        } else {
-            return 0;
-        }
-    }
-
-    get pastDays () {
-        return dateDiff(this.state.info.from, new Date().getTime());
-    }
-
-    get totalDays () {
-        return dateDiff(this.state.info.from, this.state.info.to);
-    }
 }
