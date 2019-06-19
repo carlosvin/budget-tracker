@@ -13,6 +13,8 @@ import { SaveButtonFab, DeleteButton } from "../../components/buttons";
 import CountryInput from "../../components/CountryInput";
 import { currenciesStore } from "../../stores/CurrenciesStore";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
+import { Category } from "../../interfaces";
+import { CategoryFormDialog } from "../../components/CategoryFormDialog";
 
 
 interface ExpenseViewProps extends HeaderNotifierProps,
@@ -20,8 +22,10 @@ interface ExpenseViewProps extends HeaderNotifierProps,
 
 export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
-    const categories = Object.entries(categoriesStore.getCategories());
+    const [categories, setCategories] = React.useState(
+        Object.entries(categoriesStore.getCategories()));
 
+    const [addCategoryOpen, setAddCategoryOpen] = React.useState(false);
     const [budget, setBudget] = React.useState();
 
     const [currency, setCurrency] = React.useState<string>();
@@ -128,13 +132,28 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => (
         setCategoryId(e.target.value)
     );
+
+    const handleAddCategoryClick = (e: React.SyntheticEvent) => {
+        e.preventDefault();
+        setAddCategoryOpen(true);
+    }
+
+    const handleAddCategoryClose = (category?: Category) => {
+        if (category) {
+            categoriesStore.setCategory(category);
+            setCategories(Object.entries(categoriesStore.getCategories()));
+            setCategoryId(category.id);
+        }
+        setAddCategoryOpen(false);
+    }
     
     const CategoryInput = () => (
         <TextInput
             label='Category'
             onChange={handleCategoryChange}
             value={categoryId}
-            helperText={<Link component={MyLink} href='/categories/add'>Add category</Link>}
+            helperText={
+                <Link component={MyLink} onClick={handleAddCategoryClick}>Add category</Link>}
             select
             required 
             SelectProps={{ native: true }} >
@@ -174,40 +193,46 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <Grid container
-                justify='space-between'
-                alignItems='baseline'
-                alignContent='stretch'>
-                <Grid item >
-                    { currency && <AmountWithCurrencyInput
-                        amountInput={amount}
-                        amountInBaseCurrency={amountBaseCurrency}
-                        baseCurrency={budget && budget.currency}
-                        selectedCurrency={currency}
-                        onChange={handleAmountChange}
-                    /> }
+        <React.Fragment>
+            <CategoryFormDialog 
+            open={addCategoryOpen} 
+            onClose={handleAddCategoryClose} />
+            <form onSubmit={handleSubmit}>
+                <Grid container
+                    justify='space-between'
+                    alignItems='baseline'
+                    alignContent='stretch'>
+                    <Grid item >
+                        { currency && <AmountWithCurrencyInput
+                            amountInput={amount}
+                            amountInBaseCurrency={amountBaseCurrency}
+                            baseCurrency={budget && budget.currency}
+                            selectedCurrency={currency}
+                            onChange={handleAmountChange}
+                        /> }
+                    </Grid>
+                    <Grid item >
+                        <CategoryInput />
+                    </Grid>
+                    <Grid item>
+                        <WhenInput />
+                    </Grid>
+                    <Grid item>
+                        <CountryInput 
+                            selectedCountry={ countryCode } 
+                            onCountryChange={ handleCountry }/>
+                    </Grid>
+                    <Grid item >
+                        <TextInput 
+                            label='Description' 
+                            value={ description || '' }
+                            onChange={ handleDescription } />
+                    </Grid>
                 </Grid>
-                <Grid item >
-                    <CategoryInput />
-                </Grid>
-                <Grid item>
-                    <WhenInput />
-                </Grid>
-                <Grid item>
-                    <CountryInput 
-                        selectedCountry={ countryCode } 
-                        onCountryChange={ handleCountry }/>
-                </Grid>
-                <Grid item >
-                    <TextInput 
-                        label='Description' 
-                        value={ description || '' }
-                        onChange={ handleDescription } />
-                </Grid>
-            </Grid>
-            <SaveButtonFab type='submit' color='primary'/>
-        </form>);
+                <SaveButtonFab type='submit' color='primary'/>
+            </form>
+        </React.Fragment>
+        );
 }
 
 export default ExpenseView;

@@ -2,26 +2,13 @@ import * as React from 'react';
 import { RouterProps } from 'react-router';
 import { categoriesStore } from '../../stores/CategoriesStore';
 import { Category } from '../../interfaces';
-import { uuid } from '../../utils';
-import CategoryInput from '../../components/CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
-import { CloseButton, SaveButtonFab } from '../../components/buttons';
+import { CloseButton } from '../../components/buttons';
+import { CategoryForm } from '../../components/CategoryForm';
 
 export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
 
-    const [category, setCategory] = React.useState<Category>({name: '', icon: 'Label', id: uuid()});
-
-    React.useEffect(() => {
-        props.onTitleChange('Add category');
-        props.onActions(<CloseButton onClick={close} />);
-        return function () {
-            props.onActions([]);
-            props.onTitleChange('');
-        }
-    // eslint-disable-next-line
-    }, []);
-
-    const close = () => {
+    const closeView = () => {
         if (props.history.length > 2) {
             props.history.goBack();
         } else {
@@ -29,22 +16,22 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
         }
     }
     
-    const handleSave = (e: React.SyntheticEvent) => {
-        e.preventDefault();
+    React.useEffect(() => {
+        props.onTitleChange('Add category');
+        props.onActions(<CloseButton onClick={closeView} />);
+        return function () {
+            props.onActions([]);
+            props.onTitleChange('');
+        }
+    // eslint-disable-next-line
+    }, []);
+
+    const handleSave = (category: Category) => {
         categoriesStore.setCategory(category);
-        close();
+        closeView();
     }
     
-    return (
-        <form onSubmit={handleSave}>
-            <CategoryInput 
-                icon={category.icon} 
-                name={category.name} 
-                id={category.id} 
-                onChange={setCategory}
-                />
-            <SaveButtonFab type='submit' color='primary' disabled={category.name === ''} />
-        </form>);
+    return <CategoryForm onSubmit={handleSave}/>;
 }
 
 export default AddCategory;
