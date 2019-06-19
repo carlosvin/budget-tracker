@@ -126,12 +126,18 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         } else {
             throw new Error(`Invalid expense data`);
         }
-        
     }
 
-    const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => (
-        setCategoryId(e.target.value)
-    );
+    const CategoryOptions = React.useMemo(
+        () => (categories.map(
+            ([k, v]) => (
+                <option key={`category-option-${k}`} value={v.id}>{v.name}</option>))), 
+        [categories]);
+
+    const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        setCategoryId(e.target.value);
+    }
 
     const handleAddCategoryClick = (e: React.SyntheticEvent) => {
         e.preventDefault();
@@ -157,9 +163,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             select
             required 
             SelectProps={{ native: true }} >
-            {categories.map(
-                ([k, v]) => (
-                    <option key={`category-option-${k}`} value={v.id}>{v.name}</option>))}
+            { CategoryOptions }
         </TextInput>
     );
 
@@ -178,9 +182,10 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         />
     );
 
-    const handleDescription = (e: React.ChangeEvent<HTMLInputElement>) => (
-        setDescription(e.target.value)
-    );
+    const handleDescription = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault();
+        setDescription(e.target.value);
+    }
 
     const handleCountry = (countryCode: string) => (
         setCountryCode(countryCode)
@@ -197,7 +202,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             <CategoryFormDialog 
             open={addCategoryOpen} 
             onClose={handleAddCategoryClose} />
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} autoComplete='on'>
                 <Grid container
                     justify='space-between'
                     alignItems='baseline'
