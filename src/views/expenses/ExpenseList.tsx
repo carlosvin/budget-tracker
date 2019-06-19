@@ -17,10 +17,9 @@ interface ListGroupProps {
     date: string;
     expenses: Expense[];
     expectedDailyAvg: number;
-};
+}
 
 export class ExpenseList extends React.PureComponent<ExpenseListProps> {
-    static displayName = 'ExpenseList';
 
     render() {
         if (this.props) {
@@ -86,16 +85,17 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
 
         const color = props.expectedDailyAvg < sum ? 'subHeaderErr' : '';
 
-        return (<ListSubheader id={`date-${date}`}>
-            <Grid container direction='row' justify='space-between' >
-                <Grid item>
-                    {date}
+        return (
+            <ListSubheader id={`date-${date}`}>
+                <Grid container direction='row' justify='space-between' >
+                    <Grid item>
+                        {date}
+                    </Grid>
+                    <Grid item className={color}>
+                        {sum}
+                    </Grid>
                 </Grid>
-                <Grid item className={color}>
-                    {sum}
-                </Grid>
-            </Grid>
-        </ListSubheader>);
+            </ListSubheader>);
     }
 
     private getAmount(expense: Expense) {
@@ -109,5 +109,3 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
         throw new Error('There is no amount in base currency');
     }
 }
-
-ExpenseList.displayName = 'ExpenseList';
