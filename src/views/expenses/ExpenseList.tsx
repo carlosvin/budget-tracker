@@ -8,7 +8,7 @@ import './ExpenseList.css';
 import Grid from "@material-ui/core/Grid";
 
 interface ExpenseListProps {
-    expenses: {[timestamp: number]: Expense};
+    expensesByDate: {[group: number]: Expense[]};
     budget: Budget;
     expectedDailyAvg: number;
 }
@@ -25,7 +25,7 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
         if (this.props) {
             return (
                 <List disablePadding className='expenseListRoot'>
-                    {Object.entries(this.expensesGroupedByDate)
+                    {Object.entries(this.props.expensesByDate)
                         .map(([date, expenses]) => 
                             <this.ListGroup 
                                 key={`lg-${date}`} 
@@ -35,29 +35,6 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
                 </List>);
         }
         return <CircularProgress/>;
-    }
-
-    get groups () {
-        const groups = new Set<number>();
-        Object.values(this.props.expenses).forEach(e => groups.add(e.when));
-        return Array
-            .from(groups)
-            .sort((a, b) => b - a)
-            .map(when => new Date(when).toDateString());
-    }
-
-    get expensesGroupedByDate () {
-        // TODO improve performance: maybe by saving in correct order
-        const groupedExpenses: {[k: string]: Expense[]} = {};
-        for (const g of this.groups) {
-            groupedExpenses[g] = [];
-        }
-        for (const id in this.props.expenses) {
-            const expense = this.props.expenses[id];
-            const kGroup = new Date(expense.when).toDateString();
-            groupedExpenses[kGroup].push(expense);
-        }
-        return groupedExpenses;
     }
 
     private ListGroup = (props: ListGroupProps&{expectedDailyAvg:number}) => (
@@ -89,7 +66,7 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
             <ListSubheader id={`date-${date}`}>
                 <Grid container direction='row' justify='space-between' >
                     <Grid item>
-                        {date}
+                        {new Date(parseInt(date)).toDateString()}
                     </Grid>
                     <Grid item className={color}>
                         {sum}

@@ -5,12 +5,10 @@ import { ExpenseList } from "../expenses/ExpenseList";
 import { BudgetUrl } from "../../utils";
 import { EditButton, DeleteButton, AddButton } from "../../components/buttons";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
 import { HeaderNotifierProps } from "../../routes";
 import Typography from "@material-ui/core/Typography";
-import { VersusInfo } from "../../components/VersusInfo";
 import { BudgetModel } from "../../BudgetModel";
+import { BudgetQuickStats } from "../../components/BudgetQuickStats";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -94,7 +92,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                 <React.Fragment>
                     { this.state.budgetModel.expenses && 
                         <React.Fragment>
-                            <this.Stats 
+                            <BudgetQuickStats 
                                 dailyAverage={this.state.dailyAverage}
                                 expectedDailyAverage={budgetModel.expectedDailyExpensesAverage}
                                 passedDays={budgetModel.days}
@@ -102,10 +100,11 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                                 totalBudget={budgetModel.info.total}
                                 totalSpent={this.state.totalSpent || 0}
                                 /> 
+                            { this.state.budgetModel.expensesGroupedByDate && 
                             <ExpenseList 
-                                expenses={this.state.budgetModel.expenses} 
+                                expensesByDate={this.state.budgetModel.expensesGroupedByDate} 
                                 budget={this.state.budgetModel.info}
-                                expectedDailyAvg={this.state.budgetModel.expectedDailyExpensesAverage} />
+                                expectedDailyAvg={this.state.budgetModel.expectedDailyExpensesAverage} /> }
                         </React.Fragment> 
                     } 
                     { this.state.budgetModel.numberOfExpenses === 0 && 
@@ -116,34 +115,4 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         }
         return <CircularProgress/>;
     }
-
-    private Stats = (props: {
-        totalBudget: number,
-        totalSpent: number,
-        totalDays: number,
-        passedDays: number,
-        expectedDailyAverage: number,
-        dailyAverage?: number
-    }) => (
-        <GridList cellHeight={50} cols={2} >
-            <GridListTile key='total' cols={2}>
-                <VersusInfo 
-                    total={props.totalBudget}
-                    spent={props.totalSpent}
-                    title='Spent'/>
-            </GridListTile>
-            <GridListTile key='days' cols={2}>
-                <VersusInfo 
-                    total={props.totalDays}
-                    spent={props.passedDays} 
-                    title='Days'/>
-            </GridListTile>
-            { props.dailyAverage !== undefined && <GridListTile key='average' cols={2}>
-                <VersusInfo 
-                    total={props.expectedDailyAverage} 
-                    spent={props.dailyAverage}
-                    title='Daily Average'/>
-            </GridListTile> }
-        </GridList>);
-
 }

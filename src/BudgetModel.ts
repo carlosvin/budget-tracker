@@ -11,6 +11,7 @@ export class BudgetModel {
     private _days?: number;
     private _totalDays?: number;
     public readonly numberOfExpenses: number;
+    private _expenseGroups?: {[group: number]: Expense[]};
 
     constructor(info: Budget, expenses: {[identifier: string]: Expense}){
         this.info = info;
@@ -74,5 +75,35 @@ export class BudgetModel {
 
     get expectedDailyExpensesAverage () {
         return Math.round(this.info.total / this.totalDays);
+    }
+
+    private addToGroup (expense: Expense) {
+        if (!this._expenseGroups) {
+            this._expenseGroups = {};
+        }
+        if (!(expense.when in this._expenseGroups)) {
+            this._expenseGroups[expense.when] = [];
+        }
+        this._expenseGroups[expense.when].push(expense);
+    }
+
+    get expensesGroupedByDate () {
+        if (!this._expenseGroups) {
+            Object.values(this.expenses).forEach(e => this.addToGroup(e));
+            this.sortExpenseByGroup();
+        }
+        return this._expenseGroups;
+    }
+
+    private sortExpenseByGroup () {
+        if (this._expenseGroups) {
+            // TODO maybe we can use a sorted structure, so we don't have to sort it later
+            const sorted: {[group: number]: Expense[]} = {};
+            Object.keys(this._expenseGroups)
+                .map(k => parseInt(k))
+                .sort((a, b)=> (b-a))
+                .forEach(k=> (sorted[k] = (this._expenseGroups && this._expenseGroups[k]) || []));
+            this._expenseGroups = sorted;
+        }
     }
 }
