@@ -8,7 +8,7 @@ import './ExpenseList.css';
 import Grid from "@material-ui/core/Grid";
 
 interface ExpenseListProps {
-    expensesByDate: {[group: number]: Expense[]};
+    expensesByDate: {[group: number]: { [identifier: string]: Expense }};
     budget: Budget;
     expectedDailyAvg: number;
 }
@@ -30,7 +30,7 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
                             <this.ListGroup 
                                 key={`lg-${date}`} 
                                 date={date} 
-                                expenses={expenses}
+                                expenses={Object.values(expenses)}
                                 expectedDailyAvg={this.props.expectedDailyAvg}/>)}
                 </List>);
         }

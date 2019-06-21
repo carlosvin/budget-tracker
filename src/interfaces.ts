@@ -17,7 +17,7 @@ export interface BudgetExpenses {
 
 export interface Expense {
     amount: number;
-    amountBaseCurrency?: number;
+    amountBaseCurrency: number;
     currency: string;
     categoryId: string;
     countryCode: string;

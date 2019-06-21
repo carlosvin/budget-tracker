@@ -1,10 +1,13 @@
 import { Budget, Expense } from "../interfaces";
 import { BudgetModel } from "../BudgetModel";
+import { version } from '../../package.json';
 
 export class BudgetsStore {
 
     private static readonly KEY_BUDGETS = 'budgets';
     private static readonly KEY_EXPENSES = 'expenses';
+    private static readonly KEY_MIGRATION = 'budget-tracker-migration-status';
+    
 
     private budgetModels: {[identifier: string]: BudgetModel};
     private _budgetsIndex?: {[identifier: string]: Budget};
@@ -12,6 +15,25 @@ export class BudgetsStore {
     constructor(){
         console.log('Instantiate store');
         this.budgetModels = {};
+        if (this.shouldMigrateToV1) {
+            this.migrateToV1();
+        }
+    }
+
+    private get shouldMigrateToV1 () {
+        return localStorage.getItem(BudgetsStore.KEY_MIGRATION) === null;
+    }
+
+    private migrateToV1 () {
+        const serializedExpenses = localStorage.getItem(BudgetsStore.KEY_EXPENSES);
+        if (serializedExpenses) {
+            const expenses: { [budgetId: string]: {[expenseId: string]: Expense} } = JSON.parse(serializedExpenses);
+            for (const budgetId in expenses) {
+                this.saveExpenses(budgetId, expenses[budgetId]);
+            }
+            localStorage.setItem(BudgetsStore.KEY_MIGRATION, version);
+            console.info('Expenses migrated: ', version);
+        }
     }
 
     get budgetIndex () {
@@ -39,7 +61,7 @@ export class BudgetsStore {
     }
 
     getBudgetInfo(identifier: string): Budget {
-        if (this.budgetIndex && identifier in this.budgetIndex) {
+        if (identifier in this.budgetIndex) {
             return this.budgetIndex[identifier];
         }
         throw new Error(`Budget nof found: ${identifier}`);
@@ -99,10 +121,10 @@ export class BudgetsStore {
     }
 
     private fetchExpenses(budgetId: string): {[id: string] : Expense} {
-        // TODO read from key this.getExpensesKey(budgetId)
-        const serializedExpenses = localStorage.getItem(BudgetsStore.KEY_EXPENSES);
+        const expensesKey = this.getExpensesKey(budgetId);
+        const serializedExpenses = localStorage.getItem(expensesKey);
         if (serializedExpenses) {
-            return JSON.parse(serializedExpenses)[budgetId];
+            return JSON.parse(serializedExpenses);
         } else {
             return {};
         }

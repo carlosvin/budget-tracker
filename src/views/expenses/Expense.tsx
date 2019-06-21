@@ -110,7 +110,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             currency && 
             countryCode && 
             identifier && 
-            dateString) {
+            dateString && 
+            amountBaseCurrency) {
             budgetsStore.setExpense(
                 budgetId, 
                 {   amount: amount, 
