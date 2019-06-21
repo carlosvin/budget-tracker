@@ -45,7 +45,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     React.useEffect(() => {
         const initBudget = async () => {
-            const b = await budgetsStore.getBudget(budgetId);
+            const b = budgetsStore.getBudgetInfo(budgetId);
             setBudget(b);
             if (isAddView) {
                 setCurrency(b.currency);
@@ -111,7 +111,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             countryCode && 
             identifier && 
             dateString) {
-            budgetsStore.saveExpense(
+            budgetsStore.setExpense(
                 budgetId, 
                 {   amount: amount, 
                     categoryId: categoryId,

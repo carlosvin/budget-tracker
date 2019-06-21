@@ -34,7 +34,11 @@ class CurrenciesStore {
      */
     async getRate(baseCurrency: string, currencyTo: string) {
         if (this.shouldFetch(baseCurrency)) {
-            await this.fetchRates(baseCurrency, currencyTo);
+            try {
+                await this.fetchRates(baseCurrency, currencyTo);
+            } catch (error) {
+                console.warn(error);
+            }
         }
         if (this.isPresent(baseCurrency, currencyTo)) {
             return this._rates[baseCurrency].rates[currencyTo];

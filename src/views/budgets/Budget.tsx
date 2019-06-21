@@ -30,12 +30,8 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
     }
 
     private async init(budgetId: string) {
-        const [info, expenses] = await Promise.all([
-            this.initBudget(budgetId), 
-            this.initExpenses(budgetId)]);
-        this.props.onTitleChange(`${info.name} ${info.currency}`);
-        const budgetModel = new BudgetModel(info, expenses);
-
+        const budgetModel = await budgetsStore.getBudgetModel(budgetId);
+        this.props.onTitleChange(`${budgetModel.info.name} ${budgetModel.info.currency}`);
         this.setState({
             ...this.state,
             budgetModel
@@ -45,22 +41,6 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
             totalSpent: await budgetModel.getTotalExpenses(),
             dailyAverage: await budgetModel.getAverage(),
         });
-    }
-
-    private async initBudget(identifier: string) {
-        const info = await budgetsStore.getBudget(identifier);
-        if (info) {
-            return info;
-        }
-        throw new Error('Is not possible to load budget: ' + identifier);
-    }
-
-    private async initExpenses(identifier: string) {
-        const expenses = await budgetsStore.getExpenses(identifier) || {};
-        if (expenses) {
-            return expenses;
-        }
-        throw new Error('Is not possible to load expenses for budget: ' + identifier);
     }
 
     private handleDelete = () => {

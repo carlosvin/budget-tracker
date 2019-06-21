@@ -27,7 +27,12 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
     constructor(props: BudgetEditProps){
         super(props);
         if (props.match.params.budgetId) {
-            this.initBudget(props.match.params.budgetId);
+            const info = budgetsStore.getBudgetInfo(props.match.params.budgetId);
+            this.state = { 
+                ...info, 
+                start: getDateString(new Date(info.from)), 
+                end: getDateString(new Date(info.to)), 
+            }
             this.url = new BudgetUrl(props.match.params.budgetId);
         } else {
             const now = new Date();
@@ -42,17 +47,6 @@ export default class BudgetEdit extends React.PureComponent<BudgetEditProps, Bud
                 total: 0 
             };
             this.url = new BudgetUrl(this.state.identifier);
-        }
-    }
-
-    private async initBudget(identifier: string) {
-        const info = await budgetsStore.getBudget(identifier);
-        if (info) {
-            this.setState({ 
-                ...info, 
-                start: getDateString(new Date(info.from)), 
-                end: getDateString(new Date(info.to)), 
-            });
         }
     }
 

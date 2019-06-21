@@ -4,8 +4,8 @@ import { dateDiff } from "./utils";
 
 export class BudgetModel {
 
-    public readonly info: Budget;
-    public readonly expenses: {[identifier: string]: Expense};
+    private readonly _info: Budget;
+    private readonly _expenses: {[identifier: string]: Expense};
 
     private _totalExpenses?: number;
     private _days?: number;
@@ -13,14 +13,22 @@ export class BudgetModel {
     public readonly numberOfExpenses: number;
     private _expenseGroups?: {[group: number]: Expense[]};
 
-    constructor(info: Budget, expenses: {[identifier: string]: Expense}){
-        this.info = info;
-        this.expenses = expenses;
-        this.numberOfExpenses = Object.keys(this.expenses).length;
+    constructor(info: Budget, expenses: {[identifier: string]: Expense}) {
+        this._info = info;
+        this._expenses = expenses || {};
+        this.numberOfExpenses = Object.keys(this._expenses).length;
     }
 
     get identifier () {
-        return this.info.identifier;
+        return this._info.identifier;
+    }
+
+    get info () {
+        return this._info;
+    }
+
+    get expenses () {
+        return this._expenses;
     }
 
     async getTotalExpenses(): Promise<number> {
@@ -30,8 +38,13 @@ export class BudgetModel {
         return this._totalExpenses;
     }
 
+    setExpense(expense: Expense) {
+        this._expenses[expense.identifier] = expense;
+        this.addToGroup(expense);
+    }
+
     private async calculateTotalExpenses () {
-        const values = Object.values(this.expenses);
+        const values = Object.values(this._expenses);
         if (values.length > 0) {
             let total = 0;
             for (const expense of values) {
@@ -39,7 +52,7 @@ export class BudgetModel {
                     total = total + expense.amountBaseCurrency;
                 } else {
                     const amountBaseCurrency = await currenciesStore.getAmountInBaseCurrency(
-                        this.info.currency, 
+                        this._info.currency, 
                         expense.currency, 
                         expense.amount);
                     total = total + amountBaseCurrency;
@@ -50,16 +63,20 @@ export class BudgetModel {
         return 0;
     }
 
+    getExpense (expenseId: string) {
+        return this._expenses[expenseId];
+    }
+
     get days () {
         if (!this._days) {
-            this._days = dateDiff(this.info.from, new Date().getTime()) + 1;
+            this._days = dateDiff(this._info.from, new Date().getTime()) + 1;
         }
         return this._days;
     }
 
     get totalDays () {
         if (!this._totalDays) {
-            this._totalDays = dateDiff(this.info.from, this.info.to);
+            this._totalDays = dateDiff(this._info.from, this._info.to);
         }
         return this._totalDays;
     }
@@ -74,7 +91,15 @@ export class BudgetModel {
     }
 
     get expectedDailyExpensesAverage () {
-        return Math.round(this.info.total / this.totalDays);
+        return Math.round(this._info.total / this.totalDays);
+    }
+
+    deleteExpense (expenseId: string) {
+        if (expenseId in this._expenses) {
+            delete this._expenses[expenseId];
+            return true;
+        }
+        return false;
     }
 
     private addToGroup (expense: Expense) {
@@ -89,7 +114,7 @@ export class BudgetModel {
 
     get expensesGroupedByDate () {
         if (!this._expenseGroups) {
-            Object.values(this.expenses).forEach(e => this.addToGroup(e));
+            Object.values(this._expenses).forEach(e => this.addToGroup(e));
             this.sortExpenseByGroup();
         }
         return this._expenseGroups;
@@ -105,5 +130,23 @@ export class BudgetModel {
                 .forEach(k=> (sorted[k] = (this._expenseGroups && this._expenseGroups[k]) || []));
             this._expenseGroups = sorted;
         }
+    }
+
+    private async updateBaseAmount() {
+        for (const k in this._expenses) {
+            this._expenses[k].amountBaseCurrency = await currenciesStore.getAmountInBaseCurrency(
+                this._info.currency, 
+                this._expenses[k].currency, 
+                this._expenses[k].amount);
+        }
+    }
+
+    async setBudget(info: Budget) {
+        this._info.currency = info.currency;
+        this._info.from = info.from;
+        this._info.name = info.name;
+        this._info.to = info.to;
+        this._info.total = info.total;
+        return this.updateBaseAmount();
     }
 }

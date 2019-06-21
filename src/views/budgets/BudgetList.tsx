@@ -5,7 +5,7 @@ import { RouteComponentProps, Redirect } from "react-router";
 import { budgetsStore } from '../../stores/BudgetsStore';
 import { Budget } from "../../interfaces";
 import { BudgetListItem } from "../../components/BudgetListItem";
-import { AddButton, ImportButton} from "../../components/buttons";
+import { AddButton } from "../../components/buttons";
 import { BudgetUrl } from "../../utils";
 import { HeaderNotifierProps } from "../../routes";
 
@@ -19,14 +19,15 @@ export default class BudgetList extends React.PureComponent<BudgetListProps, Bud
 
     constructor(props: BudgetListProps){
         super(props);
-        this.initBudgets();
+        this.state = {
+            budgets: Object.values(budgetsStore.budgetIndex)
+        };
     }
 
     componentDidMount(){
         this.props.onTitleChange('Budget list');
         this.props.onActions(
             <React.Fragment>
-                <ImportButton href={BudgetUrl.import}/>
                 <AddButton href={BudgetUrl.add}/>
             </React.Fragment>
         );
@@ -36,15 +37,6 @@ export default class BudgetList extends React.PureComponent<BudgetListProps, Bud
         this.props.onActions([]);
     }
     
-    private async initBudgets () {
-        try {
-            const budgets = await budgetsStore.getBudgets();
-            this.setState({budgets});
-        } catch(e) {
-            console.error(e);
-        }
-    }
-
     render() {
         if (this.state) {
             if (this.hasBudgets) {
@@ -69,4 +61,3 @@ export default class BudgetList extends React.PureComponent<BudgetListProps, Bud
                 budget => <BudgetListItem key={budget.identifier} {...budget} />);
     }
 }
-
