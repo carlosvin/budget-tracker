@@ -92,15 +92,12 @@ export class BudgetModel {
     setExpense(expense: Expense) {
         if (expense.identifier in this._expenses) {
             const oldExpense = this._expenses[expense.identifier];
-            if (BudgetModel.getGroup(oldExpense) !== BudgetModel.getGroup(expense)) {
-                this.removeFromGroup(oldExpense);
-                this.addToGroup(expense, true);
-            }
+            this.removeFromGroup(oldExpense);
             this.updateTotalExpenses(expense, oldExpense);
         } else {
-            this.addToGroup(expense, true);
             this.updateTotalExpenses(expense);
         }
+        this.addToGroup(expense, true);
         this._expenses[expense.identifier] = expense;
     }
 
@@ -149,31 +146,33 @@ export class BudgetModel {
     }
 
     private addToGroup (expense: Expense, sort = false) {
-        if (!this._expenseGroups) {
-            this._expenseGroups = {};
-        }
-        const group = BudgetModel.getGroup(expense);
-        if (!(group in this._expenseGroups)) {
-            this._expenseGroups[group] = {};
-            if (sort) {
-                this.sortExpenseByGroup();
+        if (this._expenseGroups !== undefined) {
+            const group = BudgetModel.getGroup(expense);
+            if (!(group in this._expenseGroups)) {
+                this._expenseGroups[group] = {};
+                if (sort) {
+                    this.sortExpenseByGroup();
+                }
             }
+            this._expenseGroups[group][expense.identifier] = expense;
         }
-        this._expenseGroups[group][expense.identifier] = expense;
     }
 
     private removeFromGroup (expense: Expense) {
-        const group = BudgetModel.getGroup(expense);
-        if (this._expenseGroups && group in this._expenseGroups) {
-            delete this._expenseGroups[group][expense.identifier];
-            if (Object.keys(this._expenseGroups[group]).length === 0) {
-                delete this._expenseGroups[group];
-            }
+        if (this._expenseGroups !== undefined) {
+            const group = BudgetModel.getGroup(expense);
+            if (this._expenseGroups && group in this._expenseGroups) {
+                delete this._expenseGroups[group][expense.identifier];
+                if (Object.keys(this._expenseGroups[group]).length === 0) {
+                    delete this._expenseGroups[group];
+                }
+            }    
         }
     }
 
     get expensesGroupedByDate () {
-        if (!this._expenseGroups) {
+        if (this._expenseGroups === undefined) {
+            this._expenseGroups = {};
             Object.values(this._expenses).forEach(e => this.addToGroup(e));
             this.sortExpenseByGroup();
         }

@@ -38,7 +38,7 @@ it('Budget model creation without expenses', async () => {
     const bm = new BudgetModel(createBudget('EUR', 30, 1000), {});
     expect(await bm.getTotalExpenses()).toBe(0);
     expect(bm.expectedDailyExpensesAverage).toBe(33);
-    expect(bm.expensesGroupedByDate).toBe(undefined);
+    expect(bm.expensesGroupedByDate).toStrictEqual({});
     expect(await bm.getAverage()).toBe(0);
     expect(bm.getExpense('whatever')).toBe(undefined);
     expect(await bm.getTotalExpenses()).toBe(0);
@@ -159,5 +159,14 @@ it('Modify expense amount', async () => {
     expect(await bm.getTotalExpenses()).toBe(
         expense1.amountBaseCurrency + 
         modifiedExpense2.amountBaseCurrency);
+    expect(bm.getExpense('2').amountBaseCurrency)
+        .toBe(modifiedExpense2.amountBaseCurrency);
+
+    expect(bm.expensesGroupedByDate).toStrictEqual({
+        [BudgetModel.getGroup(expense1)]: { 
+            [expense1.identifier]: expense1 ,
+            [modifiedExpense2.identifier]: modifiedExpense2 }
+    });
 
 });
+
