@@ -191,3 +191,50 @@ it('Modify expense amount', async () => {
 
 });
 
+it('Check groups are created properly when model is initialized from constructor', async () => {
+    const budget = createBudget('EUR', 30, 1000);
+    const expense1: Expense = {
+        amount: 100,
+        amountBaseCurrency: 98,
+        categoryId: 'Category',
+        countryCode: 'ES',
+        currency: 'USD',
+        description: 'whatever description',
+        identifier: '1',
+        when: new Date().getTime()
+    };
+    const expense2 = {...expense1,
+        amount: 2,
+        amountBaseCurrency: 2,
+        currency: 'EUR',
+        when: (expense1.when + (DAY_MS * 2)),
+        identifier: '2',
+    };
+    const bm = new BudgetModel(
+        budget, 
+        {
+            [expense1.identifier]: expense1, 
+            [expense2.identifier]: expense2, 
+        });
+
+    expect(bm.expensesGroupedByDate).toStrictEqual({
+        [BudgetModel.getGroup(expense1)]: { 
+            [expense1.identifier]: expense1
+        },
+        [BudgetModel.getGroup(expense2)]: {
+            [expense2.identifier]: expense2 
+        },
+    });
+
+    expect(await bm.getTotalExpenses()).toBe(98);
+    expect(bm.expectedDailyExpensesAverage).toBe(33);
+
+    expect(await bm.getAverage()).toBe(98);
+    expect(bm.getExpense(expense1.identifier)).toBe(expense1);
+    expect(bm.getExpense(expense2.identifier)).toBe(expense2);
+    expect(await bm.getTotalExpenses()).toBe(98);
+    expect(bm.numberOfExpenses).toBe(2);
+    expect(bm.days).toBe(1);
+    expect(bm.totalDays).toBe(30);
+
+});
