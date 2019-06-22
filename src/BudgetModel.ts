@@ -139,6 +139,11 @@ export class BudgetModel {
 
     deleteExpense (expenseId: string) {
         if (expenseId in this._expenses) {
+            const expense = this._expenses[expenseId];
+            if (this._totalExpenses && expense.when <= new Date().getTime()) {
+                this._totalExpenses -= expense.amountBaseCurrency;
+            }
+            this.removeFromGroup(expense);
             delete this._expenses[expenseId];
             return true;
         }

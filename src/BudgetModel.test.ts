@@ -13,7 +13,7 @@ function createBudget (currency: string, days: number, total: number) {
     };
 }
 
-function createExpense () {
+function createExpense (id: string) {
     return {
         amount: 100,
         amountBaseCurrency: 98,
@@ -21,15 +21,15 @@ function createExpense () {
         countryCode: 'ES',
         currency: 'USD',
         description: 'whatever description',
-        identifier: '1',
+        identifier: id,
         when: new Date().getTime()
     };
 }
 
 it('Budget model, expense group creation', async () => {
-    const expense1A = createExpense();
-    const expense2A = {...expense1A, when: expense1A.when - 100000};
-    const expense3B = {...expense1A, when: expense1A.when + DAY_MS};
+    const expense1A = createExpense('1');
+    const expense2A = {...expense1A, identifier: '2', when: expense1A.when - 100000};
+    const expense3B = {...expense1A, identifier: '3',  when: expense1A.when + DAY_MS};
     expect(BudgetModel.getGroup(expense1A)).toBe(BudgetModel.getGroup(expense2A));
     expect(BudgetModel.getGroup(expense1A)).not.toBe(BudgetModel.getGroup(expense3B));
 });
@@ -113,3 +113,32 @@ it('Budget model creation, no expenses, added them later', async () => {
     });
 });
 
+it('Remove expense', async () => {
+    const expense1 = createExpense('1');
+    const expense2 = {...expense1, identifier: '2'};
+    const expense3 = {...expense1, identifier: '3', when: new Date().getTime() + DAY_MS * 3};
+    const expense4 = {...expense1, identifier: '4', amountBaseCurrency: 55};
+    const bm = new BudgetModel(
+        createBudget('EUR', 30, 1000), 
+        {
+            '1': expense1,
+            '2': expense2,
+            '3': expense3,
+            '4': expense4,
+        });
+    expect(await bm.getTotalExpenses()).toBe(
+        expense1.amountBaseCurrency + 
+        expense2.amountBaseCurrency + 
+        expense4.amountBaseCurrency);
+
+    expect(bm.deleteExpense('6')).toBe(false);
+    expect(bm.deleteExpense('2')).toBe(true);
+    expect(await bm.getTotalExpenses()).toBe(
+        expense1.amountBaseCurrency + 
+        expense4.amountBaseCurrency);
+    
+    expect(bm.deleteExpense('3')).toBe(true);
+    expect(await bm.getTotalExpenses()).toBe(
+        expense1.amountBaseCurrency + 
+        expense4.amountBaseCurrency);
+});
