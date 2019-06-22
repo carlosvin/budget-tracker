@@ -142,3 +142,22 @@ it('Remove expense', async () => {
         expense1.amountBaseCurrency + 
         expense4.amountBaseCurrency);
 });
+
+
+it('Modify expense amount', async () => {
+    const expense1 = createExpense('1');
+    const expense2 = {...expense1, identifier: '2'};
+    const bm = new BudgetModel(
+        createBudget('EUR', 30, 1000), 
+        {
+            '1': expense1,
+            '2': expense2
+        });
+
+    const modifiedExpense2 = {...expense2, amountBaseCurrency: 10};
+    bm.setExpense(modifiedExpense2);
+    expect(await bm.getTotalExpenses()).toBe(
+        expense1.amountBaseCurrency + 
+        modifiedExpense2.amountBaseCurrency);
+
+});

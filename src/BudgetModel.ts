@@ -84,10 +84,8 @@ export class BudgetModel {
     }
 
     private sumToTotalExpenses (amount: number) {
-        if (this._totalExpenses) {
+        if (this._totalExpenses !== undefined) {
             this._totalExpenses += amount;
-        } else {
-            this._totalExpenses = amount;
         }
     }
 
