@@ -2,11 +2,13 @@ import { Budget, Expense } from "./interfaces";
 import { currenciesStore } from "./stores/CurrenciesStore";
 import { dateDiff } from "./utils";
 
+export const DAY_MS = 24 * 3600 * 1000;
+
 export class BudgetModel {
 
     private readonly _info: Budget;
     private readonly _expenses: {[identifier: string]: Expense};
-    private _expenseGroups?: {[group: number]: { [identifier: string]: Expense }} ;
+    private _expenseGroups?: {[group: string]: { [identifier: string]: Expense }} ;
 
     private _totalExpenses?: number;
     private _days?: number;
@@ -31,6 +33,12 @@ export class BudgetModel {
 
     get expenses () {
         return this._expenses;
+    }
+
+    static getGroup (expense: Expense) {
+        const dateTime = new Date(expense.when);
+        const date = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDay());
+        return date.getTime();
     }
 
     async getTotalExpenses(): Promise<number> {
@@ -86,13 +94,13 @@ export class BudgetModel {
     setExpense(expense: Expense) {
         if (expense.identifier in this._expenses) {
             const oldExpense = this._expenses[expense.identifier];
-            if (oldExpense.when !== expense.when) {
-                this.addToGroup(expense);
+            if (BudgetModel.getGroup(oldExpense) !== BudgetModel.getGroup(expense)) {
                 this.removeFromGroup(oldExpense);
+                this.addToGroup(expense, true);
             }
             this.updateTotalExpenses(expense, oldExpense);
         } else {
-            this.addToGroup(expense);
+            this.addToGroup(expense, true);
             this.updateTotalExpenses(expense);
         }
         this._expenses[expense.identifier] = expense;
@@ -137,20 +145,27 @@ export class BudgetModel {
         return false;
     }
 
-    private addToGroup (expense: Expense) {
+    private addToGroup (expense: Expense, sort = false) {
         if (!this._expenseGroups) {
             this._expenseGroups = {};
         }
-        if (!(expense.when in this._expenseGroups)) {
-            this._expenseGroups[expense.when] = {};
-            this.sortExpenseByGroup();
+        const group = BudgetModel.getGroup(expense);
+        if (!(group in this._expenseGroups)) {
+            this._expenseGroups[group] = {};
+            if (sort) {
+                this.sortExpenseByGroup();
+            }
         }
-        this._expenseGroups[expense.when][expense.identifier] = expense;
+        this._expenseGroups[group][expense.identifier] = expense;
     }
 
     private removeFromGroup (expense: Expense) {
-        if (this._expenseGroups && expense.when in this._expenseGroups) {
-            delete this._expenseGroups[expense.when][expense.identifier];
+        const group = BudgetModel.getGroup(expense);
+        if (this._expenseGroups && group in this._expenseGroups) {
+            delete this._expenseGroups[group][expense.identifier];
+            if (Object.keys(this._expenseGroups[group]).length === 0) {
+                delete this._expenseGroups[group];
+            }
         }
     }
 
