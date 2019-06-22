@@ -32,18 +32,19 @@ class CurrenciesStore {
      * @returns Currency exchange rate
      * @throws Error when there is no rate for that pair of currencies
      */
-    async getRate(baseCurrency: string, currencyTo: string) {
+    async getRate(baseCurrency: string, currencyTo: string): Promise<number> {
+        let promise = undefined;
         if (this.shouldFetch(baseCurrency)) {
             try {
-                await this.fetchRates(baseCurrency, currencyTo);
+                promise = this.fetchRates(baseCurrency, currencyTo);
             } catch (error) {
                 console.warn(error);
             }
         }
-        if (this.isPresent(baseCurrency, currencyTo)) {
-            return this._rates[baseCurrency].rates[currencyTo];
+        if (promise && !this.isPresent(baseCurrency, currencyTo)) {
+            await promise;
         }
-        throw Error(`Rate not found ${baseCurrency} => ${currencyTo}`);
+        return this._rates[baseCurrency].rates[currencyTo];
     }
 
     /** 
