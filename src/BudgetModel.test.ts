@@ -154,7 +154,10 @@ it('Modify expense amount', async () => {
             '2': expense2
         });
 
-    const modifiedExpense2 = {...expense2, amountBaseCurrency: 10};
+    const modifiedExpense2 = {
+        ...expense2, 
+        amountBaseCurrency: 10
+    };
     bm.setExpense(modifiedExpense2);
     expect(await bm.getTotalExpenses()).toBe(
         expense1.amountBaseCurrency + 
@@ -164,8 +167,26 @@ it('Modify expense amount', async () => {
 
     expect(bm.expensesGroupedByDate).toStrictEqual({
         [BudgetModel.getGroup(expense1)]: { 
-            [expense1.identifier]: expense1 ,
+            [expense1.identifier]: expense1,
             [modifiedExpense2.identifier]: modifiedExpense2 }
+    });
+
+    const modifiedExpense2Date = {
+        ...expense2, 
+        when: new Date().getTime() + DAY_MS * 10
+    };
+    bm.setExpense(modifiedExpense2Date);
+    expect(await bm.getTotalExpenses()).toBe(expense1.amountBaseCurrency);
+    expect(bm.getExpense('2').amountBaseCurrency)
+        .toBe(modifiedExpense2Date.amountBaseCurrency);
+
+    expect(bm.expensesGroupedByDate).toStrictEqual({
+        [BudgetModel.getGroup(expense1)]: { 
+            [expense1.identifier]: expense1,
+        },
+        [BudgetModel.getGroup(modifiedExpense2Date)]: { 
+            [modifiedExpense2Date.identifier]: modifiedExpense2Date 
+        },
     });
 
 });
