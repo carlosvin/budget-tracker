@@ -16,7 +16,21 @@ export class BudgetModel {
 
     constructor(info: Budget, expenses: {[identifier: string]: Expense}) {
         this._info = info;
-        this._expenses = expenses || {};
+        this._expenses = {};
+        for (const k in expenses) {
+            this._setExpense(expenses[k]);
+        }
+    }
+
+    private _setExpense(expense: Expense){
+        this.validateExpense(expense);
+        this._expenses[expense.identifier] = expense;
+    }
+
+    validateExpense (expense: Expense) {
+        if (expense.amountBaseCurrency === undefined) {
+            throw new Error('Expense should not have been saved without amount base currency');
+        }
     }
 
     get numberOfExpenses () {
@@ -57,9 +71,6 @@ export class BudgetModel {
         if (values.length > 0) {
             let total = 0;
             for (const expense of values) {
-                if (expense.amountBaseCurrency === undefined) {
-                    throw new Error(`Expense should not have been save without amount base currency: ${JSON.stringify(expense)}`);
-                }
                 total = total + expense.amountBaseCurrency;
             }
             return total;
@@ -67,35 +78,36 @@ export class BudgetModel {
         return 0;
     }
 
-    private updateTotalExpenses(newExpense: Expense, oldExpense?: Expense) {
+    private _updateTotalExpenses(newExpense: Expense, oldExpense?: Expense) {
         if (oldExpense === undefined || 
             oldExpense.amountBaseCurrency !== newExpense.amountBaseCurrency || 
             oldExpense.when !== newExpense.when) {
             const now = new Date().getTime();
             if (oldExpense && oldExpense.when <= now) {
-                this.sumToTotalExpenses(-oldExpense.amountBaseCurrency);
+                this._sumToTotalExpenses(-oldExpense.amountBaseCurrency);
             }
             if (newExpense.when <= now) {
-                this.sumToTotalExpenses(newExpense.amountBaseCurrency);
+                this._sumToTotalExpenses(newExpense.amountBaseCurrency);
             }
         }
     }
 
-    private sumToTotalExpenses (amount: number) {
+    private _sumToTotalExpenses (amount: number) {
         if (this._totalExpenses !== undefined) {
             this._totalExpenses += amount;
         }
     }
 
     setExpense(expense: Expense) {
+        this.validateExpense(expense);
         if (expense.identifier in this._expenses) {
             const oldExpense = this._expenses[expense.identifier];
-            this.removeFromGroup(oldExpense);
-            this.updateTotalExpenses(expense, oldExpense);
+            this._removeFromGroup(oldExpense);
+            this._updateTotalExpenses(expense, oldExpense);
         } else {
-            this.updateTotalExpenses(expense);
+            this._updateTotalExpenses(expense);
         }
-        this.addToGroup(expense, true);
+        this._addToGroup(expense, true);
         this._expenses[expense.identifier] = expense;
     }
 
@@ -136,27 +148,27 @@ export class BudgetModel {
             if (this._totalExpenses && expense.when <= new Date().getTime()) {
                 this._totalExpenses -= expense.amountBaseCurrency;
             }
-            this.removeFromGroup(expense);
+            this._removeFromGroup(expense);
             delete this._expenses[expenseId];
             return true;
         }
         return false;
     }
 
-    private addToGroup (expense: Expense, sort = false) {
+    private _addToGroup (expense: Expense, sort = false) {
         if (this._expenseGroups !== undefined) {
             const group = BudgetModel.getGroup(expense);
             if (!(group in this._expenseGroups)) {
                 this._expenseGroups[group] = {};
                 if (sort) {
-                    this.sortExpenseByGroup();
+                    this._sortExpenseByGroup();
                 }
             }
             this._expenseGroups[group][expense.identifier] = expense;
         }
     }
 
-    private removeFromGroup (expense: Expense) {
+    private _removeFromGroup (expense: Expense) {
         if (this._expenseGroups !== undefined) {
             const group = BudgetModel.getGroup(expense);
             if (this._expenseGroups && group in this._expenseGroups) {
@@ -171,13 +183,13 @@ export class BudgetModel {
     get expensesGroupedByDate () {
         if (this._expenseGroups === undefined) {
             this._expenseGroups = {};
-            Object.values(this._expenses).forEach(e => this.addToGroup(e));
-            this.sortExpenseByGroup();
+            Object.values(this._expenses).forEach(e => this._addToGroup(e));
+            this._sortExpenseByGroup();
         }
         return this._expenseGroups;
     }
 
-    private sortExpenseByGroup () {
+    private _sortExpenseByGroup () {
         if (this._expenseGroups) {
             // TODO maybe we can use a sorted structure, so we don't have to sort it later
             const sorted: {[group: number]: { [expenseId: string]: Expense }} = {};
@@ -189,7 +201,7 @@ export class BudgetModel {
         }
     }
 
-    private async updateExpensesBaseAmount() {
+    private async _updateExpensesBaseAmount() {
         for (const k in this._expenses) {
             this._expenses[k].amountBaseCurrency = await currenciesStore.getAmountInBaseCurrency(
                 this._info.currency, 
@@ -200,6 +212,9 @@ export class BudgetModel {
     }
 
     async setBudget(info: Budget) {
+        if (info.identifier !== this.identifier) {
+            throw new Error('Cannot update budget information with different IDs');
+        }
         this._info.name = info.name;
         this._info.total = info.total;
 
@@ -215,7 +230,7 @@ export class BudgetModel {
 
         if (info.currency !== this._info.currency) {
             this._info.currency = info.currency;
-            return this.updateExpensesBaseAmount();
+            return this._updateExpensesBaseAmount();
         }
         
         return Promise.resolve();

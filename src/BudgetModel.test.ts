@@ -119,9 +119,9 @@ it('Budget model creation, no expenses, added them later', async () => {
     expect(await bm.getTotalExpenses()).toBe(100);
 
     // Modify budget dates to check that average is recalculated
-    bm.setBudget({...budget, from: budget.from - DAY_MS});
+    bm.setBudget({...budget, from: budget.from - DAY_MS, to: budget.to + DAY_MS});
     expect(bm.days).toBe(2);
-    expect(bm.totalDays).toBe(31);
+    expect(bm.totalDays).toBe(32);
     expect(await bm.getAverage()).toBe(50);
     expect(await bm.getTotalExpenses()).toBe(100);
     expect(bm.getExpense('1')).toBe(expense1);
@@ -276,8 +276,60 @@ it('Modify budget base currency ', async () => {
     mockedCurrenciesStore.getAmountInBaseCurrency.mockReturnValue(Promise.resolve(33));
 
     await bm.setBudget({...info, currency: 'USD'});
-
     expect(await bm.getTotalExpenses()).toBe(99);
+});
 
 
+it('Returns expenses and info attributes', async () => {
+    const info = createBudget('USD', 180, 56000);
+    const expense1 = {...createExpense('1')};
+    const expense2 = {...expense1, identifier: '2', currency: 'ARS', amount: 3040, amountBaseCurrency: 10};
+    const expense3 = {...expense1, identifier: '3', currency: 'EUR', amount: 101, amountBaseCurrency: 105.2};
+    const expenses = {
+        '1': expense1,
+        '2': expense2,
+        '3': expense3
+    }
+    const bm = new BudgetModel(info, expenses);
+
+    expect(bm.info).toStrictEqual(info);
+    expect(bm.expenses).toStrictEqual(expenses);
+
+    const updatedInfo = {...bm.info, total: 20220};
+    const expense0 = {...expense3, identifier: '0', currency: 'BTH', categoryId: 'General'};
+    const updatedExpenses = {...expenses, '0': expense0};
+    bm.setExpense(expense0);
+    bm.setBudget(updatedInfo);
+
+    expect(bm.info).toStrictEqual(updatedInfo);
+    expect(bm.expenses).toStrictEqual(updatedExpenses);
+
+    await expect(bm.setBudget({...updatedInfo, identifier: 'invalid'}))
+        .rejects
+        .toThrowError('Cannot update budget information with different IDs');
+
+});
+
+it('Sets Expense without base amount throws error', () => {
+    const info = createBudget('USD', 180, 56000);
+    const expense1 = {...createExpense('1')};
+    delete expense1['amountBaseCurrency'];
+    const expenses = {
+        '1': expense1,
+    }
+
+    const bm = new BudgetModel(info, {});
+    try {
+        bm.setExpense(expense1);
+        fail('Error should have happened');
+    } catch (error) {
+        expect(error).toBeTruthy();
+    }
+
+    try {
+        new BudgetModel(info, expenses);
+        fail('Error should have happened');
+    } catch (error) {
+        expect(error).toBeTruthy();
+    }
 });
