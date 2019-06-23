@@ -66,11 +66,11 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
     }
 
     render() {
-        if (this.state.budgetModel) {
-            const budgetModel = this.state.budgetModel;
+        const budgetModel = this.state.budgetModel;
+        if (budgetModel) {
             return (
                 <React.Fragment>
-                    { this.state.budgetModel.expenses && 
+                    { budgetModel.expenses && 
                         <React.Fragment>
                             <BudgetQuickStats 
                                 dailyAverage={this.state.dailyAverage}
@@ -80,14 +80,14 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                                 totalBudget={budgetModel.info.total}
                                 totalSpent={this.state.totalSpent || 0}
                                 /> 
-                            { this.state.budgetModel.expensesGroupedByDate && 
+                            { budgetModel.expensesGroupedByDate && 
                             <ExpenseList 
-                                expensesByDate={this.state.budgetModel.expensesGroupedByDate} 
-                                budget={this.state.budgetModel.info}
-                                expectedDailyAvg={this.state.budgetModel.expectedDailyExpensesAverage} /> }
+                                expensesByDate={budgetModel.expensesGroupedByDate} 
+                                budget={budgetModel.info}
+                                expectedDailyAvg={budgetModel.expectedDailyExpensesAverage} /> }
                         </React.Fragment> 
                     } 
-                    { this.state.budgetModel.numberOfExpenses === 0 && 
+                    { budgetModel.numberOfExpenses === 0 && 
                         <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
                     <AddButton href={this.url.pathAddExpense}/>
                 </React.Fragment>

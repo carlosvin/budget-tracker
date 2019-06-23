@@ -37,7 +37,10 @@ export class BudgetModel {
 
     static getGroup (expense: Expense) {
         const dateTime = new Date(expense.when);
-        const date = new Date(dateTime.getFullYear(), dateTime.getMonth(), dateTime.getDay());
+        const date = new Date(
+            dateTime.getFullYear(), 
+            dateTime.getMonth(), 
+            dateTime.getDate());
         return date.getTime();
     }
 
@@ -54,15 +57,10 @@ export class BudgetModel {
         if (values.length > 0) {
             let total = 0;
             for (const expense of values) {
-                if (expense.amountBaseCurrency !== undefined) {
-                    total = total + expense.amountBaseCurrency;
-                } else {
-                    const amountBaseCurrency = await currenciesStore.getAmountInBaseCurrency(
-                        this._info.currency, 
-                        expense.currency, 
-                        expense.amount);
-                    total = total + amountBaseCurrency;
+                if (expense.amountBaseCurrency === undefined) {
+                    throw new Error(`Expense should not have been save without amount base currency: ${JSON.stringify(expense)}`);
                 }
+                total = total + expense.amountBaseCurrency;
             }
             return total;
         }
@@ -191,27 +189,35 @@ export class BudgetModel {
         }
     }
 
-    private async updateBaseAmount() {
+    private async updateExpensesBaseAmount() {
         for (const k in this._expenses) {
             this._expenses[k].amountBaseCurrency = await currenciesStore.getAmountInBaseCurrency(
                 this._info.currency, 
                 this._expenses[k].currency, 
                 this._expenses[k].amount);
         }
+        this._totalExpenses = undefined;
     }
 
     async setBudget(info: Budget) {
-        const updateBaseAmount = info.currency !== this._info.currency;
-        this._info.currency = info.currency;
-        this._info.from = info.from;
         this._info.name = info.name;
-        this._info.to = info.to;
         this._info.total = info.total;
-        if (updateBaseAmount) {
-            return this.updateBaseAmount();
+
+        if (this._info.from !== info.from) {
+            this._days = this._totalDays = undefined;
+            this._info.from = info.from;
         }
-        // force recalculation
-        this._days = this._totalDays = undefined;
+
+        if (this._info.to !== info.to) {
+            this._days = this._totalDays = undefined;
+            this._info.to = info.to;
+        }
+
+        if (info.currency !== this._info.currency) {
+            this._info.currency = info.currency;
+            return this.updateExpensesBaseAmount();
+        }
+        
         return Promise.resolve();
     }
 }
