@@ -55,5 +55,11 @@
         "husky": "^2.3.0",
         "react-test-renderer": "^16.8.6",
         "serve": "^11.0.0"
+    },
+    "jest": {
+        "collectCoverageFrom": [
+            "src/**/*.{js,jsx,ts,tsx}",
+            "!<rootDir>/node_modules/"
+        ]
     }
 }
