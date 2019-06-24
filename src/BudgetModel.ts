@@ -23,13 +23,13 @@ export class BudgetModel {
     }
 
     private _setExpense(expense: Expense){
-        this.validateExpense(expense);
+        BudgetModel.validateExpense(expense);
         this._expenses[expense.identifier] = expense;
     }
 
-    validateExpense (expense: Expense) {
+    static validateExpense (expense: Expense) {
         if (expense.amountBaseCurrency === undefined) {
-            throw new Error('Expense should not have been saved without amount base currency');
+            throw new Error(`Amount in base currency required for ${JSON.stringify(expense)}`);
         }
     }
 
@@ -99,7 +99,7 @@ export class BudgetModel {
     }
 
     setExpense(expense: Expense) {
-        this.validateExpense(expense);
+        BudgetModel.validateExpense(expense);
         if (expense.identifier in this._expenses) {
             const oldExpense = this._expenses[expense.identifier];
             this._removeFromGroup(oldExpense);
