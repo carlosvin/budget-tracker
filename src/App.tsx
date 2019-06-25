@@ -8,6 +8,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Migrator } from './Migrator';
 import { SnackbarContent } from '@material-ui/core';
+import LoginComponent from './context/Login';
 
 const App: React.FC = () => {
     const [title, setTitle] = React.useState('Budget tracker');
@@ -34,16 +35,18 @@ const App: React.FC = () => {
     return (
         <Router basename='/budget-tracker'>
             <CssBaseline />
-            <Header title={title} actions={actions} />
-            <main>
-                <Container maxWidth='lg'>
-                    <Box mt={2}>
-                        <ErrorBoundary>
-                            <Routes onTitleChange={setTitle} onActions={setActions} />
-                        </ErrorBoundary>
-                    </Box>
-                </Container>
-            </main>
+            <LoginComponent>
+                <Header title={title} actions={actions} />
+                <main>
+                    <Container maxWidth='lg'>
+                        <Box mt={2}>
+                            <ErrorBoundary>
+                                <Routes onTitleChange={setTitle} onActions={setActions} />
+                            </ErrorBoundary>
+                        </Box>
+                    </Container>
+                </main>
+            </LoginComponent>
         </Router>);
 }
 
