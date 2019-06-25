@@ -8,6 +8,7 @@ import './Header.css';
 const MenuItems = [
     {name: 'Budgets', href: '/budgets'},
     {name: 'Categories', href: '/categories'},
+    {name: 'Import', href: '/import'},
 ];
 
 export const Header = (props: {title: string, actions: React.ReactNode}) => {

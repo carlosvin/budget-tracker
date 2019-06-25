@@ -5,7 +5,7 @@ import { RouteComponentProps, Redirect } from "react-router";
 import { budgetsStore } from '../../stores/BudgetsStore';
 import { Budget } from "../../interfaces";
 import { BudgetListItem } from "../../components/BudgetListItem";
-import { AddButton } from "../../components/buttons";
+import { AddButton, ImportExportButton } from "../../components/buttons";
 import { BudgetUrl } from "../../utils";
 import { HeaderNotifierProps } from "../../routes";
 
@@ -29,6 +29,7 @@ export default class BudgetList extends React.PureComponent<BudgetListProps, Bud
         this.props.onActions(
             <React.Fragment>
                 <AddButton href={BudgetUrl.add}/>
+                <ImportExportButton href='/import'/>
             </React.Fragment>
         );
     }

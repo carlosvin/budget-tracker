@@ -7,6 +7,8 @@ import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
+import DownloadIcon from '@material-ui/icons/SaveAlt';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import Fab from '@material-ui/core/Fab';
 import './buttons.css';
@@ -87,4 +89,12 @@ export const SaveButton = (props: AppButtonProps) => (
 
 export const TextButton = (props: AppButtonProps) => (
     <AppButton href={props.href} variant='text' aria-label={props.text} {...props} />
+);
+
+export const DownloadButton = (props: AppButtonProps) => (
+    <AppButton icon={DownloadIcon} aria-label='Download' {...props}/>
+);
+
+export const ImportExportButton = (props: AppButtonProps) => (
+    <AppButton icon={ImportExportIcon} aria-label='Import' {...props}/>
 );

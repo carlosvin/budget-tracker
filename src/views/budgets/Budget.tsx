@@ -3,7 +3,7 @@ import { RouteComponentProps } from "react-router";
 import { budgetsStore } from "../../stores/BudgetsStore";
 import { ExpenseList } from "../expenses/ExpenseList";
 import { BudgetUrl } from "../../utils";
-import { EditButton, DeleteButton, AddButton } from "../../components/buttons";
+import { EditButton, DeleteButton, AddButton, DownloadButton } from "../../components/buttons";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { HeaderNotifierProps } from "../../routes";
 import Typography from "@material-ui/core/Typography";
@@ -49,6 +49,13 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         this.setState({...this.state, showConfirmDialog: true} );
     }
 
+    private handleExport = () => {
+        if (this.state.budgetModel){
+            window.open('data:application/octet-stream,' +
+            encodeURIComponent(this.state.budgetModel.json));
+        }
+    }
+
     private handleDelete = async (deletionConfirmed: boolean) => {
         if (this.state.budgetModel) {
             this.setState({...this.state, showConfirmDialog: false});
@@ -65,6 +72,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         this.props.onActions(
             <React.Fragment>
                 <EditButton href={this.url.pathEdit}/>
+                <DownloadButton onClick={this.handleExport}/>
                 <DeleteButton onClick={this.handleDeleteRequest}/>
             </React.Fragment>
         );

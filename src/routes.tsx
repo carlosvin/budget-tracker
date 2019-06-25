@@ -8,6 +8,7 @@ const routes = {
     ExpenseView: React.lazy(() => import('./views/expenses/Expense')),
     CategoryList: React.lazy(() => import('./views/categories/CategoryList')),
     AddCategory: React.lazy(() => import('./views/categories/AddCategory')),
+    Import: React.lazy(() => import('./views/Import')),
     About: React.lazy(() => import('./views/About'))
 };
 
@@ -29,6 +30,7 @@ export class Routes extends React.PureComponent<HeaderNotifierProps> {
                 <Route exact path='/categories' render={this._render(routes.CategoryList)} />
                 <Route exact path='/categories/add' render={this._render(routes.AddCategory)} />
                 <Route exact path='/' render={this._render(routes.BudgetList)} />
+                <Route exact path='/import' render={this._render(routes.Import)} />
                 <Route exact path='/about' render={this._render(routes.About)} />
             </Switch>);
     }

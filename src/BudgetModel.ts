@@ -235,4 +235,13 @@ export class BudgetModel {
         
         return Promise.resolve();
     }
+
+    get json() {
+        return JSON.stringify(
+            {
+                info: this.info,
+                expenses: this.expenses,
+            }, null, 2
+        );
+    }
 }
