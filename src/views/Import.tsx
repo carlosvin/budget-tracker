@@ -4,9 +4,10 @@ import { HeaderNotifierProps } from '../routes';
 import { SaveButton } from '../components/buttons';
 import { budgetsStore } from '../stores/BudgetsStore';
 import { FilesApi } from '../api/FileApi';
-import { Expense, Budget } from '../interfaces';
+import { Expense, Budget, Categories } from '../interfaces';
 import { TextInput } from '../components/TextInput';
 import { RouterProps } from 'react-router';
+import { categoriesStore } from '../stores/CategoriesStore';
 
 const Import = (props: HeaderNotifierProps&RouterProps) => {
 
@@ -32,16 +33,22 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
         setFile((event.target.files && event.target.files[0]) || undefined);
     }
 
-    type ImportedStructure = {expenses: {[identifier: string]: Expense}, info: Budget};
+    type ImportedStructure = {
+        expenses: {[identifier: string]: Expense}, 
+        info: Budget,
+        categories: Categories
+    };
 
     const process = async () => {
         const serialized = await FilesApi.getFileContent(selectedFile);
-        const {expenses, info} = JSON.parse(serialized) as ImportedStructure;
+        const {expenses, info, categories} = JSON.parse(serialized) as ImportedStructure;
 
         await budgetsStore.setBudget(info);
         for (const id in expenses) {
             await budgetsStore.setExpense(info.identifier, expenses[id]);
         }
+
+        categoriesStore.setCategories(categories);
         
         setProcessing(false);
         props.history.replace('/budgets');
