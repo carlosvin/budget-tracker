@@ -2,14 +2,15 @@ import * as React from 'react';
 import { currenciesStore } from '../stores/CurrenciesStore';
 import { TextInput } from './TextInput';
 
-interface CurrencyInputState {
-    currencies: { [currency: string]: string};
-    selected?: string;
-}
-
 export interface CurrencyInputProps  {
     onCurrencyChange: (selected: string) => void;
     selectedCurrency?: string;
+    disabled?: boolean;
+}
+
+interface CurrencyInputState {
+    currencies: { [currency: string]: string};
+    selected?: string;
 }
 
 export class CurrencyInput extends React.PureComponent<CurrencyInputProps, CurrencyInputState> {
@@ -57,6 +58,7 @@ export class CurrencyInput extends React.PureComponent<CurrencyInputProps, Curre
                     onChange={this.handleChange}
                     value={this.selected}
                     required
+                    disabled={this.props.disabled}
                 >
                     { Object.keys(this.state.currencies).map(
                         (k: string) => (

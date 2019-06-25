@@ -9,6 +9,7 @@ import { HeaderNotifierProps } from "../../routes";
 import Typography from "@material-ui/core/Typography";
 import { BudgetModel } from "../../BudgetModel";
 import { BudgetQuickStats } from "../../components/BudgetQuickStats";
+import { YesNoDialog } from "../../components/YesNoDialog";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -16,6 +17,7 @@ interface BudgetViewState {
     totalSpent?: number;
     dailyAverage?: number;
     budgetModel?: BudgetModel;
+    showConfirmDialog: boolean;
 }
 
 export default class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewState> {
@@ -24,7 +26,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
 
     constructor(props: BudgetViewProps){
         super(props);
-        this.state = {};
+        this.state = { showConfirmDialog: false };
         this.url = new BudgetUrl(props.match.params.budgetId);
         this.init(props.match.params.budgetId);
     }
@@ -43,10 +45,17 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         });
     }
 
-    private handleDelete = () => {
+    private handleDeleteRequest = () => {
+        this.setState({...this.state, showConfirmDialog: true} );
+    }
+
+    private handleDelete = async (deletionConfirmed: boolean) => {
         if (this.state.budgetModel) {
-            budgetsStore.deleteBudget(this.state.budgetModel.identifier);
-            this.props.history.replace(BudgetUrl.base);
+            this.setState({...this.state, showConfirmDialog: false});
+            if (deletionConfirmed) {
+                await budgetsStore.deleteBudget(this.state.budgetModel.identifier);
+                this.props.history.replace(BudgetUrl.base);
+            }
         } else {
             throw new Error('Budget is undefined');
         }
@@ -56,7 +65,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         this.props.onActions(
             <React.Fragment>
                 <EditButton href={this.url.pathEdit}/>
-                <DeleteButton onClick={this.handleDelete}/>
+                <DeleteButton onClick={this.handleDeleteRequest}/>
             </React.Fragment>
         );
     }
@@ -90,6 +99,11 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                     { budgetModel.numberOfExpenses === 0 && 
                         <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
                     <AddButton href={this.url.pathAddExpense}/>
+                    <YesNoDialog 
+                        open={this.state.showConfirmDialog} 
+                        onClose={this.handleDelete}
+                        question='Do your really want to delete this budget?'
+                        description='All the related expenses will be deleted.'/>
                 </React.Fragment>
             );
         }

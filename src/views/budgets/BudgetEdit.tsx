@@ -2,133 +2,51 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Budget } from "../../interfaces";
 import { budgetsStore } from "../../stores/BudgetsStore";
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { BudgetUrl, getDateString, goBack, uuid } from "../../utils";
-import { CloseButton, SaveButtonFab } from "../../components/buttons";
-import { TextInput } from "../../components/TextInput";
+import { BudgetUrl, goBack } from "../../utils";
+import { CloseButton } from "../../components/buttons";
 import { HeaderNotifierProps } from "../../routes";
-import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
+import { BudgetForm } from "../../components/BudgetForm";
 
 interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{
 }
 
-interface BudgetViewState extends Budget {
-    start: string;
-    end: string;
-    error?: string;
-    saving?: boolean;
-}
+const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
 
-export default class BudgetEdit extends React.PureComponent<BudgetEditProps, BudgetViewState> {
-    // TODO handle errors on type and on submit
+    const budgetId = props.match.params.budgetId;
 
-    private readonly url: BudgetUrl;
-    
-    constructor(props: BudgetEditProps){
-        super(props);
-        if (props.match.params.budgetId) {
-            const info = budgetsStore.getBudgetInfo(props.match.params.budgetId);
-            this.state = { 
-                ...info, 
-                start: getDateString(new Date(info.from)), 
-                end: getDateString(new Date(info.to)), 
+    function handleClose () {
+        goBack(props.history);
+    }
+
+    React.useEffect(
+        () => {
+            if (budgetId) {
+                props.onTitleChange(`Edit budget`);
+            } else {
+                props.onTitleChange('New budget');
             }
-            this.url = new BudgetUrl(props.match.params.budgetId);
-        } else {
-            const now = new Date();
-            this.state = {
-                currency: 'EUR',
-                from: now.getTime(),
-                to: now.getTime(),
-                start: getDateString(now),
-                end: getDateString(now),
-                identifier: uuid(),
-                name: '',
-                total: 0 
-            };
-            this.url = new BudgetUrl(this.state.identifier);
-        }
-    }
-
-    componentDidMount () {
-        if (this.props.match.params.budgetId) {
-            this.props.onTitleChange(`Edit budget`);
-        } else {
-            this.props.onTitleChange('New budget');
-        }
-        this.props.onActions(<CloseButton onClick={this.close} />);
-    }
-
-    componentWillUnmount(){
-        this.props.onActions([]);
-    }
-
-    // TODO unify handling using type as argument. I have to research how to do it in TS
-    handleChange = (name: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            ...this.state,
-            error: undefined,
-            [name]: event.target.value
-        });
-    }
-
-    private handleSave = async (e: React.SyntheticEvent) => {
-        e.preventDefault();
-        const budget: Budget = {
-            ...this.state,
-            to: new Date(this.state.end).getTime(),
-            from: new Date(this.state.start).getTime()
-        };
-        const error = this.validate(budget);
-        if (error) {
-            this.setState({error});
-        } else {
-            this.setState({ saving: true });
-            await budgetsStore.setBudget(budget);
-            this.props.history.replace(this.url.path);
-        }
-        
-    }
-
-    private validate (budget: Budget) {
-        if (budget.from >= budget.to) {
-            return 'Invalid date range';
-        }
-        return null;
-    }
-
-    private close = () => {
-        goBack(this.props.history);
-    }
-
-    get hasError () {
-        return this.state.error !== undefined;
-    }
-
-    render() {
-        if (this.state) {
-            if (this.state.saving) { 
-                return <CircularProgress>Saving...</CircularProgress>
-            } 
-            return (
-                <form onSubmit={this.handleSave}>
-                    <TextInput label='Name' value={this.state.name} onChange={this.handleChange('name')} required />
-                    <TextInput label='Start' value={this.state.start} type='date' onChange={this.handleChange('start')} error={this.hasError} required/>
-                    <TextInput label='End' value={this.state.end} type='date' error={this.hasError} onChange={this.handleChange('end')}/>
-                    <AmountWithCurrencyInput
-                        amountInput={this.state.total}
-                        selectedCurrency={this.state.currency}
-                        label='Total'
-                        onChange={this.handleAmountChange}
-                    />
-                    <SaveButtonFab color='primary' type='submit'/>
-                </form>
-            );
-        }
-        return <CircularProgress />;
-    }
-
-    private handleAmountChange = (total: number, currency: string) => (
-        this.setState({ total, currency })
+            props.onActions(<CloseButton onClick={handleClose} />);
+            return () => {
+                props.onActions([]);
+            }
+        // eslint-disable-next-line
+        }, []
     );
+
+    const [saving, setSaving] = React.useState(false);
+
+    async function handleSubmit (budget: Budget) {
+        setSaving(true);
+        await budgetsStore.setBudget(budget);
+        setSaving(false);
+        props.history.replace(new BudgetUrl(budget.identifier).path);
+    }
+
+    return <BudgetForm 
+        budget={budgetId ? budgetsStore.getBudgetInfo(budgetId) : undefined}
+        onSubmit={handleSubmit}
+        disabled={saving}
+    />;
 }
+
+export default BudgetEdit;

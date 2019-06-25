@@ -12,6 +12,7 @@ interface AmountCurrencyInputProps  {
     selectedCurrency: string;
     amountInput?: number;
     label?: string;
+    disabled?: boolean;
 }
 
 export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (props) => {
@@ -73,12 +74,15 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                 <AmountInput
                     amountInput={props.amountInput}
                     label={props.label}
-                    onAmountChange={handleAmountChange} helperText={baseAmount()}/>
+                    onAmountChange={handleAmountChange}
+                    helperText={baseAmount()} 
+                    disabled={props.disabled}/>
             </Grid>
             <Grid item >
                 <CurrencyInput 
                     selectedCurrency={props.selectedCurrency}
-                    onCurrencyChange={handleCurrencyChange}/>
+                    onCurrencyChange={handleCurrencyChange} 
+                    disabled={props.disabled}/>
             </Grid>
         </Grid>);
 }

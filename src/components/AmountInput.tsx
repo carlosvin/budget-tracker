@@ -6,6 +6,7 @@ interface AmountInputProps {
     amountInput?: number;
     onAmountChange: (amount: number) => void;
     helperText?: string;
+    disabled?: boolean;
 }
 
 export const AmountInput: React.FC<AmountInputProps> = (props) => {
@@ -25,6 +26,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
             inputProps={{ step: '.01', 'aria-required': true }}
             onChange={handleAmountChange}
             helperText={props.helperText}
+            disabled={props.disabled}
         />
     );           
 }
