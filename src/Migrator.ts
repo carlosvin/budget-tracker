@@ -2,6 +2,8 @@ import { BudgetsStore, budgetsStore } from './stores/BudgetsStore';
 import { Expense } from './interfaces';
 import { BudgetModel } from './BudgetModel';
 import { currenciesStore } from './stores/CurrenciesStore';
+import { storage } from 'firebase';
+import { appStorage } from './api/StorageApi';
 
 export class Migrator {
 
@@ -13,7 +15,7 @@ export class Migrator {
     }
 
     static async migrateToV1 () {
-        const serializedExpenses = localStorage.getItem(BudgetsStore.KEY_EXPENSES);
+        const serializedExpenses = localStorage.getItem('expenses');
         if (serializedExpenses) {
             const allExpenses: { [budgetId: string]: {[expenseId: string]: Expense} } = JSON.parse(serializedExpenses);
             for (const budgetId in allExpenses) {
@@ -24,11 +26,12 @@ export class Migrator {
                         BudgetModel.validateExpense(expense);
                     } catch (error) {
                         console.log('Fixing expense during migration: ', expense);
-                        await this.fix(expense, budgetsStore.getBudgetInfo(budgetId).currency);
+                        const info = await budgetsStore.getBudgetInfo(budgetId);
+                        await this.fix(expense, info.currency);
                         console.log('Expense fixed: ', expense);
                     }
                 }
-                budgetsStore.saveExpenses(budgetId, budgetExpenses);
+                await appStorage.saveExpenses(budgetId, budgetExpenses);
             }
             localStorage.setItem(this.MIGRATION_KEY, this.MIGRATION_VALUE);
             console.info('Expenses migrated');

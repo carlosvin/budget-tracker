@@ -27,27 +27,18 @@ export interface Expense {
     when: number;
 }
 
+export interface ExpensesMap {
+    [identifier: string]: Expense;
+}
+
+export interface BudgetsMap {
+    [identifier: string]: Budget;
+}
+
 export interface CurrencyRates {
     readonly base: string;
     readonly rates: {[name: string]: number};
     readonly date: Date;
-}
-
-export interface ImportedExpense {
-    amount: string;
-    amountInHomeCurrency: string;
-    category: string;
-    categoryId: string;
-    conversionRate: number;
-    country: string;
-    countryCode: string;
-    creditCard: boolean;
-    datePaid: string;
-    homeCurrency: string;
-    localCurrency: string;
-    notes: string;
-    paidBy: string;
-    tripId: string;
 }
 
 export interface Category {

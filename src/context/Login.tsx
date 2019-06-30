@@ -53,14 +53,15 @@ export default class LoginComponent extends React.Component {
 
 
     private handleClose = () => {
-        
+        // do not close unless user is logged in
     }
 
     render() {
-        return <LoginContext.Provider value={{isSignedIn: this.state.isSignedIn}}>
+        return (
+        <LoginContext.Provider value={{isSignedIn: this.state.isSignedIn}}>
             <LoginDialog onClose={this.handleClose} open={this.state.isSignedIn === false}/>
             { this.props.children }
-        </LoginContext.Provider>;
+        </LoginContext.Provider>);
         
     }
 }
