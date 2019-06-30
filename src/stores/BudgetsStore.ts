@@ -113,7 +113,7 @@ export class BudgetsStore {
         if (serializedBudgets) {
             return JSON.parse(serializedBudgets);
         }
-        throw new Error('Error fetching budgets');
+        return {};
     }
 
     private async saveBudgets () {
