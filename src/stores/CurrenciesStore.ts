@@ -35,14 +35,14 @@ class CurrenciesStore {
     async getRate(baseCurrency: string, currencyTo: string): Promise<number> {
         let promise = undefined;
         if (this.shouldFetch(baseCurrency)) {
+            promise = this.fetchRates(baseCurrency, currencyTo);
+        }
+        if (promise && !this.isPresent(baseCurrency, currencyTo)) {
             try {
-                promise = this.fetchRates(baseCurrency, currencyTo);
+                await promise;
             } catch (error) {
                 console.warn(error);
             }
-        }
-        if (promise && !this.isPresent(baseCurrency, currencyTo)) {
-            await promise;
         }
         return this._rates[baseCurrency].rates[currencyTo];
     }

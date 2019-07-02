@@ -22,6 +22,7 @@ interface ExpenseViewProps extends HeaderNotifierProps,
 
 export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
+    const [error, setError] = React.useState<string|undefined>();
     const [categories, setCategories] = React.useState(
         Object.entries(categoriesStore.getCategories()));
 
@@ -45,7 +46,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     React.useEffect(() => {
         const initBudget = async () => {
-            const b = budgetsStore.getBudgetInfo(budgetId);
+            const b = await budgetsStore.getBudgetInfo(budgetId);
             setBudget(b);
             if (isAddView) {
                 setCurrency(b.currency);
@@ -57,8 +58,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     }, [budgetId]);
 
     React.useEffect(() => {
-        const handleDelete = () => {
-            budgetsStore.deleteExpense(budgetId, expenseId);
+        async function handleDelete () {
+            await budgetsStore.deleteExpense(budgetId, expenseId);
             replace(budgetUrl.path);
         }
 
@@ -79,7 +80,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     
         const initEdit = async () => {
             onTitleChange(`Edit expense`);
-            const e = await budgetsStore.getExpense(budgetId, expenseId);
+            const model = await budgetsStore.getBudgetModel(budgetId);
+            const e = model.getExpense(expenseId);
             setAmount(e.amount);
             e.amountBaseCurrency && setAmountBaseCurrency(e.amountBaseCurrency);
             setCategoryId(e.categoryId);
@@ -215,6 +217,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                             baseCurrency={budget && budget.currency}
                             selectedCurrency={currency}
                             onChange={handleAmountChange}
+                            onError={setError}
                         /> }
                     </Grid>
                     <Grid item >
@@ -235,7 +238,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                             onChange={ handleDescription } />
                     </Grid>
                 </Grid>
-                <SaveButtonFab type='submit' color='primary'/>
+                <SaveButtonFab type='submit' color='primary' disabled={error !== undefined}/>
             </form>
         </React.Fragment>
         );

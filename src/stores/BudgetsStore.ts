@@ -4,56 +4,55 @@ import { StorageApi, appStorage } from "../api/StorageApi";
 
 export class BudgetsStore {
 
-    private budgetModels: {[identifier: string]: BudgetModel};
+    private _budgetModels: {[identifier: string]: BudgetModel};
     private _budgetsIndex?: {[identifier: string]: Budget};
     private readonly storage: StorageApi;
 
     constructor(){
         console.log('Instantiate store');
-        this.budgetModels = {};
+        this._budgetModels = {};
         this.storage = appStorage;
     }
 
     async getBudgetsIndex () {
         if (!this._budgetsIndex) {
-            this._budgetsIndex = await this.storage.getBudgets();
+            try {
+                this._budgetsIndex = await this.storage.getBudgets();
+            } catch (error) {
+                console.warn(error, ', setting empty index');
+                this._budgetsIndex = {};
+            }
         }
-        if (this._budgetsIndex) {
-            return this._budgetsIndex;
-        }
-        throw new Error('Cannot load budgets');
+        return this._budgetsIndex;
     }
 
-    async getBudgetModel(identifier: string) {
-        if (!(identifier in this.budgetModels)) {
+    async getBudgetModel(budgetId: string) {
+        if (!(budgetId in this._budgetModels)) {
             const [budget, expenses] = await Promise.all([
-                this.getBudgetInfo(identifier),
-                this.getExpenses(identifier)
+                this.getBudgetInfo(budgetId),
+                appStorage.getExpenses(budgetId)
             ]);
-            this.budgetModels[identifier] = new BudgetModel(
+            this._budgetModels[budgetId] = new BudgetModel(
                 budget,
                 expenses
             );
         }
-        return this.budgetModels[identifier];
+        return this._budgetModels[budgetId];
     }
 
     async getBudgetInfo(identifier: string) {
         const budgetsIndex = await this.getBudgetsIndex();
-        if (identifier in this.getBudgetsIndex()) {
+        if (identifier in budgetsIndex) {
             return budgetsIndex[identifier];
         }
         throw new Error(`Budget nof found: ${identifier}`);
     }
 
     async setBudget(budget: Budget) {
-        const budgets = await this.getBudgetsIndex();
-        if (budget.identifier in budgets && 
-            budgets[budget.identifier].currency !== budget.currency) {
-            // currency was changed, so we have to recalculate expenses base amount
-            const model = await this.getBudgetModel(budget.identifier);
-            await model.setBudget(budget);
+        if (budget.identifier in this._budgetModels) {
+            this._budgetModels[budget.identifier].setBudget(budget);
         }
+        const budgets = await this.getBudgetsIndex()
         budgets[budget.identifier] = budget;
         await this.storage.saveBudgets(budgets);
     }
@@ -70,9 +69,16 @@ export class BudgetsStore {
     }
 
     async deleteBudget(budgetId: string) {
+        if (budgetId in this._budgetModels) {
+            delete this._budgetModels[budgetId];
+        }
+        return appStorage.deleteBudget(budgetId);
+    }
+
+    async deleteExpense(budgetId: string, expenseId: string) {
         const model = await this.getBudgetModel(budgetId);
-        delete this.budgetModels[budgetId];
-        appStorage.deleteBudget(budgetId);
+        model.deleteExpense(expenseId);
+        return appStorage.deleteExpense(budgetId, expenseId);
     }
 
 }

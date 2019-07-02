@@ -13,15 +13,21 @@ interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>, Hea
 const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
 
     const budgetId = props.match.params.budgetId;
+    const [budgetInfo, setBudgetInfo] = React.useState<Budget|undefined>(); 
 
     function handleClose () {
         goBack(props.history);
+    }
+
+    async function fetchBudget(budgetId: string) {
+        setBudgetInfo(await budgetsStore.getBudgetInfo(budgetId));
     }
 
     React.useEffect(
         () => {
             if (budgetId) {
                 props.onTitleChange(`Edit budget`);
+                fetchBudget(budgetId);
             } else {
                 props.onTitleChange('New budget');
             }
@@ -43,7 +49,7 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
     }
 
     return <BudgetForm 
-        budget={budgetId ? budgetsStore.getBudgetInfo(budgetId) : undefined}
+        budget={budgetInfo}
         onSubmit={handleSubmit}
         disabled={saving}
     />;
