@@ -6,31 +6,11 @@ import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { Migrator } from './Migrator';
-import { SnackbarContent } from '@material-ui/core';
 import LoginComponent from './context/Login';
 
 const App: React.FC = () => {
     const [title, setTitle] = React.useState('Budget tracker');
     const [actions, setActions] = React.useState();
-    const [shouldMigrate, setShouldMigrate] = React.useState(
-        Migrator.shouldMigrateToV1());
-
-    React.useEffect(
-        () => { 
-            const migrate = async () => {
-                if (shouldMigrate) {
-                    await Migrator.migrateToV1();
-                    setShouldMigrate(Migrator.shouldMigrateToV1());
-                }
-            }
-            migrate();
-        }
-    );
-
-    if (shouldMigrate) {
-        return <SnackbarContent message='Migrating expenses...' />;
-    }
 
     return (
         <Router basename='/budget-tracker'>

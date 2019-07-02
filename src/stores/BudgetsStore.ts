@@ -72,7 +72,7 @@ export class BudgetsStore {
     async deleteBudget(budgetId: string) {
         const model = await this.getBudgetModel(budgetId);
         delete this.budgetModels[budgetId];
-        appStorage.deleteBudget()
+        appStorage.deleteBudget(budgetId);
     }
 
 }
