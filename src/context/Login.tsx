@@ -2,20 +2,20 @@
 import React from 'react';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import * as firebase from 'firebase/app';
+
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { firebaseApi } from '../api/Firebase';
+import { firebaseApi } from '../api/FirebaseApi';
 
 const LoginContext = React.createContext({isSignedIn: false});
 
-const LoginDialog: React.FC<{open: boolean, onClose: ()=>void}> = (props) => {
+const LoginDialog: React.FC<{open: boolean, onClose: (e: React.SyntheticEvent)=>void}> = (props) => {
     const uiConfig = {
         // Popup signin flow rather than redirect flow.
         signInFlow: 'popup',
         // We will display Google and Facebook as auth providers.
         signInOptions: [
             firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-            firebase.auth.FacebookAuthProvider.PROVIDER_ID
         ],
         callbacks: {
             // Avoid redirects after sign-in.
@@ -52,8 +52,9 @@ export default class LoginComponent extends React.Component {
     }
 
 
-    private handleClose = () => {
+    private handleClose = (e: React.SyntheticEvent) => {
         // do not close unless user is logged in
+        e.preventDefault(); 
     }
 
     render() {
