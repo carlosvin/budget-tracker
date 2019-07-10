@@ -4,22 +4,48 @@ import ListItem from '@material-ui/core/ListItem';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import { Budget, Expense } from "../interfaces";
+import { Budget, Expense, Category } from "../interfaces";
 import { MyLink } from "./MyLink";
-import { categoriesStore } from "../stores/CategoriesStore";
-import { iconsStore } from "../stores/IconsStore";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import {round, stringToColorCss} from '../utils';
+import { btApp } from "..";
+import { LazyIcon } from "../stores/IconsStore";
 
 interface ExpenseListItemProps {
     budget: Budget;
     expense: Expense;
 }
 
-export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
+interface ExpenseListItemState {
+    category?: Category,
+    categoryIcon: LazyIcon;
+    categoryColor: string;
+}
+
+export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, ExpenseListItemState> {
+    constructor (props: ExpenseListItemProps) {
+        super(props);
+        this.state = {
+            categoryIcon: btApp.iconsStore.defaultIcon,
+            categoryColor: stringToColorCss('')
+        };
+        this.fetchCategory(props.expense.categoryId);
+    }
+
+    async fetchCategory(categoryId: string){
+        const category = await btApp.categoriesStore.getCategory(categoryId);
+        if (category) {
+            const icon = btApp.iconsStore.getIcon(category.icon);
+            this.setState({
+                category,
+                categoryIcon: icon,
+                categoryColor: stringToColorCss(category.icon),
+            });
     
+        }
+    }
+
     render(){
-        const category = this.getCategory();
         return (
             <ListItem 
                 divider
@@ -28,11 +54,11 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
                 href={this.href}>
                 <ListItemAvatar >
                     <React.Suspense fallback={'icon'}>
-                        <this.Icon style={{color: `${stringToColorCss(category ? category.icon : '')}`}}/>
+                        <this.state.categoryIcon style={{color: this.state.categoryColor}}/>
                     </React.Suspense>
                 </ListItemAvatar>
                 <ListItemText 
-                    primary={this.categoryName} 
+                    primary={this.state.category && this.state.category.name} 
                     secondary={this.props.expense.description}
                 />
                 <ListItemSecondaryAction>
@@ -70,20 +96,6 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps> {
 
     get isBaseCurrency () {
         return this.props.budget.currency === this.props.expense.currency;
-    }
-
-    get Icon () {
-        const c = this.getCategory();
-        return c ? iconsStore.getIcon(c.icon) : iconsStore.defaultIcon;
-    }
-
-    get categoryName () {
-        const c = this.getCategory();
-        return c && c.name;
-    }
-
-    getCategory () {
-        return categoriesStore.getCategory(this.props.expense.categoryId);
     }
 
     get href () {

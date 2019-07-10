@@ -1,7 +1,7 @@
 import { Budget, Expense } from "./interfaces";
 import { currenciesStore } from "./stores/CurrenciesStore";
 import { dateDiff } from "./utils";
-import { categoriesStore } from "./stores/CategoriesStore";
+import { btApp } from ".";
 
 export const DAY_MS = 24 * 3600 * 1000;
 
@@ -242,7 +242,7 @@ export class BudgetModel {
             {
                 info: this.info,
                 expenses: this.expenses,
-                categories: categoriesStore.getCategories()
+                categories: btApp.categoriesStore.getCategories()
             }, null, 2
         );
     }

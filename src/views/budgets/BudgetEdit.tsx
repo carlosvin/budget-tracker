@@ -1,13 +1,15 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Budget } from "../../interfaces";
-import { budgetsStore } from "../../stores/BudgetsStore";
 import { BudgetUrl, goBack } from "../../utils";
 import { CloseButton } from "../../components/buttons";
 import { HeaderNotifierProps } from "../../routes";
 import { BudgetForm } from "../../components/BudgetForm";
+import { btApp } from "../..";
 
-interface BudgetEditProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{
+interface BudgetEditProps extends 
+    RouteComponentProps<{ budgetId: string }>, 
+    HeaderNotifierProps {
 }
 
 const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
@@ -20,7 +22,7 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
     }
 
     async function fetchBudget(budgetId: string) {
-        setBudgetInfo(await budgetsStore.getBudgetInfo(budgetId));
+        setBudgetInfo(await btApp.budgetsStore.getBudgetInfo(budgetId));
     }
 
     React.useEffect(
@@ -43,7 +45,7 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
 
     async function handleSubmit (budget: Budget) {
         setSaving(true);
-        await budgetsStore.setBudget(budget);
+        await btApp.budgetsStore.setBudget(budget);
         setSaving(false);
         props.history.replace(new BudgetUrl(budget.identifier).path);
     }

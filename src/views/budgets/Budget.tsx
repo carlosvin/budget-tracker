@@ -1,6 +1,5 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { budgetsStore } from "../../stores/BudgetsStore";
 import { ExpenseList } from "../expenses/ExpenseList";
 import { BudgetUrl } from "../../utils";
 import { EditButton, DeleteButton, AddButton, DownloadButton } from "../../components/buttons";
@@ -10,6 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import { BudgetModel } from "../../BudgetModel";
 import { BudgetQuickStats } from "../../components/BudgetQuickStats";
 import { YesNoDialog } from "../../components/YesNoDialog";
+import { btApp } from "../..";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -32,7 +32,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
     }
 
     private async init(budgetId: string) {
-        const budgetModel = await budgetsStore.getBudgetModel(budgetId);
+        const budgetModel = await btApp.budgetsStore.getBudgetModel(budgetId);
         this.props.onTitleChange(`${budgetModel.info.name} ${budgetModel.info.currency}`);
         this.setState({
             ...this.state,
@@ -60,7 +60,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         if (this.state.budgetModel) {
             this.setState({...this.state, showConfirmDialog: false});
             if (deletionConfirmed) {
-                await budgetsStore.deleteBudget(this.state.budgetModel.identifier);
+                await btApp.budgetsStore.deleteBudget(this.state.budgetModel.identifier);
                 this.props.history.replace(BudgetUrl.base);
             }
         } else {

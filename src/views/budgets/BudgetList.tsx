@@ -1,7 +1,6 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
 import { RouteComponentProps } from "react-router";
-import { budgetsStore } from '../../stores/BudgetsStore';
 import { Budget } from "../../interfaces";
 import { BudgetListItem } from "../../components/BudgetListItem";
 import { AddButton, ImportExportButton } from "../../components/buttons";
@@ -9,6 +8,7 @@ import { BudgetUrl } from "../../utils";
 import { HeaderNotifierProps } from "../../routes";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
+import { btApp } from "../..";
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
 
@@ -35,7 +35,7 @@ export default class BudgetList extends React.PureComponent<BudgetListProps, Bud
                 <ImportExportButton href='/import'/>
             </React.Fragment>
         );
-        const budgetsIndex = await budgetsStore.getBudgetsIndex();
+        const budgetsIndex = await btApp.budgetsStore.getBudgetsIndex();
 
         this.setState({ 
             budgets: Object.values(budgetsIndex),

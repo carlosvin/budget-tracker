@@ -15,6 +15,10 @@ const config = {
 
 export class FirebaseApi  {
 
+    static readonly PROVIDERS = [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    ];
+
     constructor(inputConf = config) {
         firebase.initializeApp(inputConf);        
     }
@@ -36,6 +40,7 @@ export class FirebaseApi  {
             return null;
         }
     }
+
 }
 
 export const firebaseApi = new FirebaseApi();

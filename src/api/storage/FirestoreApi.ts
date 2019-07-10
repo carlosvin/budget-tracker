@@ -1,7 +1,7 @@
 import { StorageApi } from "./StorageApi";
-import { Budget, BudgetsMap, ExpensesMap, Expense } from '../interfaces';
+import { Budget, BudgetsMap, ExpensesMap, Expense, Categories, Category } from '../../interfaces';
 // Required for side-effects
-import { FirebaseApi } from "./FirebaseApi";
+import { FirebaseApi } from "../FirebaseApi";
 import "firebase/firestore";
 
 export class FirestoreApi implements StorageApi {
@@ -120,6 +120,41 @@ export class FirestoreApi implements StorageApi {
             console.warn('Cannot get budget: ', error);
             return null;
         }
+    }
+
+    async getCategories() {
+        const querySnapshot = await this.userDoc
+            .collection('categories')
+            .get();
+        
+        const categories: Categories = {};
+        querySnapshot.forEach((doc) => {
+            categories[doc.id] = doc.data() as Category;
+        });
+        return categories;
+    }
+
+    async saveCategory(category: Category) {
+        return this.getCategoryDoc(category.id).set(category);
+    }
+
+    async saveCategories(categories: Categories) {
+        try {
+            const batch = this.db.batch();
+            // TODO delete elements not in categories, or delete the collection
+            // batch.delete(this.userDoc.collection('categories').doc());
+            Object
+                .entries(categories)
+                .forEach(([k, category]) => batch.set(
+                    this.getCategoryDoc(k), category));
+            return batch.commit();
+        } catch (error) {
+            console.warn('Cannot save budgets: ', error);
+        }
+    }
+
+    getCategoryDoc(identifier: string) {
+        return this.userDoc.collection('categories').doc(identifier);
     }
 
     /* TODO decide if it is better to just subscribe to changes and 

@@ -1,61 +1,53 @@
 import { Categories, Category } from "../interfaces";
+import { StorageApi } from "../api/storage/StorageApi";
 
-class CategoriesStore {
+export class CategoriesStore {
 
-    // TODO sync localStorage with remote DB
+    private _categories?: Categories;
+    private readonly _storage: StorageApi;
+    private _loading?: Promise<Categories>;
 
-    private static KEY = 'categories';
-    private categories: Categories;
+    constructor(storage: StorageApi) {
+        this._storage = storage;
+    }
 
-    constructor() {
-        this.categories = {};
-        const categoriesStr = localStorage.getItem(CategoriesStore.KEY);
-        if (categoriesStr && categoriesStr.length > 0) {
-            const categories = JSON.parse(categoriesStr) as Categories;
-            Object
-                .entries(categories)
-                .filter((e) => e[1].name && e[1].icon)
-                .forEach(([k, v]) => this.categories[k] = v);
-
+    async getCategories() {
+        if (!this._categories) {
+            if (!this._loading) {
+                this._loading = this._storage.getCategories();
+            }
+            this._categories = await this._loading;
         }
+        return this._categories;
     }
 
-    getCategories() {
-        return this.categories;
-    }
-
-    setCategory(category: Category) {
-        this.categories[category.id] = {
+    async setCategory(category: Category) {
+        const categories = await this.getCategories();
+        categories[category.id] = {
             icon: category.icon,
             name: category.name,
             id: category.id
         };
-        this.save();
+        return this._storage.saveCategory(category);
     }
 
-    setCategories(categories: Categories) {
-        this.categories = categories;
-        this.save();
+    async setCategories(categories: Categories) {
+        this._categories = categories;
+        return this._storage.saveCategories(categories);
     }
 
-    getCategory(categoryId: string): Category|undefined { 
-        return this.categories[categoryId];
+    async getCategory(categoryId: string) { 
+        const categories = await this.getCategories();
+        return categories[categoryId];
     }
 
-    delete(categoryId: string) {
-        if (categoryId in this.categories) {
-            delete this.categories[categoryId];
-            this.save();
+    async delete(categoryId: string) {
+        const categories = await this.getCategories();
+        if (categoryId in categories) {
+            delete categories[categoryId];
+            this._storage.saveCategories(categories);
             return true;
         }
         return false;
     }
-
-    private save() {
-        localStorage.setItem(
-            CategoriesStore.KEY, 
-            JSON.stringify(this.categories));
-    }
 }
-
-export const categoriesStore = new CategoriesStore();

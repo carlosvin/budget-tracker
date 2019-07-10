@@ -2,12 +2,11 @@ import * as React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { HeaderNotifierProps } from '../routes';
 import { SaveButton } from '../components/buttons';
-import { budgetsStore } from '../stores/BudgetsStore';
 import { FilesApi } from '../api/FileApi';
 import { Expense, Budget, Categories } from '../interfaces';
 import { TextInput } from '../components/TextInput';
 import { RouterProps } from 'react-router';
-import { categoriesStore } from '../stores/CategoriesStore';
+import { btApp } from '..';
 
 const Import = (props: HeaderNotifierProps&RouterProps) => {
 
@@ -43,12 +42,12 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
         const serialized = await FilesApi.getFileContent(selectedFile);
         const {expenses, info, categories} = JSON.parse(serialized) as ImportedStructure;
 
-        await budgetsStore.setBudget(info);
+        await btApp.budgetsStore.setBudget(info);
         for (const id in expenses) {
-            await budgetsStore.setExpense(info.identifier, expenses[id]);
+            await btApp.budgetsStore.setExpense(info.identifier, expenses[id]);
         }
 
-        categoriesStore.setCategories(categories);
+        btApp.categoriesStore.setCategories(categories);
         
         setProcessing(false);
         props.history.replace('/budgets');

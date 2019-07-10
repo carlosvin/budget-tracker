@@ -1,10 +1,11 @@
-import { ExpensesMap, BudgetsMap, Budget, Expense } from "../interfaces";
+import { ExpensesMap, BudgetsMap, Budget, Expense, Categories, Category } from "../../interfaces";
 import { StorageApi } from "./StorageApi";
 
 export class LocalStorage implements StorageApi {
     
     private readonly KEY_BUDGETS = 'budgets';
     private readonly KEY_EXPENSES = 'expenses';
+    private readonly KEY_CATEGORIES = 'categories';
 
     async getBudgets(): Promise<BudgetsMap> {
         const serializedBudgets = localStorage.getItem(this.KEY_BUDGETS);
@@ -68,6 +69,34 @@ export class LocalStorage implements StorageApi {
             delete budgets[budgetId];
             this.saveBudgets(budgets);
             localStorage.removeItem(this.getExpensesKey(budgetId));
+        }
+    }
+
+    async getCategories(){
+        const categoriesStr = localStorage.getItem(this.KEY_CATEGORIES);
+        if (categoriesStr && categoriesStr.length > 0) {
+            const categories = JSON.parse(categoriesStr) as Categories;
+            for (const k in categories) {
+                if (!categories[k].name || !categories[k].icon) {
+                    delete categories[k];
+                }
+            }
+            return categories;
+        }
+        return {};
+    }
+
+    async saveCategories (categories: Categories) {
+            localStorage.setItem(
+                this.KEY_CATEGORIES, 
+                JSON.stringify(categories));
+    }
+
+    async saveCategory (category: Category) {
+        const categories = await this.getCategories();
+        if (category.id in categories) {
+            delete categories[category.id];
+            this.saveCategories(categories);
         }
     }
 }

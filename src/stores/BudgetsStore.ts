@@ -1,24 +1,22 @@
 import { Budget, Expense } from "../interfaces";
 import { BudgetModel } from "../BudgetModel";
-import { StorageApi } from "../api/StorageApi";
-import { LocalStorage } from "../api/LocalStorage";
+import { StorageApi } from "../api/storage/StorageApi";
 
 export class BudgetsStore {
 
     private _budgetModels: {[identifier: string]: BudgetModel};
     private _budgetsIndex?: {[identifier: string]: Budget};
-    private readonly storage: StorageApi;
+    private readonly _storage: StorageApi;
 
-    constructor(storage = new LocalStorage()){
-        console.log('Instantiate store');
-        this.storage = storage;
+    constructor (storage: StorageApi) {
+        this._storage = storage;
         this._budgetModels = {};
     }
 
     async getBudgetsIndex () {
         if (!this._budgetsIndex) {
             try {
-                this._budgetsIndex = await this.storage.getBudgets();
+                this._budgetsIndex = await this._storage.getBudgets();
             } catch (error) {
                 console.warn(error, ', setting empty index');
                 this._budgetsIndex = {};
@@ -31,7 +29,7 @@ export class BudgetsStore {
         if (!(budgetId in this._budgetModels)) {
             const [budget, expenses] = await Promise.all([
                 this.getBudgetInfo(budgetId),
-                this.storage.getExpenses(budgetId)
+                this._storage.getExpenses(budgetId)
             ]);
             this._budgetModels[budgetId] = new BudgetModel(
                 budget,
@@ -53,7 +51,7 @@ export class BudgetsStore {
         if (budget.identifier in this._budgetModels) {
             this._budgetModels[budget.identifier].setBudget(budget);
         }
-        return this.storage.saveBudget(budget);
+        return this._storage.saveBudget(budget);
     }
 
     async getExpenses(budgetId: string) {
@@ -64,22 +62,19 @@ export class BudgetsStore {
     async setExpense(budgetId: string, expense: Expense){
         const model = await this.getBudgetModel(budgetId);
         model.setExpense(expense);
-        return this.storage.saveExpense(budgetId, expense);      
+        return this._storage.saveExpense(budgetId, expense);      
     }
 
     async deleteBudget(budgetId: string) {
         if (budgetId in this._budgetModels) {
             delete this._budgetModels[budgetId];
         }
-        return this.storage.deleteBudget(budgetId);
+        return this._storage.deleteBudget(budgetId);
     }
 
     async deleteExpense(budgetId: string, expenseId: string) {
         const model = await this.getBudgetModel(budgetId);
         model.deleteExpense(expenseId);
-        return this.storage.deleteExpense(budgetId, expenseId);
+        return this._storage.deleteExpense(budgetId, expenseId);
     }
-
 }
-
-export const budgetsStore = new BudgetsStore();

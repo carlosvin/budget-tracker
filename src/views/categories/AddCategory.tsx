@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { RouterProps } from 'react-router';
-import { categoriesStore } from '../../stores/CategoriesStore';
 import { Category } from '../../interfaces';
 import { HeaderNotifierProps } from '../../routes';
 import { CloseButton } from '../../components/buttons';
 import { CategoryForm } from '../../components/CategoryForm';
+import { btApp } from '../..';
 
 export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
 
@@ -27,7 +27,7 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
     }, []);
 
     const handleSave = (category: Category) => {
-        categoriesStore.setCategory(category);
+        btApp.categoriesStore.setCategory(category);
         closeView();
     }
     

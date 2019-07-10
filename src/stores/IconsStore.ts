@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 
-declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
+export declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
 interface IconsMap {[k: string]: LazyIcon};
 
 const Icons: IconsMap = {
@@ -55,14 +55,12 @@ export class IconsStore {
         return Object.keys(Icons);
     }
 
-    getIcon (name: string) {
+    getIcon (name: string): LazyIcon {
         return name in Icons ? Icons[name] : this.defaultIcon;
     }
 
-    get defaultIcon () {
+    get defaultIcon (): LazyIcon {
         return Icons.Label;
     }
 
 }
-
-export const iconsStore = new IconsStore();

@@ -1,16 +1,23 @@
 import * as React from 'react';
 import { RouterProps } from 'react-router';
-import { categoriesStore } from '../../stores/CategoriesStore';
 import { AddButton, SaveButtonFab } from '../../components/buttons';
 import { Category, Categories } from '../../interfaces';
 import CategoryInput from '../../components/CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
 import { Typography } from '@material-ui/core';
+import { btApp } from '../..';
 
 export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
+    
+    const [categories, setCategories] = React.useState<Categories>({});
 
     React.useEffect(() => {
+        async function fetchCategories () {
+            setCategories(await btApp.categoriesStore.getCategories());
+        }
+
         props.onTitleChange('Categories');
+        fetchCategories();
         return function () {
             props.onTitleChange('');
         };
@@ -18,9 +25,6 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
     }, []);
 
     const [changed, setChanged] = React.useState(false);
-  
-    const [categories, setCategories] = React.useState<Categories>(
-        categoriesStore.getCategories());
 
     const CategoriesMap = () => {
         if (Object.values(categories).length > 0) {
@@ -57,7 +61,7 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
 
     const handleSave = (e: React.SyntheticEvent) => {
         e.preventDefault();
-        categoriesStore.setCategories(categories);
+        btApp.categoriesStore.setCategories(categories);
         setChanged(false);
     }
 

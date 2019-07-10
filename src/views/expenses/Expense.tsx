@@ -1,8 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { budgetsStore } from "../../stores/BudgetsStore";
 import Grid from "@material-ui/core/Grid";
-import { categoriesStore } from "../../stores/CategoriesStore";
 import Link from '@material-ui/core/Link';
 import { MyLink } from "../../components/MyLink";
 import { BudgetUrl, getDateString, uuid } from "../../utils";
@@ -13,9 +11,9 @@ import { SaveButtonFab, DeleteButton } from "../../components/buttons";
 import CountryInput from "../../components/CountryInput";
 import { currenciesStore } from "../../stores/CurrenciesStore";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
-import { Category } from "../../interfaces";
+import { Category, Categories } from "../../interfaces";
 import { CategoryFormDialog } from "../../components/CategoryFormDialog";
-
+import { btApp } from "../..";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -23,8 +21,7 @@ interface ExpenseViewProps extends HeaderNotifierProps,
 export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     const [error, setError] = React.useState<string|undefined>();
-    const [categories, setCategories] = React.useState(
-        Object.entries(categoriesStore.getCategories()));
+    const [categories, setCategories] = React.useState<Categories>({});
 
     const [addCategoryOpen, setAddCategoryOpen] = React.useState(false);
     const [budget, setBudget] = React.useState();
@@ -34,7 +31,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const [countryCode, setCountryCode] = React.useState<string>('ES');
     const [dateString, setDateString] = React.useState(getDateString());
     const [identifier, setIdentifier] = React.useState(uuid());
-    const [categoryId, setCategoryId] = React.useState(categories[0][0]);
+    const [categoryId, setCategoryId] = React.useState();
     const [amountBaseCurrency, setAmountBaseCurrency] = React.useState<number>();
     const [description, setDescription] = React.useState<string>();
 
@@ -46,20 +43,28 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     React.useEffect(() => {
         const initBudget = async () => {
-            const b = await budgetsStore.getBudgetInfo(budgetId);
+            const b = await btApp.budgetsStore.getBudgetInfo(budgetId);
             setBudget(b);
             if (isAddView) {
                 setCurrency(b.currency);
             }
         }
+        async function initCategories () {
+            const categories = await btApp.categoriesStore.getCategories();
+            setCategories(categories);
+            if (!categoryId) {
+                setCategoryId(categories[0]);
+            }
+        }
         initBudget();
+        initCategories();
 
         // eslint-disable-next-line
     }, [budgetId]);
 
     React.useEffect(() => {
         async function handleDelete () {
-            await budgetsStore.deleteExpense(budgetId, expenseId);
+            await btApp.budgetsStore.deleteExpense(budgetId, expenseId);
             replace(budgetUrl.path);
         }
 
@@ -80,7 +85,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     
         const initEdit = async () => {
             onTitleChange(`Edit expense`);
-            const model = await budgetsStore.getBudgetModel(budgetId);
+            const model = await btApp.budgetsStore.getBudgetModel(budgetId);
             const e = model.getExpense(expenseId);
             setAmount(e.amount);
             e.amountBaseCurrency && setAmountBaseCurrency(e.amountBaseCurrency);
@@ -114,17 +119,17 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             identifier && 
             dateString && 
             amountBaseCurrency) {
-            budgetsStore.setExpense(
-                budgetId, 
-                {   amount: amount, 
-                    categoryId: categoryId,
-                    currency: currency,
-                    countryCode: countryCode,
-                    identifier: identifier,
-                    when: new Date(dateString).getTime(),
-                    amountBaseCurrency: amountBaseCurrency,
-                    description: description
-                });
+                btApp.budgetsStore.setExpense(
+                    budgetId, 
+                    {   amount: amount, 
+                        categoryId: categoryId,
+                        currency: currency,
+                        countryCode: countryCode,
+                        identifier: identifier,
+                        when: new Date(dateString).getTime(),
+                        amountBaseCurrency: amountBaseCurrency,
+                        description: description
+                    });
             props.history.replace(budgetUrl.path);
         } else {
             throw new Error(`Invalid expense data`);
@@ -132,7 +137,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     }
 
     const CategoryOptions = React.useMemo(
-        () => (categories.map(
+        () => (Object.entries(categories).map(
             ([k, v]) => (
                 <option key={`category-option-${k}`} value={v.id}>{v.name}</option>))), 
         [categories]);
@@ -149,8 +154,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     const handleAddCategoryClose = (category?: Category) => {
         if (category) {
-            categoriesStore.setCategory(category);
-            setCategories(Object.entries(categoriesStore.getCategories()));
+            btApp.categoriesStore.setCategory(category);
+            setCategories({...categories, category});
             setCategoryId(category.id);
         }
         setAddCategoryOpen(false);

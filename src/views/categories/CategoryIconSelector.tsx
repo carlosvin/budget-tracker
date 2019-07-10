@@ -3,8 +3,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
-import { iconsStore } from '../../stores/IconsStore';
 import { CategoryIconButton } from '../../components/CategoryIconButton';
+import { btApp } from '../..';
 
 interface CategoryIconSelectorProps {
     selectedValue: string;
@@ -23,7 +23,7 @@ class CategoryIconSelector extends React.PureComponent<CategoryIconSelectorProps
                 <DialogTitle id={this.titleId}>Select icon for category</DialogTitle>
                 <DialogContent>
                     <Grid container direction='row' justify='center'>
-                        { iconsStore.getIconNames().map( name => 
+                        { btApp.iconsStore.getIconNames().map( name => 
                             <CategoryIconButton 
                                 onClick={this.handleItemClick} 
                                 name={name} 
