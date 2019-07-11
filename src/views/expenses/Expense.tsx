@@ -42,7 +42,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const isAddView = expenseId === undefined;
 
     React.useEffect(() => {
-        const initBudget = async () => {
+        async function initBudget () {
             const b = await btApp.budgetsStore.getBudgetInfo(budgetId);
             setBudget(b);
             if (isAddView) {
@@ -56,19 +56,12 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 setCategoryId(categories[0]);
             }
         }
-        initBudget();
-        initCategories();
-
-        // eslint-disable-next-line
-    }, [budgetId]);
-
-    React.useEffect(() => {
         async function handleDelete () {
             await btApp.budgetsStore.deleteExpense(budgetId, expenseId);
             replace(budgetUrl.path);
         }
 
-        const initAdd = async () => {
+        async function initAdd () {
             onTitleChange(`Add expense`);
             const setCurrentCountry = async (currentCountry: string) => {
                 setCountryCode(currentCountry);
@@ -82,8 +75,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 setCurrentCountry(currentCountryFetched);
             }
         }
-    
-        const initEdit = async () => {
+
+        async function initEdit () {
             onTitleChange(`Edit expense`);
             const model = await btApp.budgetsStore.getBudgetModel(budgetId);
             const e = model.getExpense(expenseId);
@@ -96,19 +89,21 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             setDateString(getDateString(new Date(e.when)));
             setIdentifier(e.identifier);
         }
-
+        
+        onActions(<DeleteButton onClick={handleDelete}/>);
+        initBudget();
+        initCategories();
         if (isAddView) {
             initAdd();
         } else {
             initEdit();
         }
-        onActions(<DeleteButton onClick={handleDelete}/>);
-
         return function () {
             onActions([]);
         }
+
         // eslint-disable-next-line
-    }, [expenseId]);
+    }, [budgetId, expenseId]);
 
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
