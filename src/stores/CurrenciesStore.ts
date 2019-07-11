@@ -2,7 +2,7 @@ import { CurrencyRates } from "../interfaces";
 import { currenciesApi } from "../api/CurrenciesApi";
 import { dateDiff } from "../utils";
 
-class CurrenciesStore {
+export class CurrenciesStore {
     static readonly KEY = 'currencyRates';
     static readonly KEY_TS = 'currencyTimestamps';
     // TODO make this configurable
@@ -45,6 +45,24 @@ class CurrenciesStore {
             }
         }
         return this._rates[baseCurrency].rates[currencyTo];
+    }
+
+    /** 
+     * @returns Currency exchange rates for a base currency
+     */
+    async getRates(baseCurrency: string): Promise<CurrencyRates> {
+        let promise = undefined;
+        if (this.shouldFetch(baseCurrency)) {
+            promise = this.fetchRates(baseCurrency);
+        }
+        if (promise) {
+            try {
+                await promise;
+            } catch (error) {
+                console.warn(error);
+            }
+        }
+        return this._rates[baseCurrency];
     }
 
     /** 
@@ -148,5 +166,3 @@ class CurrenciesStore {
         return this._countriesCurrencyMap[countryCode];
     }
 }
-
-export const currenciesStore = new CurrenciesStore();

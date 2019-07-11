@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { currenciesStore } from '../stores/CurrenciesStore';
 import { TextInput } from './TextInput';
+import { btApp } from '../BudgetTracker';
 
 export interface CurrencyInputProps  {
     onCurrencyChange: (selected: string) => void;
@@ -30,7 +30,7 @@ export class CurrencyInput extends React.PureComponent<CurrencyInputProps, Curre
     private async initCurrencies () {
         this.setState ({
             ...this.state,
-            currencies: await currenciesStore.getCurrencies()
+            currencies: await btApp.currenciesStore.getCurrencies()
         });
     }
 

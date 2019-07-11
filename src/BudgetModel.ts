@@ -1,6 +1,6 @@
 import { Budget, Expense, Categories } from "./interfaces";
-import { currenciesStore } from "./stores/CurrenciesStore";
 import { dateDiff } from "./utils";
+import { btApp } from "./BudgetTracker";
 
 export const DAY_MS = 24 * 3600 * 1000;
 
@@ -203,7 +203,7 @@ export class BudgetModel {
 
     private async _updateExpensesBaseAmount() {
         for (const k in this._expenses) {
-            this._expenses[k].amountBaseCurrency = await currenciesStore.getAmountInBaseCurrency(
+            this._expenses[k].amountBaseCurrency = await btApp.currenciesStore.getAmountInBaseCurrency(
                 this._info.currency, 
                 this._expenses[k].currency, 
                 this._expenses[k].amount);

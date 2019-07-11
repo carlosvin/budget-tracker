@@ -1,7 +1,6 @@
-import { BudgetsStore } from "./BudgetsStore";
 import { Budget, Expense } from "../interfaces";
-import { currenciesStore } from "./CurrenciesStore";
 import { dateDiff } from "../utils";
+import { btApp } from "../BudgetTracker";
 
 export class StatsStore {
 
@@ -14,7 +13,7 @@ export class StatsStore {
                     if (expense.amountBaseCurrency !== undefined) {
                         total = total + expense.amountBaseCurrency;
                     } else {
-                        const amountBaseCurrency = await currenciesStore.getAmountInBaseCurrency(
+                        const amountBaseCurrency = await btApp.currenciesStore.getAmountInBaseCurrency(
                             budget.currency, 
                             expense.currency, 
                             expense.amount);

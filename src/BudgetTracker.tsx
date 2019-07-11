@@ -7,6 +7,7 @@ import { LocalStorage } from './api/storage/LocalStorage';
 import { BudgetsStore } from './stores/BudgetsStore';
 import { CategoriesStore } from './stores/CategoriesStore';
 import { IconsStore } from './stores/IconsStore';
+import { CurrenciesStore } from './stores/CurrenciesStore';
 
 class BudgetTracker {
 
@@ -14,6 +15,7 @@ class BudgetTracker {
     private _budgetsStore?: BudgetsStore;
     private _categoriesStore?: CategoriesStore;
     private _iconsStore?: IconsStore;
+    private _currenciesStore?: CurrenciesStore;
 
     get storage () {
         if (!this._storage) {
@@ -41,6 +43,13 @@ class BudgetTracker {
             this._iconsStore = new IconsStore();
         }
         return this._iconsStore;
+    }
+
+    get currenciesStore () {
+        if (!this._currenciesStore) {
+            this._currenciesStore = new CurrenciesStore();
+        }
+        return this._currenciesStore;
     }
 
     render () {

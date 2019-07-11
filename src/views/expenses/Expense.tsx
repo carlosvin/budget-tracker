@@ -9,9 +9,8 @@ import { countriesStore } from "../../stores/CountriesStore";
 import { HeaderNotifierProps } from "../../routes";
 import { SaveButtonFab, DeleteButton } from "../../components/buttons";
 import CountryInput from "../../components/CountryInput";
-import { currenciesStore } from "../../stores/CurrenciesStore";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
-import { Category, Categories } from "../../interfaces";
+import { Category, Categories, CurrencyRates } from "../../interfaces";
 import { CategoryFormDialog } from "../../components/CategoryFormDialog";
 import { btApp } from "../../BudgetTracker";
 
@@ -35,6 +34,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const [amountBaseCurrency, setAmountBaseCurrency] = React.useState<number>();
     const [description, setDescription] = React.useState<string>();
 
+    const [rates, setRates] = React.useState<CurrencyRates>();
+
     const {budgetId, expenseId} = props.match.params;
     const {onActions, onTitleChange, history} = props;
     const {replace} = history;
@@ -42,9 +43,13 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const isAddView = expenseId === undefined;
 
     React.useEffect(() => {
+        async function initRates (baseCurrency: string) {
+            setRates(await btApp.currenciesStore.getRates(baseCurrency));
+        }
         async function initBudget () {
             const b = await btApp.budgetsStore.getBudgetInfo(budgetId);
             setBudget(b);
+            initRates(b.currency);
             if (isAddView) {
                 setCurrency(b.currency);
             }
@@ -65,7 +70,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             onTitleChange(`Add expense`);
             const setCurrentCountry = async (currentCountry: string) => {
                 setCountryCode(currentCountry);
-                setCurrency(await currenciesStore.getFromCountry(currentCountry));
+                setCurrency(await btApp.currenciesStore.getFromCountry(currentCountry));
             }
             const currentCountry = countriesStore.currentCountryCode;
             setCurrentCountry(currentCountry);
@@ -211,7 +216,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                     alignItems='baseline'
                     alignContent='stretch'>
                     <Grid item >
-                        { currency && <AmountWithCurrencyInput
+                        { rates && currency && <AmountWithCurrencyInput
+                            rates={ rates }
                             amountInput={amount}
                             amountInBaseCurrency={amountBaseCurrency}
                             baseCurrency={budget && budget.currency}

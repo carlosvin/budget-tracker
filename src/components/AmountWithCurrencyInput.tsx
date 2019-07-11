@@ -1,14 +1,16 @@
 import * as React from "react";
 import Grid from "@material-ui/core/Grid";
 import { CurrencyInput } from "./CurrencyInput";
-import { currenciesStore } from "../stores/CurrenciesStore";
 import { round } from "../utils";
 import { AmountInput } from "./AmountInput";
 import { Card, CardContent } from "@material-ui/core";
+import { btApp } from "../BudgetTracker";
+import { CurrencyRates } from "../interfaces";
 
 interface AmountCurrencyInputProps  {
     baseCurrency: string;
     selectedCurrency: string;
+    rates: CurrencyRates;
     amountInBaseCurrency?: number;
     onChange: (amount: number, currency: string, amountBase?: number) => void;
     amountInput?: number;
@@ -32,7 +34,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
             baseCurrency: string, 
             currency: string) {
                 try {
-                    const calculatedAmount = await currenciesStore.getAmountInBaseCurrency(
+                    const calculatedAmount = await btApp.currenciesStore.getAmountInBaseCurrency(
                         baseCurrency, 
                         currency,
                         amount);
