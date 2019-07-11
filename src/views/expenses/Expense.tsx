@@ -13,7 +13,7 @@ import { currenciesStore } from "../../stores/CurrenciesStore";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
 import { Category, Categories } from "../../interfaces";
 import { CategoryFormDialog } from "../../components/CategoryFormDialog";
-import { btApp } from "../..";
+import { btApp } from "../../BudgetTracker";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }

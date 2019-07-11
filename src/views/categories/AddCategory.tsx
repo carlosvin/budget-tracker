@@ -4,7 +4,7 @@ import { Category } from '../../interfaces';
 import { HeaderNotifierProps } from '../../routes';
 import { CloseButton } from '../../components/buttons';
 import { CategoryForm } from '../../components/CategoryForm';
-import { btApp } from '../..';
+import { btApp } from '../../BudgetTracker';
 
 export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
 

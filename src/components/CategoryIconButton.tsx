@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
 import { stringToColorCss } from '../utils';
-import { btApp } from '..';
+import { btApp } from '../BudgetTracker';
 
 interface CategoryIconButtonProp {
     name: string;

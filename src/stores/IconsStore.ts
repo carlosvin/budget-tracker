@@ -51,7 +51,7 @@ const Icons: IconsMap = {
 
 export class IconsStore {
 
-    getIconNames() {
+    get iconNames() {
         return Object.keys(Icons);
     }
 

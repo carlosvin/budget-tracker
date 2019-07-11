@@ -5,7 +5,7 @@ import { Category, Categories } from '../../interfaces';
 import CategoryInput from '../../components/CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
 import { Typography } from '@material-ui/core';
-import { btApp } from '../..';
+import { btApp } from '../../BudgetTracker';
 
 export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
     

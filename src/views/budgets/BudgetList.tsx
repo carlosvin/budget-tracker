@@ -8,7 +8,7 @@ import { BudgetUrl } from "../../utils";
 import { HeaderNotifierProps } from "../../routes";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { btApp } from "../..";
+import { btApp } from "../../BudgetTracker";
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
 

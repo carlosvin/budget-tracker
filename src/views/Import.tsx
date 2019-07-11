@@ -6,7 +6,7 @@ import { FilesApi } from '../api/FileApi';
 import { Expense, Budget, Categories } from '../interfaces';
 import { TextInput } from '../components/TextInput';
 import { RouterProps } from 'react-router';
-import { btApp } from '..';
+import { btApp } from '../BudgetTracker';
 
 const Import = (props: HeaderNotifierProps&RouterProps) => {
 
@@ -60,11 +60,11 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
 
     return (
         <form>
-            { 
-                isProcessing ? 
-                    <CircularProgress /> :
-                    <TextInput type='file' onChange={handleFileChange}/>
-            }
+        { 
+            isProcessing ? 
+                <CircularProgress /> :
+                <TextInput type='file' onChange={handleFileChange}/>
+        }
         </form>);
 
 }

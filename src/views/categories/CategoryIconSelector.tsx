@@ -4,7 +4,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import { CategoryIconButton } from '../../components/CategoryIconButton';
-import { btApp } from '../..';
+import { btApp } from '../../BudgetTracker';
 
 interface CategoryIconSelectorProps {
     selectedValue: string;
@@ -23,7 +23,7 @@ class CategoryIconSelector extends React.PureComponent<CategoryIconSelectorProps
                 <DialogTitle id={this.titleId}>Select icon for category</DialogTitle>
                 <DialogContent>
                     <Grid container direction='row' justify='center'>
-                        { btApp.iconsStore.getIconNames().map( name => 
+                        { btApp.iconsStore.iconNames.map( name => 
                             <CategoryIconButton 
                                 onClick={this.handleItemClick} 
                                 name={name} 

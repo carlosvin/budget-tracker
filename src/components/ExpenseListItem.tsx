@@ -8,8 +8,8 @@ import { Budget, Expense, Category } from "../interfaces";
 import { MyLink } from "./MyLink";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import {round, stringToColorCss} from '../utils';
-import { btApp } from "..";
 import { LazyIcon } from "../stores/IconsStore";
+import { btApp } from "../BudgetTracker";
 
 interface ExpenseListItemProps {
     budget: Budget;

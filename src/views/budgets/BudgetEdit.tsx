@@ -5,7 +5,7 @@ import { BudgetUrl, goBack } from "../../utils";
 import { CloseButton } from "../../components/buttons";
 import { HeaderNotifierProps } from "../../routes";
 import { BudgetForm } from "../../components/BudgetForm";
-import { btApp } from "../..";
+import { btApp } from "../../BudgetTracker";
 
 interface BudgetEditProps extends 
     RouteComponentProps<{ budgetId: string }>, 

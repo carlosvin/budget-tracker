@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import { BudgetModel } from "../../BudgetModel";
 import { BudgetQuickStats } from "../../components/BudgetQuickStats";
 import { YesNoDialog } from "../../components/YesNoDialog";
-import { btApp } from "../..";
+import { btApp } from "../../BudgetTracker";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -49,10 +49,13 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         this.setState({...this.state, showConfirmDialog: true} );
     }
 
-    private handleExport = () => {
+    private handleExport = async () => {
         if (this.state.budgetModel){
-            window.open('data:application/octet-stream,' +
-            encodeURIComponent(this.state.budgetModel.json));
+            const categories = await btApp.categoriesStore.getCategories();
+            const json = this.state.budgetModel.getJson(categories);
+            window.open(
+                'data:application/octet-stream,' +
+                encodeURIComponent(json));
         }
     }
 

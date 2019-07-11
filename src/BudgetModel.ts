@@ -1,7 +1,6 @@
-import { Budget, Expense } from "./interfaces";
+import { Budget, Expense, Categories } from "./interfaces";
 import { currenciesStore } from "./stores/CurrenciesStore";
 import { dateDiff } from "./utils";
-import { btApp } from ".";
 
 export const DAY_MS = 24 * 3600 * 1000;
 
@@ -237,12 +236,12 @@ export class BudgetModel {
         return Promise.resolve();
     }
 
-    get json() {
+    getJson(categories: Categories) {
         return JSON.stringify(
             {
                 info: this.info,
                 expenses: this.expenses,
-                categories: btApp.categoriesStore.getCategories()
+                categories
             }, null, 2
         );
     }
