@@ -1,0 +1,121 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Amount Input changes 1`] = `
+<div
+  className="MuiGrid-root MuiGrid-container MuiGrid-align-items-xs-baseline"
+>
+  <div
+    className="MuiGrid-root MuiGrid-item"
+  >
+    <div
+      className="MuiFormControl-root MuiTextField-root MuiFormControl-marginDense"
+      style={
+        Object {
+          "margin": 8,
+        }
+      }
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-marginDense Mui-required Mui-required"
+        data-shrink={false}
+        htmlFor="input-field-Amount"
+      >
+        Amount
+        <span
+          className="MuiFormLabel-asterisk MuiInputLabel-asterisk"
+        >
+           
+          *
+        </span>
+      </label>
+      <div
+        className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense"
+        onClick={[Function]}
+      >
+        <input
+          aria-invalid={false}
+          aria-required={true}
+          autoFocus={true}
+          className="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+          disabled={false}
+          id="input-field-Amount"
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          required={true}
+          step=".01"
+          type="number"
+          value=""
+        />
+      </div>
+    </div>
+  </div>
+  <div
+    className="MuiGrid-root MuiGrid-item"
+  >
+    <div
+      className="MuiFormControl-root MuiTextField-root MuiFormControl-marginDense"
+      style={
+        Object {
+          "margin": 8,
+        }
+      }
+    >
+      <label
+        className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiFormLabel-filled Mui-required Mui-required"
+        data-shrink={true}
+        htmlFor="input-field-Currency"
+      >
+        Currency
+        <span
+          className="MuiFormLabel-asterisk MuiInputLabel-asterisk"
+        >
+           
+          *
+        </span>
+      </label>
+      <div
+        className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense"
+        onClick={[Function]}
+      >
+        <div
+          className="MuiSelect-root"
+        >
+          <select
+            aria-invalid={false}
+            className="MuiSelect-select MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
+            disabled={false}
+            id="input-field-Currency"
+            multiple={false}
+            onBlur={[Function]}
+            onChange={[Function]}
+            onFocus={[Function]}
+            required={true}
+            value="USD"
+          />
+          <svg
+            aria-hidden="true"
+            className="MuiSvgIcon-root MuiSelect-icon"
+            focusable="false"
+            role="presentation"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M7 10l5 5 5-5z"
+            />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    className="MuiPaper-root MuiPaper-elevation1 MuiCard-root MuiPaper-rounded"
+  >
+    <div
+      className="MuiCardContent-root"
+    >
+      Error calculating amount in base currency. You need to be connected to Internet to get last currency rates. You can still add the amount in budget base currency.
+    </div>
+  </div>
+</div>
+`;

@@ -74,9 +74,13 @@ export class CurrenciesStore {
     async getAmountInBaseCurrency (baseCurrency: string, currency: string, amount: number) {
         if (baseCurrency && currency !== baseCurrency) {
             const rate = await this.getRate(baseCurrency, currency);
-            return amount / rate;
+            return CurrenciesStore.convert(amount, rate);
         }
         return amount;
+    }
+
+    static convert (amount: number, rate: number) {
+        return amount / rate;
     }
 
     private isUpdated(baseCurrency: string) {

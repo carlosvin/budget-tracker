@@ -1,6 +1,6 @@
-import { Budget, Expense, Categories } from "./interfaces";
+import { Budget, Expense, Categories, CurrencyRates } from "./interfaces";
 import { dateDiff } from "./utils";
-import { btApp } from "./BudgetTracker";
+import { CurrenciesStore } from "./stores/CurrenciesStore";
 
 export const DAY_MS = 24 * 3600 * 1000;
 
@@ -201,20 +201,36 @@ export class BudgetModel {
         }
     }
 
-    private async _updateExpensesBaseAmount() {
+    private _updateExpensesBaseAmount(rates: CurrencyRates) {
         for (const k in this._expenses) {
-            this._expenses[k].amountBaseCurrency = await btApp.currenciesStore.getAmountInBaseCurrency(
-                this._info.currency, 
-                this._expenses[k].currency, 
-                this._expenses[k].amount);
+            if (rates.base === this._expenses[k].currency) {
+                this._expenses[k].amountBaseCurrency = this._expenses[k].amount; 
+            } else {
+                const currency = this._expenses[k].currency;
+                const rate = rates.rates[currency];
+                if (rate === undefined) {
+                    throw new Error(`Cannot get currency exchange rate from ${rates.base} to ${currency}`);
+                }
+                this._expenses[k].amountBaseCurrency = CurrenciesStore.convert(
+                    this._expenses[k].amount, rate);
+            }
         }
         this._totalExpenses = undefined;
     }
 
-    async setBudget(info: Budget) {
+    async setBudget(info: Budget, rates?: CurrencyRates) {
         if (info.identifier !== this.identifier) {
             throw new Error('Cannot update budget information with different IDs');
         }
+
+        if (info.currency !== this._info.currency) {
+            if (!rates) {
+                throw new Error('Required conversion rates to update budget currency');
+            }
+            this._updateExpensesBaseAmount(rates);
+            this._info.currency = info.currency;
+        }
+
         this._info.name = info.name;
         this._info.total = info.total;
 
@@ -226,11 +242,6 @@ export class BudgetModel {
         if (this._info.to !== info.to) {
             this._days = this._totalDays = undefined;
             this._info.to = info.to;
-        }
-
-        if (info.currency !== this._info.currency) {
-            this._info.currency = info.currency;
-            return this._updateExpensesBaseAmount();
         }
         
         return Promise.resolve();

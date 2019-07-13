@@ -26,7 +26,7 @@ class BudgetTracker {
 
     get budgetsStore () {
         if (!this._budgetsStore) {
-            this._budgetsStore = new BudgetsStore(this.storage);
+            this._budgetsStore = new BudgetsStore(this.storage, this.currenciesStore);
         }
         return this._budgetsStore;
     }

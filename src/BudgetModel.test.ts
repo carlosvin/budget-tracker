@@ -1,10 +1,6 @@
 import { BudgetModel, DAY_MS } from "./BudgetModel";
 import { uuid } from "./utils";
-import { Expense } from "./interfaces";
-import { currenciesStore } from "./stores/CurrenciesStore";
-
-jest.mock('./stores/CurrenciesStore');
-const mockedCurrenciesStore: jest.Mocked<typeof currenciesStore> = currenciesStore as any;
+import { Expense, CurrencyRates } from "./interfaces";
 
 function createBudget (currency: string, days: number, total: number) {
     return { 
@@ -262,9 +258,23 @@ it('Check groups are created properly when model is initialized from constructor
 
 it('Modify budget base currency ', async () => {
     const info = createBudget('EUR', 30, 1000);
-    const expense1 = {...createExpense('1'), currency: 'USD', amount: 10, amountBaseCurrency: 9};
-    const expense2 = {...expense1, identifier: '2', currency: 'BTH', amount: 340, amountBaseCurrency: 10};
-    const expense3 = {...expense1, identifier: '3', currency: 'EUR', amount: 1, amountBaseCurrency: 1};
+    const expense1 = {
+        ...createExpense('1'), 
+        currency: 'USD', 
+        amount: 12, 
+        amountBaseCurrency: 10};
+    const expense2 = {
+        ...expense1, 
+        identifier: '2', 
+        currency: 'BTH', 
+        amount: 350, 
+        amountBaseCurrency: 10};
+    const expense3 = {
+        ...expense1, 
+        identifier: '3', 
+        currency: 'EUR', 
+        amount: 1, 
+        amountBaseCurrency: 1};
     const bm = new BudgetModel(
         info, 
         {
@@ -273,10 +283,15 @@ it('Modify budget base currency ', async () => {
             '3': expense3
         });
 
-    mockedCurrenciesStore.getAmountInBaseCurrency.mockReturnValue(Promise.resolve(33));
+    const rates: CurrencyRates = {
+        base: 'USD',
+        rates: { 'EUR': 0.8, 'BTH': 35 },
+        date: new Date()
+    };
+    expect(await bm.getTotalExpenses()).toBe(21);
 
-    await bm.setBudget({...info, currency: 'USD'});
-    expect(await bm.getTotalExpenses()).toBe(99);
+    await bm.setBudget({...info, currency: 'USD'}, rates);
+    expect(await bm.getTotalExpenses()).toBe(23.25);
 });
 
 

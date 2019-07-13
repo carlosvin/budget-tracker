@@ -1,19 +1,22 @@
-import { Budget, Expense } from "../interfaces";
+import { Budget, Expense, BudgetsMap } from "../interfaces";
 import { BudgetModel } from "../BudgetModel";
 import { StorageApi } from "../api/storage/StorageApi";
+import { CurrenciesStore } from "./CurrenciesStore";
 
 export class BudgetsStore {
 
     private _budgetModels: {[identifier: string]: BudgetModel};
     private _budgetsIndex?: {[identifier: string]: Budget};
     private readonly _storage: StorageApi;
+    private readonly _currenciesStore: CurrenciesStore;
 
-    constructor (storage: StorageApi) {
+    constructor (storage: StorageApi, currenciesStore: CurrenciesStore) {
         this._storage = storage;
+        this._currenciesStore = currenciesStore;
         this._budgetModels = {};
     }
 
-    async getBudgetsIndex () {
+    async getBudgetsIndex (): Promise<BudgetsMap> {
         if (!this._budgetsIndex) {
             try {
                 this._budgetsIndex = await this._storage.getBudgets();
@@ -47,9 +50,24 @@ export class BudgetsStore {
         throw new Error(`Budget nof found: ${identifier}`);
     }
 
+    private async setBudgetInfo (budget: Budget) {
+        if (!this._budgetsIndex) {
+            this._budgetsIndex = await this.getBudgetsIndex();
+        }
+        if (this._budgetsIndex) {
+            this._budgetsIndex[budget.identifier] = budget;
+        }
+    }
+
     async setBudget(budget: Budget) {
         if (budget.identifier in this._budgetModels) {
-            this._budgetModels[budget.identifier].setBudget(budget);
+            const budgetInfo = await this.getBudgetInfo(budget.identifier);
+            let rates = undefined;
+            if (budgetInfo.currency !== budget.currency) {
+                rates = await this._currenciesStore.getRates(budget.currency);
+            }
+            this.setBudgetInfo(budget); 
+            this._budgetModels[budget.identifier].setBudget(budget, rates);
         }
         return this._storage.saveBudget(budget);
     }
