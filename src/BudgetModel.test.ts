@@ -295,6 +295,46 @@ it('Modify budget base currency ', async () => {
 });
 
 
+it('Modify budget base currency not passing currency rates. Throws error.', async () => {
+    const info = createBudget('EUR', 30, 1000);
+    const expense1 = {
+        ...createExpense('1'), 
+        currency: 'USD', 
+        amount: 12, 
+        amountBaseCurrency: 10};
+    const expense2 = {
+        ...expense1, 
+        identifier: '2', 
+        currency: 'BTH', 
+        amount: 350, 
+        amountBaseCurrency: 10};
+    const expense3 = {
+        ...expense1, 
+        identifier: '3', 
+        currency: 'EUR', 
+        amount: 1, 
+        amountBaseCurrency: 1};
+    const bm = new BudgetModel(
+        info, 
+        {
+            '1': expense1,
+            '2': expense2,
+            '3': expense3
+        });
+    await expect(bm.setBudget({...info, currency: 'USD'}))
+        .rejects
+        .toThrowError('Required conversion rates to update budget currency');
+
+    const rates: CurrencyRates = {
+        base: 'USD',
+        rates: { 'BTH': 35 },
+        date: new Date()
+    };
+    await expect(bm.setBudget({...info, currency: 'USD'}, rates))
+        .rejects
+        .toThrowError('Cannot get currency exchange rate from USD to EUR');
+});
+
 it('Returns expenses and info attributes', async () => {
     const info = createBudget('USD', 180, 56000);
     const expense1 = {...createExpense('1')};

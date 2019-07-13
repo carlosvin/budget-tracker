@@ -23,7 +23,6 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const [categories, setCategories] = React.useState<Categories>({});
 
     const [addCategoryOpen, setAddCategoryOpen] = React.useState(false);
-    const [budget, setBudget] = React.useState();
 
     const [currency, setCurrency] = React.useState<string>();
     const [amount, setAmount] = React.useState<number>();
@@ -48,7 +47,6 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         }
         async function initBudget () {
             const b = await btApp.budgetsStore.getBudgetInfo(budgetId);
-            setBudget(b);
             initRates(b.currency);
             if (isAddView) {
                 setCurrency(b.currency);
@@ -220,7 +218,6 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                             rates={ rates }
                             amountInput={amount}
                             amountInBaseCurrency={amountBaseCurrency}
-                            baseCurrency={budget && budget.currency}
                             selectedCurrency={currency}
                             onChange={handleAmountChange}
                             onError={setError}
