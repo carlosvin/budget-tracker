@@ -2,15 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import AmountWithCurrencyInput from './AmountWithCurrencyInput';
 import renderer from 'react-test-renderer';
+import { CurrencyRates } from '../interfaces';
 
 test('Amount Input changes', () => {
     const handleChange = (amount: number, currency: string, amountBase?: number) => {
 
     }
+
+    const rates: CurrencyRates = {
+        base: 'EUR',
+        rates: { 'BTH': 35, 'USD': 0.8 },
+        date: new Date()
+    };
+
     const component = renderer.create(
-        <AmountWithCurrencyInput 
+        <AmountWithCurrencyInput
+            rates={rates}
             onChange={handleChange} 
-            baseCurrency='EUR' 
             selectedCurrency='USD' />,
     );
     let tree = component.toJSON();

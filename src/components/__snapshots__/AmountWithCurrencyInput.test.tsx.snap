@@ -108,14 +108,5 @@ exports[`Amount Input changes 1`] = `
       </div>
     </div>
   </div>
-  <div
-    className="MuiPaper-root MuiPaper-elevation1 MuiCard-root MuiPaper-rounded"
-  >
-    <div
-      className="MuiCardContent-root"
-    >
-      Error calculating amount in base currency. You need to be connected to Internet to get last currency rates. You can still add the amount in budget base currency.
-    </div>
-  </div>
 </div>
 `;

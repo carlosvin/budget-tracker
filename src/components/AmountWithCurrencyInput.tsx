@@ -4,15 +4,14 @@ import { CurrencyInput } from "./CurrencyInput";
 import { round } from "../utils";
 import { AmountInput } from "./AmountInput";
 import { Card, CardContent } from "@material-ui/core";
-import { btApp } from "../BudgetTracker";
 import { CurrencyRates } from "../interfaces";
+import { CurrenciesStore } from "../stores/CurrenciesStore";
 
 interface AmountCurrencyInputProps  {
-    baseCurrency: string;
     selectedCurrency: string;
     rates: CurrencyRates;
     amountInBaseCurrency?: number;
-    onChange: (amount: number, currency: string, amountBase?: number) => void;
+    onChange: (amount: number, currency: string, amountBase: number) => void;
     amountInput?: number;
     label?: string;
     disabled?: boolean;
@@ -25,68 +24,60 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         amountInBaseCurrency, 
         setAmountInBaseCurrency
     ] = React.useState<number|undefined>(props.amountInBaseCurrency);
+
+    const [error, setError] = React.useState<string|undefined>(); 
+
+    function calculateAmountInBaseCurrency(amount: number, currency: string) {
+        const rate = props.rates.rates[currency];
+        let error = undefined;
+        if (rate) {
+            const calculatedAmount = currency !== props.rates.base ? CurrenciesStore.convert(amount, rate) : amount;
+            setAmountInBaseCurrency(round(calculatedAmount));
+            props.onChange(amount, currency, calculatedAmount);
+        } else {
+            error = 'Cannot get currency exchange rate';
+        }
+        if (props.onError) {
+            setError(error);
+            props.onError(error);
+        }
+    }
     
     // calculate amount in base currency
     React.useEffect(() => {
         let isSubscribed = true;
-        async function calculateAmountInBaseCurrency(
-            amount: number, 
-            baseCurrency: string, 
-            currency: string) {
-                try {
-                    const calculatedAmount = await btApp.currenciesStore.getAmountInBaseCurrency(
-                        baseCurrency, 
-                        currency,
-                        amount);
-                    setAmountInBaseCurrency(round(calculatedAmount));
-                    props.onChange(amount, currency, calculatedAmount);
-                } catch (error) {
-                    console.warn(error);
-                }
-        }
         if (isSubscribed &&
             amountInBaseCurrency === undefined &&
-            props.baseCurrency &&
+            props.rates.base &&
             props.selectedCurrency && 
             props.amountInput && 
-            props.baseCurrency !== props.selectedCurrency) {
+            props.rates.base !== props.selectedCurrency) {
             calculateAmountInBaseCurrency(
                 props.amountInput, 
-                props.baseCurrency, 
                 props.selectedCurrency);
-        }
-        if (props.onError) {
-            props.onError(error() ? 'Cannot get currency exchange rate' : undefined);
         }
         return () => {isSubscribed = false};
     }, 
     // eslint-disable-next-line
     [
-        props.baseCurrency, props.amountInput, props.selectedCurrency
+        props.rates.base, props.amountInput, props.selectedCurrency
     ]);
 
     const handleAmountChange = (amount: number) => {
-        setAmountInBaseCurrency(undefined);
-        const b = props.baseCurrency !== props.selectedCurrency ? amountInBaseCurrency : amount;
-        props.onChange(amount, props.selectedCurrency, b);
+        calculateAmountInBaseCurrency(amount, props.selectedCurrency);
     }
 
     const handleCurrencyChange = (selectedCurrency: string) => {
-        setAmountInBaseCurrency(undefined);
-        const b = props.baseCurrency !== selectedCurrency ? amountInBaseCurrency : props.amountInput;
-        props.onChange(props.amountInput || 0, selectedCurrency, b);
+        if (props.amountInput) {
+            calculateAmountInBaseCurrency(props.amountInput, selectedCurrency);
+        }
     }
 
     const baseAmountString = () => {
-        if (props.baseCurrency !== props.selectedCurrency && amountInBaseCurrency) {
-            return `${round(amountInBaseCurrency)} ${props.baseCurrency}`;
+        if (props.rates.base !== props.selectedCurrency && amountInBaseCurrency) {
+            return `${round(amountInBaseCurrency)} ${props.rates.base}`;
         }
         return undefined;
-    }
-
-    function error () {
-        return props.selectedCurrency !== props.baseCurrency && 
-            amountInBaseCurrency === undefined;
     }
 
     return (
@@ -105,7 +96,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                     onCurrencyChange={handleCurrencyChange} 
                     disabled={props.disabled}/>
             </Grid>
-            { error() && // TODO show error view
+            { error !== undefined && // TODO show error view
             <Card>
                 <CardContent>
                     Error calculating amount in base currency. You need to be connected to Internet to get last currency rates.
