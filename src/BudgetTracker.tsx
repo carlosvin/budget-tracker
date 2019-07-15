@@ -8,6 +8,7 @@ import { BudgetsStore } from './stores/BudgetsStore';
 import { CategoriesStore } from './stores/CategoriesStore';
 import { IconsStore } from './stores/IconsStore';
 import { CurrenciesStore } from './stores/CurrenciesStore';
+import { FirebaseApi } from './api/FirebaseApi';
 
 class BudgetTracker {
 
@@ -16,6 +17,7 @@ class BudgetTracker {
     private _categoriesStore?: CategoriesStore;
     private _iconsStore?: IconsStore;
     private _currenciesStore?: CurrenciesStore;
+    private _firebaseApi?: FirebaseApi;
 
     get storage () {
         if (!this._storage) {
@@ -50,6 +52,13 @@ class BudgetTracker {
             this._currenciesStore = new CurrenciesStore();
         }
         return this._currenciesStore;
+    }
+
+    get firebaseApi () {
+        if (!this._firebaseApi) {
+            this._firebaseApi = new FirebaseApi();
+        }
+        return this._firebaseApi;
     }
 
     render () {

@@ -6,7 +6,6 @@ import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import LoginComponent from './context/Login';
 
 const App: React.FC = () => {
     const [title, setTitle] = React.useState('Budget tracker');
@@ -15,7 +14,6 @@ const App: React.FC = () => {
     return (
         <Router basename='/budget-tracker'>
             <CssBaseline />
-            <LoginComponent>
                 <Header title={title} actions={actions} />
                 <main>
                     <Container maxWidth='lg'>
@@ -26,7 +24,6 @@ const App: React.FC = () => {
                         </Box>
                     </Container>
                 </main>
-            </LoginComponent>
         </Router>);
 }
 

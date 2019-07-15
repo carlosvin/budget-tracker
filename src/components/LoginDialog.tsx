@@ -4,7 +4,8 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { firebaseApi, FirebaseApi } from '../api/FirebaseApi';
+import { FirebaseApi } from '../api/FirebaseApi';
+import { btApp } from '../BudgetTracker';
 
 interface LoginDialogProps {
     open: boolean;
@@ -26,6 +27,6 @@ export const LoginDialog: React.FC<LoginDialogProps> = (props) => {
     return (
         <Dialog aria-labelledby="sign-in-dialog" open={props.open} onClose={props.onClose}>
             <DialogTitle id="sign-in-dialog">Please sign-in</DialogTitle>
-            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebaseApi.auth} />
+            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={btApp.firebaseApi.auth} />
         </Dialog>);
 }

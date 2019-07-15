@@ -1,8 +1,8 @@
 // Import FirebaseAuth and firebase.
 import React from 'react';
 import * as firebase from 'firebase/app';
-import { firebaseApi } from '../api/FirebaseApi';
 import { LoginDialog } from '../components/LoginDialog';
+import { btApp } from '../BudgetTracker';
 
 export const LoginContext = React.createContext({isSignedIn: false});
 
@@ -12,7 +12,7 @@ export default class LoginComponent extends React.Component {
 
     // The component's Local state.
     state = {
-        isSignedIn: firebaseApi.userId !== undefined, // Local signed-in state.
+        isSignedIn: btApp.firebaseApi.userId !== undefined, // Local signed-in state.
     };
 
     // Listen to the Firebase Auth state and set the local state.
@@ -29,7 +29,7 @@ export default class LoginComponent extends React.Component {
 
 
     private handleClose = (e: React.SyntheticEvent) => {
-        // do not close unless user is logged in
+        // TODO review: do not close unless user is logged in
         e.preventDefault(); 
     }
 
@@ -39,6 +39,5 @@ export default class LoginComponent extends React.Component {
             <LoginDialog onClose={this.handleClose} open={this.state.isSignedIn === false}/>
             { this.props.children }
         </LoginContext.Provider>);
-        
     }
 }

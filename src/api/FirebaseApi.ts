@@ -42,5 +42,3 @@ export class FirebaseApi  {
     }
 
 }
-
-export const firebaseApi = new FirebaseApi();
