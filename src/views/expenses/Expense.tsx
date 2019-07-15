@@ -102,7 +102,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 categoryId,
                 currency,
                 countryCode,
-                identifier: identifier + dayNumber,
+                identifier: isAddView ? identifier + dayNumber : identifier,
                 when: timeMs + (DAY_MS * dayNumber),
                 amountBaseCurrency: inputAmountBase,
                 description
