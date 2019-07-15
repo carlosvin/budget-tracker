@@ -4,8 +4,10 @@ import { ListItemProps } from "@material-ui/core/ListItem";
 import { ButtonProps } from "@material-ui/core/Button";
 import { LinkProps } from "@material-ui/core/Link";
 
-export const MyLink = React.forwardRef((props: ListItemProps&ButtonProps&LinkProps, ref: React.LegacyRef<Link>) => (
-    <Link {...props} to={props.href||'#error'} ref={ref} />
-));
+export const MyLink = React.forwardRef(
+    (props: ListItemProps&ButtonProps&LinkProps&{replace?: boolean}, ref: React.LegacyRef<Link>) => (
+        <Link {...props} to={props.href||'#error'} ref={ref} replace={props.replace}/>
+    )
+);
 
 MyLink.displayName = 'MyLink';
