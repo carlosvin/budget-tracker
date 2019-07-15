@@ -22,7 +22,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     const [currency, setCurrency] = React.useState<string>();
     const [amount, setAmount] = React.useState<number>();
-    const [countryCode, setCountryCode] = React.useState<string>('ES');
+    const [countryCode, setCountryCode] = React.useState<string>(countriesStore.currentCountryCode);
     const [dateString, setDateString] = React.useState(getDateString());
     const [identifier, setIdentifier] = React.useState(uuid());
     const [categoryId, setCategoryId] = React.useState();
@@ -60,17 +60,11 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
         async function initAdd () {
             onTitleChange(`Add expense`);
-            const setCurrentCountry = async (currentCountry: string) => {
-                setCountryCode(currentCountry);
-                setCurrency(await btApp.currenciesStore.getFromCountry(currentCountry));
-            }
-            const currentCountry = countriesStore.currentCountryCode;
-            setCurrentCountry(currentCountry);
-
             const currentCountryFetched = await countriesStore.getCurrentCountry();
-            if (currentCountry !== currentCountryFetched) {
-                setCurrentCountry(currentCountryFetched);
+            if (countryCode !== currentCountryFetched) {
+                setCountryCode(currentCountryFetched);
             }
+            setCurrency(await btApp.currenciesStore.getFromCountry(currentCountryFetched));
         }
 
         async function initEdit () {

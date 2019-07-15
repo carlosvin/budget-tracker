@@ -68,9 +68,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     }
 
     const handleCurrencyChange = (selectedCurrency: string) => {
-        if (props.amountInput) {
-            calculateAmountInBaseCurrency(props.amountInput, selectedCurrency);
-        }
+        calculateAmountInBaseCurrency(props.amountInput || 0, selectedCurrency);
     }
 
     const baseAmountString = () => {
