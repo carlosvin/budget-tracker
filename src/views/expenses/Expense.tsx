@@ -3,16 +3,17 @@ import { RouteComponentProps } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import Link from '@material-ui/core/Link';
 import { MyLink } from "../../components/MyLink";
-import { BudgetUrl, getDateString, uuid } from "../../utils";
+import { BudgetUrl, getDateString, uuid, round } from "../../utils";
 import { TextInput } from "../../components/TextInput";
 import { countriesStore } from "../../stores/CountriesStore";
 import { HeaderNotifierProps } from "../../routes";
 import { SaveButtonFab, DeleteButton } from "../../components/buttons";
 import CountryInput from "../../components/CountryInput";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
-import { Category, Categories, CurrencyRates } from "../../interfaces";
+import { Category, Categories, CurrencyRates, Expense } from "../../interfaces";
 import { CategoryFormDialog } from "../../components/CategoryFormDialog";
 import { btApp } from "../../BudgetTracker";
+import { DAY_MS } from "../../BudgetModel";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -31,9 +32,12 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const [identifier, setIdentifier] = React.useState(uuid());
     const [categoryId, setCategoryId] = React.useState();
     const [amountBaseCurrency, setAmountBaseCurrency] = React.useState<number>();
+    const [baseCurrency, setBaseCurrency] = React.useState<string>();
     const [description, setDescription] = React.useState<string>();
 
     const [rates, setRates] = React.useState<CurrencyRates>();
+
+    const [splitInDays, setSplitInDays] = React.useState<number|undefined>();
 
     const {budgetId, expenseId} = props.match.params;
     const {onActions, onTitleChange, history} = props;
@@ -47,6 +51,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         }
         async function initBudget () {
             const b = await btApp.budgetsStore.getBudgetInfo(budgetId);
+            setBaseCurrency(b.currency);
             initRates(b.currency);
             if (isAddView) {
                 setCurrency(b.currency);
@@ -108,29 +113,43 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         // eslint-disable-next-line
     }, [budgetId, expenseId]);
 
-    const handleSubmit = (e: React.SyntheticEvent) => {
+    function createExpense (dayNumber: number, inputAmount: number, inputAmountBase: number, timeMs: number): Expense {
+        if (currency) {
+            return {   
+                amount: inputAmount, 
+                categoryId,
+                currency,
+                countryCode,
+                identifier: identifier + dayNumber,
+                when: timeMs + (DAY_MS * dayNumber),
+                amountBaseCurrency: inputAmountBase,
+                description
+            };
+        }
+        throw new Error(`Invalid expense data: Currency is missing`);
+    }
+
+    const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        if (amount && 
-            categoryId && 
-            currency && 
-            countryCode && 
-            identifier && 
-            dateString && 
-            amountBaseCurrency) {
-                btApp.budgetsStore.setExpense(
-                    budgetId, 
-                    {   amount: amount, 
-                        categoryId: categoryId,
-                        currency: currency,
-                        countryCode: countryCode,
-                        identifier: identifier,
-                        when: new Date(dateString).getTime(),
-                        amountBaseCurrency: amountBaseCurrency,
-                        description: description
-                    });
+        const max = splitInDays || 1;
+        const promises = [];
+        if (amount && amountBaseCurrency) {
+            const inputAmount = amount / max;
+            const inputAmountBase = amountBaseCurrency / max;
+            const timeMs = new Date(dateString).getTime();
+            for (let i=0; i<max; i++) {
+                promises.push(
+                    btApp.budgetsStore.setExpense(
+                        budgetId, 
+                        createExpense(i, inputAmount, inputAmountBase, timeMs))
+                );
+            }
+    
+            await Promise.all(promises);
+    
             props.history.replace(budgetUrl.path);
         } else {
-            throw new Error(`Invalid expense data`);
+            throw new Error('Invalid expense data: Missing amount');
         }
     }
 
@@ -203,6 +222,18 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         setAmountBaseCurrency(amountBaseCurrency);
     }
 
+    const handleSplitInDays = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const days = parseInt(e.target.value);
+        setSplitInDays(days || undefined);
+    }
+
+    function amountPerDay () {
+        if (amountBaseCurrency && baseCurrency && splitInDays && splitInDays > 1) {
+            return `${round(amountBaseCurrency / splitInDays) } ${baseCurrency} per day`;
+        }
+        return undefined;
+    }
+
     return (
         <React.Fragment>
             <CategoryFormDialog 
@@ -239,6 +270,16 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                             label='Description' 
                             value={ description || '' }
                             onChange={ handleDescription } />
+                    </Grid>
+                    <Grid item>
+                        <TextInput 
+                            type='number'
+                            label={'Split in days'}
+                            value={ splitInDays }
+                            helperText={ amountPerDay() }
+                            onChange={ handleSplitInDays }
+                            inputProps={ { min: 1 } }
+                        />
                     </Grid>
                 </Grid>
                 <SaveButtonFab type='submit' color='primary' disabled={error !== undefined}/>
