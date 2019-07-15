@@ -1,8 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import Grid from "@material-ui/core/Grid";
-import Link from '@material-ui/core/Link';
-import { MyLink } from "../../components/MyLink";
 import { BudgetUrl, getDateString, uuid, round } from "../../utils";
 import { TextInput } from "../../components/TextInput";
 import { countriesStore } from "../../stores/CountriesStore";
@@ -10,10 +8,10 @@ import { HeaderNotifierProps } from "../../routes";
 import { SaveButtonFab, DeleteButton } from "../../components/buttons";
 import CountryInput from "../../components/CountryInput";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
-import { Category, Categories, CurrencyRates, Expense } from "../../interfaces";
-import { CategoryFormDialog } from "../../components/CategoryFormDialog";
+import { CurrencyRates, Expense } from "../../interfaces";
 import { btApp } from "../../BudgetTracker";
 import { DAY_MS } from "../../BudgetModel";
+import CategoriesSelect from "../../components/CategoriesSelect";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -21,9 +19,6 @@ interface ExpenseViewProps extends HeaderNotifierProps,
 export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     const [error, setError] = React.useState<string|undefined>();
-    const [categories, setCategories] = React.useState<Categories>({});
-
-    const [addCategoryOpen, setAddCategoryOpen] = React.useState(false);
 
     const [currency, setCurrency] = React.useState<string>();
     const [amount, setAmount] = React.useState<number>();
@@ -57,13 +52,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 setCurrency(b.currency);
             }
         }
-        async function initCategories () {
-            const categories = await btApp.categoriesStore.getCategories();
-            setCategories(categories);
-            if (!categoryId) {
-                setCategoryId(categories[0]);
-            }
-        }
+        
         async function handleDelete () {
             await btApp.budgetsStore.deleteExpense(budgetId, expenseId);
             replace(budgetUrl.path);
@@ -100,7 +89,6 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         
         onActions(<DeleteButton onClick={handleDelete}/>);
         initBudget();
-        initCategories();
         if (isAddView) {
             initAdd();
         } else {
@@ -147,44 +135,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         }
     }
 
-    const CategoryOptions = React.useMemo(
-        () => (Object.entries(categories).map(
-            ([k, v]) => (
-                <option key={`category-option-${k}`} value={v.id}>{v.name}</option>))), 
-        [categories]);
-
-    const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault();
-        setCategoryId(e.target.value);
-    }
-
-    const handleAddCategoryClick = (e: React.SyntheticEvent) => {
-        e.preventDefault();
-        setAddCategoryOpen(true);
-    }
-
-    const handleAddCategoryClose = (category?: Category) => {
-        if (category) {
-            btApp.categoriesStore.setCategory(category);
-            setCategories({...categories, category});
-            setCategoryId(category.id);
-        }
-        setAddCategoryOpen(false);
-    }
-    
-    const CategoryInput = () => (
-        <TextInput
-            label='Category'
-            onChange={handleCategoryChange}
-            value={categoryId}
-            helperText={
-                <Link component={MyLink} onClick={handleAddCategoryClick}>Add category</Link>}
-            select
-            required 
-            SelectProps={{ native: true }} >
-            { CategoryOptions }
-        </TextInput>
-    );
+   
 
     const handleWhen = (e: React.ChangeEvent<HTMLInputElement>) => (
         setDateString(e.target.value)
@@ -230,9 +181,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     return (
         <React.Fragment>
-            <CategoryFormDialog 
-            open={addCategoryOpen} 
-            onClose={handleAddCategoryClose} />
+            
             <form onSubmit={handleSubmit} autoComplete='on'>
                 <Grid container
                     justify='space-between'
@@ -249,7 +198,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                         /> }
                     </Grid>
                     <Grid item >
-                        <CategoryInput />
+                        <CategoriesSelect onCategoryChange={setCategoryId} selectedCategory={categoryId}/>
                     </Grid>
                     <Grid item>
                         <WhenInput />
