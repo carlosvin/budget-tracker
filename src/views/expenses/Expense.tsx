@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import { BudgetUrl, getDateString, uuid, round } from "../../utils";
 import { TextInput } from "../../components/TextInput";
-import { countriesStore } from "../../stores/CountriesStore";
 import { HeaderNotifierProps } from "../../routes";
 import { SaveButtonFab, DeleteButton } from "../../components/buttons";
 import CountryInput from "../../components/CountryInput";
@@ -22,7 +21,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     const [currency, setCurrency] = React.useState<string>();
     const [amount, setAmount] = React.useState<number>();
-    const [countryCode, setCountryCode] = React.useState<string>(countriesStore.currentCountryCode);
+    const [countryCode, setCountryCode] = React.useState<string>(btApp.countriesStore.currentCountryCode);
     const [dateString, setDateString] = React.useState(getDateString());
     const [identifier, setIdentifier] = React.useState(uuid());
     const [categoryId, setCategoryId] = React.useState();
@@ -60,11 +59,15 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
         async function initAdd () {
             onTitleChange(`Add expense`);
-            const currentCountryFetched = await countriesStore.getCurrentCountry();
+            const currentCountryFetched = await btApp.countriesStore.getCurrentCountry();
             if (countryCode !== currentCountryFetched) {
                 setCountryCode(currentCountryFetched);
             }
-            setCurrency(await btApp.currenciesStore.getFromCountry(currentCountryFetched));
+            if (currentCountryFetched) {
+                setCurrency(await btApp.currenciesStore.getFromCountry(currentCountryFetched));
+            } else {
+                throw new Error('Fetched country is null');
+            }
         }
 
         async function initEdit () {

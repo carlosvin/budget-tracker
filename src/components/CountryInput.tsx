@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { countriesStore, CountryEntry } from '../stores/CountriesStore';
+import { CountryEntry } from '../stores/CountriesStore';
 import { TextInput } from './TextInput';
+import { btApp } from '../BudgetTracker';
 
 interface CountryInputProps {
     onCountryChange: (countryCode: string) => void;
@@ -13,7 +14,7 @@ export const CountryInput: React.FC<CountryInputProps> = (props) => {
 
     React.useEffect(() => {
         const initCountries = async () => {
-            const countries = await countriesStore.getCountries();
+            const countries = await btApp.countriesStore.getCountries();
             setCountries(countries);
         }
         initCountries();

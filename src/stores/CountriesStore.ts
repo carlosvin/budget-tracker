@@ -10,7 +10,7 @@ interface CachedCountry {
     timestamp?: number;
 }
 
-class CountriesStore {
+export class CountriesStore {
 
     private _countries: CountryEntry[];
     private readonly geoApi: GeoApi;
@@ -76,7 +76,7 @@ class CountriesStore {
             const countryCode = await this.geoApi.getCurrentCountry();
             if (countryCode) {
                 this.setCurrentCountry(countryCode);
-                return countryCode;
+                return countryCode.toUpperCase();
             }
         } catch (error) {
             console.warn('Fetching current country error: ', error);
@@ -84,5 +84,3 @@ class CountriesStore {
         return this.currentCountry.code || this.DEFAULT_CODE;
     }
 }
-
-export const countriesStore = new CountriesStore();
