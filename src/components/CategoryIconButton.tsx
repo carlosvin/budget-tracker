@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
-import { stringToColorCss } from '../utils';
 import { btApp } from '../BudgetTracker';
 
 interface CategoryIconButtonProp {
@@ -10,10 +9,11 @@ interface CategoryIconButtonProp {
 
 export const CategoryIconButton: React.FC<CategoryIconButtonProp> = (props) => {
     const Icon = btApp.iconsStore.getIcon(props.name);
+    const color = btApp.iconsStore.getColor(props.name);
     return (
         <Button onClick={() => props.onClick(props.name)} variant='outlined'>
             <React.Suspense fallback={props.name}>
-                <Icon style={{color: `${stringToColorCss(props.name)}`}}/>
+                <Icon style={{color: color}}/>
             </React.Suspense>
         </Button>
     );

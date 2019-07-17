@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { Budget, Expense, Category } from "../interfaces";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import {round, stringToColorCss} from '../utils';
+import {round} from '../utils';
 import { LazyIcon } from "../stores/IconsStore";
 import { btApp } from "../BudgetTracker";
 import { Redirect } from 'react-router-dom';
@@ -28,7 +28,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, E
         super(props);
         this.state = {
             categoryIcon: btApp.iconsStore.defaultIcon,
-            categoryColor: stringToColorCss('')
+            categoryColor: '#ccc'
         };
         this.fetchCategory(props.expense.categoryId);
     }
@@ -36,11 +36,10 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, E
     async fetchCategory(categoryId: string){
         const category = await btApp.categoriesStore.getCategory(categoryId);
         if (category) {
-            const icon = btApp.iconsStore.getIcon(category.icon);
             this.setState({
                 category,
-                categoryIcon: icon,
-                categoryColor: stringToColorCss(category.icon),
+                categoryIcon: btApp.iconsStore.getIcon(category.icon),
+                categoryColor: btApp.iconsStore.getColor(category.icon),
             });
         }
     }
@@ -87,7 +86,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, E
     }
 
     get amountBase () {
-        return this.props.expense.amountBaseCurrency && round(this.props.expense.amountBaseCurrency);
+        return round(this.props.expense.amountBaseCurrency);
     }
 
     get amount () {
