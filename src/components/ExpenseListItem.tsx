@@ -9,7 +9,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import {round, stringToColorCss} from '../utils';
 import { LazyIcon } from "../stores/IconsStore";
 import { btApp } from "../BudgetTracker";
-import { Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 interface ExpenseListItemProps {
     budget: Budget;
@@ -20,6 +20,7 @@ interface ExpenseListItemState {
     category?: Category,
     categoryIcon: LazyIcon;
     categoryColor: string;
+    redirect?: string;
 }
 
 export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, ExpenseListItemState> {
@@ -44,13 +45,18 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, E
         }
     }
 
+    private handleClick = () => ( this.setState({...this.state, redirect: this.href }) );
+
     render(){
+        if (this.state.redirect) {
+            return <Redirect to={this.state.redirect} />
+        }
         return (
             <ListItem 
                 divider
                 button 
-                component={Link}
-                to={this.href}>
+                onClick={ this.handleClick }
+                >
                 <ListItemAvatar >
                     <React.Suspense fallback={'icon'}>
                         <this.state.categoryIcon style={{color: this.state.categoryColor}}/>
