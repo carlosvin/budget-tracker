@@ -41,7 +41,6 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, E
                 categoryIcon: icon,
                 categoryColor: stringToColorCss(category.icon),
             });
-    
         }
     }
 
@@ -68,7 +67,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, E
                             alignItems='flex-end' 
                             justify='flex-end'>
                             <Typography variant="body1">
-                                { this.primaryAmount }
+                                { this.amountBase }
                             </Typography>
                             { !this.isBaseCurrency && 
                                 <Typography variant="body2" color="textSecondary">
@@ -79,11 +78,6 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, E
                     </ListItemText>  
                 </ListItemSecondaryAction>
             </ListItem>);
-    }
-
-    get primaryAmount () {
-        // TODO if we always save base amount, we can save this condition
-        return this.isBaseCurrency ? this.props.expense.amount : this.amountBase;
     }
 
     get amountBase () {
