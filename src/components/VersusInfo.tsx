@@ -1,6 +1,7 @@
 import * as React from 'react';
 import LinearProgress from '@material-ui/core/LinearProgress';
-import { Typography, Grid } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 interface VersusInfoProps {
     total: number;

@@ -4,7 +4,7 @@ import { AddButton, SaveButtonFab } from '../../components/buttons';
 import { Category, Categories } from '../../interfaces';
 import CategoryInput from '../../components/CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
-import { Typography } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
 import { btApp } from '../../BudgetTracker';
 
 export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
