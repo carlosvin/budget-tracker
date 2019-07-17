@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { TextInput } from './TextInput';
-import { Link } from '@material-ui/core';
-import { MyLink } from './MyLink';
+import MuiLink from '@material-ui/core/Link';
 import { Categories, Category } from '../interfaces';
 import { btApp } from '../BudgetTracker';
 import { CategoryFormDialog } from './CategoryFormDialog';
@@ -73,7 +72,9 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
                     onChange={handleChange}
                     value={props.selectedCategory}
                     helperText={
-                        <Link component={MyLink} onClick={handleAddCategoryClick}>Add category</Link>}
+                        <MuiLink onClick={handleAddCategoryClick}>
+                            Add category
+                        </MuiLink>}
                     select
                     required 
                     SelectProps={{ native: true }} >

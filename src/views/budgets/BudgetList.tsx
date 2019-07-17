@@ -32,7 +32,7 @@ export default class BudgetList extends React.PureComponent<BudgetListProps, Bud
         this.props.onActions(
             <React.Fragment>
                 <AddButton href={BudgetUrl.add}/>
-                <ImportExportButton href='/import'/>
+                <ImportExportButton to='/import'/>
             </React.Fragment>
         );
         const budgetsIndex = await btApp.budgetsStore.getBudgetsIndex();

@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import { MyLink } from './MyLink';
+import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/Add';
 import SaveIcon from '@material-ui/icons/Save';
@@ -18,7 +18,7 @@ type Color = 'inherit' | 'primary' | 'secondary' | 'default';
 type Type = 'button' | 'submit' | 'reset';
 
 export interface AppButtonProps {
-    href?: string;
+    to?: string;
     icon?: React.ComponentType<SvgIconProps>;
     text?: string;
     color?: Color;
@@ -40,9 +40,9 @@ class AppButton extends React.PureComponent<AppButtonProps> {
 
     get derivedProps () {
         const props = {
-            component: this.props.href ? MyLink : undefined,
+            component: this.props.to ? Link : undefined,
         };
-        if (this.props.onClick && this.props.href) {
+        if (this.props.onClick && this.props.to) {
             console.warn('Button should not have both onClick and href properties');
         }
         return props;
@@ -68,7 +68,7 @@ export const SaveButtonFab = (props: ButtonFabProps) => (
     </ButtonFab>);
 
 export const AddButton = (props: {href: string}) => (
-    <Fab component={MyLink} aria-label='Add' href={props.href} className='fabR' color='primary' >
+    <Fab component={Link} aria-label='Add' to={props.href} className='fabR' color='primary' >
         <AddIcon />
     </Fab>);
 
@@ -89,7 +89,7 @@ export const SaveButton = (props: AppButtonProps) => (
 );
 
 export const TextButton = (props: AppButtonProps) => (
-    <AppButton href={props.href} variant='text' aria-label={props.text} {...props} />
+    <AppButton to={props.to} variant='text' aria-label={props.text} {...props} />
 );
 
 export const DownloadButton = (props: AppButtonProps) => (

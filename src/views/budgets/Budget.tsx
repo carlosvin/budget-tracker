@@ -74,7 +74,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
     componentDidMount(){
         this.props.onActions(
             <React.Fragment>
-                <EditButton href={this.url.pathEdit}/>
+                <EditButton to={this.url.pathEdit}/>
                 <DownloadButton onClick={this.handleExport}/>
                 <DeleteButton onClick={this.handleDeleteRequest}/>
             </React.Fragment>

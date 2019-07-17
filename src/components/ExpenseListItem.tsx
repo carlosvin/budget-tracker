@@ -5,11 +5,11 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { Budget, Expense, Category } from "../interfaces";
-import { MyLink } from "./MyLink";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import {round, stringToColorCss} from '../utils';
 import { LazyIcon } from "../stores/IconsStore";
 import { btApp } from "../BudgetTracker";
+import { Link } from 'react-router-dom';
 
 interface ExpenseListItemProps {
     budget: Budget;
@@ -49,8 +49,8 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, E
             <ListItem 
                 divider
                 button 
-                component={MyLink}
-                href={this.href}>
+                component={Link}
+                to={this.href}>
                 <ListItemAvatar >
                     <React.Suspense fallback={'icon'}>
                         <this.state.categoryIcon style={{color: this.state.categoryColor}}/>

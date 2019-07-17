@@ -5,7 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import { MyLink } from "./MyLink";
+import { Link } from 'react-router-dom';
 
 export const AppMenu: React.FC<{href: string, name: string}[]> = (props) => {
 
@@ -31,8 +31,8 @@ export const AppMenu: React.FC<{href: string, name: string}[]> = (props) => {
                         e => <MenuItem 
                             onClick={handleClose}
                             key={`menu-item-${e.name}`} 
-                            component={MyLink} 
-                            href={e.href}>
+                            component={Link} 
+                            to={e.href}>
                                 {e.name}
                             </MenuItem>
 )}

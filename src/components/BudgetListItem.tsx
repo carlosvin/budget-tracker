@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
 import { Budget } from "../interfaces";
 import { dateDiff } from "../utils";
-import { MyLink } from "./MyLink";
+import { Link } from 'react-router-dom';
 
 
 export class BudgetListItem extends React.PureComponent<Budget> {
@@ -13,8 +13,8 @@ export class BudgetListItem extends React.PureComponent<Budget> {
         return <ListItem
             button
             divider
-            component={MyLink}
-            href={`/budgets/${this.props.identifier}`}>
+            component={Link}
+            to={`/budgets/${this.props.identifier}`}>
             <ListItemText
                 primary={this.props.name}
                 secondary={
