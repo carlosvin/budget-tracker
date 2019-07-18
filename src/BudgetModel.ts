@@ -1,4 +1,4 @@
-import { Budget, Expense, Categories, CurrencyRates } from "./interfaces";
+import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesGroups } from "./interfaces";
 import { dateDiff } from "./utils";
 import { CurrenciesStore } from "./stores/CurrenciesStore";
 
@@ -7,14 +7,14 @@ export const DAY_MS = 24 * 3600 * 1000;
 export class BudgetModel {
 
     private readonly _info: Budget;
-    private readonly _expenses: {[identifier: string]: Expense};
-    private _expenseGroups?: {[group: string]: { [identifier: string]: Expense }} ;
+    private readonly _expenses: ExpensesMap;
+    private _expenseGroups?: ExpensesGroups;
 
     private _totalExpenses?: number;
     private _days?: number;
     private _totalDays?: number;
 
-    constructor(info: Budget, expenses: {[identifier: string]: Expense}) {
+    constructor(info: Budget, expenses: ExpensesMap) {
         this._info = info;
         this._expenses = {};
         for (const k in expenses) {

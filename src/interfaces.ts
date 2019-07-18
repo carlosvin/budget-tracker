@@ -50,3 +50,7 @@ export interface Category {
 export interface Categories {
     [key: string]: Category;
 }
+
+export interface ExpensesGroups {
+    [group: string]: ExpensesMap
+}
