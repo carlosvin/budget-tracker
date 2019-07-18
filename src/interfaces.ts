@@ -51,6 +51,14 @@ export interface Categories {
     [key: string]: Category;
 }
 
-export interface ExpensesGroups {
-    [group: string]: ExpensesMap
+export interface ExpensesYearMap {
+    [year: number]: ExpensesMonthMap
+}
+
+export interface ExpensesMonthMap {
+    [month: number]: ExpensesDayMap
+}
+
+export interface ExpensesDayMap {
+    [day: number]:ExpensesMap
 }

@@ -2,6 +2,11 @@ import * as React from 'react';
 import { TextInput } from './TextInput';
 import { btApp } from '../BudgetTracker';
 
+// TODO var formatter = new Intl.NumberFormat('de-DE', { 
+  //style: 'currency', 
+  //currency: 'EUR' 
+//});
+
 export interface CurrencyInputProps  {
     onCurrencyChange: (selected: string) => void;
     selectedCurrency?: string;

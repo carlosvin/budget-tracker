@@ -1,6 +1,5 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { ExpenseList } from "../expenses/ExpenseList";
 import { BudgetUrl } from "../../utils";
 import { EditButton, DeleteButton, AddButton, DownloadButton } from "../../components/buttons";
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -10,6 +9,7 @@ import { BudgetModel } from "../../BudgetModel";
 import { BudgetQuickStats } from "../../components/BudgetQuickStats";
 import { YesNoDialog } from "../../components/YesNoDialog";
 import { btApp } from "../../BudgetTracker";
+import { ExpensesCalendar } from "../../components/ExpensesCalendar";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -100,11 +100,8 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                                 totalBudget={budgetModel.info.total}
                                 totalSpent={this.state.totalSpent || 0}
                                 /> 
-                            { budgetModel.expensesGroupedByDate && 
-                            <ExpenseList 
-                                expensesByDate={budgetModel.expensesGroupedByDate} 
-                                budget={budgetModel.info}
-                                expectedDailyAvg={budgetModel.expectedDailyExpensesAverage} /> }
+                            { budgetModel.expenseGroups && 
+                            <ExpensesCalendar budgetId={budgetModel.identifier} expensesYearMap={budgetModel.expenseGroups} /> }
                         </React.Fragment> 
                     } 
                     { budgetModel.numberOfExpenses === 0 && 

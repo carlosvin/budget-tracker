@@ -9,11 +9,11 @@ export function dateDiff(from: number, to: number) {
     return Math.round((to - from)/(1000*60*60*24));
 }
 
-export const goBack = (history: History) => {
+export const goBack = (history: History, path = '/') => {
     if (history.length > 2) {
         history.goBack();
     } else {
-        history.replace('/');
+        history.replace(path);
     }
 }
 
@@ -104,4 +104,28 @@ export function stringToColor (text: string) {
 export function stringToColorCss (text: string) {
     const rgb = stringToColor(text);
     return `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+}
+
+export function desc (a: number, b: number) { 
+    return b - a; 
+}
+
+// TODO group all date functions in a class or module
+export function monthToString (date: Date) {
+    const dt = new Intl.DateTimeFormat(undefined, {month: 'long'});
+    return dt.format(date);
+}
+
+export function isToday(date: Date) {
+    return isTodayYMD(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate());
+}
+
+export function isTodayYMD(year: number, month: number, day: number) {
+    const now = new Date();
+    return day === now.getDate() && 
+        month === now.getMonth() && 
+        year === now.getFullYear();
 }

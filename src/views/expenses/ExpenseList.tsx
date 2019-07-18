@@ -2,20 +2,20 @@ import * as React from "react";
 import List from '@material-ui/core/List';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import { Expense, Budget, ExpensesGroups } from "../../interfaces";
+import { Expense, Budget, ExpensesYearMap } from "../../interfaces";
 import { ExpenseListItem } from "../../components/ExpenseListItem";
 import './ExpenseList.css';
 import Grid from "@material-ui/core/Grid";
 
 interface ExpenseListProps {
     budget: Budget;
-    expensesByDate: ExpensesGroups;
+    expensesByDate: ExpensesYearMap;
     expectedDailyAvg: number;
 }
 
 interface ListGroupProps {
     budget: Budget;
-    date: string;
+    date: Date;
     expenses: Expense[];
     expectedDailyAvg: number;
 }
@@ -36,7 +36,7 @@ const SubHeader: React.FC<ListGroupProps> = (props) => {
         <ListSubheader id={`date-${date}`}>
             <Grid container direction='row' justify='space-between' >
                 <Grid item>
-                    {new Date(parseInt(date)).toDateString()}
+                    {date.toDateString()}
                 </Grid>
                 <Grid item className={color}>
                     {sum}
@@ -56,7 +56,7 @@ function getAmount(expense: Expense, baseCurrency: string) {
     throw new Error('There is no amount in base currency');
 }
 
-const ListGroup: React.FC<ListGroupProps&{expectedDailyAvg:number}> = (props) => (
+export const ExpensesListGroup: React.FC<ListGroupProps&{expectedDailyAvg:number}> = (props) => (
     <React.Fragment>
         <SubHeader {...props}/>
         {
@@ -78,9 +78,9 @@ export class ExpenseList extends React.PureComponent<ExpenseListProps> {
                 <List disablePadding className='expenseListRoot'>
                     {Object.entries(this.props.expensesByDate)
                         .map(([date, expenses]) => 
-                            <ListGroup 
+                            <ExpensesListGroup 
                                 key={`lg-${date}`} 
-                                date={date} 
+                                date={new Date(parseInt(date))} 
                                 budget={this.props.budget}
                                 expenses={Object.values(expenses)}
                                 expectedDailyAvg={this.props.expectedDailyAvg}/>)}

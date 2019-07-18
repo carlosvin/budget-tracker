@@ -77,6 +77,14 @@ export class BudgetsStore {
         return budgetModel.expenses;
     }
 
+    async getExpensesByDay(budgetId: string, y: number, m: number, d: number) {
+        const budgetModel = await this.getBudgetModel(budgetId);
+        if (budgetModel.expenseGroups) {
+            return budgetModel.expenseGroups[y][m][d];
+        }
+        throw new Error('No expenses found');
+    }
+
     async setExpense(budgetId: string, expense: Expense){
         const model = await this.getBudgetModel(budgetId);
         model.setExpense(expense);

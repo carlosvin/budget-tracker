@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import Grid from "@material-ui/core/Grid";
-import { BudgetUrl, getDateString, uuid, round } from "../../utils";
+import { BudgetUrl, getDateString, uuid, round, goBack } from "../../utils";
 import { TextInput } from "../../components/TextInput";
 import { HeaderNotifierProps } from "../../routes";
 import { SaveButtonFab, DeleteButton } from "../../components/buttons";
@@ -131,8 +131,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 await btApp.budgetsStore.setExpense(
                         budgetId,
                         expense);
-            }    
-            props.history.replace(budgetUrl.expensePath(firstExpenseId));
+            }
+            goBack(props.history, budgetUrl.expensePath(firstExpenseId));
         } else {
             throw new Error('Invalid expense data: Missing amount');
         }

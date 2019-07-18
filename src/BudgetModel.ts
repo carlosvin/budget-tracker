@@ -1,14 +1,41 @@
-import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesGroups } from "./interfaces";
+import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMap } from "./interfaces";
 import { dateDiff } from "./utils";
 import { CurrenciesStore } from "./stores/CurrenciesStore";
 
 export const DAY_MS = 24 * 3600 * 1000;
 
+export class ExpenseModel {
+
+    readonly date: Date;
+
+    constructor (info: Expense) {
+        this.date = new Date(info.when);
+    }
+
+    get day () {
+        return this.date.getDate();
+    }
+
+    get month () {
+        return this.date.getMonth();
+    }
+
+    get year () {
+        return this.date.getFullYear();
+    }
+
+    static sum(expenses: Iterable<Expense>){
+        return Object.values(expenses)
+            .map(e => e.amountBaseCurrency)
+            .reduce((a, b) => a + b);
+    }
+}
+
 export class BudgetModel {
 
     private readonly _info: Budget;
     private readonly _expenses: ExpensesMap;
-    private _expenseGroups?: ExpensesGroups;
+    private _expenseGroups?: ExpensesYearMap;
 
     private _totalExpenses?: number;
     private _days?: number;
@@ -47,15 +74,6 @@ export class BudgetModel {
 
     get expenses () {
         return this._expenses;
-    }
-
-    static getGroup (expense: Expense) {
-        const dateTime = new Date(expense.when);
-        const date = new Date(
-            dateTime.getFullYear(), 
-            dateTime.getMonth(), 
-            dateTime.getDate());
-        return date.getTime();
     }
 
     async getTotalExpenses(): Promise<number> {
@@ -155,49 +173,41 @@ export class BudgetModel {
         return false;
     }
 
+    get expenseGroups () {
+        if (!this._expenseGroups) {
+            Object.values(this.expenses).forEach(e => this._addToGroup(e, true));
+        }
+        return this._expenseGroups;
+    }
+
     private _addToGroup (expense: Expense, sort = false) {
+        if (this._expenseGroups === undefined) {
+            this._expenseGroups = {};
+        }
         if (this._expenseGroups !== undefined) {
-            const group = BudgetModel.getGroup(expense);
-            if (!(group in this._expenseGroups)) {
-                this._expenseGroups[group] = {};
-                if (sort) {
-                    this._sortExpenseByGroup();
-                }
+            const model = new ExpenseModel(expense);
+            const {year, month, day} = model;
+            if (!(year in this._expenseGroups)) {
+                this._expenseGroups[year] = {};
             }
-            this._expenseGroups[group][expense.identifier] = expense;
+            if (!(month in this._expenseGroups[year])) {
+                this._expenseGroups[year][month] = {};
+            }
+            if (!(day in this._expenseGroups[year][month])) {
+                this._expenseGroups[year][month][day] = {};
+            }
+            this._expenseGroups[year][month][day][expense.identifier] = expense;
         }
     }
 
     private _removeFromGroup (expense: Expense) {
         if (this._expenseGroups !== undefined) {
-            const group = BudgetModel.getGroup(expense);
-            if (this._expenseGroups && group in this._expenseGroups) {
-                delete this._expenseGroups[group][expense.identifier];
-                if (Object.keys(this._expenseGroups[group]).length === 0) {
-                    delete this._expenseGroups[group];
-                }
-            }    
-        }
-    }
-
-    get expensesGroupedByDate () {
-        if (this._expenseGroups === undefined) {
-            this._expenseGroups = {};
-            Object.values(this._expenses).forEach(e => this._addToGroup(e));
-            this._sortExpenseByGroup();
-        }
-        return this._expenseGroups;
-    }
-
-    private _sortExpenseByGroup () {
-        if (this._expenseGroups) {
-            // TODO maybe we can use a sorted structure, so we don't have to sort it later
-            const sorted: {[group: number]: { [expenseId: string]: Expense }} = {};
-            Object.keys(this._expenseGroups)
-                .map(k => parseInt(k))
-                .sort((a, b)=> (b - a))
-                .forEach(k => (sorted[k] = (this._expenseGroups && this._expenseGroups[k]) || {}));
-            this._expenseGroups = sorted;
+            const {year, month, day} = new ExpenseModel(expense);
+            try {
+                delete this._expenseGroups[year][month][day][expense.identifier];
+            } catch (error) {
+                console.warn('Expense is not found in groups: ', expense);
+            }
         }
     }
 
