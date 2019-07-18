@@ -48,7 +48,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, E
 
     render(){
         if (this.state.redirect) {
-            return <Redirect to={this.state.redirect} />
+            return <Redirect push to={this.state.redirect} />
         }
         return (
             <ListItem 
