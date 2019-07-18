@@ -19,7 +19,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     const [error, setError] = React.useState<string|undefined>();
 
-    const [currency, setCurrency] = React.useState<string>();
+    const [currency, setCurrency] = React.useState<string|undefined>(
+        btApp.currenciesStore.lastCurrencyUsed);
     const [amount, setAmount] = React.useState<number>();
     const [countryCode, setCountryCode] = React.useState<string>(btApp.countriesStore.currentCountryCode);
     const [dateString, setDateString] = React.useState(getDateString());

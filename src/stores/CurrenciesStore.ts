@@ -5,6 +5,7 @@ import { dateDiff } from "../utils";
 export class CurrenciesStore {
     static readonly KEY = 'currencyRates';
     static readonly KEY_TS = 'currencyTimestamps';
+    static readonly KEY_LAST = 'lastCurrency';
     // TODO make this configurable
     static readonly MAX_DAYS = 2;
     
@@ -13,6 +14,7 @@ export class CurrenciesStore {
     private _rates: { [currency: string]: CurrencyRates };
     private _timestamps: { [currency: string]: number };
     private _countriesCurrencyMap?: {[country: string]: string};
+    private _lastCurrencyUsed?: string;
 
     constructor() {
         this._areCurrenciesInitialized = false;
@@ -167,6 +169,24 @@ export class CurrenciesStore {
             const cs = await import('./countryCurrency.json');
             this._countriesCurrencyMap = cs.default;    
         }
-        return this._countriesCurrencyMap[countryCode];
+        const currency = this._countriesCurrencyMap[countryCode];
+        if (currency) {
+            this.setLastCurrencyUsed(currency);
+        }
+        return currency;
+    }
+
+    get lastCurrencyUsed () {
+        if (!this._lastCurrencyUsed) {
+            this._lastCurrencyUsed =  localStorage.getItem(CurrenciesStore.KEY_LAST) || undefined;
+        }
+        return this._lastCurrencyUsed;
+    }
+
+    private setLastCurrencyUsed (currency: string) {
+        if (this._lastCurrencyUsed !== currency) {
+            this._lastCurrencyUsed = currency;
+            localStorage.setItem(CurrenciesStore.KEY_LAST, currency);
+        }
     }
 }

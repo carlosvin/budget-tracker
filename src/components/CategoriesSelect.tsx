@@ -70,7 +70,7 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
                 <TextInput
                     label='Category'
                     onChange={handleChange}
-                    value={props.selectedCategory}
+                    value={selectedCategory}
                     helperText={
                         <MuiLink onClick={handleAddCategoryClick}>
                             Add category
