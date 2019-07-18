@@ -55,6 +55,7 @@ export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, E
                 divider
                 button 
                 onClick={ this.handleClick }
+                id={this.props.expense.identifier}
                 >
                 <ListItemAvatar >
                     <React.Suspense fallback={'icon'}>

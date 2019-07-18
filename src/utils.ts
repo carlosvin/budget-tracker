@@ -47,17 +47,17 @@ export class BudgetUrl {
     static get import () {
         return `${this.base}/import`;
     }
+
+    expensePath(expenseId?: string) {
+        return `${this.path}#${expenseId}`;
+    }
 }
 
 export class ExpenseUrl {
-    private readonly budgetUrl: BudgetUrl;
-    private readonly timestamp: number;
     readonly path: string;
 
-    constructor(budgetId: string, timestamp: number) {
-        this.budgetUrl = new BudgetUrl(budgetId);
-        this.timestamp = timestamp;
-        this.path = `${this.budgetUrl.path}/expenses/${this.timestamp}`;
+    constructor(budgetId: string, expenseId: number) {
+        this.path = `${new BudgetUrl(budgetId).path}/expenses/${expenseId}`;
     }
 }
 

@@ -121,19 +121,22 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             const inputAmount = amount / max;
             const inputAmountBase = amountBaseCurrency / max;
             const timeMs = new Date(dateString).getTime();
+            let firstExpenseId = undefined;
             for (let i=0; i < max; i++) {
+                const expense = createExpense(i, inputAmount, inputAmountBase, timeMs);
+                if (!firstExpenseId) {
+                    firstExpenseId = expense.identifier;
+                }
                 await btApp.budgetsStore.setExpense(
-                        budgetId, 
-                        createExpense(i, inputAmount, inputAmountBase, timeMs))
+                        budgetId,
+                        expense);
             }    
-            props.history.replace(budgetUrl.path);
+            props.history.replace(budgetUrl.expensePath(firstExpenseId));
         } else {
             throw new Error('Invalid expense data: Missing amount');
         }
     }
-
-   
-
+    
     const handleWhen = (e: React.ChangeEvent<HTMLInputElement>) => (
         setDateString(e.target.value)
     );
