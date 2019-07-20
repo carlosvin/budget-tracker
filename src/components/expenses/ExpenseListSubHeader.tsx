@@ -2,11 +2,12 @@ import * as React from "react";
 import ListSubheader from '@material-ui/core/ListSubheader';
 import './ExpenseListSubHeader.css';
 import Grid from "@material-ui/core/Grid";
+import { round } from "../../utils";
 
 interface ExpenseListSubHeaderProps {
     totalSpent: number;
     expectedDailyAvg: number;
-    date: Date;
+    date?: Date;
 }
 
 export const ExpenseListSubHeader: React.FC<ExpenseListSubHeaderProps> = (props) => {
@@ -18,10 +19,10 @@ export const ExpenseListSubHeader: React.FC<ExpenseListSubHeaderProps> = (props)
         <ListSubheader id={`date-${date}`}>
             <Grid container direction='row' justify='space-between' >
                 <Grid item>
-                    {date.toDateString()}
+                    {date && date.toDateString()}
                 </Grid>
                 <Grid item className={color}>
-                    {totalSpent}
+                    Total {round(totalSpent, 0)}
                 </Grid>
             </Grid>
         </ListSubheader>);

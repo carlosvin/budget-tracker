@@ -1,12 +1,12 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { BudgetUrl } from "../../utils";
-import { AddButton } from "../../components/buttons";
-import { Expense, Budget } from "../../interfaces";
+import { Budget, ExpensesDayMap } from "../../interfaces";
 import { btApp } from "../../BudgetTracker";
-import { ExpensesListGroup } from "../../components/expenses/ExpenseListGroup";
+import { ExpenseList } from "../../components/expenses/ExpenseList";
+import { HeaderNotifierProps } from "../../routes";
 
 interface ExpensesViewProps extends
+    HeaderNotifierProps,
     RouteComponentProps<{budgetId: string, year: string, month: string, day: string}> { 
 }
 
@@ -23,9 +23,9 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     const year = getParamInt('year', params) || 0;
     const month = getParamInt('month', params) || 0;
     const day = getParamInt('day', params)|| 0;
-    const budgetUrl = new BudgetUrl(budgetId);
+    props.onTitleChange(new Date(year, month, day).toDateString());
 
-    const [expenses, setExpenses] = React.useState<Expense[]>();
+    const [expenses, setExpenses] = React.useState<ExpensesDayMap>();
     const [budget, setBudget] = React.useState<Budget>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState();
     
@@ -35,7 +35,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
             const expenseGroups = bm.expenseGroups;
             if (expenseGroups) {
                 const expensesMap = expenseGroups[year][month][day];    
-                setExpenses(Object.values(expensesMap));
+                setExpenses({[day]: expensesMap});
                 setExpectedDailyAvg(bm.expectedDailyExpensesAverage);
             }
         }
@@ -44,23 +44,17 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
             const b = await btApp.budgetsStore.getBudgetInfo(budgetId);
             setBudget(b);
         }
-
         fetchExpenses();
         initBudget();
-
     }, [year, month, day, budgetId]);
 
     if (expenses && expectedDailyAvg && budget) {
         // show link to parent budget
         return (
-            <React.Fragment>
-                <ExpensesListGroup
-                    budget={budget}
-                    date={new Date(year, month, day)}
-                    expenses={expenses} 
-                    expectedDailyAvg={expectedDailyAvg}  />
-                <AddButton href={budgetUrl.pathAddExpense}/>
-            </React.Fragment>
+            <ExpenseList 
+                budget={budget}
+                expensesByDay={expenses} 
+                expectedDailyAvg={expectedDailyAvg}  />
         );
     }
     return <p>Loading...</p>;

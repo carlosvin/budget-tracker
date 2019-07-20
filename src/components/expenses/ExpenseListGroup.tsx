@@ -6,7 +6,7 @@ import { ExpenseModel } from "../../BudgetModel";
 
 interface ExpensesListGroupProps {
     budget: Budget;
-    date: Date;
+    date?: Date;
     expenses: Expense[];
     expectedDailyAvg: number;
 }
