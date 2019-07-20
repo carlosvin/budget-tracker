@@ -2,7 +2,7 @@ import * as React from "react";
 import List from '@material-ui/core/List';
 import { RouteComponentProps } from "react-router";
 import { Budget } from "../../interfaces";
-import { BudgetListItem } from "../../components/BudgetListItem";
+import { BudgetListItem } from "../../components/budgets/BudgetListItem";
 import { AddButton, ImportExportButton } from "../../components/buttons";
 import { BudgetUrl } from "../../utils";
 import { HeaderNotifierProps } from "../../routes";

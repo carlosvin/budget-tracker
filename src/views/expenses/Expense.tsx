@@ -10,7 +10,7 @@ import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
 import { CurrencyRates, Expense } from "../../interfaces";
 import { btApp } from "../../BudgetTracker";
 import { DAY_MS } from "../../BudgetModel";
-import CategoriesSelect from "../../components/CategoriesSelect";
+import CategoriesSelect from "../../components/categories/CategoriesSelect";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }

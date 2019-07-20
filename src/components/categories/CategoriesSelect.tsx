@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { TextInput } from './TextInput';
+import { TextInput } from '../TextInput';
 import MuiLink from '@material-ui/core/Link';
-import { Categories, Category } from '../interfaces';
-import { btApp } from '../BudgetTracker';
+import { Categories, Category } from '../../interfaces';
+import { btApp } from '../../BudgetTracker';
 import { CategoryFormDialog } from './CategoryFormDialog';
 
 interface CategoriesSelectProps {

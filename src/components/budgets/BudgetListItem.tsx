@@ -3,8 +3,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
-import { Budget } from "../interfaces";
-import { dateDiff } from "../utils";
+import { Budget } from "../../interfaces";
+import { dateDiff } from "../../utils";
 import { Link } from 'react-router-dom';
 
 

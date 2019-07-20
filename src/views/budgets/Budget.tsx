@@ -6,10 +6,10 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { HeaderNotifierProps } from "../../routes";
 import Typography from "@material-ui/core/Typography";
 import { BudgetModel } from "../../BudgetModel";
-import { BudgetQuickStats } from "../../components/BudgetQuickStats";
+import { BudgetQuickStats } from "../../components/budgets/BudgetQuickStats";
 import { YesNoDialog } from "../../components/YesNoDialog";
 import { btApp } from "../../BudgetTracker";
-import { ExpensesCalendar } from "../../components/ExpensesCalendar";
+import { ExpensesCalendar } from "../../components/expenses/ExpensesCalendar";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 

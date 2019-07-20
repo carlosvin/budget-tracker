@@ -1,7 +1,7 @@
 import * as React from 'react';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
-import { VersusInfo } from './VersusInfo';
+import { VersusInfo } from '../VersusInfo';
 
 interface BudgetQuickStatsProps {
     totalBudget: number,

@@ -4,11 +4,11 @@ import ListItem from '@material-ui/core/ListItem';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import { Budget, Expense, Category } from "../interfaces";
+import { Budget, Expense, Category } from "../../interfaces";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import {round} from '../utils';
-import { LazyIcon } from "../stores/IconsStore";
-import { btApp } from "../BudgetTracker";
+import {round} from '../../utils';
+import { LazyIcon } from "../../stores/IconsStore";
+import { btApp } from "../../BudgetTracker";
 import { Redirect } from 'react-router-dom';
 
 interface ExpenseListItemProps {

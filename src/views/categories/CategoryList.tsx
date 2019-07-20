@@ -2,7 +2,7 @@ import * as React from 'react';
 import { RouterProps } from 'react-router';
 import { AddButton, SaveButtonFab } from '../../components/buttons';
 import { Category, Categories } from '../../interfaces';
-import CategoryInput from '../../components/CategoryInput';
+import CategoryInput from '../../components/categories/CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
 import Typography from '@material-ui/core/Typography';
 import { btApp } from '../../BudgetTracker';

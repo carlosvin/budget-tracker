@@ -3,7 +3,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
-import { CategoryIconButton } from '../../components/CategoryIconButton';
+import { CategoryIconButton } from '../../components/categories/CategoryIconButton';
 import { btApp } from '../../BudgetTracker';
 
 interface CategoryIconSelectorProps {
