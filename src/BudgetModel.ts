@@ -52,6 +52,7 @@ export class BudgetModel {
     private _setExpense(expense: Expense){
         BudgetModel.validateExpense(expense);
         this._expenses[expense.identifier] = expense;
+        this._addToGroup(expense);
     }
 
     static validateExpense (expense: Expense) {
@@ -125,7 +126,7 @@ export class BudgetModel {
         } else {
             this._updateTotalExpenses(expense);
         }
-        this._addToGroup(expense, true);
+        this._addToGroup(expense);
         this._expenses[expense.identifier] = expense;
     }
 
@@ -175,12 +176,15 @@ export class BudgetModel {
 
     get expenseGroups () {
         if (!this._expenseGroups) {
-            Object.values(this.expenses).forEach(e => this._addToGroup(e, true));
+            Object.values(this.expenses).forEach(e => this._addToGroup(e));
+            if (!this._expenseGroups) {
+                this._expenseGroups = {};
+            }
         }
         return this._expenseGroups;
     }
 
-    private _addToGroup (expense: Expense, sort = false) {
+    private _addToGroup (expense: Expense) {
         if (this._expenseGroups === undefined) {
             this._expenseGroups = {};
         }
