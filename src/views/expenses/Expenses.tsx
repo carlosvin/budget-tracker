@@ -4,7 +4,7 @@ import { BudgetUrl } from "../../utils";
 import { AddButton } from "../../components/buttons";
 import { Expense, Budget } from "../../interfaces";
 import { btApp } from "../../BudgetTracker";
-import { ExpensesListGroup } from "./ExpenseList";
+import { ExpensesListGroup } from "../../components/expenses/ExpenseListGroup";
 
 interface ExpensesViewProps extends
     RouteComponentProps<{budgetId: string, year: string, month: string, day: string}> { 
@@ -54,7 +54,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
         // show link to parent budget
         return (
             <React.Fragment>
-                <ExpensesListGroup 
+                <ExpensesListGroup
                     budget={budget}
                     date={new Date(year, month, day)}
                     expenses={expenses} 
