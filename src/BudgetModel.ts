@@ -31,13 +31,6 @@ export class ExpenseModel {
     }
 }
 
-interface TotalMap {
-    total: number,
-    [year: number]: {
-        
-    }
-}
-
 export class BudgetModel {
 
     private readonly _info: Budget;

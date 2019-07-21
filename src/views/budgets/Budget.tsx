@@ -101,7 +101,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                                 totalSpent={this.state.totalSpent || 0}
                                 /> 
                             { budgetModel.expenseGroups && 
-                            <ExpensesCalendar budgetId={budgetModel.identifier} expensesYearMap={budgetModel.expenseGroups} /> }
+                            <ExpensesCalendar budgetId={budgetModel.identifier} expensesYearMap={budgetModel.expenseGroups} expectedDailyExpenses={budgetModel.expectedDailyExpensesAverage} /> }
                         </React.Fragment> 
                     } 
                     { budgetModel.numberOfExpenses === 0 && 

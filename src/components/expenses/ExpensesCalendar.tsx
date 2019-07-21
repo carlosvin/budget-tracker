@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 interface ExpensesCalendarProps {
     expensesYearMap: ExpensesYearMap;
     budgetId: string;
+    expectedDailyExpenses: number;
 }
 
 export const ExpensesCalendar: React.FC<ExpensesCalendarProps> = (props) => {
@@ -23,6 +24,7 @@ export const ExpensesCalendar: React.FC<ExpensesCalendarProps> = (props) => {
                 .map(year => (
                     <div key={`cal-year-${year}`}>
                         <ExpensesMonth 
+                            expectedDailyExpenses={props.expectedDailyExpenses}
                             budgetId={props.budgetId}
                             expensesMonthMap={props.expensesYearMap[year]}
                             year={year} />
@@ -37,6 +39,7 @@ interface ExpensesMonthProps {
     expensesMonthMap: ExpensesMonthMap;
     year: number;
     budgetId: string;
+    expectedDailyExpenses: number;
 }
 
 const ExpensesMonth: React.FC<ExpensesMonthProps> = (props) => {
@@ -51,6 +54,7 @@ const ExpensesMonth: React.FC<ExpensesMonthProps> = (props) => {
                 <React.Fragment key={`expenses-month-${year}-${month}`}>
                     <Month month={month} year={year}/>
                     <ExpensesDay 
+                        expectedDailyExpenses={props.expectedDailyExpenses}
                         budgetId={props.budgetId}
                         year={year}
                         month={month}
@@ -66,6 +70,7 @@ interface ExpensesDayProps {
     month: number;
     year: number;
     budgetId: string;
+    expectedDailyExpenses: number;
 }
 
 const ExpensesDay: React.FC<ExpensesDayProps> = (props) => {
@@ -77,6 +82,7 @@ const ExpensesDay: React.FC<ExpensesDayProps> = (props) => {
             .map(
                 ([day, expenses]) => (
                     <Day 
+                        expected={props.expectedDailyExpenses}
                         budgetId={props.budgetId}
                         isToday={isTodayYMD(year, month, parseInt(day))}
                         day={parseInt(day)} 
@@ -100,14 +106,14 @@ const Month: React.FC<{month: number, year: number}> = (props) => (
     </Grid>
 );
 
-const Day: React.FC<{year: number, month: number, day: number, total: number, isToday?: boolean, budgetId: string}> = (props) => (
+const Day: React.FC<{year: number, month: number, day: number, total: number, expected: number, isToday?: boolean, budgetId: string}> = (props) => (
     <Button 
         variant={props.isToday ? 'outlined' : 'text'} 
         component={Link} 
         to={`/budgets/${props.budgetId}/expenses?year=${props.year}&month=${props.month}&day=${props.day}`}>
         <Box p={1}>
             <Typography color='textPrimary'>{props.day}</Typography>
-            <Typography variant='caption' color='textSecondary'>{props.total}</Typography>
+            <Typography variant='caption' color={props.total > props.expected ? 'error' : 'textSecondary'}>{props.total}</Typography>
         </Box>
     </Button>
 );
