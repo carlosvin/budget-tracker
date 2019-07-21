@@ -1,4 +1,5 @@
 import { History } from "history";
+import { YMD } from "./interfaces";
 
 /**
  * Get difference between 2 dates in days
@@ -24,16 +25,21 @@ export function timestampToDate(timestamp: number) {
 export class BudgetUrl {
 
     readonly path: string;
-    readonly pathEdit: string;
-    readonly pathAddExpense: string;
-
-    private readonly budgetId: string;
 
     constructor(budgetId: string) {
-        this.budgetId = budgetId;
-        this.path = `${BudgetUrl.base}/${this.budgetId}`;
-        this.pathEdit= `${this.path}/edit`;
-        this.pathAddExpense = `${this.path}/expenses/add`;
+        this.path = `${BudgetUrl.base}/${budgetId}`;
+    }
+
+    get pathEdit () {
+        return `${this.path}/edit`;   
+    }
+
+    get pathExpenses () {
+        return `${this.path}/expenses`;   
+    }
+
+    get pathAddExpense () {
+        return `${this.path}/expenses/add`;   
     }
 
     static get base () {
@@ -48,8 +54,9 @@ export class BudgetUrl {
         return `${this.base}/import`;
     }
 
-    expensePath(expenseId?: string) {
-        return `${this.path}#${expenseId}`;
+    pathExpensesByDay(date: YMD){
+        const {year, month, day} = date;
+        return `${this.pathExpenses}?year=${year}&month=${month}&day=${day}`
     }
 }
 
@@ -116,16 +123,21 @@ export function monthToString (date: Date) {
     return dt.format(date);
 }
 
-export function isToday(date: Date) {
-    return isTodayYMD(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate());
+export function convertToYMD(date: Date) {
+    return {
+        year: date.getFullYear(),
+        month: date.getMonth(),
+        day: date.getDate()
+    };
 }
 
-export function isTodayYMD(year: number, month: number, day: number) {
+export function isToday(date: Date) {
+    return isTodayYMD(convertToYMD(date));
+}
+
+export function isTodayYMD(date: YMD) {
     const now = new Date();
-    return day === now.getDate() && 
-        month === now.getMonth() && 
-        year === now.getFullYear();
+    return date.day === now.getDate() && 
+        date.month === now.getMonth() && 
+        date.year === now.getFullYear();
 }

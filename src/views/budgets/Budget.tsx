@@ -10,6 +10,7 @@ import { BudgetQuickStats } from "../../components/budgets/BudgetQuickStats";
 import { YesNoDialog } from "../../components/YesNoDialog";
 import { btApp } from "../../BudgetTracker";
 import { ExpensesCalendar } from "../../components/expenses/ExpensesCalendar";
+import { YMD } from "../../interfaces";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -59,6 +60,10 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         }
     }
 
+    private handleSelectedDay = (date: YMD) => {
+        this.props.history.push(this.url.pathExpensesByDay(date));
+    }
+
     private handleDelete = async (deletionConfirmed: boolean) => {
         if (this.state.budgetModel) {
             this.setState({...this.state, showConfirmDialog: false});
@@ -101,7 +106,11 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                                 totalSpent={this.state.totalSpent || 0}
                                 /> 
                             { budgetModel.expenseGroups && 
-                            <ExpensesCalendar budgetId={budgetModel.identifier} expensesYearMap={budgetModel.expenseGroups} expectedDailyExpenses={budgetModel.expectedDailyExpensesAverage} /> }
+                            <ExpensesCalendar 
+                                budgetId={budgetModel.identifier} 
+                                expensesYearMap={budgetModel.expenseGroups} 
+                                expectedDailyExpenses={budgetModel.expectedDailyExpensesAverage}
+                                onDaySelected={this.handleSelectedDay} /> }
                         </React.Fragment> 
                     } 
                     { budgetModel.numberOfExpenses === 0 && 

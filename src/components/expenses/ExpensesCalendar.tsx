@@ -1,17 +1,17 @@
 import * as React from "react";
-import { ExpensesYearMap, ExpensesMonthMap, ExpensesDayMap } from "../../interfaces";
+import { ExpensesYearMap, ExpensesMonthMap, ExpensesDayMap, YMD } from "../../interfaces";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import { monthToString, round, isTodayYMD, desc } from "../../utils";
 import { ExpenseModel } from "../../BudgetModel";
-import { Link } from "react-router-dom";
 
 interface ExpensesCalendarProps {
     expensesYearMap: ExpensesYearMap;
     budgetId: string;
     expectedDailyExpenses: number;
+    onDaySelected: (day: YMD) => void;
 }
 
 export const ExpensesCalendar: React.FC<ExpensesCalendarProps> = (props) => {
@@ -24,6 +24,7 @@ export const ExpensesCalendar: React.FC<ExpensesCalendarProps> = (props) => {
                 .map(year => (
                     <div key={`cal-year-${year}`}>
                         <ExpensesMonth 
+                            onDaySelected={props.onDaySelected}
                             expectedDailyExpenses={props.expectedDailyExpenses}
                             budgetId={props.budgetId}
                             expensesMonthMap={props.expensesYearMap[year]}
@@ -40,6 +41,7 @@ interface ExpensesMonthProps {
     year: number;
     budgetId: string;
     expectedDailyExpenses: number;
+    onDaySelected: (day: YMD) => void;
 }
 
 const ExpensesMonth: React.FC<ExpensesMonthProps> = (props) => {
@@ -54,6 +56,7 @@ const ExpensesMonth: React.FC<ExpensesMonthProps> = (props) => {
                 <React.Fragment key={`expenses-month-${year}-${month}`}>
                     <Month month={month} year={year}/>
                     <ExpensesDay 
+                        onDaySelected={props.onDaySelected}
                         expectedDailyExpenses={props.expectedDailyExpenses}
                         budgetId={props.budgetId}
                         year={year}
@@ -71,6 +74,7 @@ interface ExpensesDayProps {
     year: number;
     budgetId: string;
     expectedDailyExpenses: number;
+    onDaySelected: (day: YMD) => void;
 }
 
 const ExpensesDay: React.FC<ExpensesDayProps> = (props) => {
@@ -79,13 +83,14 @@ const ExpensesDay: React.FC<ExpensesDayProps> = (props) => {
     return <Grid container justify='flex-start' alignContent='center'>
     {
         Object.entries(expensesDayMap)
-            .map(
-                ([day, expenses]) => (
+            .map(([day, expenses]) => ([parseInt(day), expenses]))
+            .map(([day, expenses]) => (
                     <Day 
+                        onDaySelected={props.onDaySelected}
                         expected={props.expectedDailyExpenses}
                         budgetId={props.budgetId}
-                        isToday={isTodayYMD(year, month, parseInt(day))}
-                        day={parseInt(day)} 
+                        isToday={isTodayYMD({year, month, day})}
+                        day={day} 
                         month={month}
                         year={year}
                         total={round(ExpenseModel.sum(expenses), 0)} 
@@ -106,14 +111,27 @@ const Month: React.FC<{month: number, year: number}> = (props) => (
     </Grid>
 );
 
-const Day: React.FC<{year: number, month: number, day: number, total: number, expected: number, isToday?: boolean, budgetId: string}> = (props) => (
-    <Button 
+
+interface DayProps extends YMD {
+    total: number; 
+    expected: number; 
+    isToday?: boolean; 
+    budgetId: string;
+    onDaySelected: (day: YMD) => void;
+};
+
+const Day: React.FC<DayProps> = (props) => {
+    
+    function handleDaySelected () {
+        props.onDaySelected(props);
+    }
+
+    return <Button 
         variant={props.isToday ? 'outlined' : 'text'} 
-        component={Link} 
-        to={`/budgets/${props.budgetId}/expenses?year=${props.year}&month=${props.month}&day=${props.day}`}>
+        onClick={handleDaySelected} >
         <Box p={1}>
             <Typography color='textPrimary'>{props.day}</Typography>
             <Typography variant='caption' color={props.total > props.expected ? 'error' : 'textSecondary'}>{props.total}</Typography>
         </Box>
-    </Button>
-);
+    </Button>;
+}
