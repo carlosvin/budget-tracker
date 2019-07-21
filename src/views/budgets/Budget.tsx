@@ -107,9 +107,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                                 /> 
                             { budgetModel.expenseGroups && 
                             <ExpensesCalendar 
-                                budgetId={budgetModel.identifier} 
-                                expensesYearMap={budgetModel.expenseGroups} 
-                                expectedDailyExpenses={budgetModel.expectedDailyExpensesAverage}
+                                budgetModel={budgetModel} 
                                 onDaySelected={this.handleSelectedDay} /> }
                         </React.Fragment> 
                     } 

@@ -117,8 +117,17 @@ export class BudgetModel {
         }
     }
 
+    // TODO improve performance by saving calculated data
     getTotalExpensesByDay(year: number, month: number, day: number) {
         return ExpenseModel.sum(Object.values(this.expenseGroups[year][month][day]));
+    }
+
+    getTotalExpensesByMonth(year: number, month: number) {
+        let total = 0;
+        for (const day in this.expenseGroups[year][month]) {
+            total += this.getTotalExpensesByDay(year, month, parseInt(day));
+        }
+        return total;
     }
 
     setExpense(expense: Expense) {
@@ -163,6 +172,10 @@ export class BudgetModel {
 
     get expectedDailyExpensesAverage () {
         return Math.round(this._info.total / this.totalDays);
+    }
+
+    get expectedMonthlyExpensesAverage () {
+        return this.expectedDailyExpensesAverage * 30;
     }
 
     deleteExpense (expenseId: string) {

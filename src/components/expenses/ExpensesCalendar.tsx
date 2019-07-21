@@ -1,33 +1,32 @@
 import * as React from "react";
-import { ExpensesYearMap, ExpensesMonthMap, ExpensesDayMap, YMD } from "../../interfaces";
+import { ExpensesMonthMap, ExpensesDayMap, YMD } from "../../interfaces";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import { monthToString, round, isTodayYMD, desc } from "../../utils";
-import { ExpenseModel } from "../../BudgetModel";
+import { ExpenseModel, BudgetModel } from "../../BudgetModel";
 
 interface ExpensesCalendarProps {
-    expensesYearMap: ExpensesYearMap;
-    budgetId: string;
-    expectedDailyExpenses: number;
+    budgetModel: BudgetModel;
     onDaySelected: (day: YMD) => void;
 }
 
 export const ExpensesCalendar: React.FC<ExpensesCalendarProps> = (props) => {
 
+    const {budgetModel} = props;
+
     return <React.Fragment>
         {
-            Object.keys(props.expensesYearMap)
+            Object.keys(budgetModel.expenseGroups)
                 .map(year => parseInt(year))
                 .sort(desc)
                 .map(year => (
                     <div key={`cal-year-${year}`}>
                         <ExpensesMonth 
+                            budgetModel={budgetModel}
                             onDaySelected={props.onDaySelected}
-                            expectedDailyExpenses={props.expectedDailyExpenses}
-                            budgetId={props.budgetId}
-                            expensesMonthMap={props.expensesYearMap[year]}
+                            expensesMonthMap={budgetModel.expenseGroups[year]}
                             year={year} />
                     </div>
                     )
@@ -39,13 +38,12 @@ export const ExpensesCalendar: React.FC<ExpensesCalendarProps> = (props) => {
 interface ExpensesMonthProps {
     expensesMonthMap: ExpensesMonthMap;
     year: number;
-    budgetId: string;
-    expectedDailyExpenses: number;
     onDaySelected: (day: YMD) => void;
+    budgetModel: BudgetModel;
 }
 
 const ExpensesMonth: React.FC<ExpensesMonthProps> = (props) => {
-    const {year, expensesMonthMap} = props;
+    const {year, expensesMonthMap, budgetModel} = props;
 
     return <React.Fragment>
     {
@@ -54,11 +52,16 @@ const ExpensesMonth: React.FC<ExpensesMonthProps> = (props) => {
             .sort(desc)
             .map((month) => (
                 <React.Fragment key={`expenses-month-${year}-${month}`}>
-                    <Month month={month} year={year}/>
+                    <Month 
+                        month={month} 
+                        year={year} 
+                        totalMonthlyExpenses={round(budgetModel
+                            .getTotalExpensesByMonth(year, month), 0)}
+                        expectedMonthlyExpenses={budgetModel.expectedDailyExpensesAverage}/>
                     <ExpensesDay 
                         onDaySelected={props.onDaySelected}
-                        expectedDailyExpenses={props.expectedDailyExpenses}
-                        budgetId={props.budgetId}
+                        expectedDailyExpenses={budgetModel.expectedDailyExpensesAverage}
+                        budgetId={budgetModel.identifier}
                         year={year}
                         month={month}
                         expensesDayMap={props.expensesMonthMap[month]}/>
@@ -101,16 +104,24 @@ const ExpensesDay: React.FC<ExpensesDayProps> = (props) => {
     </Grid>;
 }
 
-// TODO add total in the month
-const Month: React.FC<{month: number, year: number}> = (props) => (
+interface MonthProps {
+    month: number;
+    year: number;
+    expectedMonthlyExpenses: number;
+    totalMonthlyExpenses: number;
+}
+
+const Month: React.FC<MonthProps> = (props) => (
     <Grid container justify='space-between'>
         <Typography variant='h6' color='textPrimary'>
             {monthToString(new Date(2000, props.month, 1))}
+            <Typography variant='overline'> {props.year}</Typography>
         </Typography>
-        <Typography variant='overline'>{props.year}</Typography>
+        <Typography variant='h6' color='textPrimary'>
+            {props.totalMonthlyExpenses}
+        </Typography>
     </Grid>
 );
-
 
 interface DayProps extends YMD {
     total: number; 
