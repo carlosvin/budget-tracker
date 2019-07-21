@@ -25,7 +25,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const [countryCode, setCountryCode] = React.useState<string>(btApp.countriesStore.currentCountryCode);
     const [dateString, setDateString] = React.useState(getDateString());
     const [identifier, setIdentifier] = React.useState(uuid());
-    const [categoryId, setCategoryId] = React.useState();
+    const [categoryId, setCategoryId] = React.useState('');
     const [amountBaseCurrency, setAmountBaseCurrency] = React.useState<number>();
     const [baseCurrency, setBaseCurrency] = React.useState<string>();
     const [description, setDescription] = React.useState<string>();
@@ -40,6 +40,18 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const budgetUrl = new BudgetUrl(budgetId);
     const isAddView = expenseId === undefined;
 
+    React.useLayoutEffect(
+        ()=> {
+            async function handleDelete () {
+                await btApp.budgetsStore.deleteExpense(budgetId, expenseId);
+                replace(budgetUrl.path);
+            }
+            isAddView ? onTitleChange('Add expense'): onTitleChange('Edit expense');
+            onActions(<DeleteButton onClick={handleDelete}/>);
+        },
+    // eslint-disable-next-line
+    []);
+
     React.useEffect(() => {
         async function initRates (baseCurrency: string) {
             setRates(await btApp.currenciesStore.getRates(baseCurrency));
@@ -48,31 +60,29 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             const b = await btApp.budgetsStore.getBudgetInfo(budgetId);
             setBaseCurrency(b.currency);
             initRates(b.currency);
-            if (isAddView) {
+            if (isAddView && !currency) {
                 setCurrency(b.currency);
             }
         }
-        
-        async function handleDelete () {
-            await btApp.budgetsStore.deleteExpense(budgetId, expenseId);
-            replace(budgetUrl.path);
-        }
 
         async function initAdd () {
-            onTitleChange(`Add expense`);
             const currentCountryFetched = await btApp.countriesStore.getCurrentCountry();
             if (countryCode !== currentCountryFetched) {
                 setCountryCode(currentCountryFetched);
             }
             if (currentCountryFetched) {
-                setCurrency(await btApp.currenciesStore.getFromCountry(currentCountryFetched));
+                const fetchedCurrency = await btApp
+                    .currenciesStore
+                    .getFromCountry(currentCountryFetched);
+                if (fetchedCurrency !== currency) {
+                    setCurrency(fetchedCurrency);
+                }
             } else {
                 throw new Error('Fetched country is null');
             }
         }
 
         async function initEdit () {
-            onTitleChange(`Edit expense`);
             const model = await btApp.budgetsStore.getBudgetModel(budgetId);
             const e = model.getExpense(expenseId);
             setAmount(e.amount);
@@ -85,7 +95,6 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             setIdentifier(e.identifier);
         }
         
-        onActions(<DeleteButton onClick={handleDelete}/>);
         initBudget();
         if (isAddView) {
             initAdd();
@@ -99,7 +108,11 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         // eslint-disable-next-line
     }, [budgetId, expenseId]);
 
-    function createExpense (dayNumber: number, inputAmount: number, inputAmountBase: number, timeMs: number): Expense {
+    function createExpense (
+        dayNumber: number, 
+        inputAmount: number, 
+        inputAmountBase: number, 
+        timeMs: number): Expense {
         if (currency) {
             return {   
                 amount: inputAmount, 
