@@ -31,6 +31,13 @@ export class ExpenseModel {
     }
 }
 
+interface TotalMap {
+    total: number,
+    [year: number]: {
+        
+    }
+}
+
 export class BudgetModel {
 
     private readonly _info: Budget;
@@ -115,6 +122,10 @@ export class BudgetModel {
         if (this._totalExpenses !== undefined) {
             this._totalExpenses += amount;
         }
+    }
+
+    getTotalExpensesByDay(year: number, month: number, day: number) {
+        return ExpenseModel.sum(Object.values(this.expenseGroups[year][month][day]));
     }
 
     setExpense(expense: Expense) {

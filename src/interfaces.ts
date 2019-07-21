@@ -62,3 +62,9 @@ export interface ExpensesMonthMap {
 export interface ExpensesDayMap {
     [day: number]:ExpensesMap
 }
+
+export interface YMD {
+    year: number,
+    month: number,
+    day: number
+}

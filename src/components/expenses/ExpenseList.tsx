@@ -11,7 +11,7 @@ interface ExpenseListProps {
 }
 
 export const ExpenseList: React.FC<ExpenseListProps> = (props) => (
-    <List disablePadding className='expenseListRoot'>
+    <List className='expenseListRoot'>
         {Object.values(props.expensesByDay)
             .map((e: ExpensesMap) => Object.values(e))
             .filter((expenses: Expense[]) => expenses && expenses.length > 0)
@@ -21,7 +21,6 @@ export const ExpenseList: React.FC<ExpenseListProps> = (props) => (
             .map(({expenses, date}) => 
                 <ExpensesListGroup
                     key={`lg-${date.getTime()}`} 
-                    // date={ date } 
                     budget={props.budget}
                     expenses={expenses}
                     expectedDailyAvg={props.expectedDailyAvg}/>)}
