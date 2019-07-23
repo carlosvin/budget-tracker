@@ -97,6 +97,9 @@ export class BudgetsStore {
         if (budgetId in this._budgetModels) {
             delete this._budgetModels[budgetId];
         }
+        if (this._budgetsIndex && budgetId in this._budgetsIndex) {
+            delete this._budgetsIndex[budgetId];
+        }
         return this._storage.deleteBudget(budgetId);
     }
 
