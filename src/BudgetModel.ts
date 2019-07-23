@@ -1,6 +1,7 @@
 import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMap } from "./interfaces";
 import { dateDiff } from "./utils";
 import { CurrenciesStore } from "./stores/CurrenciesStore";
+import { NestedTotal } from "./NestedTotal";
 
 export const DAY_MS = 24 * 3600 * 1000;
 
@@ -24,6 +25,10 @@ export class ExpenseModel {
         return this.date.getFullYear();
     }
 
+    get dateParts (): number[] {
+        return [this.year, this.month, this.day];
+    }
+
     static sum(expenses: Iterable<Expense>){
         return Object.values(expenses)
             .map(e => e.amountBaseCurrency)
@@ -37,7 +42,7 @@ export class BudgetModel {
     private readonly _expenses: ExpensesMap;
     private _expenseGroups?: ExpensesYearMap;
 
-    private _totalExpenses?: number;
+    private _nestedTotalExpenses?: NestedTotal;
     private _days?: number;
     private _totalDays?: number;
 
@@ -77,70 +82,44 @@ export class BudgetModel {
         return this._expenses;
     }
 
-    async getTotalExpenses(): Promise<number> {
-        if (this._totalExpenses === undefined) {
-            this._totalExpenses = await this.calculateTotalExpenses();
-        }
-        return this._totalExpenses;
+    get totalExpenses() {
+        return this.nestedTotalExpenses.total;
     }
 
-    private async calculateTotalExpenses () {
-        const now = new Date().getTime();
-        const values = Object.values(this._expenses).filter(e=> e.when <= now);
-        if (values.length > 0) {
-            let total = 0;
-            for (const expense of values) {
-                total = total + expense.amountBaseCurrency;
-            }
-            return total;
+    get nestedTotalExpenses () {
+        if (this._nestedTotalExpenses===undefined) {
+            this._nestedTotalExpenses = new NestedTotal();
+            Object.values(this.expenses).forEach(e => this._addToTotal(e));
         }
-        return 0;
+        return this._nestedTotalExpenses;
+    }
+
+    getTotalExpensesByDay(year: number, month: number, day: number) {
+        return this.nestedTotalExpenses.getSubtotal([year, month, day]);
+    }
+
+    getTotalExpensesByMonth(year: number, month: number) {
+        return this.nestedTotalExpenses.getSubtotal([year, month]);
+    }
+
+    getTotalExpensesByYear(year: number) {
+        return this.nestedTotalExpenses.getSubtotal([year,]);
+    }
+
+    getDays(year: number, month: number): number[]{
+        return Object.keys(this.expenseGroups[year][month])
+            .map(d => parseInt(d));
     }
 
     private _updateTotalExpenses(newExpense: Expense, oldExpense?: Expense) {
         if (oldExpense === undefined || 
             oldExpense.amountBaseCurrency !== newExpense.amountBaseCurrency || 
             oldExpense.when !== newExpense.when) {
-            const now = new Date().getTime();
-            if (oldExpense && oldExpense.when <= now) {
-                this._sumToTotalExpenses(-oldExpense.amountBaseCurrency);
+            if (oldExpense) {
+                this._subtractTotal(oldExpense);
             }
-            if (newExpense.when <= now) {
-                this._sumToTotalExpenses(newExpense.amountBaseCurrency);
-            }
+            this._addToTotal(newExpense);
         }
-    }
-
-    private _sumToTotalExpenses (amount: number) {
-        if (this._totalExpenses !== undefined) {
-            this._totalExpenses += amount;
-        }
-    }
-
-    // TODO improve performance by saving calculated data
-    getTotalExpensesByDay(year: number, month: number, day: number) {
-        return ExpenseModel.sum(Object.values(this.expenseGroups[year][month][day]));
-    }
-
-    getTotalExpensesByMonth(year: number, month: number) {
-        let total = 0;
-        for (const day in this.expenseGroups[year][month]) {
-            total += this.getTotalExpensesByDay(year, month, parseInt(day));
-        }
-        return total;
-    }
-
-    getTotalExpensesByYear(year: number) {
-        let total = 0;
-        for (const month in this.expenseGroups[year]) {
-            total += this.getTotalExpensesByMonth(year, parseInt(month));
-        }
-        return total;
-    }
-
-    getDays(year: number, month: number): number[]{
-        return Object.keys(this.expenseGroups[year][month])
-            .map(d => parseInt(d));
     }
 
     get years(): number[]{
@@ -179,10 +158,9 @@ export class BudgetModel {
         return this._totalDays;
     }
 
-    async getAverage () {
-        const totalExpenses = await this.getTotalExpenses();
-        if (this.days > 0 && totalExpenses > 0) {
-            return Math.round(totalExpenses / this.days);
+    get average () {
+        if (this.days > 0 && this.totalExpenses > 0) {
+            return Math.round(this.totalExpenses / this.days);
         } else {
             return 0;
         }
@@ -199,8 +177,8 @@ export class BudgetModel {
     deleteExpense (expenseId: string) {
         if (expenseId in this._expenses) {
             const expense = this._expenses[expenseId];
-            if (this._totalExpenses && expense.when <= new Date().getTime()) {
-                this._totalExpenses -= expense.amountBaseCurrency;
+            if (this._nestedTotalExpenses && expense.when <= new Date().getTime()) {
+                this._subtractTotal(expense);
             }
             this._removeFromGroup(expense);
             delete this._expenses[expenseId];
@@ -251,6 +229,7 @@ export class BudgetModel {
     }
 
     private _updateExpensesBaseAmount(rates: CurrencyRates) {
+        const newTotals = new NestedTotal();
         for (const k in this._expenses) {
             if (rates.base === this._expenses[k].currency) {
                 this._expenses[k].amountBaseCurrency = this._expenses[k].amount; 
@@ -263,8 +242,32 @@ export class BudgetModel {
                 this._expenses[k].amountBaseCurrency = CurrenciesStore.convert(
                     this._expenses[k].amount, rate);
             }
+            BudgetModel._addToTotal(this.expenses[k], newTotals);
         }
-        this._totalExpenses = undefined;
+
+        this._nestedTotalExpenses = newTotals;
+    }
+
+    private static _addToTotal(expense: Expense, totals: NestedTotal) {
+        const em = new ExpenseModel(expense);
+        totals.add(expense.amountBaseCurrency, em.dateParts);
+    }
+
+    private static _subtractTotal(expense: Expense, totals: NestedTotal) {
+        const em = new ExpenseModel(expense);
+        totals.subtract(expense.amountBaseCurrency, em.dateParts);
+    }
+
+    private _addToTotal(expense: Expense) {
+        if (expense.when <= this.info.to && expense.when >= this.info.from) {
+            BudgetModel._addToTotal(expense, this.nestedTotalExpenses);
+        }
+    }
+
+    private _subtractTotal(expense: Expense) {
+        if (expense.when <= this.info.to && expense.when >= this.info.from) {
+            BudgetModel._subtractTotal(expense, this.nestedTotalExpenses); 
+        }
     }
 
     async setBudget(info: Budget, rates?: CurrencyRates) {

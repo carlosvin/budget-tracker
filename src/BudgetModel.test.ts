@@ -28,12 +28,12 @@ function createExpense (id: string) {
 
 it('Budget model creation without expenses', async () => {
     const bm = new BudgetModel(createBudget('EUR', 30, 1000), {});
-    expect(await bm.getTotalExpenses()).toBe(0);
+    expect(bm.totalExpenses).toBe(0);
     expect(bm.expectedDailyExpensesAverage).toBe(33);
     expect(bm.expenseGroups).toStrictEqual({});
-    expect(await bm.getAverage()).toBe(0);
+    expect(await bm.average).toBe(0);
     expect(bm.getExpense('whatever')).toBe(undefined);
-    expect(await bm.getTotalExpenses()).toBe(0);
+    expect(await bm.totalExpenses).toBe(0);
     expect(bm.numberOfExpenses).toBe(0);
     expect(bm.days).toBe(1);
     expect(bm.totalDays).toBe(30);
@@ -44,7 +44,7 @@ it('Budget model creation, no expenses, add them later', async () => {
     const budget = createBudget('EUR', 30, 1000);
     const bm = new BudgetModel(budget, {});
     const expenseDate1 = new Date(budget.from);
-    const expenseDate2 = new Date(new Date().getTime() + DAY_MS);
+    const expenseDate2 = new Date(budget.to);
     const expense1: Expense = {
         amount: 100,
         amountBaseCurrency: 98,
@@ -71,7 +71,9 @@ it('Budget model creation, no expenses, add them later', async () => {
             [expenseDate1.getMonth()]: { 
                 [expenseDate1.getDate()]: {
                     [expense1.identifier]: expense1
-                },
+                }
+            },
+            [expenseDate2.getMonth()]: { 
                 [expenseDate2.getDate()]: {
                     [expense2.identifier]: expense2
                 } 
@@ -81,13 +83,13 @@ it('Budget model creation, no expenses, add them later', async () => {
 
     expect(bm.expenseGroups).toStrictEqual(expectedGroups);
 
-    expect(await bm.getTotalExpenses()).toBe(98);
+    expect(bm.totalExpenses).toBe(100);
     expect(bm.expectedDailyExpensesAverage).toBe(33);
 
-    expect(await bm.getAverage()).toBe(98);
+    expect(bm.average).toBe(100);
     expect(bm.getExpense(expense1.identifier)).toBe(expense1);
     expect(bm.getExpense(expense2.identifier)).toBe(expense2);
-    expect(await bm.getTotalExpenses()).toBe(98);
+    expect(bm.totalExpenses).toBe(100);
     expect(bm.numberOfExpenses).toBe(2);
     expect(bm.days).toBe(1);
     expect(bm.totalDays).toBe(30);
@@ -95,15 +97,15 @@ it('Budget model creation, no expenses, add them later', async () => {
     const expense2Updated = {...expense2, when: new Date().getTime()};
     // change the date of the expense2 so it is added to calculations
     bm.setExpense(expense2Updated);
-    expect(await bm.getAverage()).toBe(100);
-    expect(await bm.getTotalExpenses()).toBe(100);
+    expect(bm.average).toBe(100);
+    expect(bm.totalExpenses).toBe(100);
 
     // Modify budget dates to check that average is recalculated
     bm.setBudget({...budget, from: budget.from - DAY_MS, to: budget.to + DAY_MS});
     expect(bm.days).toBe(2);
     expect(bm.totalDays).toBe(32);
-    expect(await bm.getAverage()).toBe(50);
-    expect(await bm.getTotalExpenses()).toBe(100);
+    expect(bm.average).toBe(50);
+    expect(bm.totalExpenses).toBe(100);
     expect(bm.getExpense('1')).toBe(expense1);
     expect(bm.getExpense('2')).toBe(expense2Updated);
 
@@ -113,7 +115,9 @@ it('Budget model creation, no expenses, add them later', async () => {
                 [expenseDate1.getDate()]: {
                     [expense1.identifier]: expense1,
                     [expense2Updated.identifier]: expense2Updated
-                },
+                }
+            },
+            [expenseDate2.getMonth()]: {
                 [expenseDate2.getDate()]: {}
             }
         }
@@ -123,9 +127,10 @@ it('Budget model creation, no expenses, add them later', async () => {
 });
 
 it('Remove expense', async () => {
+    const budget = createBudget('EUR', 30, 1000);
     const expense1 = createExpense('1');
     const expense2 = {...expense1, identifier: '2'};
-    const expense3 = {...expense1, identifier: '3', when: new Date().getTime() + DAY_MS * 3};
+    const expense3 = {...expense1, identifier: '3', when: budget.to + DAY_MS * 3};
     const expense4 = {...expense1, identifier: '4', amountBaseCurrency: 55};
     const bm = new BudgetModel(
         createBudget('EUR', 30, 1000), 
@@ -135,19 +140,19 @@ it('Remove expense', async () => {
             '3': expense3,
             '4': expense4,
         });
-    expect(await bm.getTotalExpenses()).toBe(
+    expect(bm.totalExpenses).toBe(
         expense1.amountBaseCurrency + 
         expense2.amountBaseCurrency + 
         expense4.amountBaseCurrency);
 
     expect(bm.deleteExpense('6')).toBe(false);
     expect(bm.deleteExpense('2')).toBe(true);
-    expect(await bm.getTotalExpenses()).toBe(
+    expect(bm.totalExpenses).toBe(
         expense1.amountBaseCurrency + 
         expense4.amountBaseCurrency);
     
     expect(bm.deleteExpense('3')).toBe(true);
-    expect(await bm.getTotalExpenses()).toBe(
+    expect(bm.totalExpenses).toBe(
         expense1.amountBaseCurrency + 
         expense4.amountBaseCurrency);
 });
@@ -168,7 +173,7 @@ it('Modify expense amount', async () => {
         amountBaseCurrency: 10
     };
     bm.setExpense(modifiedExpense2);
-    expect(await bm.getTotalExpenses()).toBe(
+    expect(bm.totalExpenses).toBe(
         expense1.amountBaseCurrency + 
         modifiedExpense2.amountBaseCurrency);
     expect(bm.getExpense('2').amountBaseCurrency)
@@ -199,7 +204,8 @@ it('Modify expense amount', async () => {
         when: new Date().getTime() + DAY_MS * 10
     };
     bm.setExpense(modifiedExpense2Date);
-    expect(await bm.getTotalExpenses()).toBe(expense1.amountBaseCurrency);
+    expect(bm.totalExpenses).toBe(
+        expense1.amountBaseCurrency + modifiedExpense2Date.amountBaseCurrency);
     expect(bm.getExpense('2').amountBaseCurrency)
         .toBe(modifiedExpense2Date.amountBaseCurrency);
 
@@ -242,7 +248,7 @@ it('Check groups are created properly when model is initialized from constructor
         amount: 2,
         amountBaseCurrency: 2,
         currency: 'EUR',
-        when: (expense1.when + (DAY_MS * 2)),
+        when: (budget.to + (DAY_MS * 2)),
         identifier: '2',
     };
     const bm = new BudgetModel(
@@ -259,18 +265,21 @@ it('Check groups are created properly when model is initialized from constructor
     };
 
     const dateE2 = getYMD(expense2);
-    expenseGroups[dateE2.y][dateE2.m][dateE2.d] = {
-        [expense2.identifier]: expense2};
+    expenseGroups[dateE2.y][dateE2.m] = {
+        [dateE2.d]: {
+            [expense2.identifier]: expense2
+        }
+    };
 
     expect(bm.expenseGroups).toStrictEqual(expenseGroups);
 
-    expect(await bm.getTotalExpenses()).toBe(98);
+    expect(bm.totalExpenses).toBe(98);
     expect(bm.expectedDailyExpensesAverage).toBe(33);
 
-    expect(await bm.getAverage()).toBe(98);
+    expect(bm.average).toBe(98);
     expect(bm.getExpense(expense1.identifier)).toBe(expense1);
     expect(bm.getExpense(expense2.identifier)).toBe(expense2);
-    expect(await bm.getTotalExpenses()).toBe(98);
+    expect(bm.totalExpenses).toBe(98);
     expect(bm.numberOfExpenses).toBe(2);
     expect(bm.days).toBe(1);
     expect(bm.totalDays).toBe(30);
@@ -309,10 +318,10 @@ it('Modify budget base currency ', async () => {
         rates: { 'EUR': 0.8, 'BTH': 35 },
         date: new Date()
     };
-    expect(await bm.getTotalExpenses()).toBe(21);
+    expect(bm.totalExpenses).toBe(21);
 
     await bm.setBudget({...info, currency: 'USD'}, rates);
-    expect(await bm.getTotalExpenses()).toBe(23.25);
+    expect(bm.totalExpenses).toBe(23.25);
 });
 
 

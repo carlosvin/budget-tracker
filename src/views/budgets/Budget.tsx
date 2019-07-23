@@ -41,8 +41,8 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
         });
         this.setState({
             ...this.state,
-            totalSpent: await budgetModel.getTotalExpenses(),
-            dailyAverage: await budgetModel.getAverage(),
+            totalSpent: budgetModel.totalExpenses,
+            dailyAverage: budgetModel.average,
         });
     }
 

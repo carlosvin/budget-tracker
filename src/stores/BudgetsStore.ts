@@ -66,9 +66,11 @@ export class BudgetsStore {
             if (budgetInfo.currency !== budget.currency) {
                 rates = await this._currenciesStore.getRates(budget.currency);
             }
-            this.setBudgetInfo(budget); 
             this._budgetModels[budget.identifier].setBudget(budget, rates);
+        } else {
+            this._budgetModels[budget.identifier] = new BudgetModel(budget, {});
         }
+        this.setBudgetInfo(budget); 
         return this._storage.saveBudget(budget);
     }
 
