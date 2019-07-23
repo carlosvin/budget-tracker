@@ -30,7 +30,13 @@ export class LocalStorage implements StorageApi {
     }
 
     async saveBudget(budget: Budget) {
-        const budgets = await this.getBudgets();
+
+        let budgets: BudgetsMap;
+        try {
+            budgets = await this.getBudgets();
+        } catch (error) {
+            budgets = {};
+        }
         budgets[budget.identifier] = budget;
         this.saveBudgets(budgets);
     }
