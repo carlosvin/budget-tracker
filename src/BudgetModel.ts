@@ -130,6 +130,24 @@ export class BudgetModel {
         return total;
     }
 
+    getTotalExpensesByYear(year: number) {
+        let total = 0;
+        for (const month in this.expenseGroups[year]) {
+            total += this.getTotalExpensesByMonth(year, parseInt(month));
+        }
+        return total;
+    }
+
+    getDays(year: number, month: number): number[]{
+        return Object.keys(this.expenseGroups[year][month])
+            .map(d => parseInt(d));
+    }
+
+    get years(): number[]{
+        return Object.keys(this.expenseGroups)
+            .map(d => parseInt(d));
+    }
+
     setExpense(expense: Expense) {
         BudgetModel.validateExpense(expense);
         if (expense.identifier in this._expenses) {

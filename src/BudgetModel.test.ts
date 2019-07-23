@@ -211,9 +211,10 @@ it('Modify expense amount', async () => {
     const expense2ModifiedDate2 = new Date(modifiedExpense2Date.when);
     expenseGroups
         [expense2ModifiedDate2.getFullYear()]
-        [expense2ModifiedDate2.getMonth()]
-        [expense2ModifiedDate2.getDate()] = {
-            [modifiedExpense2Date.identifier]: modifiedExpense2Date
+        [expense2ModifiedDate2.getMonth()] = {
+            [expense2ModifiedDate2.getDate()]: {
+                [modifiedExpense2Date.identifier]: modifiedExpense2Date
+            }
         };
         
     expect(bm.expenseGroups).toStrictEqual(expenseGroups);
