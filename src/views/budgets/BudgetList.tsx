@@ -12,66 +12,49 @@ import { btApp } from "../../BudgetTracker";
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
 
-interface BudgetListState {
-    budgets: Budget[];
-    loading: boolean;
-}
+export const BudgetList: React.FC<BudgetListProps> = (props) => {
 
-export default class BudgetList extends React.PureComponent<BudgetListProps, BudgetListState> {
+    const [budgets, setBudgets] = React.useState<Budget[]>();
 
-    constructor(props: BudgetListProps){
-        super(props);
-        this.state = {
-            budgets: [], 
-            loading: true
-        };
-    }
-
-    async componentDidMount(){
-        this.props.onTitleChange('Budget list');
-        this.props.onActions(
+    React.useEffect(() => {
+        props.onTitleChange('Budget list');
+        props.onActions(
             <React.Fragment>
                 <AddButton href={BudgetUrl.add}/>
                 <ImportExportButton to='/import'/>
             </React.Fragment>
         );
-        const budgetsIndex = await btApp.budgetsStore.getBudgetsIndex();
+    // eslint-disable-next-line
+    }, []);
 
-        this.setState({ 
-            budgets: Object.values(budgetsIndex),
-            loading: false
-        });
-    }
+    React.useEffect(
+        () => {
+            async function fetchBudgets() {
+                const index = await btApp.budgetsStore.getBudgetsIndex();
+                setBudgets(Object.values(index));
+            }
+            fetchBudgets();
+        },
+        [budgets]
+    );
 
-    componentWillUnmount(){
-        this.props.onActions([]);
+    if (budgets === undefined) {
+        return null;
     }
-    
-    render() {
-        if (this.state.loading) {
-            return null;
-        }
-        if (this.hasBudgets) {
-            return (
-                <List>
-                    {this.elements}
-                </List>);
-        } else {
-            return <Card>
-                <CardContent>
-                    There are no budgets, please add one.
-                </CardContent>
-            </Card>;
-        }
-    }
-
-    get hasBudgets(){
-        return this.state.budgets.length > 0;
-    }
-
-    get elements() {
-        return this.state.budgets 
-            && this.state.budgets.map(
-                budget => <BudgetListItem key={budget.identifier} {...budget} />);
+    if (budgets.length > 0) {
+        return (
+            <List>{
+                budgets
+                    .map(budget => <BudgetListItem key={budget.identifier} {...budget} />)
+            }
+            </List>);
+    } else {
+        return <Card>
+            <CardContent>
+                There are no budgets, please add one.
+            </CardContent>
+        </Card>;
     }
 }
+
+export default BudgetList;
