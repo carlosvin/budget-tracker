@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Category } from '../../interfaces';
 import { uuid } from '../../utils';
 import CategoryInput from './CategoryInput';
-import { SaveButtonFab } from '../buttons';
+import { SaveButtonFab } from '../buttons/SaveButton';
 
 interface CategoryFormProps {
     onSubmit: (category: Category) => void,

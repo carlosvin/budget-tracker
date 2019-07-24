@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { BudgetUrl } from "../../utils";
-import { EditButton, DeleteButton, AddButton, DownloadButton } from "../../components/buttons";
+import { AppButton } from "../../components/buttons/buttons";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { HeaderNotifierProps } from "../../routes";
 import Typography from "@material-ui/core/Typography";
@@ -11,6 +11,10 @@ import { YesNoDialog } from "../../components/YesNoDialog";
 import { btApp } from "../../BudgetTracker";
 import { ExpensesCalendar } from "../../components/expenses/ExpensesCalendar";
 import { YMD } from "../../interfaces";
+import DownloadIcon from '@material-ui/icons/SaveAlt';
+import EditIcon from '@material-ui/icons/Edit';
+import { DeleteButton } from "../../components/buttons/DeleteButton";
+import { AddButton } from "../../components/buttons/AddButton";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -79,8 +83,8 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
     componentDidMount(){
         this.props.onActions(
             <React.Fragment>
-                <EditButton to={this.url.pathEdit}/>
-                <DownloadButton onClick={this.handleExport}/>
+                <AppButton icon={EditIcon} aria-label='Edit budget' to={this.url.pathEdit}/>
+                <AppButton icon={DownloadIcon} aria-label='Download' onClick={this.handleExport}/>
                 <DeleteButton onClick={this.handleDeleteRequest}/>
             </React.Fragment>
         );
@@ -113,7 +117,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                     } 
                     { budgetModel.numberOfExpenses === 0 && 
                         <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
-                    <AddButton href={this.url.pathAddExpense}/>
+                    <AddButton href={this.url.pathAddExpense} />
                     <YesNoDialog 
                         open={this.state.showConfirmDialog} 
                         onClose={this.handleDelete}

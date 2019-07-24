@@ -5,9 +5,9 @@ import { btApp } from "../../BudgetTracker";
 import { ExpenseList } from "../../components/expenses/ExpenseList";
 import { HeaderNotifierProps } from "../../routes";
 import { VersusInfo } from "../../components/VersusInfo";
-import { AddButton } from "../../components/buttons";
 import { BudgetUrl } from "../../utils";
 import Box from "@material-ui/core/Box";
+import { AddButton } from "../../components/buttons/AddButton";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,

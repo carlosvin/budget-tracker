@@ -6,7 +6,7 @@ import { uuid } from '../../utils';
 import CategoryIconButton from './CategoryIconButton';
 import CategoryIconSelector from '../../views/categories/CategoryIconSelector';
 import { Category } from '../../interfaces';
-import { DeleteButton } from '../buttons';
+import { DeleteButton } from '../buttons/DeleteButton';
 
 interface CategoryInputProps extends Category {
     direction?: GridDirection;

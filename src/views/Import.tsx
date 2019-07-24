@@ -1,12 +1,12 @@
 import * as React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { HeaderNotifierProps } from '../routes';
-import { SaveButton } from '../components/buttons';
 import { FilesApi } from '../api/FileApi';
 import { Expense, Budget, Categories } from '../interfaces';
 import { TextInput } from '../components/TextInput';
 import { RouterProps } from 'react-router';
 import { btApp } from '../BudgetTracker';
+import { SaveButton } from '../components/buttons/SaveButton';
 
 const Import = (props: HeaderNotifierProps&RouterProps) => {
 

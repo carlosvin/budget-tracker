@@ -2,11 +2,11 @@
 import * as React from 'react';
 import { Budget } from '../../interfaces';
 import { TextInput } from '../TextInput';
-import { SaveButtonFab } from '../buttons';
 import { DAY_MS } from '../../BudgetModel';
 import { getDateString, uuid } from '../../utils';
 import { AmountInput } from '../AmountInput';
 import { CurrencyInput } from '../CurrencyInput';
+import { SaveButtonFab } from '../buttons/SaveButton';
 
 interface BudgetFormProps {
     budget?: Budget;
