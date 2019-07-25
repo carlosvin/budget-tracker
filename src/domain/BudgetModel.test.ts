@@ -27,7 +27,7 @@ function createExpense (id: string) {
     };
 }
 
-describe('Budget Model Creation', async () => {
+describe('Budget Model Creation', () => {
 
     it('Budget model creation without expenses', async () => {
         const bm = new BudgetModel(createBudget('EUR', 30, 1000), {});
@@ -129,7 +129,7 @@ describe('Budget Model Creation', async () => {
     });
 });
 
-describe('Expense operations', async () => {
+describe('Expense operations', () => {
     it('Remove expense', async () => {
         const budget = createBudget('EUR', 30, 1000);
         const expense1 = createExpense('1');
@@ -257,7 +257,7 @@ describe('Expense operations', async () => {
     
 });
 
-describe('Expense groups in budget model', async () => {
+describe('Expense groups in budget model', () => {
     it('Check groups are created properly when model is initialized from constructor', async () => {
         const budget = createBudget('EUR', 30, 1000);
         const expense1: Expense = {
@@ -428,5 +428,134 @@ describe('Budget attributes modifications', () => {
             .toThrowError('Cannot update budget information with different IDs');
 
     });
+});
+
+
+describe('Budget model statistics', () => {
+
+    it('Totals by category', () => {
+        const info = createBudget('USD', 60, 12000);
+        const expense1 = createExpense('1');
+        const expense2 = {
+            ...expense1, 
+            identifier: '2'};
+        const expense3 = {
+            ...expense2,
+            identifier: '3',
+            categoryId: 'Category 3'
+        };
+        const bm = new BudgetModel(
+            info, 
+            {
+                '1': expense1,
+                '2': expense2,
+                '3': expense3
+            });
+
+        expect(bm.totalsByCategory.getSubtotal(['Category', ]))
+            .toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);
+        expect(bm.totalsByCategory.getSubtotal([expense3.categoryId, ]))
+            .toBe(expense3.amountBaseCurrency);
+        
+        const expense4 = {
+            ...expense3,
+            identifier: '4',
+        };
+        bm.setExpense(expense4);
+        expect(bm.totalsByCategory.getSubtotal([expense3.categoryId, ]))
+            .toBe(expense3.amountBaseCurrency + expense4.amountBaseCurrency);
+
+        expense1.categoryId = expense1.categoryId + ' new';
+        bm.setExpense(expense1);
+        expect(bm.totalsByCategory.getSubtotal([expense1.categoryId, ]))
+            .toBe(expense1.amountBaseCurrency);
+        expect(bm.totalsByCategory.getSubtotal([expense2.categoryId, ]))
+            .toBe(expense2.amountBaseCurrency);
+        expect(bm.totalsByCategory.getSubtotal([expense3.categoryId, ]))
+            .toBe(expense3.amountBaseCurrency + expense4.amountBaseCurrency);
+
+        expense1.categoryId = expense2.categoryId = expense3.categoryId = expense4.categoryId;
+        bm.setExpense(expense1);
+        bm.setExpense(expense2);
+        bm.setExpense(expense3);
+        bm.setExpense(expense4);
+        expect(bm.totalsByCategory.getSubtotal([expense1.categoryId, ]))
+            .toBe(
+                expense1.amountBaseCurrency + 
+                expense2.amountBaseCurrency + 
+                expense3.amountBaseCurrency + 
+                expense4.amountBaseCurrency);
+
+        bm.deleteExpense(expense1.identifier);
+        bm.deleteExpense(expense4.identifier);
+        expect(bm.totalsByCategory.getSubtotal([expense2.categoryId, ]))
+            .toBe(
+                expense2.amountBaseCurrency + 
+                expense3.amountBaseCurrency);
+    });
+
+    it('Totals by country', () => {
+        const info = createBudget('USD', 60, 12000);
+        const expense1 = createExpense('1');
+        const expense2 = {
+            ...expense1, 
+            identifier: '2'};
+        const expense3 = {
+            ...expense2,
+            identifier: '3',
+            countryCode: 'AA'
+        };
+        const bm = new BudgetModel(
+            info, 
+            {
+                '1': expense1,
+                '2': expense2,
+                '3': expense3
+            });
+
+        expect(bm.totalsByCountry.getSubtotal([expense1.countryCode, ]))
+            .toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);
+        expect(bm.totalsByCountry.getSubtotal([expense3.countryCode, ]))
+            .toBe(expense3.amountBaseCurrency);
+        
+        const expense4 = {
+            ...expense3,
+            identifier: '4',
+        };
+        bm.setExpense(expense4);
+        expect(bm.totalsByCountry.getSubtotal([expense3.countryCode, ]))
+            .toBe(expense3.amountBaseCurrency + expense4.amountBaseCurrency);
+
+        expense1.countryCode = expense1.countryCode + '_VIS';
+        bm.setExpense(expense1);
+        expect(bm.totalsByCountry.getSubtotal([expense1.countryCode, ]))
+            .toBe(expense1.amountBaseCurrency);
+        expect(bm.totalsByCountry.getSubtotal([expense2.countryCode, ]))
+            .toBe(expense2.amountBaseCurrency);
+        expect(bm.totalsByCountry.getSubtotal([expense3.countryCode, ]))
+            .toBe(expense3.amountBaseCurrency + expense4.amountBaseCurrency);
+
+        expense1.countryCode = expense2.countryCode = expense3.countryCode = expense4.countryCode;
+        bm.setExpense(expense1);
+        bm.setExpense(expense2);
+        bm.setExpense(expense3);
+        bm.setExpense(expense4);
+        expect(bm.totalsByCountry.getSubtotal([expense1.countryCode, ]))
+            .toBe(
+                expense1.amountBaseCurrency + 
+                expense2.amountBaseCurrency + 
+                expense3.amountBaseCurrency + 
+                expense4.amountBaseCurrency);
+
+        bm.deleteExpense(expense1.identifier);
+        bm.deleteExpense(expense4.identifier);
+        expect(bm.totalsByCountry.getSubtotal([expense2.countryCode, ]))
+            .toBe(
+                expense2.amountBaseCurrency + 
+                expense3.amountBaseCurrency);
+
+
+    });
+    
 });
 

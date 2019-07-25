@@ -1,8 +1,10 @@
 
 
 interface TotalMap {
-    [index: number]: NestedTotal
+    [index: string]: NestedTotal
 };
+
+declare type IndexType = number|string;
 
 export class NestedTotal {
     private _total: number;
@@ -13,18 +15,18 @@ export class NestedTotal {
         this._subTotals = {};
     }
 
-    add(n: number, subTotalIndexes?: number[]): number{
+    add(n: number, subTotalIndexes?: IndexType[]): number{
         this._total += n;
         const subTotal = this._getSubTotal(subTotalIndexes);
         subTotal && subTotal.add(n, subTotalIndexes);
         return this._total;
     }
 
-    subtract(n: number, subTotalIndexes?: number[]): number {
+    subtract(n: number, subTotalIndexes?: IndexType[]): number {
         return this.add(-n, subTotalIndexes);
     }
 
-    private _getSubTotal(subTotalIndexes?: number[]): NestedTotal|undefined {
+    private _getSubTotal(subTotalIndexes?: IndexType[]): NestedTotal|undefined {
         if (subTotalIndexes !== undefined) {
             const index = subTotalIndexes.shift();
             if (index !== undefined) {
@@ -41,7 +43,7 @@ export class NestedTotal {
         return this._total;
     }
 
-    getSubtotal(indexes: number[]): number {
+    getSubtotal(indexes: IndexType[]): number {
         const index = indexes.shift();
         if (index !== undefined) {
             if (index in this._subTotals) {

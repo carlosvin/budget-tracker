@@ -13,6 +13,9 @@ export class BudgetModel {
     private _expenseGroups?: ExpensesYearMap;
 
     private _nestedTotalExpenses?: NestedTotal;
+    private _totalsByCategories?: NestedTotal;
+    private _totalsByCountry?: NestedTotal;
+    
     private _days?: number;
     private _totalDays?: number;
 
@@ -52,9 +55,53 @@ export class BudgetModel {
     get nestedTotalExpenses () {
         if (this._nestedTotalExpenses === undefined) {
             this._nestedTotalExpenses = new NestedTotal();
-            Object.values(this.expenses).forEach(e => this._addToTotal(e));
+            Object.values(this.expenses).forEach(e => this._addToTotal(e, false));
         }
         return this._nestedTotalExpenses;
+    }
+
+    get totalsByCountry () {
+        if (this._totalsByCountry === undefined) {
+            this._totalsByCountry = new NestedTotal();
+            Object.values(this.expenses).forEach((e) => this._addTotalsByCountry(e));
+        }
+        return this._totalsByCountry;
+    }
+
+    private _addTotalsByCountry (expense: Expense) {
+        if (this._totalsByCountry) {
+            this._totalsByCountry.add(
+                expense.amountBaseCurrency, [expense.countryCode,]);
+        }
+    }
+    
+    private _subtractTotalsByCountry (expense: Expense) {
+        if (this._totalsByCountry) {
+            this._totalsByCountry.subtract(
+                expense.amountBaseCurrency, [expense.countryCode,]);
+        }
+    }
+
+    get totalsByCategory () {
+        if (this._totalsByCategories === undefined) {
+            this._totalsByCategories = new NestedTotal();
+            Object.values(this.expenses).forEach((e) => this._addTotalsByCategory(e));
+        }
+        return this._totalsByCategories;
+    }
+
+    private _addTotalsByCategory (expense: Expense) {
+        if (this._totalsByCategories) {
+            this._totalsByCategories.add(
+                expense.amountBaseCurrency, [expense.categoryId,]);
+        }
+    }
+    
+    private _subtractTotalsByCategory (expense: Expense) {
+        if (this._totalsByCategories) {
+            this._totalsByCategories.subtract(
+                expense.amountBaseCurrency, [expense.categoryId,]);
+        }
     }
 
     getTotalExpensesByDay(year: number, month: number, day: number) {
@@ -77,7 +124,9 @@ export class BudgetModel {
     private _updateTotalExpenses(newExpense: ExpenseModel, oldExpense?: ExpenseModel) {
         if (oldExpense === undefined || 
             oldExpense.amountBaseCurrency !== newExpense.amountBaseCurrency || 
-            oldExpense.when !== newExpense.when) {
+            oldExpense.when !== newExpense.when ||
+            oldExpense.categoryId !== newExpense.categoryId ||
+            oldExpense.countryCode !== newExpense.countryCode) {
             if (oldExpense) {
                 this._subtractTotal(oldExpense);
             }
@@ -204,19 +253,24 @@ export class BudgetModel {
             }
             this._expenses[k].addToTotals(newTotals);
         }
-
         this._nestedTotalExpenses = newTotals;
     }
 
-    private _addToTotal(expense: ExpenseModel) {
+    private _addToTotal(expense: ExpenseModel, updateExtraTotals = true) {
         if (expense.inBudgetDates(this._info)) {
             expense.addToTotals(this.nestedTotalExpenses);
+            if (updateExtraTotals) {
+                this._addTotalsByCategory(expense);
+                this._addTotalsByCountry(expense);    
+            }
         }
     }
 
     private _subtractTotal(expense: ExpenseModel) {
         if (expense.inBudgetDates(this._info)) {
             expense.subtractTotal(this.nestedTotalExpenses);
+            this._subtractTotalsByCategory(expense);
+            this._subtractTotalsByCountry(expense);
         }
     }
 
