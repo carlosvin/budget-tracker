@@ -33,7 +33,7 @@ export const AppButton: React.FC<AppButtonProps> = (props) => {
     }
 
     return (
-        <Button color='inherit' {...props} {...derivedProps}>
+        <Button color='inherit' {...props} {...derivedProps()}>
             { props.icon && <props.icon />}
             { props.text }
         </Button>
