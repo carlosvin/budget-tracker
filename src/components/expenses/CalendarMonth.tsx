@@ -1,7 +1,7 @@
 import * as React from "react";
 import { YMD } from "../../interfaces";
 import { monthToString, round } from "../../utils";
-import { BudgetModel } from "../../BudgetModel";
+import { BudgetModel } from "../../domain/BudgetModel";
 import { SubHeader } from "./SubHeader";
 import { Card, CardHeader, CardContent } from "@material-ui/core";
 import { CalendarDay } from "./CalendarDay";

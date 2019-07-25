@@ -8,7 +8,7 @@ import CountryInput from "../../components/CountryInput";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
 import { CurrencyRates, Expense } from "../../interfaces";
 import { btApp } from "../../BudgetTracker";
-import { DAY_MS } from "../../BudgetModel";
+import { DAY_MS } from "../../domain/BudgetModel";
 import CategoriesSelect from "../../components/categories/CategoriesSelect";
 import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { SaveButtonFab } from "../../components/buttons/SaveButton";

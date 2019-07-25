@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { Budget } from '../../interfaces';
 import { TextInput } from '../TextInput';
-import { DAY_MS } from '../../BudgetModel';
+import { DAY_MS } from '../../domain/BudgetModel';
 import { getDateString, uuid } from '../../utils';
 import { AmountInput } from '../AmountInput';
 import { CurrencyInput } from '../CurrencyInput';

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { YMD } from "../../interfaces";
 import { round, desc } from "../../utils";
-import { BudgetModel } from "../../BudgetModel";
+import { BudgetModel } from "../../domain/BudgetModel";
 import { SubHeader } from "./SubHeader";
 import { CalendarMonth } from "./CalendarMonth";
 

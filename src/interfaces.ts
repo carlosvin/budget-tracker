@@ -60,7 +60,7 @@ export interface ExpensesMonthMap {
 }
 
 export interface ExpensesDayMap {
-    [day: number]:ExpensesMap
+    [day: number]: ExpensesMap
 }
 
 export interface YMD {

@@ -5,7 +5,7 @@ import { AppButton } from "../../components/buttons/buttons";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { HeaderNotifierProps } from "../../routes";
 import Typography from "@material-ui/core/Typography";
-import { BudgetModel } from "../../BudgetModel";
+import { BudgetModel } from "../../domain/BudgetModel";
 import { BudgetQuickStats } from "../../components/budgets/BudgetQuickStats";
 import { YesNoDialog } from "../../components/YesNoDialog";
 import { btApp } from "../../BudgetTracker";

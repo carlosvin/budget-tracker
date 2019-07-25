@@ -1,5 +1,5 @@
 import { Budget, Expense, BudgetsMap } from "../interfaces";
-import { BudgetModel } from "../BudgetModel";
+import { BudgetModel } from "../domain/BudgetModel";
 import { StorageApi } from "../api/storage/StorageApi";
 import { CurrenciesStore } from "./CurrenciesStore";
 

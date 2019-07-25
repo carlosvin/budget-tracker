@@ -1,6 +1,7 @@
 import { BudgetModel, DAY_MS } from "./BudgetModel";
-import { uuid } from "./utils";
-import { Expense, CurrencyRates } from "./interfaces";
+import { uuid } from "../utils";
+import { Expense, CurrencyRates } from "../interfaces";
+import { ExpenseModel } from "./ExpenseModel";
 
 function createBudget (currency: string, days: number, total: number) {
     return { 
@@ -70,12 +71,12 @@ it('Budget model creation, no expenses, add them later', async () => {
         [expenseDate1.getFullYear()]: { 
             [expenseDate1.getMonth()]: { 
                 [expenseDate1.getDate()]: {
-                    [expense1.identifier]: expense1
+                    [expense1.identifier]: new ExpenseModel(expense1)
                 }
             },
             [expenseDate2.getMonth()]: { 
                 [expenseDate2.getDate()]: {
-                    [expense2.identifier]: expense2
+                    [expense2.identifier]: new ExpenseModel(expense2)
                 } 
             }
         }
@@ -87,8 +88,8 @@ it('Budget model creation, no expenses, add them later', async () => {
     expect(bm.expectedDailyExpensesAverage).toBe(33);
 
     expect(bm.average).toBe(100);
-    expect(bm.getExpense(expense1.identifier)).toBe(expense1);
-    expect(bm.getExpense(expense2.identifier)).toBe(expense2);
+    expect(bm.getExpense(expense1.identifier)).toStrictEqual(new ExpenseModel(expense1));
+    expect(bm.getExpense(expense2.identifier)).toStrictEqual(new ExpenseModel(expense2));
     expect(bm.totalExpenses).toBe(100);
     expect(bm.numberOfExpenses).toBe(2);
     expect(bm.days).toBe(1);
@@ -106,15 +107,15 @@ it('Budget model creation, no expenses, add them later', async () => {
     expect(bm.totalDays).toBe(32);
     expect(bm.average).toBe(50);
     expect(bm.totalExpenses).toBe(100);
-    expect(bm.getExpense('1')).toBe(expense1);
-    expect(bm.getExpense('2')).toBe(expense2Updated);
+    expect(bm.getExpense('1')).toStrictEqual(new ExpenseModel(expense1));
+    expect(bm.getExpense('2')).toStrictEqual(new ExpenseModel(expense2Updated));
 
     const expectedGroupsUpdated = {
         [expenseDate1.getFullYear()]: { 
             [expenseDate1.getMonth()]: { 
                 [expenseDate1.getDate()]: {
-                    [expense1.identifier]: expense1,
-                    [expense2Updated.identifier]: expense2Updated
+                    [expense1.identifier]: new ExpenseModel(expense1),
+                    [expense2Updated.identifier]: new ExpenseModel(expense2Updated)
                 }
             },
             [expenseDate2.getMonth()]: {
@@ -186,7 +187,7 @@ it('Modify expense amount', async () => {
         [expense1Date.getFullYear()]: {
             [expense1Date.getMonth()]: {
                 [expense1Date.getDate()]: {
-                    [expense1.identifier]: expense1
+                    [expense1.identifier]: new ExpenseModel(expense1)
                 }    
             }
         }
@@ -195,7 +196,7 @@ it('Modify expense amount', async () => {
     expenseGroups[expense2ModifiedDate.getFullYear()]
         [expense2ModifiedDate.getMonth()]
         [expense2ModifiedDate.getDate()]
-        [modifiedExpense2.identifier] = modifiedExpense2;
+        [modifiedExpense2.identifier] = new ExpenseModel(modifiedExpense2);
 
     expect(bm.expenseGroups).toStrictEqual(expenseGroups);
 
@@ -219,7 +220,7 @@ it('Modify expense amount', async () => {
         [expense2ModifiedDate2.getFullYear()]
         [expense2ModifiedDate2.getMonth()] = {
             [expense2ModifiedDate2.getDate()]: {
-                [modifiedExpense2Date.identifier]: modifiedExpense2Date
+                [modifiedExpense2Date.identifier]: new ExpenseModel(modifiedExpense2Date)
             }
         };
         
@@ -261,13 +262,13 @@ it('Check groups are created properly when model is initialized from constructor
     const {y, m, d} = getYMD(expense1);
 
     const expenseGroups = {
-        [y]: {[m]: {[d]: {[expense1.identifier]: expense1}}}
+        [y]: {[m]: {[d]: {[expense1.identifier]: new ExpenseModel(expense1)}}}
     };
 
     const dateE2 = getYMD(expense2);
     expenseGroups[dateE2.y][dateE2.m] = {
         [dateE2.d]: {
-            [expense2.identifier]: expense2
+            [expense2.identifier]: new ExpenseModel(expense2)
         }
     };
 
@@ -277,8 +278,8 @@ it('Check groups are created properly when model is initialized from constructor
     expect(bm.expectedDailyExpensesAverage).toBe(33);
 
     expect(bm.average).toBe(98);
-    expect(bm.getExpense(expense1.identifier)).toBe(expense1);
-    expect(bm.getExpense(expense2.identifier)).toBe(expense2);
+    expect(bm.getExpense(expense1.identifier)).toStrictEqual(new ExpenseModel(expense1));
+    expect(bm.getExpense(expense2.identifier)).toStrictEqual(new ExpenseModel(expense2));
     expect(bm.totalExpenses).toBe(98);
     expect(bm.numberOfExpenses).toBe(2);
     expect(bm.days).toBe(1);
@@ -374,11 +375,13 @@ it('Returns expenses and info attributes', async () => {
         '1': expense1,
         '2': expense2,
         '3': expense3
-    }
+    };
     const bm = new BudgetModel(info, expenses);
 
     expect(bm.info).toStrictEqual(info);
-    expect(bm.expenses).toStrictEqual(expenses);
+    expect(Object.values(bm.expenses))
+        .toStrictEqual(
+            Object.values(expenses).map(e => new ExpenseModel(e)));
 
     const updatedInfo = {...bm.info, total: 20220};
     const expense0 = {...expense3, identifier: '0', currency: 'BTH', categoryId: 'General'};
@@ -387,7 +390,9 @@ it('Returns expenses and info attributes', async () => {
     bm.setBudget(updatedInfo);
 
     expect(bm.info).toStrictEqual(updatedInfo);
-    expect(bm.expenses).toStrictEqual(updatedExpenses);
+    expect(Object.values(bm.expenses))
+        .toStrictEqual(
+            Object.values(updatedExpenses).map(e => new ExpenseModel(e)));
 
     await expect(bm.setBudget({...updatedInfo, identifier: 'invalid'}))
         .rejects
