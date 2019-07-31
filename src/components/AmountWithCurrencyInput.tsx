@@ -26,6 +26,8 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         setAmountInBaseCurrency
     ] = React.useState<number|undefined>(props.amountInBaseCurrency);
 
+    const [currency, setCurrency] = React.useState(props.selectedCurrency);
+
     const [error, setError] = React.useState<string|undefined>(); 
 
     function calculateAmountInBaseCurrency(amount: number, currency: string) {
@@ -48,32 +50,27 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     React.useEffect(() => {
         let isSubscribed = true;
         if (isSubscribed &&
-            amountInBaseCurrency === undefined &&
             props.rates.base &&
-            props.selectedCurrency && 
+            currency && 
             props.amountInput && 
-            props.rates.base !== props.selectedCurrency) {
+            props.rates.base !== currency) {
             calculateAmountInBaseCurrency(
                 props.amountInput, 
-                props.selectedCurrency);
+                currency);
         }
         return () => {isSubscribed = false};
     }, 
     // eslint-disable-next-line
     [
-        props.rates.base, props.amountInput, props.selectedCurrency
+        props.rates.base, props.amountInput, props.selectedCurrency, currency
     ]);
 
     const handleAmountChange = (amount: number) => {
-        calculateAmountInBaseCurrency(amount, props.selectedCurrency);
-    }
-
-    const handleCurrencyChange = (selectedCurrency: string) => {
-        calculateAmountInBaseCurrency(props.amountInput || 0, selectedCurrency);
+        calculateAmountInBaseCurrency(amount, currency);
     }
 
     const baseAmountString = () => {
-        if (props.rates.base !== props.selectedCurrency && amountInBaseCurrency) {
+        if (props.rates.base !== currency && amountInBaseCurrency) {
             return `${round(amountInBaseCurrency)} ${props.rates.base}`;
         }
         return undefined;
@@ -91,8 +88,8 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
             </Grid>
             <Grid item >
                 <CurrencyInput 
-                    selectedCurrency={props.selectedCurrency}
-                    onCurrencyChange={handleCurrencyChange} 
+                    selectedCurrency={currency}
+                    onCurrencyChange={setCurrency} 
                     disabled={props.disabled}/>
             </Grid>
             { error !== undefined && // TODO show error view
