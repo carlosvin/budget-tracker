@@ -1,6 +1,6 @@
 import { BudgetModel, DAY_MS } from "./BudgetModel";
 import { uuid } from "../utils";
-import { Expense, CurrencyRates } from "../interfaces";
+import { Expense, CurrencyRates, Budget } from "../interfaces";
 import { ExpenseModel } from "./ExpenseModel";
 
 function createBudget (currency: string, days: number, total: number) {
@@ -14,7 +14,7 @@ function createBudget (currency: string, days: number, total: number) {
     };
 }
 
-function createExpense (id: string) {
+function createExpense (id: string, budget: Budget) {
     return {
         amount: 100,
         amountBaseCurrency: 98,
@@ -23,7 +23,7 @@ function createExpense (id: string) {
         currency: 'USD',
         description: 'whatever description',
         identifier: id,
-        when: new Date().getTime()
+        when: budget.from
     };
 }
 
@@ -43,7 +43,8 @@ describe('Budget Model Creation', () => {
     });
 
     it('Budget model creation, no expenses, add them later', async () => {
-        const budget = createBudget('EUR', 30, 1000);
+        const days = 60;
+        const budget = createBudget('EUR', days, 1000);
         const bm = new BudgetModel(budget, {});
         const expenseDate1 = new Date(budget.from);
         const expenseDate2 = new Date(budget.to);
@@ -86,7 +87,7 @@ describe('Budget Model Creation', () => {
         expect(bm.expenseGroups).toStrictEqual(expectedGroups);
 
         expect(bm.totalExpenses).toBe(100);
-        expect(bm.expectedDailyExpensesAverage).toBe(33);
+        expect(bm.expectedDailyExpensesAverage).toBe(17);
 
         expect(bm.average).toBe(100);
         expect(bm.getExpense(expense1.identifier)).toStrictEqual(new ExpenseModel(expense1));
@@ -94,7 +95,7 @@ describe('Budget Model Creation', () => {
         expect(bm.totalExpenses).toBe(100);
         expect(bm.numberOfExpenses).toBe(2);
         expect(bm.days).toBe(1);
-        expect(bm.totalDays).toBe(30);
+        expect(bm.totalDays).toBe(days);
 
         const expense2Updated = {...expense2, when: new Date().getTime()};
         // change the date of the expense2 so it is added to calculations
@@ -105,7 +106,7 @@ describe('Budget Model Creation', () => {
         // Modify budget dates to check that average is recalculated
         bm.setBudget({...budget, from: budget.from - DAY_MS, to: budget.to + DAY_MS});
         expect(bm.days).toBe(2);
-        expect(bm.totalDays).toBe(32);
+        expect(bm.totalDays).toBe(days + 2);
         expect(bm.average).toBe(50);
         expect(bm.totalExpenses).toBe(100);
         expect(bm.getExpense('1')).toStrictEqual(new ExpenseModel(expense1));
@@ -132,7 +133,7 @@ describe('Budget Model Creation', () => {
 describe('Expense operations', () => {
     it('Remove expense', async () => {
         const budget = createBudget('EUR', 30, 1000);
-        const expense1 = createExpense('1');
+        const expense1 = createExpense('1', budget);
         const expense2 = {...expense1, identifier: '2'};
         const expense3 = {...expense1, identifier: '3', when: budget.to + DAY_MS * 3};
         const expense4 = {...expense1, identifier: '4', amountBaseCurrency: 55};
@@ -163,10 +164,11 @@ describe('Expense operations', () => {
     
     
     it('Modify expense amount', async () => {
-        const expense1 = createExpense('1');
+        const budget = createBudget('EUR', 30, 1000);
+        const expense1 = createExpense('1', budget);
         const expense2 = {...expense1, identifier: '2'};
         const bm = new BudgetModel(
-            createBudget('EUR', 30, 1000), 
+            budget, 
             {
                 '1': expense1,
                 '2': expense2
@@ -205,35 +207,38 @@ describe('Expense operations', () => {
     
         const modifiedExpense2Date = {
             ...expense2, 
-            when: new Date().getTime() + DAY_MS * 10
+            when: budget.from + DAY_MS
         };
+        
         bm.setExpense(modifiedExpense2Date);
+        expect(bm.getExpense('1')).toStrictEqual(new ExpenseModel(expense1));
+
         expect(bm.totalExpenses).toBe(
             expense1.amountBaseCurrency + modifiedExpense2Date.amountBaseCurrency);
         expect(bm.getExpense('2').amountBaseCurrency)
             .toBe(modifiedExpense2Date.amountBaseCurrency);
     
-        delete expenseGroups[expense2ModifiedDate.getFullYear()]
-            [expense2ModifiedDate.getMonth()]
-            [expense2ModifiedDate.getDate()]
-            [modifiedExpense2.identifier];
-    
         const expense2ModifiedDate2 = new Date(modifiedExpense2Date.when);
-        expenseGroups
-            [expense2ModifiedDate2.getFullYear()]
-            [expense2ModifiedDate2.getMonth()] = {
-                [expense2ModifiedDate2.getDate()]: {
-                    [modifiedExpense2Date.identifier]: new ExpenseModel(modifiedExpense2Date)
+        const expenseGroupsModified = {
+            [expense1Date.getFullYear()]: {
+                [expense1Date.getMonth()]: {
+                    [expense1Date.getDate()]: {
+                        [expense1.identifier]: new ExpenseModel(expense1)
+                    } ,
+                    [expense2ModifiedDate2.getDate()]: {
+                        [modifiedExpense2Date.identifier]: new ExpenseModel(modifiedExpense2Date)
+                    }    
                 }
-            };
+            }
+        }
             
-        expect(bm.expenseGroups).toStrictEqual(expenseGroups);
+        expect(bm.expenseGroups).toStrictEqual(expenseGroupsModified);
     
     });
 
     it('Sets Expense without base amount throws error', () => {
         const info = createBudget('USD', 180, 56000);
-        const expense1 = {...createExpense('1')};
+        const expense1 = {...createExpense('1', info)};
         delete expense1['amountBaseCurrency'];
         const expenses = {
             '1': expense1,
@@ -260,16 +265,7 @@ describe('Expense operations', () => {
 describe('Expense groups in budget model', () => {
     it('Check groups are created properly when model is initialized from constructor', async () => {
         const budget = createBudget('EUR', 30, 1000);
-        const expense1: Expense = {
-            amount: 100,
-            amountBaseCurrency: 98,
-            categoryId: 'Category',
-            countryCode: 'ES',
-            currency: 'USD',
-            description: 'whatever description',
-            identifier: '1',
-            when: new Date().getTime()
-        };
+        const expense1 = createExpense('1', budget);
         const expense2 = {...expense1,
             amount: 2,
             amountBaseCurrency: 2,
@@ -320,7 +316,7 @@ describe('Budget attributes modifications', () => {
     it('Modify budget base currency ', async () => {
         const info = createBudget('EUR', 30, 1000);
         const expense1 = {
-            ...createExpense('1'), 
+            ...createExpense('1', info), 
             currency: 'USD', 
             amount: 12, 
             amountBaseCurrency: 10};
@@ -358,7 +354,7 @@ describe('Budget attributes modifications', () => {
     it('Modify budget base currency not passing currency rates. Throws error.', async () => {
         const info = createBudget('EUR', 30, 1000);
         const expense1 = {
-            ...createExpense('1'), 
+            ...createExpense('1', info), 
             currency: 'USD', 
             amount: 12, 
             amountBaseCurrency: 10};
@@ -397,7 +393,7 @@ describe('Budget attributes modifications', () => {
     
     it('Returns expenses and info attributes', async () => {
         const info = createBudget('USD', 180, 56000);
-        const expense1 = {...createExpense('1')};
+        const expense1 = {...createExpense('1', info)};
         const expense2 = {...expense1, identifier: '2', currency: 'ARS', amount: 3040, amountBaseCurrency: 10};
         const expense3 = {...expense1, identifier: '3', currency: 'EUR', amount: 101, amountBaseCurrency: 105.2};
         const expenses = {
@@ -435,7 +431,7 @@ describe('Budget model statistics', () => {
 
     it('Totals by category', () => {
         const info = createBudget('USD', 60, 12000);
-        const expense1 = createExpense('1');
+        const expense1 = createExpense('1', info);
         const expense2 = {
             ...expense1, 
             identifier: '2'};
@@ -496,7 +492,7 @@ describe('Budget model statistics', () => {
 
     it('Totals by country', () => {
         const info = createBudget('USD', 60, 12000);
-        const expense1 = createExpense('1');
+        const expense1 = createExpense('1', info);
         const expense2 = {
             ...expense1, 
             identifier: '2'};
