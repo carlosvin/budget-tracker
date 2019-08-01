@@ -108,6 +108,7 @@ export default class BudgetView extends React.PureComponent<BudgetViewProps, Bud
                                 totalDays={budgetModel.totalDays}
                                 totalBudget={budgetModel.info.total}
                                 totalSpent={this.state.totalSpent || 0}
+                                urlStats={this.url.pathStats}
                                 /> 
                             { budgetModel.expenseGroups && 
                             <ExpensesCalendar 

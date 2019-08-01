@@ -5,6 +5,7 @@ const routes = {
     BudgetView: React.lazy(() => import('./views/budgets/Budget')),
     BudgetList: React.lazy(() => import('./views/budgets/BudgetList')),
     BudgetEdit: React.lazy(() => import('./views/budgets/BudgetEdit')),
+    BudgetStats: React.lazy(() => import('./views/budgets/Stats')),
     ExpenseView: React.lazy(() => import('./views/expenses/Expense')),
     ExpensesView: React.lazy(() => import('./views/expenses/Expenses')),
     CategoryList: React.lazy(() => import('./views/categories/CategoryList')),
@@ -25,6 +26,7 @@ export class Routes extends React.PureComponent<HeaderNotifierProps> {
                 <Route exact path="/budgets" render={this._render(routes.BudgetList)} />
                 <Route exact path='/budgets/add' render={this._render(routes.BudgetEdit)} />
                 <Route exact path='/budgets/:budgetId/edit' render={this._render(routes.BudgetEdit)} />
+                <Route exact path='/budgets/:budgetId/stats' render={this._render(routes.BudgetStats)} />
                 <Route exact path='/budgets/:budgetId' render={this._render(routes.BudgetView)} />
                 <Route exact path='/budgets/:budgetId/expenses/add' render={this._render(routes.ExpenseView)} />
                 <Route exact path='/budgets/:budgetId/expenses/:expenseId' render={this._render(routes.ExpenseView)} />
