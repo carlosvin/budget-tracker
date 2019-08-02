@@ -304,10 +304,17 @@ export class BudgetModel {
     }
 
     getJson(categories: Categories) {
+        const expenses: ExpensesMap = {};
+        Object
+            .keys(this.expenses)
+            .forEach(k => (
+                expenses[k] = {
+                    ...this.expenses[k], 
+                    amountBaseCurrency: this.expenses[k].amountBaseCurrency}));
         return JSON.stringify(
             {
                 info: this.info,
-                expenses: this.expenses as ExpensesMap,
+                expenses,
                 categories
             }, null, 2
         );
