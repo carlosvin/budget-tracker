@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { convertToYMD } from "../../utils";
-import { GraphLine } from "./Graph";
+import { GraphTimeLine } from "./Graph";
 
 interface GraphExpensesTimeLineProps {
     budget: BudgetModel;
@@ -18,10 +18,15 @@ export const GraphExpensesTimeLine: React.FC<GraphExpensesTimeLineProps> = (prop
         for (let date=fromDate; date.getTime() <= to && date.getTime() <= today; date.setDate(date.getDate() + 1)) {
             const {year, month, day} = convertToYMD(date);
             const total = budget.nestedTotalExpenses.getSubtotal([year, month, day]);
-            data.push({x: date.getTime(), y: total});
+            data.push({x: new Date(date), y: total});
         }
         return data;
     }
 
-    return <GraphLine title='By date' data={getData()} />;
+    return <GraphTimeLine 
+        title='By date' 
+        data={getData()} 
+        avg={budget.average}
+        expectedAvg={budget.expectedDailyExpensesAverage}
+         />;
 }

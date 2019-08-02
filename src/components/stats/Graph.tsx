@@ -1,13 +1,12 @@
 import * as React from "react";
-import { VictoryPie, VictoryTheme, VictoryLine, VictoryAxis } from "victory";
+import { VictoryPie, VictoryTheme, VictoryLine, VictoryChart } from "victory";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
-import { DAY_MS } from "../../domain/BudgetModel";
 
 interface GraphProps {
     title: string;
-    data: {x: string|number, y: number}[];
+    data: {x: string|number|Date, y: number}[];
 }
 
 export const GraphPie: React.FC<GraphProps> = (props) => (
@@ -22,24 +21,31 @@ export const GraphPie: React.FC<GraphProps> = (props) => (
 
 
 // TODO add separate axis for month and day and year? 
-export const GraphLine: React.FC<GraphProps> = (props) => (
+export const GraphTimeLine: React.FC<GraphProps&{avg: number, expectedAvg: number}> = (props) => (
     <GraphLayout title={props.title}>
-        <VictoryAxis
-            scale="time"
-            standalone={false}
-            // style={styles.axisYears}
-            dependentAxis
-            tickValues={props.data
-                .map(v => parseInt(v.x.toString()))
-                .filter(v => (v % (DAY_MS * 15)) === 0 )}
-            tickFormat={timeMs => new Date(timeMs).toLocaleString('en-us', { month:'numeric', day: 'numeric' })}
-        />
-        <VictoryLine
-            data={props.data} 
-            theme={VictoryTheme.material}
-            interpolation='linear'
-            label='Date'
-        />
+        <VictoryChart scale={{x: 'time'}} >
+            <VictoryLine
+                data={props.data} 
+                theme={VictoryTheme.material}
+                interpolation='linear'
+                label='Date'
+                scale={{x: 'time'}}
+            />
+            <VictoryLine
+                data={props.data.map(v => ({x: v.x, y: props.avg}))} 
+                theme={VictoryTheme.material}
+                interpolation='linear'
+                style={{data: {stroke: '#4a148c', strokeWidth: 1}}}
+                scale={{x: 'time'}}
+            />
+            <VictoryLine
+                data={props.data.map(v => ({x: v.x, y: props.expectedAvg}))} 
+                theme={VictoryTheme.material}
+                interpolation='linear'
+                style={{data: {stroke: 'green', strokeWidth: 1}}}
+                scale={{x: 'time'}}
+            />
+        </VictoryChart>
     </GraphLayout>
 );
 
