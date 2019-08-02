@@ -1,8 +1,8 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { VictoryPie, VictoryTheme } from "victory";
 import { Categories } from "../../interfaces";
 import { round } from "../../utils";
+import { Graph } from "./Graph";
 
 interface GraphByCategoryProps {
     budget: BudgetModel, 
@@ -23,8 +23,5 @@ export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
         );
     }
 
-    return <VictoryPie 
-        data={getData()} 
-        colorScale='qualitative'
-        theme={VictoryTheme.material} />;
+    return <Graph title='By Category' data={getData()} />;
 }

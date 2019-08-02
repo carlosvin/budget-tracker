@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { VictoryPie, VictoryTheme } from "victory";
 import { round } from "../../utils";
+import { Graph } from "./Graph";
 
 interface GraphByCountryProps {
     budget: BudgetModel, 
@@ -21,8 +21,5 @@ export const GraphByCountry: React.FC<GraphByCountryProps> = (props) => {
         );
     }
 
-    return <VictoryPie 
-        data={getData()} 
-        colorScale='qualitative'
-        theme={VictoryTheme.material} />;
+    return <Graph title='By country' data={getData()} />;
 }
