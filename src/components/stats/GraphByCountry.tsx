@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { round } from "../../utils";
-import { Graph } from "./Graph";
+import { GraphPie } from "./Graph";
 
 interface GraphByCountryProps {
     budget: BudgetModel, 
@@ -21,5 +21,5 @@ export const GraphByCountry: React.FC<GraphByCountryProps> = (props) => {
         );
     }
 
-    return <Graph title='By country' data={getData()} />;
+    return <GraphPie title='By country' data={getData()} />;
 }

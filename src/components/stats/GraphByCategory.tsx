@@ -2,7 +2,7 @@ import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { Categories } from "../../interfaces";
 import { round } from "../../utils";
-import { Graph } from "./Graph";
+import { GraphPie } from "./Graph";
 
 interface GraphByCategoryProps {
     budget: BudgetModel, 
@@ -23,5 +23,5 @@ export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
         );
     }
 
-    return <Graph title='By Category' data={getData()} />;
+    return <GraphPie title='By Category' data={getData()} />;
 }

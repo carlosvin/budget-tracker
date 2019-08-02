@@ -6,6 +6,7 @@ import { BudgetModel } from "../../domain/BudgetModel";
 import { GraphByCategory } from "../../components/stats/GraphByCategory";
 import { Categories } from "../../interfaces";
 import { GraphByCountry } from "../../components/stats/GraphByCountry";
+import { GraphExpensesTimeLine } from "../../components/stats/GraphExpensesTimeLine";
 
 interface BudgetStatsProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -43,6 +44,7 @@ export const BudgetStats: React.FC<BudgetStatsProps> = (props) => {
     }
 
     return <React.Fragment>
+        {budget && <GraphExpensesTimeLine budget={budget}/>}
         {budget && categories && <GraphByCategory budget={budget} categoriesMap={categories}/>}
         {budget && <GraphByCountry budget={budget}/>}
     </React.Fragment>;
