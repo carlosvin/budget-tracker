@@ -19,8 +19,6 @@ export const GraphPie: React.FC<GraphProps> = (props) => (
     </GraphLayout>
 );
 
-
-// TODO add separate axis for month and day and year? 
 export const GraphTimeLine: React.FC<GraphProps&{avg: number, expectedAvg: number}> = (props) => (
     <GraphLayout title={props.title}>
         <VictoryChart scale={{x: 'time'}} >
