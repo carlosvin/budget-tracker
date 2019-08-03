@@ -549,9 +549,65 @@ describe('Budget model statistics', () => {
             .toBe(
                 expense2.amountBaseCurrency + 
                 expense3.amountBaseCurrency);
-
-
     });
-    
-});
 
+    describe('Number of days in a country', () => { 
+        it('2 countries in same day', () => {
+            const info = createBudget('USD', 60, 12000);
+            const expense1 = createExpense('1', info);
+            const expense2 = {
+                ...expense1, 
+                identifier: '2', 
+                countryCode: 'FR'
+            };
+            const bm = new BudgetModel(
+                info, 
+                {
+                    '1': expense1,
+                    '2': expense2,
+                });
+    
+            expect(bm.totalDaysByCountry).toStrictEqual({'ES': 1, 'FR': 1});
+        });
+    
+        it('ES in 3 days, LU in 2 days', () => {
+            const info = createBudget('USD', 60, 12000);
+            const expense1 = createExpense('1', info);
+            const expense2 = {
+                ...expense1, 
+                identifier: '2',
+                when: expense1.when + DAY_MS
+            };
+            const expense3 = {
+                ...expense2, 
+                identifier: '3',
+                when: expense2.when + DAY_MS
+            };
+            const expense4 = {
+                ...expense3, 
+                identifier: '4',
+                when: expense3.when,
+                countryCode: 'LU'
+            };
+            const expense5 = {
+                ...expense3, 
+                identifier: '5',
+                when: expense3.when + DAY_MS,
+                countryCode: 'LU'
+            };
+            const bm = new BudgetModel(
+                info, 
+                {
+                    '1': expense1,
+                    '2': expense2,
+                    '3': expense3,
+                    '4': expense4,
+                    '5': expense5,
+                });
+    
+            expect(bm.totalDaysByCountry).toStrictEqual(
+                {'ES': 3, 'LU': 2}
+            );
+        });
+    }); 
+});

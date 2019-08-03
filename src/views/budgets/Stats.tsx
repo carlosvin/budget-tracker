@@ -47,10 +47,8 @@ export const BudgetStats: React.FC<BudgetStatsProps> = (props) => {
     return <React.Fragment>
         {budget && categories && <GraphByCategory budget={budget} categoriesMap={categories}/>}
         {budget && <GraphByCountry budget={budget}/>}
-        {budget && <GraphExpensesTimeLine budget={budget}/>}
         {budget && <GraphDaysPerCountry budget={budget}/>}
-
-        
+        {budget && <GraphExpensesTimeLine budget={budget}/>}
     </React.Fragment>;
 
 }

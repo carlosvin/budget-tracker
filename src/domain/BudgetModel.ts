@@ -319,4 +319,28 @@ export class BudgetModel {
             }, null, 2
         );
     }
+
+    get totalDaysByCountry () {
+        const groups = this.expenseGroups; 
+        const daysByCountry: {[country: string]: number} = {};
+        for (const year in groups) {
+            for (const month in groups[year]) {
+                for (const day in groups[year][month]) {
+                    const countriesInADay = new Set<string>();
+                    for (const id in groups[year][month][day]) {
+                        const expense = groups[year][month][day][id];
+                        countriesInADay.add(expense.countryCode);
+                    }
+                    countriesInADay.forEach(c=> {
+                        if (c in daysByCountry) {
+                            daysByCountry[c] += 1;
+                        } else {
+                            daysByCountry[c] = 1;
+                        }
+                    });
+                }
+            }
+        }
+        return daysByCountry;
+    }
 }
