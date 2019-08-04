@@ -1,5 +1,5 @@
 import { NestedTotal } from "./NestedTotal";
-import { YMD } from "./interfaces";
+import { YMD } from "../interfaces";
 
 it('Operate with empty Nested Total: level 0', () => {
     const nestedTotal = new NestedTotal();

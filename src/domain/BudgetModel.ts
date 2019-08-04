@@ -1,7 +1,7 @@
 import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMap } from "../interfaces";
 import { dateDiff } from "../utils";
 import { CurrenciesStore } from "../stores/CurrenciesStore";
-import { NestedTotal } from "../NestedTotal";
+import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
 
 export const DAY_MS = 24 * 3600 * 1000;

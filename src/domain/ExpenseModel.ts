@@ -1,5 +1,5 @@
 import { Budget, Expense } from "../interfaces";
-import { NestedTotal } from "../NestedTotal";
+import { NestedTotal } from "./NestedTotal";
 
 export class ExpenseModel implements Expense {
 
