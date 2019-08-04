@@ -25,22 +25,18 @@ export const GraphTimeLine: React.FC<GraphProps&{avg: number, expectedAvg: numbe
             <VictoryLine
                 data={props.data} 
                 theme={VictoryTheme.material}
-                interpolation='linear'
+                interpolation='step'
                 label='Date'
-                scale={{x: 'time'}}
+                scale={{x: 'time', y: 'log'}}
             />
             <VictoryLine
                 data={props.data.map(v => ({x: v.x, y: props.avg}))} 
-                theme={VictoryTheme.material}
-                interpolation='linear'
                 style={{data: {stroke: '#4a148c', strokeWidth: 1}}}
                 scale={{x: 'time'}}
             />
             <VictoryLine
                 data={props.data.map(v => ({x: v.x, y: props.expectedAvg}))} 
-                theme={VictoryTheme.material}
-                interpolation='linear'
-                style={{data: {stroke: 'green', strokeWidth: 1}}}
+                style={{data: {stroke: 'red', strokeWidth: 1}}}
                 scale={{x: 'time'}}
             />
         </VictoryChart>
