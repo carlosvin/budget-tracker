@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
-import { stringToColorCss } from '../utils';
+import { stringToColorCss } from '../domain/utils/stringToColor';
 
 export declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
 interface IconsMap {[k: string]: LazyIcon};

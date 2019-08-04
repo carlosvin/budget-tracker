@@ -1,6 +1,5 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { BudgetUrl } from "../../utils";
 import { AppButton } from "../../components/buttons/buttons";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { HeaderNotifierProps } from "../../routes";
@@ -15,6 +14,7 @@ import DownloadIcon from '@material-ui/icons/SaveAlt';
 import EditIcon from '@material-ui/icons/Edit';
 import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { AddButton } from "../../components/buttons/AddButton";
+import { BudgetUrl } from "../../domain/BudgetUrl";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 

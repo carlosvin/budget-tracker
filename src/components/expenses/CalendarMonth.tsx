@@ -3,7 +3,9 @@ import { YMD } from "../../interfaces";
 import { monthToString, round } from "../../utils";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { SubHeader } from "./SubHeader";
-import { Card, CardHeader, CardContent } from "@material-ui/core";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
+import Card from "@material-ui/core/Card";
 import { CalendarDay } from "./CalendarDay";
 
 interface CalendarMonthProps {

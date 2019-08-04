@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import Grid from "@material-ui/core/Grid";
-import { BudgetUrl, getDateString, uuid, round, goBack, convertToYMD } from "../../utils";
+import { getDateString, uuid, round, convertToYMD } from "../../utils";
 import { TextInput } from "../../components/TextInput";
 import { HeaderNotifierProps } from "../../routes";
 import CountryInput from "../../components/CountryInput";
@@ -12,6 +12,8 @@ import { DAY_MS } from "../../domain/BudgetModel";
 import CategoriesSelect from "../../components/categories/CategoriesSelect";
 import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { SaveButtonFab } from "../../components/buttons/SaveButton";
+import { goBack } from "../../domain/utils/goBack";
+import { BudgetUrl } from "../../domain/BudgetUrl";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }

@@ -1,11 +1,12 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Budget } from "../../interfaces";
-import { BudgetUrl, goBack } from "../../utils";
 import { HeaderNotifierProps } from "../../routes";
 import { BudgetForm } from "../../components/budgets/BudgetForm";
 import { btApp } from "../../BudgetTracker";
 import { CloseButton } from "../../components/buttons/CloseButton";
+import { goBack } from "../../domain/utils/goBack";
+import { BudgetUrl } from "../../domain/BudgetUrl";
 
 interface BudgetEditProps extends 
     RouteComponentProps<{ budgetId: string }>, 
