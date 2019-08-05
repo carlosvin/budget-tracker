@@ -1,5 +1,5 @@
 import { Budget, Expense } from "../interfaces";
-import { dateDiff } from "../utils";
+import { dateDiff } from "../domain/date";
 import { btApp } from "../BudgetTracker";
 
 export class StatsStore {

@@ -1,5 +1,5 @@
 import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMap } from "../interfaces";
-import { dateDiff } from "../utils";
+import { dateDiff } from "./date";
 import { CurrenciesStore } from "../stores/CurrenciesStore";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";

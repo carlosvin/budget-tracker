@@ -1,8 +1,8 @@
 import * as React from "react";
 import { YMD } from "../../interfaces";
-import { desc } from "../../utils";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { CalendarYear } from "./CalendarYear";
+import { desc } from "../../domain/utils/sorting";
 
 interface ExpensesCalendarProps {
     budgetModel: BudgetModel;

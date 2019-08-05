@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import Grid from "@material-ui/core/Grid";
-import { getDateString, uuid, round } from "../../utils";
+import { getISODateString } from "../../domain/date";
 import { TextInput } from "../../components/TextInput";
 import { HeaderNotifierProps } from "../../routes";
 import CountryInput from "../../components/CountryInput";
@@ -15,6 +15,8 @@ import { SaveButtonFab } from "../../components/buttons/SaveButton";
 import { goBack } from "../../domain/utils/goBack";
 import { BudgetUrl } from "../../domain/BudgetUrl";
 import { DateDay } from "../../domain/DateDay";
+import { round } from "../../domain/utils/round";
+import { uuid } from "../../domain/utils/uuid";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -27,7 +29,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         btApp.currenciesStore.lastCurrencyUsed);
     const [amount, setAmount] = React.useState<number>();
     const [countryCode, setCountryCode] = React.useState<string>(btApp.countriesStore.currentCountryCode);
-    const [dateString, setDateString] = React.useState(getDateString());
+    const [dateString, setDateString] = React.useState(getISODateString());
     const [identifier, setIdentifier] = React.useState(uuid());
     const [categoryId, setCategoryId] = React.useState('');
     const [amountBaseCurrency, setAmountBaseCurrency] = React.useState<number>();
@@ -95,7 +97,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             setCountryCode(e.countryCode);
             setCurrency(e.currency);
             setDescription(e.description);
-            setDateString(getDateString(new Date(e.when)));
+            setDateString(getISODateString(new Date(e.when)));
             setIdentifier(e.identifier);
         }
         

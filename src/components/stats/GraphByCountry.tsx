@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { round } from "../../utils";
 import { GraphPie } from "./Graph";
+import { round } from "../../domain/utils/round";
 
 interface GraphByCountryProps {
     budget: BudgetModel, 

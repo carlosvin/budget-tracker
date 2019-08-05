@@ -1,6 +1,6 @@
 import { CurrencyRates } from "../interfaces";
 import { currenciesApi } from "../api/CurrenciesApi";
-import { dateDiff } from "../utils";
+import { dateDiff } from "../domain/date";
 
 export class CurrenciesStore {
     static readonly KEY = 'currencyRates';

@@ -3,10 +3,10 @@ import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { CurrencyInput } from "./CurrencyInput";
-import { round } from "../utils";
 import { AmountInput } from "./AmountInput";
 import { CurrencyRates } from "../interfaces";
 import { CurrenciesStore } from "../stores/CurrenciesStore";
+import { round } from "../domain/utils/round";
 
 interface AmountCurrencyInputProps  {
     selectedCurrency: string;

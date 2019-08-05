@@ -3,10 +3,11 @@ import * as React from 'react';
 import { Budget } from '../../interfaces';
 import { TextInput } from '../TextInput';
 import { DAY_MS } from '../../domain/BudgetModel';
-import { getDateString, uuid } from '../../utils';
+import { getISODateString } from '../../domain/date';
 import { AmountInput } from '../AmountInput';
 import { CurrencyInput } from '../CurrencyInput';
 import { SaveButtonFab } from '../buttons/SaveButton';
+import { uuid } from '../../domain/utils/uuid';
 
 interface BudgetFormProps {
     budget?: Budget;
@@ -81,8 +82,8 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
     return (
         <form onSubmit={handleSubmit} >
             <TextInput label='Name' value={budget.name} onChange={handleNameChange} required disabled={props.disabled}/>
-            <TextInput label='Start' value={getDateString(new Date(budget.from))} type='date' onChange={handleFromChange} error={error} required  disabled={props.disabled}/>
-            <TextInput label='End' value={getDateString(new Date(budget.to))} type='date' error={error} onChange={handleToChange} disabled={props.disabled}/>
+            <TextInput label='Start' value={getISODateString(new Date(budget.from))} type='date' onChange={handleFromChange} error={error} required  disabled={props.disabled}/>
+            <TextInput label='End' value={getISODateString(new Date(budget.to))} type='date' error={error} onChange={handleToChange} disabled={props.disabled}/>
             <AmountInput 
                 disabled={props.disabled}
                 onAmountChange={handleAmountChange}
