@@ -1,7 +1,7 @@
 import { BudgetModel, DAY_MS } from "./BudgetModel";
-import { uuid } from "../utils";
 import { Expense, CurrencyRates, Budget } from "../interfaces";
 import { ExpenseModel } from "./ExpenseModel";
+import { uuid } from "./utils/uuid";
 
 function createBudget (currency: string, days: number, total: number) {
     return { 

@@ -19,20 +19,6 @@ export function getDateString (date = new Date()) {
     return date.toISOString().slice(0,10);
 }
 
-export function round(quantity: number, digits = 2){
-    const coefficient = Math.pow(10, digits);
-    return Math.round(quantity * coefficient) / coefficient
-}
-
-export function uuid() {
-    // TODO generate uuid following spec
-    return new Date().getTime().toString();
-}
-
-export function desc (a: number, b: number) { 
-    return b - a; 
-}
-
 // TODO group all date functions in a class or module
 export function monthToString (date: Date) {
     const dt = new Intl.DateTimeFormat(undefined, {month: 'long'});

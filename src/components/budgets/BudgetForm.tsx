@@ -3,10 +3,11 @@ import * as React from 'react';
 import { Budget } from '../../interfaces';
 import { TextInput } from '../TextInput';
 import { DAY_MS } from '../../domain/BudgetModel';
-import { getDateString, uuid } from '../../utils';
+import { getDateString } from '../../utils';
 import { AmountInput } from '../AmountInput';
 import { CurrencyInput } from '../CurrencyInput';
 import { SaveButtonFab } from '../buttons/SaveButton';
+import { uuid } from '../../domain/utils/uuid';
 
 interface BudgetFormProps {
     budget?: Budget;

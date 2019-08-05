@@ -1,8 +1,8 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { Categories } from "../../interfaces";
-import { round } from "../../utils";
 import { GraphPie } from "./Graph";
+import { round } from "../../domain/utils/round";
 
 interface GraphByCategoryProps {
     budget: BudgetModel, 

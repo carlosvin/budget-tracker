@@ -1,9 +1,10 @@
 import * as React from "react";
 import { YMD } from "../../interfaces";
-import { round, desc } from "../../utils";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { SubHeader } from "./SubHeader";
 import { CalendarMonth } from "./CalendarMonth";
+import { round } from "../../domain/utils/round";
+import { desc } from "../../domain/utils/sorting";
 
 interface CalendarYearProps {
     year: number;
