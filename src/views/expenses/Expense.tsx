@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import Grid from "@material-ui/core/Grid";
-import { getDateString, uuid, round, convertToYMD } from "../../utils";
+import { getDateString, uuid, round } from "../../utils";
 import { TextInput } from "../../components/TextInput";
 import { HeaderNotifierProps } from "../../routes";
 import CountryInput from "../../components/CountryInput";
@@ -14,6 +14,7 @@ import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { SaveButtonFab } from "../../components/buttons/SaveButton";
 import { goBack } from "../../domain/utils/goBack";
 import { BudgetUrl } from "../../domain/BudgetUrl";
+import { DateDay } from "../../domain/DateDay";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -148,7 +149,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                         budgetId,
                         expense);
             }
-            goBack(props.history, budgetUrl.pathExpensesByDay(convertToYMD(date)));
+            goBack(props.history, budgetUrl.pathExpensesByDay(new DateDay(date)));
         } else {
             throw new Error('Invalid expense data: Missing amount');
         }

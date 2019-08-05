@@ -1,4 +1,3 @@
-import { YMD } from "./interfaces";
 
 /**
  * Get difference between 2 dates in days
@@ -38,23 +37,4 @@ export function desc (a: number, b: number) {
 export function monthToString (date: Date) {
     const dt = new Intl.DateTimeFormat(undefined, {month: 'long'});
     return dt.format(date);
-}
-
-export function convertToYMD(date: Date) {
-    return {
-        year: date.getFullYear(),
-        month: date.getMonth(),
-        day: date.getDate()
-    };
-}
-
-export function isToday(date: Date) {
-    return isTodayYMD(convertToYMD(date));
-}
-
-export function isTodayYMD(date: YMD) {
-    const now = new Date();
-    return date.day === now.getDate() && 
-        date.month === now.getMonth() && 
-        date.year === now.getFullYear();
 }

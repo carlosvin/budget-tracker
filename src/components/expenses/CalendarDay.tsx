@@ -3,7 +3,8 @@ import { YMD } from "../../interfaces";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
-import { isTodayYMD, round } from "../../utils";
+import { round } from "../../utils";
+import { DateDay } from "../../domain/DateDay";
 
 interface CalendarDayProps {
     total: number; 
@@ -21,7 +22,7 @@ export const CalendarDay: React.FC<CalendarDayProps> = (props) => {
 
     return (
     <Button 
-        variant={isTodayYMD(props.date) ? 'outlined' : 'text'} 
+        variant={DateDay.isToday(props.date) ? 'outlined' : 'text'} 
         onClick={handleDaySelected} >
         <Box p={1}>
             <Typography color='textPrimary'>{props.date.day}</Typography>
