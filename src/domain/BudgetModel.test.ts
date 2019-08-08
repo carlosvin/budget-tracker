@@ -617,7 +617,7 @@ describe('Budget model statistics', () => {
             );
         });
 
-        it ('Number of Years', () => {
+        it ('List of years with expenses', () => {
             const info = createBudget('EUR', 365 * 4, 10000);
             const today = new DateDay(new Date());
             const expenses: ExpensesMap = {
@@ -629,6 +629,31 @@ describe('Budget model statistics', () => {
             const model = new BudgetModel(info, expenses);
 
             expect(model.years).toStrictEqual([today.year, today.year + 3]);
+        });
+
+        it ('List of days with expenses in a year/month', () => {
+            const info = createBudget('EUR', 365 * 4, 10000);
+            const day1 = new Date();
+            day1.setMonth(day1.getMonth()+1);
+            day1.setDate(day1.getDate()+1);
+            const day2 = new Date();
+            day2.setMonth(day2.getMonth()+1);
+            day2.setDate(day2.getDate()+2);
+
+            const expenses: ExpensesMap = {
+                '1': {
+                    ...createExpense('1', info), 
+                    when: day1.getTime()},
+                '2': {
+                    ...createExpense('2', info), 
+                    when: day2.getTime()
+                }
+            };
+            const model = new BudgetModel(info, expenses);
+
+            expect(
+                model.getDays(day1.getFullYear(), day1.getMonth())
+            ).toStrictEqual([day1.getDate(), day2.getDate()]);
         });
     });
 
