@@ -305,10 +305,7 @@ export class BudgetModel {
         const expenses: ExpensesMap = {};
         Object
             .keys(this.expenses)
-            .forEach(k => (
-                expenses[k] = {
-                    ...this.expenses[k], 
-                    amountBaseCurrency: this.expenses[k].amountBaseCurrency}));
+            .forEach(k => (expenses[k] = this.expenses[k].info));
         return JSON.stringify(
             {
                 info: this.info,

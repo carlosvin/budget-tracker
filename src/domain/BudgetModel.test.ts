@@ -1,5 +1,5 @@
 import { BudgetModel } from "./BudgetModel";
-import { Expense, CurrencyRates, Budget } from "../interfaces";
+import { Expense, CurrencyRates, Budget, Category, ExpensesMap } from "../interfaces";
 import { ExpenseModel } from "./ExpenseModel";
 import { uuid } from "./utils/uuid";
 import { addDays, addDaysMs } from "./date";
@@ -615,5 +615,37 @@ describe('Budget model statistics', () => {
                 {'ES': 3, 'LU': 2}
             );
         });
-    }); 
+    });
+
+    describe('JSON Serialization', () => {
+        it ('JSON Serialization', () => {
+            const budgetInfo = createBudget('EUR', 66, 5000);
+            const expense1 = createExpense('1', budgetInfo);
+            const expenseOtherId = createExpense('OtherId', budgetInfo);
+            const expense2 = createExpense('2', budgetInfo);
+            
+            const expenses: ExpensesMap = {'1': expense1, 'OtherId': expenseOtherId};
+            const model = new BudgetModel(budgetInfo, expenses);
+            model.setExpense(expense2);
+            expenses[expense2.identifier] = expense2;
+
+            const category: Category = {
+                id: expense1.categoryId, 
+                name: expense1.categoryId, 
+                icon: expense1.categoryId};
+            const categories = {[category.id]: category};
+            const json = model.getJson({[category.id]: category});
+            
+            expect(JSON.parse(json)).toStrictEqual(
+                {
+                    info: budgetInfo,
+                    expenses,
+                    categories 
+                }
+            );
+            
+
+        }); 
+    });
+
 });
