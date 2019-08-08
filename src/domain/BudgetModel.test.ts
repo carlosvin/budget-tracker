@@ -3,6 +3,7 @@ import { Expense, CurrencyRates, Budget, Category, ExpensesMap } from "../interf
 import { ExpenseModel } from "./ExpenseModel";
 import { uuid } from "./utils/uuid";
 import { addDays, addDaysMs } from "./date";
+import { DateDay } from "./DateDay";
 
 function createBudget (currency: string, days: number, total: number) {
     const from = new Date();
@@ -615,10 +616,24 @@ describe('Budget model statistics', () => {
                 {'ES': 3, 'LU': 2}
             );
         });
+
+        it ('Number of Years', () => {
+            const info = createBudget('EUR', 365 * 4, 10000);
+            const today = new DateDay(new Date());
+            const expenses: ExpensesMap = {
+                '1': {
+                    ...createExpense('1', info), 
+                    when: new Date(today.year + 3, today.month, today.day).getTime()},
+                '2': createExpense('2', info)
+            };
+            const model = new BudgetModel(info, expenses);
+
+            expect(model.years).toStrictEqual([today.year, today.year + 3]);
+        });
     });
 
-    describe('JSON Serialization', () => {
-        it ('JSON Serialization', () => {
+    describe('Serialization', () => {
+        it ('JSON', () => {
             const budgetInfo = createBudget('EUR', 66, 5000);
             const expense1 = createExpense('1', budgetInfo);
             const expenseOtherId = createExpense('OtherId', budgetInfo);
@@ -635,7 +650,7 @@ describe('Budget model statistics', () => {
                 icon: expense1.categoryId};
             const categories = {[category.id]: category};
             const json = model.getJson({[category.id]: category});
-            
+
             expect(JSON.parse(json)).toStrictEqual(
                 {
                     info: budgetInfo,
