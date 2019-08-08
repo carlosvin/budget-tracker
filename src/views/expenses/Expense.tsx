@@ -1,14 +1,13 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import Grid from "@material-ui/core/Grid";
-import { getISODateString } from "../../domain/date";
+import { getISODateString, addDaysMs } from "../../domain/date";
 import { TextInput } from "../../components/TextInput";
 import { HeaderNotifierProps } from "../../routes";
 import CountryInput from "../../components/CountryInput";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
 import { CurrencyRates, Expense } from "../../interfaces";
 import { btApp } from "../../BudgetTracker";
-import { DAY_MS } from "../../domain/BudgetModel";
 import CategoriesSelect from "../../components/categories/CategoriesSelect";
 import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { SaveButtonFab } from "../../components/buttons/SaveButton";
@@ -126,7 +125,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 currency,
                 countryCode,
                 identifier: isAddView ? identifier + dayNumber : identifier,
-                when: timeMs + (DAY_MS * dayNumber),
+                when: addDaysMs(timeMs, dayNumber).getTime(),
                 amountBaseCurrency: inputAmountBase,
                 description
             };

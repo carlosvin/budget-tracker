@@ -4,8 +4,6 @@ import { CurrenciesStore } from "../stores/CurrenciesStore";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
 
-export const DAY_MS = 24 * 3600 * 1000;
-
 export class BudgetModel {
 
     private readonly _info: Budget;

@@ -1,13 +1,15 @@
-import { BudgetModel, DAY_MS } from "./BudgetModel";
+import { BudgetModel } from "./BudgetModel";
 import { Expense, CurrencyRates, Budget } from "../interfaces";
 import { ExpenseModel } from "./ExpenseModel";
 import { uuid } from "./utils/uuid";
+import { addDays, addDaysMs } from "./date";
 
 function createBudget (currency: string, days: number, total: number) {
+    const from = new Date();
     return { 
         currency: currency,
-        from: new Date().getTime(),
-        to: new Date().getTime() + (DAY_MS * days),
+        from: from.getTime(),
+        to: addDays(from, days).getTime(),
         identifier: uuid(),
         name: 'Test',
         total: total
@@ -104,7 +106,11 @@ describe('Budget Model Creation', () => {
         expect(bm.totalExpenses).toBe(100);
 
         // Modify budget dates to check that average is recalculated
-        bm.setBudget({...budget, from: budget.from - DAY_MS, to: budget.to + DAY_MS});
+        bm.setBudget({
+            ...budget, 
+            from: addDaysMs(budget.from, -1).getTime(), 
+            to: addDaysMs(budget.to, 1).getTime()
+        });
         expect(bm.days).toBe(2);
         expect(bm.totalDays).toBe(days + 2);
         expect(bm.average).toBe(50);
@@ -135,7 +141,7 @@ describe('Expense operations', () => {
         const budget = createBudget('EUR', 30, 1000);
         const expense1 = createExpense('1', budget);
         const expense2 = {...expense1, identifier: '2'};
-        const expense3 = {...expense1, identifier: '3', when: budget.to + DAY_MS * 3};
+        const expense3 = {...expense1, identifier: '3', when: addDaysMs(budget.to, 3).getTime()};
         const expense4 = {...expense1, identifier: '4', amountBaseCurrency: 55};
         const bm = new BudgetModel(
             createBudget('EUR', 30, 1000), 
@@ -207,7 +213,7 @@ describe('Expense operations', () => {
     
         const modifiedExpense2Date = {
             ...expense2, 
-            when: budget.from + DAY_MS
+            when: addDaysMs(budget.from, 1).getTime()
         };
         
         bm.setExpense(modifiedExpense2Date);
@@ -270,7 +276,7 @@ describe('Expense groups in budget model', () => {
             amount: 2,
             amountBaseCurrency: 2,
             currency: 'EUR',
-            when: (budget.to + (DAY_MS * 2)),
+            when: addDaysMs(budget.to,  2).getTime(),
             identifier: '2',
         };
         const bm = new BudgetModel(
@@ -576,12 +582,12 @@ describe('Budget model statistics', () => {
             const expense2 = {
                 ...expense1, 
                 identifier: '2',
-                when: expense1.when + DAY_MS
+                when: addDaysMs(expense1.when, 1).getTime()
             };
             const expense3 = {
                 ...expense2, 
                 identifier: '3',
-                when: expense2.when + DAY_MS
+                when: addDaysMs(expense2.when, 1).getTime()
             };
             const expense4 = {
                 ...expense3, 
@@ -592,7 +598,7 @@ describe('Budget model statistics', () => {
             const expense5 = {
                 ...expense3, 
                 identifier: '5',
-                when: expense3.when + DAY_MS,
+                when: addDaysMs(expense3.when, 1).getTime(),
                 countryCode: 'LU'
             };
             const bm = new BudgetModel(
