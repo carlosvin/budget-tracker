@@ -1,18 +1,40 @@
 import { YMD } from "../interfaces";
+import { addDays } from "./date";
 
 export class DateDay implements YMD {
-    readonly year: number;
-    readonly month: number;
-    readonly day: number;
+    private readonly _date: Date;
 
     constructor(date: Date) {
-        this.year = date.getFullYear();
-        this.month = date.getMonth();
-        this.day = date.getDate();
+        this._date = new Date(date);
+    }
+
+    get year () {
+        return this._date.getFullYear();
+    }
+
+    get month () {
+        return this._date.getMonth();
+    }
+
+    get day () {
+        return this._date.getDate();
+    }
+
+    static fromTimeMs (timestampMs: number) {
+        return new DateDay(new Date(timestampMs));
+    }
+
+    get timeMs () {
+        return this._date.getTime();
     }
     
     get isToday() {
         return DateDay.isToday(this);
+    }
+
+    addDays (days: number) {
+        this._date.setDate(this._date.getDate() + days);
+        return this;
     }
 
     static isToday(date: YMD) {

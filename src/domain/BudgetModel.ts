@@ -3,6 +3,7 @@ import { dateDiff } from "./date";
 import { CurrenciesStore } from "../stores/CurrenciesStore";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
+import { DateDay } from "./DateDay";
 
 export class BudgetModel {
 
@@ -318,24 +319,30 @@ export class BudgetModel {
     get totalDaysByCountry () {
         const groups = this.expenseGroups; 
         const daysByCountry: {[country: string]: number} = {};
-        for (const year in groups) {
-            for (const month in groups[year]) {
-                for (const day in groups[year][month]) {
-                    const countriesInADay = new Set<string>();
-                    for (const id in groups[year][month][day]) {
-                        const expense = groups[year][month][day][id];
-                        countriesInADay.add(expense.countryCode);
-                    }
-                    countriesInADay.forEach(c=> {
-                        if (c in daysByCountry) {
-                            daysByCountry[c] += 1;
-                        } else {
-                            daysByCountry[c] = 1;
-                        }
-                    });
+        const todayMs = new Date().getTime();
+        let from = DateDay.fromTimeMs(this.info.from);
+        do {
+            const {year, month, day} = from;
+            if (year in groups && 
+                month in groups[year] && 
+                day in groups[year][month]) {
+                const countriesInADay = new Set<string>();
+                for (const id in groups[year][month][day]) {
+                    const expense = groups[year][month][day][id];
+                    countriesInADay.add(expense.countryCode);
                 }
+                countriesInADay.forEach(c=> {
+                    if (c in daysByCountry) {
+                        daysByCountry[c] += 1;
+                    } else {
+                        daysByCountry[c] = 1;
+                    }
+                });
             }
-        }
+            
+            from.addDays(1);
+        } while (from.timeMs <= todayMs);
+
         return daysByCountry;
     }
 }

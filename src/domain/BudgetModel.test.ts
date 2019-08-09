@@ -613,18 +613,18 @@ describe('Budget model statistics', () => {
             const expense3 = {
                 ...expense2, 
                 identifier: '3',
-                when: addDaysMs(new Date().getTime(), 1).getTime()
+                when: addDays(new Date(), 1).getTime()
             };
             const expense4 = {
                 ...expense3, 
                 identifier: '4',
-                when: expense3.when,
+                when: expense1.when,
                 countryCode: 'LU'
             };
             const expense5 = {
                 ...expense3, 
                 identifier: '5',
-                when: addDaysMs(expense3.when, 1).getTime(),
+                when: addDays(new Date(), 2).getTime(),
                 countryCode: 'LU'
             };
             const bm = new BudgetModel(
@@ -638,7 +638,7 @@ describe('Budget model statistics', () => {
                 });
     
             expect(bm.totalDaysByCountry).toStrictEqual(
-                {'ES': 3, 'LU': 2}
+                {'ES': 2, 'LU': 1}
             );
         });
 
