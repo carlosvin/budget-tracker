@@ -1,12 +1,12 @@
 import { BudgetModel } from "./BudgetModel";
-import { Expense, CurrencyRates, Budget, Category, ExpensesMap } from "../interfaces";
+import { Expense, CurrencyRates, Budget, Category, ExpensesMap, ExpensesYearMap } from "../interfaces";
 import { ExpenseModel } from "./ExpenseModel";
 import { uuid } from "./utils/uuid";
 import { addDays, addDaysMs } from "./date";
 import { DateDay } from "./DateDay";
 
 function createBudget (currency: string, days: number, total: number) {
-    const from = new Date();
+    const from = addDays(new Date(), -(Math.round(days/2)));
     return { 
         currency: currency,
         from: from.getTime(),
@@ -41,7 +41,7 @@ describe('Budget Model Creation', () => {
         expect(bm.getExpense('whatever')).toBe(undefined);
         expect(await bm.totalExpenses).toBe(0);
         expect(bm.numberOfExpenses).toBe(0);
-        expect(bm.days).toBe(1);
+        expect(bm.days).toBe(16);
         expect(bm.totalDays).toBe(30);
     });
 
@@ -53,7 +53,7 @@ describe('Budget Model Creation', () => {
         const expenseDate2 = new Date(budget.to);
         const expense1: Expense = {
             amount: 100,
-            amountBaseCurrency: 98,
+            amountBaseCurrency: 100,
             categoryId: 'Category',
             countryCode: 'ES',
             currency: 'USD',
@@ -62,8 +62,6 @@ describe('Budget Model Creation', () => {
             when: expenseDate1.getTime(),
         };
         const expense2 = {...expense1,
-            amount: 2,
-            amountBaseCurrency: 2,
             currency: 'EUR',
             when: expenseDate2.getTime(),
             identifier: '2',
@@ -72,70 +70,56 @@ describe('Budget Model Creation', () => {
         bm.setExpense(expense1);
         bm.setExpense(expense2);
 
-        const expectedGroups = {
-            [expenseDate1.getFullYear()]: { 
-                [expenseDate1.getMonth()]: { 
-                    [expenseDate1.getDate()]: {
-                        [expense1.identifier]: new ExpenseModel(expense1)
-                    }
-                },
-                [expenseDate2.getMonth()]: { 
-                    [expenseDate2.getDate()]: {
-                        [expense2.identifier]: new ExpenseModel(expense2)
-                    } 
-                }
-            }
-        };
+        const expectedGroups = {};
+        const em1 = new ExpenseModel(expense1);
+        const em2 = new ExpenseModel(expense2);
+        addExpenseToGroups(expectedGroups, em1);
+        addExpenseToGroups(expectedGroups, em2);
 
         expect(bm.expenseGroups).toStrictEqual(expectedGroups);
 
-        expect(bm.totalExpenses).toBe(100);
+        expect(bm.totalExpenses).toBe(200);
         expect(bm.expectedDailyExpensesAverage).toBe(17);
 
-        expect(bm.average).toBe(100);
+        expect(bm.totalDays).toBe(days);
+        expect(bm.days).toBe(31);
+        expect(bm.average).toBe(Math.round(200/bm.days));
         expect(bm.getExpense(expense1.identifier)).toStrictEqual(new ExpenseModel(expense1));
         expect(bm.getExpense(expense2.identifier)).toStrictEqual(new ExpenseModel(expense2));
-        expect(bm.totalExpenses).toBe(100);
+        expect(bm.totalExpenses).toBe(200);
         expect(bm.numberOfExpenses).toBe(2);
-        expect(bm.days).toBe(1);
-        expect(bm.totalDays).toBe(days);
-
-        const expense2Updated = {...expense2, when: new Date().getTime()};
-        // change the date of the expense2 so it is added to calculations
-        bm.setExpense(expense2Updated);
-        expect(bm.average).toBe(100);
-        expect(bm.totalExpenses).toBe(100);
 
         // Modify budget dates to check that average is recalculated
         bm.setBudget({
             ...budget, 
-            from: addDaysMs(budget.from, -1).getTime(), 
-            to: addDaysMs(budget.to, 1).getTime()
+            from: addDaysMs(budget.from, -30).getTime(), 
+            to: addDaysMs(budget.to, 30).getTime()
         });
-        expect(bm.days).toBe(2);
-        expect(bm.totalDays).toBe(days + 2);
-        expect(bm.average).toBe(50);
-        expect(bm.totalExpenses).toBe(100);
+        expect(bm.days).toBe(61);
+        expect(bm.totalDays).toBe(days + 60);
+        expect(bm.average).toBe(3);
+        expect(bm.totalExpenses).toBe(200);
         expect(bm.getExpense('1')).toStrictEqual(new ExpenseModel(expense1));
-        expect(bm.getExpense('2')).toStrictEqual(new ExpenseModel(expense2Updated));
+        expect(bm.getExpense('2')).toStrictEqual(new ExpenseModel(expense2));
 
-        const expectedGroupsUpdated = {
-            [expenseDate1.getFullYear()]: { 
-                [expenseDate1.getMonth()]: { 
-                    [expenseDate1.getDate()]: {
-                        [expense1.identifier]: new ExpenseModel(expense1),
-                        [expense2Updated.identifier]: new ExpenseModel(expense2Updated)
-                    }
-                },
-                [expenseDate2.getMonth()]: {
-                    [expenseDate2.getDate()]: {}
-                }
-            }
-        };
-
-        expect(bm.expenseGroups).toStrictEqual(expectedGroupsUpdated);
+        expect(bm.expenseGroups).toStrictEqual(expectedGroups);
     });
 });
+
+function addExpenseToGroups (groups: ExpensesYearMap, expense: ExpenseModel) {
+    const {year, month, day} = expense;
+    if (!(year in groups)) {
+        groups[year] = {};
+    }
+    if (!(month in groups[year])) {
+        groups[year][month] = {};
+    }
+    if (!(day in groups[year][month])) {
+        groups[year][month][day] = {};
+    }
+    groups[year][month][day][expense.identifier] = expense;
+
+}
 
 describe('Expense operations', () => {
     it('Remove expense', async () => {
@@ -307,12 +291,12 @@ describe('Expense groups in budget model', () => {
         expect(bm.totalExpenses).toBe(98);
         expect(bm.expectedDailyExpensesAverage).toBe(33);
     
-        expect(bm.average).toBe(98);
+        expect(bm.average).toBe(Math.round(100/bm.days));
         expect(bm.getExpense(expense1.identifier)).toStrictEqual(new ExpenseModel(expense1));
         expect(bm.getExpense(expense2.identifier)).toStrictEqual(new ExpenseModel(expense2));
         expect(bm.totalExpenses).toBe(98);
         expect(bm.numberOfExpenses).toBe(2);
-        expect(bm.days).toBe(1);
+        expect(bm.days).toBe(16);
         expect(bm.totalDays).toBe(30);
     
     }); 
@@ -617,18 +601,59 @@ describe('Budget model statistics', () => {
             );
         });
 
+        it('Ignores expenses in future', () => {
+            const info = createBudget('USD', 60, 12000);
+            const expense1 = createExpense('1', info);
+            const expense2 = {
+                ...expense1, 
+                identifier: '2',
+                when: addDaysMs(expense1.when, 1).getTime()
+            };
+            // in future
+            const expense3 = {
+                ...expense2, 
+                identifier: '3',
+                when: addDaysMs(new Date().getTime(), 1).getTime()
+            };
+            const expense4 = {
+                ...expense3, 
+                identifier: '4',
+                when: expense3.when,
+                countryCode: 'LU'
+            };
+            const expense5 = {
+                ...expense3, 
+                identifier: '5',
+                when: addDaysMs(expense3.when, 1).getTime(),
+                countryCode: 'LU'
+            };
+            const bm = new BudgetModel(
+                info, 
+                {
+                    '1': expense1,
+                    '2': expense2,
+                    '3': expense3,
+                    '4': expense4,
+                    '5': expense5,
+                });
+    
+            expect(bm.totalDaysByCountry).toStrictEqual(
+                {'ES': 3, 'LU': 2}
+            );
+        });
+
         it ('List of years with expenses', () => {
             const info = createBudget('EUR', 365 * 4, 10000);
-            const today = new DateDay(new Date());
+            const fromDate = new DateDay(new Date(info.from));
             const expenses: ExpensesMap = {
                 '1': {
                     ...createExpense('1', info), 
-                    when: new Date(today.year + 3, today.month, today.day).getTime()},
+                    when: new Date(fromDate.year + 3, fromDate.month, fromDate.day).getTime()},
                 '2': createExpense('2', info)
             };
             const model = new BudgetModel(info, expenses);
 
-            expect(model.years).toStrictEqual([today.year, today.year + 3]);
+            expect(model.years).toStrictEqual([fromDate.year, fromDate.year + 3]);
         });
 
         it ('List of days with expenses in a year/month', () => {
