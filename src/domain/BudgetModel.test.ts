@@ -26,7 +26,7 @@ function createExpense (id: string, budget: Budget) {
         currency: 'USD',
         description: 'whatever description',
         identifier: id,
-        when: budget.from
+        when: budget.from + 1000
     };
 }
 
@@ -129,7 +129,7 @@ describe('Expense operations', () => {
         const expense3 = {...expense1, identifier: '3', when: DateDay.fromTimeMs(budget.to).addDays(3).timeMs};
         const expense4 = {...expense1, identifier: '4', amountBaseCurrency: 55};
         const bm = new BudgetModel(
-            createBudget('EUR', 30, 1000), 
+            createBudget('EUR', 30, 1000),
             {
                 '1': expense1,
                 '2': expense2,
