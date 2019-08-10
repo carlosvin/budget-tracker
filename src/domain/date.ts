@@ -15,6 +15,9 @@ export function getISODateString (date = new Date()) {
     return date.toISOString().slice(0,10);
 }
 
+/** 
+ * @returns month name from Date input
+ */
 export function monthToString (date: Date) {
     const dt = new Intl.DateTimeFormat(undefined, {month: 'long'});
     return dt.format(date);
