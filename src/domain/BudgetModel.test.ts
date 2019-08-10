@@ -695,6 +695,39 @@ describe('Budget model statistics', () => {
                 model.getDays(day1.getFullYear(), day1.getMonth())
             ).toStrictEqual([day1.getDate(), day2.getDate()]);
         });
+
+        it( 'Totals by dates', () => {
+            const bm = new BudgetModel(createBudget('USD', 10, 1000));
+            const expense1 = createExpense('1', bm.info);
+            const date1 = DateDay.fromTimeMs(expense1.when);
+            expect(bm.getTotalExpensesByDay(date1.year, date1.month, date1.day)).toBe(0);
+            expect(bm.getTotalExpensesByMonth(date1.year, date1.month)).toBe(0);
+            expect(bm.getTotalExpensesByYear(date1.year)).toBe(0);
+
+            bm.setExpense(expense1);
+            expect(
+                bm.getTotalExpensesByDay(date1.year, date1.month, date1.day)
+            ).toBe(expense1.amountBaseCurrency);
+            expect(
+                bm.getTotalExpensesByMonth(date1.year, date1.month)
+            ).toBe(expense1.amountBaseCurrency);
+            expect(
+                bm.getTotalExpensesByYear(date1.year)
+            ).toBe(expense1.amountBaseCurrency);
+
+            const expense2 = {...expense1, identifier: '2'};
+            bm.setExpense(expense2);
+            expect(
+                bm.getTotalExpensesByDay(date1.year, date1.month, date1.day)
+            ).toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);
+            expect(
+                bm.getTotalExpensesByMonth(date1.year, date1.month)
+            ).toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);
+            expect(
+                bm.getTotalExpensesByYear(date1.year)
+            ).toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);            
+        });
+
     });
 
     describe('Serialization', () => {

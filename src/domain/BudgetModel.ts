@@ -18,7 +18,7 @@ export class BudgetModel {
     private _days?: number;
     private _totalDays?: number;
 
-    constructor(info: Budget, expenses: ExpensesMap) {
+    constructor(info: Budget, expenses: ExpensesMap = {}) {
         this._info = info;
         this._expenses = {};
         for (const k in expenses) {
@@ -179,10 +179,6 @@ export class BudgetModel {
 
     get expectedDailyExpensesAverage () {
         return Math.round(this._info.total / this.totalDays);
-    }
-
-    get expectedMonthlyExpensesAverage () {
-        return this.expectedDailyExpensesAverage * 30;
     }
 
     deleteExpense (expenseId: string) {
