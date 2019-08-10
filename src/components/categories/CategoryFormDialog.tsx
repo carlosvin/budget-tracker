@@ -7,6 +7,7 @@ import { Category } from '../../interfaces';
 
 interface CategoryFormDialogProps {
     open: boolean;
+    iconNames: string[];
     onClose: (category?: Category) => void;
 }
 
@@ -24,7 +25,7 @@ export const CategoryFormDialog: React.FC<CategoryFormDialogProps> = (props) => 
                 Add category
             </DialogTitle>
             <DialogContent>
-                <CategoryForm onSubmit={props.onClose} />
+                <CategoryForm iconNames={props.iconNames} onSubmit={props.onClose} />
             </DialogContent>
         </Dialog>
     );

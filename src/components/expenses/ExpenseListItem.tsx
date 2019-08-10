@@ -10,6 +10,7 @@ import { LazyIcon } from "../../stores/IconsStore";
 import { btApp } from "../../BudgetTracker";
 import { Redirect } from 'react-router-dom';
 import { round } from "../../domain/utils/round";
+import { ExpenseUrl } from "../../domain/ExpenseUrl";
 
 interface ExpenseListItemProps {
     budget: Budget;
@@ -23,82 +24,83 @@ interface ExpenseListItemState {
     redirect?: string;
 }
 
-export class ExpenseListItem extends React.PureComponent<ExpenseListItemProps, ExpenseListItemState> {
-    constructor (props: ExpenseListItemProps) {
-        super(props);
-        this.state = {
-            categoryIcon: btApp.iconsStore.defaultIcon,
-            categoryColor: '#ccc'
-        };
-        this.fetchCategory(props.expense.categoryId);
+export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
+
+    const [category, setCategory] = React.useState<Category>();
+    const [CategoryIcon, setCategoryIcon] = React.useState<LazyIcon>(btApp.iconsStore.defaultIcon);
+    const [categoryColor, setCategoryColor] = React.useState('#ccc');
+    const [redirect, setRedirect] = React.useState();
+
+    const {expense, budget} = props;
+    const {categoryId} = expense;
+    const expenseUrl = new ExpenseUrl(props.budget.identifier, props.expense.identifier);
+
+    React.useEffect(
+        () => {
+            async function fetchCategory(categoryId: string){
+                const categoryObj = await btApp.categoriesStore.getCategory(categoryId);
+                if (categoryObj) {
+                    setCategory(categoryObj);
+                    setCategoryColor(btApp.iconsStore.getColor(categoryObj.icon));
+                    setCategoryIcon(btApp.iconsStore.getIcon(categoryObj.icon));
+                }
+            }
+            fetchCategory(categoryId);
+        },
+        [categoryId]    
+    );
+
+    function amountBase () {
+        return round(expense.amountBaseCurrency);
     }
 
-    async fetchCategory(categoryId: string){
-        const category = await btApp.categoriesStore.getCategory(categoryId);
-        if (category) {
-            this.setState({
-                category,
-                categoryIcon: btApp.iconsStore.getIcon(category.icon),
-                categoryColor: btApp.iconsStore.getColor(category.icon),
-            });
-        }
+    function amount () {
+        return `${round(expense.amount)} ${expense.currency}`;
     }
 
-    private handleClick = () => ( this.setState({...this.state, redirect: this.href }) );
-
-    render(){
-        if (this.state.redirect) {
-            return <Redirect push to={this.state.redirect} />
-        }
-        return (
-            <ListItem 
-                divider
-                button 
-                onClick={ this.handleClick }
-                id={this.props.expense.identifier}
-                >
-                <ListItemAvatar >
-                    <React.Suspense fallback={'icon'}>
-                        <this.state.categoryIcon style={{color: this.state.categoryColor}}/>
-                    </React.Suspense>
-                </ListItemAvatar>
-                <ListItemText 
-                    primary={this.state.category && this.state.category.name} 
-                    secondary={this.props.expense.description}
-                />
-                <ListItemSecondaryAction>
-                    <ListItemText>
-                        <Grid container 
-                            direction='column' 
-                            alignItems='flex-end' 
-                            justify='flex-end'>
-                            <Typography variant="body1">
-                                { this.amountBase }
-                            </Typography>
-                            { !this.isBaseCurrency && 
-                                <Typography variant="body2" color="textSecondary">
-                                    {this.amount}
-                                </Typography> 
-                            }
-                        </Grid>
-                    </ListItemText>  
-                </ListItemSecondaryAction>
-            </ListItem>);
+    function isBaseCurrency () {
+        return budget.currency === expense.currency;
     }
 
-    get amountBase () {
-        return round(this.props.expense.amountBaseCurrency);
+    const handleClick = () => ( setRedirect(expenseUrl.path) );
+
+    if (redirect) {
+        return <Redirect push to={redirect} />
     }
 
-    get amount () {
-        return `${round(this.props.expense.amount)} ${this.props.expense.currency}`;
-    }
-
-    get isBaseCurrency () {
-        return this.props.budget.currency === this.props.expense.currency;
-    }
-
-    get href () {
-        return `/budgets/${this.props.budget.identifier}/expenses/${this.props.expense.identifier}`;
-    }
+    return (
+        <ListItem 
+            divider
+            button 
+            onClick={ handleClick }
+            id={expense.identifier}
+            >
+            <ListItemAvatar >
+                <React.Suspense fallback={'icon'}>
+                    <CategoryIcon style={{color: categoryColor}}/>
+                </React.Suspense>
+            </ListItemAvatar>
+            <ListItemText 
+                primary={category && category.name} 
+                secondary={expense.description}
+            />
+            <ListItemSecondaryAction>
+                <ListItemText>
+                    <Grid container 
+                        direction='column' 
+                        alignItems='flex-end' 
+                        justify='flex-end'>
+                        <Typography variant="body1">
+                            { amountBase() }
+                        </Typography>
+                        { !isBaseCurrency() && 
+                            <Typography variant="body2" color="textSecondary">
+                                {amount()}
+                            </Typography> 
+                        }
+                    </Grid>
+                </ListItemText>  
+            </ListItemSecondaryAction>
+        </ListItem>
+    );
 }

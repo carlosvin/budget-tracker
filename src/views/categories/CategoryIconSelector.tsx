@@ -4,43 +4,42 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import { CategoryIconButton } from '../../components/categories/CategoryIconButton';
-import { btApp } from '../../BudgetTracker';
 
 interface CategoryIconSelectorProps {
     selectedValue: string;
     open: boolean;
     onClose: (selectedValue: string) => void;
+    iconNames: string[];
 };
 
-class CategoryIconSelector extends React.PureComponent<CategoryIconSelectorProps> {
-    private readonly titleId = 'dialog-title';
+const titleId = 'dialog-title';
 
-    render (){
-        return (
-            <Dialog 
-                onClose={this.handleClose} 
-                aria-labelledby={this.titleId} open={this.props.open}>
-                <DialogTitle id={this.titleId}>Select icon for category</DialogTitle>
-                <DialogContent>
-                    <Grid container direction='row' justify='center'>
-                        { btApp.iconsStore.iconNames.map( name => 
-                            <CategoryIconButton 
-                                onClick={this.handleItemClick} 
-                                name={name} 
-                                key={`icon-${name}`} />)} 
-                    </Grid>
-                </DialogContent>
-            </Dialog>
-        );
+export const CategoryIconSelector: React.FC<CategoryIconSelectorProps> = (props) => {
+
+    function handleClose() {
+        props.onClose(props.selectedValue);
     }
 
-    handleClose = () => {
-        this.props.onClose(this.props.selectedValue);
-    };
+    function handleItemClick(value: string) {
+        props.onClose(value);
+    }
 
-    handleItemClick = (value: string) => {
-        this.props.onClose(value);
-    };
+    return (
+        <Dialog
+            onClose={handleClose}
+            aria-labelledby={titleId} open={props.open}>
+            <DialogTitle id={titleId}>Select icon for category</DialogTitle>
+            <DialogContent>
+                <Grid container direction='row' justify='center'>
+                    {props.iconNames.map(name =>
+                        <CategoryIconButton
+                            onClick={handleItemClick}
+                            name={name}
+                            key={`icon-${name}`} />)}
+                </Grid>
+            </DialogContent>
+        </Dialog>
+    );
 }
 
 export default CategoryIconSelector;

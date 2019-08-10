@@ -25,108 +25,102 @@ interface BudgetViewState {
     showConfirmDialog: boolean;
 }
 
-export default class BudgetView extends React.PureComponent<BudgetViewProps, BudgetViewState> {
-    
-    private readonly url: BudgetUrl;
+export const BudgetView: React.FC<BudgetViewProps> = (props) => {
 
-    constructor(props: BudgetViewProps){
-        super(props);
-        this.state = { showConfirmDialog: false };
-        this.url = new BudgetUrl(props.match.params.budgetId);
-        this.init(props.match.params.budgetId);
-    }
+    const {budgetId} = props.match.params;
+    const {onActions, onTitleChange} = props;
 
-    private async init(budgetId: string) {
-        const budgetModel = await btApp.budgetsStore.getBudgetModel(budgetId);
-        this.props.onTitleChange(`${budgetModel.info.name} ${budgetModel.info.currency}`);
-        this.setState({
-            ...this.state,
-            budgetModel
-        });
-        this.setState({
-            ...this.state,
-            totalSpent: budgetModel.totalExpenses,
-            dailyAverage: budgetModel.average,
-        });
-    }
+    const url = new BudgetUrl(budgetId); 
 
-    private handleDeleteRequest = () => {
-        this.setState({...this.state, showConfirmDialog: true} );
-    }
+    const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
+    const [budgetModel, setBudgetModel] = React.useState<BudgetModel>();
 
-    private handleExport = async () => {
-        if (this.state.budgetModel){
-            const categories = await btApp.categoriesStore.getCategories();
-            const json = this.state.budgetModel.getJson(categories);
-            window.open(
-                'data:application/octet-stream,' +
-                encodeURIComponent(json));
+    React.useEffect(
+        () => {
+            async function init() {
+                const budgetModel = await btApp.budgetsStore.getBudgetModel(budgetId);
+                setBudgetModel(budgetModel);
+                onTitleChange(`${budgetModel.info.name} ${budgetModel.info.currency}`);
+            }
+            init();
+        },
+    [budgetId, onTitleChange]);
+
+    React.useEffect(
+        () => {
+            async function handleExport() {
+                if (budgetModel){
+                    const categories = await btApp.categoriesStore.getCategories();
+                    const json = budgetModel.getJson(categories);
+                    window.open(
+                        'data:application/octet-stream,' +
+                        encodeURIComponent(json));
+                }
+            }
+
+            onActions(
+                <React.Fragment>
+                    <AppButton icon={EditIcon} aria-label='Edit budget' to={url.pathEdit}/>
+                    <AppButton icon={DownloadIcon} aria-label='Download' onClick={handleExport}/>
+                    <DeleteButton onClick={handleDeleteRequest}/>
+                </React.Fragment>
+            );
+            return () => onActions(null);
         }
+    ,[onActions, budgetModel, url.pathEdit]);
+    
+    function handleDeleteRequest () {
+        setShowConfirmDialog(true);
     }
 
-    private handleSelectedDay = (date: YMD) => {
-        this.props.history.push(this.url.pathExpensesByDay(date));
+    function handleSelectedDay (date: YMD) {
+        props.history.push(url.pathExpensesByDay(date));
     }
 
-    private handleDelete = async (deletionConfirmed: boolean) => {
-        if (this.state.budgetModel) {
-            this.setState({...this.state, showConfirmDialog: false});
+    async function handleDelete(deletionConfirmed: boolean) {
+        if (budgetModel) {
+            setShowConfirmDialog(false);
             if (deletionConfirmed) {
-                await btApp.budgetsStore.deleteBudget(this.state.budgetModel.identifier);
-                this.props.history.replace(BudgetUrl.base);
+                await btApp.budgetsStore.deleteBudget(budgetModel.identifier);
+                props.history.replace(BudgetUrl.base);
             }
         } else {
             throw new Error('Budget is undefined');
         }
     }
 
-    componentDidMount(){
-        this.props.onActions(
+    if (budgetModel) {
+        return (
             <React.Fragment>
-                <AppButton icon={EditIcon} aria-label='Edit budget' to={this.url.pathEdit}/>
-                <AppButton icon={DownloadIcon} aria-label='Download' onClick={this.handleExport}/>
-                <DeleteButton onClick={this.handleDeleteRequest}/>
+                { budgetModel.expenses && 
+                    <React.Fragment>
+                        <BudgetQuickStats 
+                            dailyAverage={budgetModel.average}
+                            expectedDailyAverage={budgetModel.expectedDailyExpensesAverage}
+                            passedDays={budgetModel.days}
+                            totalDays={budgetModel.totalDays}
+                            totalBudget={budgetModel.info.total}
+                            totalSpent={budgetModel.totalExpenses}
+                            urlStats={url.pathStats}
+                            /> 
+                        { budgetModel.expenseGroups && 
+                        <ExpensesCalendar 
+                            budgetModel={budgetModel} 
+                            onDaySelected={handleSelectedDay} /> }
+                    </React.Fragment> 
+                } 
+                { budgetModel.numberOfExpenses === 0 && 
+                    <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
+                <AddButton href={url.pathAddExpense} />
+                <YesNoDialog 
+                    open={showConfirmDialog} 
+                    onClose={handleDelete}
+                    question='Do your really want to delete this budget?'
+                    description='All the related expenses will be deleted.'/>
             </React.Fragment>
         );
     }
-
-    componentWillUnmount(){
-        this.props.onActions([]);
-    }
-
-    render() {
-        const budgetModel = this.state.budgetModel;
-        if (budgetModel) {
-            return (
-                <React.Fragment>
-                    { budgetModel.expenses && 
-                        <React.Fragment>
-                            <BudgetQuickStats 
-                                dailyAverage={this.state.dailyAverage}
-                                expectedDailyAverage={budgetModel.expectedDailyExpensesAverage}
-                                passedDays={budgetModel.days}
-                                totalDays={budgetModel.totalDays}
-                                totalBudget={budgetModel.info.total}
-                                totalSpent={this.state.totalSpent || 0}
-                                urlStats={this.url.pathStats}
-                                /> 
-                            { budgetModel.expenseGroups && 
-                            <ExpensesCalendar 
-                                budgetModel={budgetModel} 
-                                onDaySelected={this.handleSelectedDay} /> }
-                        </React.Fragment> 
-                    } 
-                    { budgetModel.numberOfExpenses === 0 && 
-                        <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
-                    <AddButton href={this.url.pathAddExpense} />
-                    <YesNoDialog 
-                        open={this.state.showConfirmDialog} 
-                        onClose={this.handleDelete}
-                        question='Do your really want to delete this budget?'
-                        description='All the related expenses will be deleted.'/>
-                </React.Fragment>
-            );
-        }
-        return <CircularProgress/>;
-    }
+    return <CircularProgress/>;
 }
+
+export default BudgetView;

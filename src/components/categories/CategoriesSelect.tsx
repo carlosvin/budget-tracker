@@ -81,6 +81,7 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
                     <CategoryOptions categories={categories}/>
                 </TextInput>
                 <CategoryFormDialog
+                    iconNames={btApp.iconsStore.iconNames}
                     open={addCategoryOpen} 
                     onClose={handleAddCategoryClose} />
             </React.Fragment>

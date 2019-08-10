@@ -12,6 +12,7 @@ interface CategoryInputProps extends Category {
     direction?: GridDirection;
     onChange?: (category: Category) => void;
     onDelete?: (id: string) => void;
+    iconNames: string[];
 }
 
 export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
@@ -67,6 +68,7 @@ export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
                 { props.onDelete && <Grid item><DeleteButton onClick={handleDelete}/></Grid> }
             </Grid>
             <CategoryIconSelector 
+                iconNames={props.iconNames}
                 onClose={handleCloseDialog} 
                 open={dialogOpen} 
                 selectedValue={category.icon}/>

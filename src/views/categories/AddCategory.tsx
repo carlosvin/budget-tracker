@@ -26,7 +26,7 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
         handleClose();
     }
     
-    return <CategoryForm onSubmit={handleSave}/>;
+    return <CategoryForm iconNames={btApp.iconsStore.iconNames} onSubmit={handleSave}/>;
 }
 
 export default AddCategory;

@@ -29,12 +29,14 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
 
     const CategoriesMap = () => {
         if (Object.values(categories).length > 0) {
+            const iconNames = btApp.iconsStore.iconNames;
             return (
                 <React.Fragment>
                     {Object.values(categories).map(c => 
                         <CategoryInput 
                             {...props} 
                             {...c}
+                            iconNames={iconNames}
                             direction='row' 
                             key={`category-entry-${c.id}`}
                             onChange={ handleChange }
