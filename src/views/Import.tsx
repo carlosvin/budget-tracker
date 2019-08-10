@@ -13,8 +13,15 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
     const [selectedFile, setFile] = React.useState();
     const [isProcessing, setProcessing] = React.useState(false);
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
         props.onTitleChange('Import budget');
+        return function () {
+            props.onTitleChange('');
+        }
+    // eslint-disable-next-line
+    }, []);
+
+    React.useLayoutEffect(() => {
         props.onActions(
             <SaveButton 
                 disabled={!selectedFile || isProcessing} 
@@ -22,7 +29,6 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
         );
         return function () {
             props.onActions([]);
-            props.onTitleChange('');
         }
     // eslint-disable-next-line
     }, [isProcessing, selectedFile]);
@@ -39,6 +45,7 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
     };
 
     const process = async () => {
+        setProcessing(true);
         const serialized = await FilesApi.getFileContent(selectedFile);
         const {expenses, info, categories} = JSON.parse(serialized) as ImportedStructure;
 
@@ -60,11 +67,12 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
 
     return (
         <form>
-        { 
-            isProcessing ? 
-                <CircularProgress /> :
-                <TextInput type='file' onChange={handleFileChange}/>
-        }
+            { isProcessing && <CircularProgress /> }
+            <TextInput 
+                disabled={isProcessing} 
+                type='file' 
+                onChange={handleFileChange}
+                />
         </form>);
 
 }
