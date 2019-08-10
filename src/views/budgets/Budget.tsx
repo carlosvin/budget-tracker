@@ -18,13 +18,6 @@ import { BudgetUrl } from "../../domain/BudgetUrl";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
-interface BudgetViewState {
-    totalSpent?: number;
-    dailyAverage?: number;
-    budgetModel?: BudgetModel;
-    showConfirmDialog: boolean;
-}
-
 export const BudgetView: React.FC<BudgetViewProps> = (props) => {
 
     const {budgetId} = props.match.params;
