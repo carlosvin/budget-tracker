@@ -26,7 +26,6 @@ export const GraphTimeLine: React.FC<GraphProps&{avg: number, expectedAvg: numbe
                 data={props.data} 
                 theme={VictoryTheme.material}
                 interpolation='step'
-                label='Date'
                 scale={{x: 'time', y: 'log'}}
             />
             <VictoryLine
