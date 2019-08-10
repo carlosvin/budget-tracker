@@ -19,34 +19,29 @@ export interface HeaderNotifierProps {
     onActions: (actions: React.ReactNode) => void;
 }
 
-export class Routes extends React.PureComponent<HeaderNotifierProps> {
-    render() {
-        return (
-            <Switch>
-                <Route exact path="/budgets" render={this._render(routes.BudgetList)} />
-                <Route exact path='/budgets/add' render={this._render(routes.BudgetEdit)} />
-                <Route exact path='/budgets/:budgetId/edit' render={this._render(routes.BudgetEdit)} />
-                <Route exact path='/budgets/:budgetId/stats' render={this._render(routes.BudgetStats)} />
-                <Route exact path='/budgets/:budgetId' render={this._render(routes.BudgetView)} />
-                <Route exact path='/budgets/:budgetId/expenses/add' render={this._render(routes.ExpenseView)} />
-                <Route exact path='/budgets/:budgetId/expenses/:expenseId' render={this._render(routes.ExpenseView)} />
-                <Route exact 
-                    path='/budgets/:budgetId/expenses' 
-                    render={this._render(routes.ExpensesView)} />
-                <Route exact path='/categories' render={this._render(routes.CategoryList)} />
-                <Route exact path='/categories/add' render={this._render(routes.AddCategory)} />
-                <Route exact path='/' render={this._render(routes.BudgetList)} />
-                <Route exact path='/import' render={this._render(routes.Import)} />
-                <Route exact path='/about' render={this._render(routes.About)} />
-            </Switch>);
-    }
-
-    // Function to inject properties to components rendered by router
-    // eslint-disable-next-line
-    private _render = (ComponentType: React.ComponentType<any>) => (
-        // eslint-disable-next-line
-        (props: RouteComponentProps<any>) => <React.Suspense fallback='loading view'>
-            <ComponentType {...props} {...this.props}/>
-        </React.Suspense>
-    );
+// Function to inject properties to components rendered by router
+function _render(ComponentType: React.ComponentType<any>, parentProps: HeaderNotifierProps) {
+    return (props: RouteComponentProps<any>) => <React.Suspense fallback='loading view'>
+            <ComponentType {...props} {...parentProps}/>
+        </React.Suspense>;
 }
+
+export const Routes: React.FC<HeaderNotifierProps> = (props) => (
+    <Switch>
+        <Route exact path="/budgets" render={_render(routes.BudgetList, props)} />
+        <Route exact path='/budgets/add' render={_render(routes.BudgetEdit, props)} />
+        <Route exact path='/budgets/:budgetId/edit' render={_render(routes.BudgetEdit, props)} />
+        <Route exact path='/budgets/:budgetId/stats' render={_render(routes.BudgetStats, props)} />
+        <Route exact path='/budgets/:budgetId' render={_render(routes.BudgetView, props)} />
+        <Route exact path='/budgets/:budgetId/expenses/add' render={_render(routes.ExpenseView, props)} />
+        <Route exact path='/budgets/:budgetId/expenses/:expenseId' render={_render(routes.ExpenseView, props)} />
+        <Route exact 
+            path='/budgets/:budgetId/expenses' 
+            render={_render(routes.ExpensesView, props)} />
+        <Route exact path='/categories' render={_render(routes.CategoryList, props)} />
+        <Route exact path='/categories/add' render={_render(routes.AddCategory, props)} />
+        <Route exact path='/' render={_render(routes.BudgetList, props)} />
+        <Route exact path='/import' render={_render(routes.Import, props)} />
+        <Route exact path='/about' render={_render(routes.About, props)} />
+    </Switch>
+);

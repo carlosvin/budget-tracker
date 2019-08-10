@@ -4,19 +4,21 @@ import ListItem from '@material-ui/core/ListItem';
 import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
 import { Budget } from "../../interfaces";
-import { dateDiff } from "../../domain/date";
 import { Link } from 'react-router-dom';
+import { BudgetUrl } from "../../domain/BudgetUrl";
+import { dateDiff } from "../../domain/date";
 
+export const BudgetListItem: React.FC<Budget> = (props) => {
+    const days = dateDiff(props.from, props.to);
 
-export class BudgetListItem extends React.PureComponent<Budget> {
-    render() {
-        return <ListItem
-            button
-            divider
-            component={Link}
-            to={`/budgets/${this.props.identifier}`}>
+    return (
+        <ListItem
+        button
+        divider
+        component={Link}
+        to={new BudgetUrl(props.identifier).path}>
             <ListItemText
-                primary={this.props.name}
+                primary={props.name}
                 secondary={
                     <Grid
                         container
@@ -26,18 +28,14 @@ export class BudgetListItem extends React.PureComponent<Budget> {
                         component="span"
                     >
                         <Typography component="span" color="textPrimary">
-                            {`${this.days} days`}
+                            {`${days} days`}
                         </Typography>
                         <Typography component="span" color="textSecondary" align="right">
-                            {`${this.props.total} ${this.props.currency}`}
+                            {`${props.total} ${props.currency}`}
                         </Typography>
                     </Grid>
                 }
             />
-        </ListItem>;
-    }
-
-    get days() {
-        return dateDiff(this.props.from, this.props.to);
-    }
+        </ListItem>
+    );
 }

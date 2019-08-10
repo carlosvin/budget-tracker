@@ -13,64 +13,45 @@ export interface CurrencyInputProps  {
     disabled?: boolean;
 }
 
-interface CurrencyInputState {
-    currencies: { [currency: string]: string};
-    selected?: string;
-}
+export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
 
-export class CurrencyInput extends React.PureComponent<CurrencyInputProps, CurrencyInputState> {
+    const [currencies, setCurrencies] = React.useState();
+    const [selected, setSelected] = React.useState(props.selectedCurrency);
+    const {onCurrencyChange} = props;
 
-    constructor(props: CurrencyInputProps) {
-        super(props);
-        this.state = {
-            currencies: {}, 
-            selected: props.selectedCurrency};
-        this.initCurrencies();
-    }
-
-    static getDerivedStateFromProps(nextProps: CurrencyInputProps, prevState: CurrencyInputState){
-        return {selected: nextProps.selectedCurrency || prevState.selected };
-    }
-
-    private async initCurrencies () {
-        this.setState ({
-            ...this.state,
-            currencies: await btApp.currenciesStore.getCurrencies()
-        });
-    }
-
-    private handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        this.setState({
-            ...this.state,
-            selected: event.target.value
-        });
-        if (this.props.onCurrencyChange) {
-            this.props.onCurrencyChange(event.target.value);
+    React.useEffect(() => {
+        async function initCurrencies () {
+            setCurrencies(await btApp.currenciesStore.getCurrencies());
         }
-    }
 
-    get selected () {
-        return this.state.selected || this.props.selectedCurrency;
-    }
+        initCurrencies();
+    }, []);
 
-    render() {
-        if (this.state && this.state.currencies) {
-            return (
-                <TextInput
-                    label='Currency'
-                    select
-                    SelectProps={{ native: true }}
-                    onChange={this.handleChange}
-                    value={this.selected}
-                    required
-                    disabled={this.props.disabled}
-                >
-                    { Object.keys(this.state.currencies).map(
-                        (k: string) => (
-                            <option key={`currency-option-${k}`} value={k}>{this.state.currencies[k]}</option>))}
-                </TextInput>
-            );
+    React.useEffect(() => {
+        if (onCurrencyChange && selected) {
+            onCurrencyChange(selected);
         }
-        return null;
+    }, [selected, onCurrencyChange]);
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSelected(event.target.value);
     }
+
+    return (
+        <TextInput
+            label='Currency'
+            select
+            SelectProps={{ native: true }}
+            onChange={handleChange}
+            value={selected}
+            required
+            disabled={props.disabled || currencies === undefined}
+        >
+            { currencies === undefined ? 
+                <option>Loading...</option> : 
+                Object.keys(currencies).map(
+                (k: string) => (
+                    <option key={`currency-option-${k}`} value={k}>{currencies[k]}</option>))}
+        </TextInput>
+    );
 }
