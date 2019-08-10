@@ -2,15 +2,15 @@ import { BudgetModel } from "./BudgetModel";
 import { Expense, CurrencyRates, Budget, Category, ExpensesMap, ExpensesYearMap } from "../interfaces";
 import { ExpenseModel } from "./ExpenseModel";
 import { uuid } from "./utils/uuid";
-import { addDays, addDaysMs } from "./date";
 import { DateDay } from "./DateDay";
 
 function createBudget (currency: string, days: number, total: number) {
-    const from = addDays(new Date(), -(Math.round(days/2)));
+    const from = new DateDay().addDays(-(Math.round(days/2)));
+    const to = from.clone().addDays(days);
     return { 
         currency: currency,
-        from: from.getTime(),
-        to: addDays(from, days).getTime(),
+        from: from.timeMs,
+        to: to.timeMs,
         identifier: uuid(),
         name: 'Test',
         total: total
@@ -92,8 +92,8 @@ describe('Budget Model Creation', () => {
         // Modify budget dates to check that average is recalculated
         bm.setBudget({
             ...budget, 
-            from: addDaysMs(budget.from, -30).getTime(), 
-            to: addDaysMs(budget.to, 30).getTime()
+            from: DateDay.fromTimeMs(budget.from).addDays(-30).timeMs, 
+            to: DateDay.fromTimeMs(budget.to).addDays(30).timeMs
         });
         expect(bm.days).toBe(61);
         expect(bm.totalDays).toBe(days + 60);
@@ -126,7 +126,7 @@ describe('Expense operations', () => {
         const budget = createBudget('EUR', 30, 1000);
         const expense1 = createExpense('1', budget);
         const expense2 = {...expense1, identifier: '2'};
-        const expense3 = {...expense1, identifier: '3', when: addDaysMs(budget.to, 3).getTime()};
+        const expense3 = {...expense1, identifier: '3', when: DateDay.fromTimeMs(budget.to).addDays(3).timeMs};
         const expense4 = {...expense1, identifier: '4', amountBaseCurrency: 55};
         const bm = new BudgetModel(
             createBudget('EUR', 30, 1000), 
@@ -198,7 +198,7 @@ describe('Expense operations', () => {
     
         const modifiedExpense2Date = {
             ...expense2, 
-            when: addDaysMs(budget.from, 1).getTime()
+            when: DateDay.fromTimeMs(budget.from).addDays(1).timeMs
         };
         
         bm.setExpense(modifiedExpense2Date);
@@ -261,7 +261,7 @@ describe('Expense groups in budget model', () => {
             amount: 2,
             amountBaseCurrency: 2,
             currency: 'EUR',
-            when: addDaysMs(budget.to,  2).getTime(),
+            when: DateDay.fromTimeMs(budget.to).addDays(2).timeMs,
             identifier: '2',
         };
         const bm = new BudgetModel(
@@ -564,15 +564,16 @@ describe('Budget model statistics', () => {
         it('ES in 3 days, LU in 2 days', () => {
             const info = createBudget('USD', 60, 12000);
             const expense1 = createExpense('1', info);
+            const expense2Date = DateDay.fromTimeMs(expense1.when).addDays(1);
             const expense2 = {
                 ...expense1, 
                 identifier: '2',
-                when: addDaysMs(expense1.when, 1).getTime()
+                when: expense2Date.timeMs
             };
             const expense3 = {
                 ...expense2, 
                 identifier: '3',
-                when: addDaysMs(expense2.when, 1).getTime()
+                when: expense2Date.clone().addDays(1).timeMs
             };
             const expense4 = {
                 ...expense3, 
@@ -583,7 +584,7 @@ describe('Budget model statistics', () => {
             const expense5 = {
                 ...expense3, 
                 identifier: '5',
-                when: addDaysMs(expense3.when, 1).getTime(),
+                when: expense2Date.clone().addDays(2).timeMs,
                 countryCode: 'LU'
             };
             const bm = new BudgetModel(
@@ -607,13 +608,13 @@ describe('Budget model statistics', () => {
             const expense2 = {
                 ...expense1, 
                 identifier: '2',
-                when: addDaysMs(expense1.when, 1).getTime()
+                when: DateDay.fromTimeMs(expense1.when).addDays(1).timeMs
             };
             // in future
             const expense3 = {
                 ...expense2, 
                 identifier: '3',
-                when: addDays(new Date(), 1).getTime()
+                when: new DateDay().addDays(1).timeMs
             };
             const expense4 = {
                 ...expense3, 
@@ -624,7 +625,7 @@ describe('Budget model statistics', () => {
             const expense5 = {
                 ...expense3, 
                 identifier: '5',
-                when: addDays(new Date(), 2).getTime(),
+                when: new DateDay().addDays(2).timeMs,
                 countryCode: 'LU'
             };
             const bm = new BudgetModel(

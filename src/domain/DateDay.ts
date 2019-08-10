@@ -1,11 +1,14 @@
 import { YMD } from "../interfaces";
-import { addDays } from "./date";
 
 export class DateDay implements YMD {
     private readonly _date: Date;
 
-    constructor(date: Date) {
+    constructor(date = new Date()) {
         this._date = new Date(date);
+    }
+
+    clone() {
+        return new DateDay(this._date);
     }
 
     get year () {

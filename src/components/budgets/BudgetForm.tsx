@@ -2,11 +2,12 @@
 import * as React from 'react';
 import { Budget } from '../../interfaces';
 import { TextInput } from '../TextInput';
-import { getISODateString, addDays } from '../../domain/date';
+import { getISODateString } from '../../domain/date';
 import { AmountInput } from '../AmountInput';
 import { CurrencyInput } from '../CurrencyInput';
 import { SaveButtonFab } from '../buttons/SaveButton';
 import { uuid } from '../../domain/utils/uuid';
+import { DateDay } from '../../domain/DateDay';
 
 interface BudgetFormProps {
     budget?: Budget;
@@ -15,11 +16,11 @@ interface BudgetFormProps {
 }
 
 export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
-    const fromDate = new Date();
+    const fromDate = new DateDay();
     const [budget, setBudget] = React.useState<Budget>({ 
         name: '', 
-        from: fromDate.getTime(), 
-        to: addDays(fromDate, 30).getTime(),
+        from: fromDate.timeMs, 
+        to: fromDate.addDays(30).timeMs,
         currency: 'EUR',
         total: 0,
         identifier: uuid()

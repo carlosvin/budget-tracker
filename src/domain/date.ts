@@ -19,13 +19,3 @@ export function monthToString (date: Date) {
     const dt = new Intl.DateTimeFormat(undefined, {month: 'long'});
     return dt.format(date);
 }
-
-export function addDays(from: Date, days: number): Date {
-    return addDaysMs(Number(from), days);   
-}
-
-export function addDaysMs(timestamp: number, days: number): Date {
-    const copy = new Date(timestamp);
-    copy.setDate(copy.getDate() + days);
-    return copy;
-}

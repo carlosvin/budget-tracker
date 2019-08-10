@@ -1,7 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import Grid from "@material-ui/core/Grid";
-import { getISODateString, addDaysMs } from "../../domain/date";
+import { getISODateString } from "../../domain/date";
 import { TextInput } from "../../components/TextInput";
 import { HeaderNotifierProps } from "../../routes";
 import CountryInput from "../../components/CountryInput";
@@ -125,7 +125,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 currency,
                 countryCode,
                 identifier: isAddView ? identifier + dayNumber : identifier,
-                when: addDaysMs(timeMs, dayNumber).getTime(),
+                when: DateDay.fromTimeMs(timeMs).addDays(dayNumber).timeMs,
                 amountBaseCurrency: inputAmountBase,
                 description
             };
