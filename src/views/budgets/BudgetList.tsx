@@ -25,19 +25,13 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
                 <ImportExportButton to='/import'/>
             </React.Fragment>
         );
+        async function fetchBudgets() {
+            const index = await btApp.budgetsStore.getBudgetsIndex();
+            setBudgets(Object.values(index));
+        }
+        fetchBudgets();
     // eslint-disable-next-line
     }, []);
-
-    React.useEffect(
-        () => {
-            async function fetchBudgets() {
-                const index = await btApp.budgetsStore.getBudgetsIndex();
-                setBudgets(Object.values(index));
-            }
-            fetchBudgets();
-        },
-        [budgets]
-    );
 
     if (budgets === undefined) {
         return null;
