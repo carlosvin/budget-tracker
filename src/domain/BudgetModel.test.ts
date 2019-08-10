@@ -122,7 +122,7 @@ function addExpenseToGroups (groups: ExpensesYearMap, expense: ExpenseModel) {
 }
 
 describe('Expense operations', () => {
-    it('Remove expense', async () => {
+    it('Remove expense', () => {
         const budget = createBudget('EUR', 30, 1000);
         const expense1 = createExpense('1', budget);
         const expense2 = {...expense1, identifier: '2'};
@@ -136,6 +136,7 @@ describe('Expense operations', () => {
                 '3': expense3,
                 '4': expense4,
             });
+
         expect(bm.totalExpenses).toBe(
             expense1.amountBaseCurrency + 
             expense2.amountBaseCurrency + 
@@ -153,6 +154,19 @@ describe('Expense operations', () => {
             expense4.amountBaseCurrency);
     });
     
+    it('Removes expense when it was manually removed from groups', () => {
+        const budget = createBudget('EUR', 30, 1000);
+        const expense1 = createExpense('1', budget);
+        const bm = new BudgetModel(
+            createBudget('EUR', 30, 1000), 
+            {
+                '1': expense1,
+            });
+        const {year, month, day, identifier} = new ExpenseModel(expense1);
+        delete bm.expenseGroups[year][month][day];
+        expect(bm.deleteExpense('1')).toBe(true);
+
+    });
     
     it('Modify expense amount', async () => {
         const budget = createBudget('EUR', 30, 1000);
