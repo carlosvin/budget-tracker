@@ -8,7 +8,7 @@ import { CurrencyInput } from '../CurrencyInput';
 import { SaveButtonFab } from '../buttons/SaveButton';
 
 interface BudgetFormProps {
-    budget?: Budget;
+    budget: Budget;
     onSubmit: (budget: Budget) => void;
     disabled?: boolean;
 }

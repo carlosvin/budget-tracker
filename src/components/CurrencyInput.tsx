@@ -31,7 +31,8 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
         if (onCurrencyChange && selected) {
             onCurrencyChange(selected);
         }
-    }, [selected, onCurrencyChange]);
+        // eslint-disable-next-line
+    }, [selected]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelected(event.target.value);

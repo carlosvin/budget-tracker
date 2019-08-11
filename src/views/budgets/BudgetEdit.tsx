@@ -7,6 +7,8 @@ import { btApp } from "../../BudgetTracker";
 import { CloseButton } from "../../components/buttons/CloseButton";
 import { goBack } from "../../domain/utils/goBack";
 import { BudgetUrl } from "../../domain/BudgetUrl";
+import { DateDay } from "../../domain/DateDay";
+import { uuid } from "../../domain/utils/uuid";
 
 interface BudgetEditProps extends 
     RouteComponentProps<{ budgetId: string }>, 
@@ -14,9 +16,17 @@ interface BudgetEditProps extends
 }
 
 const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
-
+    const fromDate = new DateDay();
     const budgetId = props.match.params.budgetId;
-    const [budgetInfo, setBudgetInfo] = React.useState<Budget|undefined>(); 
+    
+    const [budgetInfo, setBudgetInfo] = React.useState<Budget>({ 
+        name: '', 
+        from: fromDate.timeMs, 
+        to: fromDate.addDays(30).timeMs,
+        currency: 'EUR',
+        total: 0,
+        identifier: uuid()
+    }); 
 
     function handleClose () {
         goBack(props.history);
@@ -51,11 +61,11 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
         props.history.replace(new BudgetUrl(budget.identifier).path);
     }
 
-    return <BudgetForm 
+    return  <BudgetForm 
         budget={budgetInfo}
         onSubmit={handleSubmit}
         disabled={saving}
-    />;
+        />;
 }
 
 export default BudgetEdit;

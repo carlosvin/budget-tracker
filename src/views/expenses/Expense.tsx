@@ -52,7 +52,10 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         }
         isAddView ? onTitleChange('Add expense'): onTitleChange('Edit expense');
         onActions(<DeleteButton onClick={handleDelete}/>);
-    // eslint-disable-next-line
+        return function () {
+            onActions(null); 
+        }
+        // eslint-disable-next-line
     }, []);
 
     React.useEffect(() => {
