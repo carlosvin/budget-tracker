@@ -67,7 +67,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
                     budget={budget}
                     expensesByDay={expenses} 
                     expectedDailyAvg={expectedDailyAvg}  />
-                <AddButton href={pathAddExpense}/>
+                <AddButton to={pathAddExpense}/>
             </React.Fragment>
         );
     }

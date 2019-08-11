@@ -21,7 +21,7 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
         props.onTitleChange('Budget list');
         props.onActions(
             <React.Fragment>
-                <AddButton href={BudgetUrl.add}/>
+                <AddButton to={BudgetUrl.add}/>
                 <ImportExportButton to='/import'/>
             </React.Fragment>
         );

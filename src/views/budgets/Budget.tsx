@@ -104,7 +104,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
                 } 
                 { budgetModel.numberOfExpenses === 0 && 
                     <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
-                <AddButton href={url.pathAddExpense} />
+                <AddButton to={url.pathAddExpense} />
                 <YesNoDialog 
                     open={showConfirmDialog} 
                     onClose={handleDelete}

@@ -71,7 +71,7 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
     return (
         <form onSubmit={handleSave}>
             <CategoriesMap />
-            <AddButton href='/categories/add'/>
+            <AddButton to='/categories/add'/>
             <SaveButtonFab type='submit' disabled={!changed}/>
         </form>
     );
