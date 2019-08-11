@@ -11,12 +11,8 @@ export class ErrorBoundary extends React.Component<{}, { error: string | null }>
     }
 
     componentDidCatch(error: Error, info: React.ErrorInfo) {
-        this.setState({ error: error.message });
-        this.log(error, info);
-    }
-
-    private log(error: Error, info: React.ErrorInfo) {
         console.error(error, info);
+        this.setState({ error: error.message });
     }
 
     private handleClose = () => {
