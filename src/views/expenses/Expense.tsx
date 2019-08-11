@@ -45,17 +45,15 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const budgetUrl = new BudgetUrl(budgetId);
     const isAddView = expenseId === undefined;
 
-    React.useLayoutEffect(
-        ()=> {
-            async function handleDelete () {
-                await btApp.budgetsStore.deleteExpense(budgetId, expenseId);
-                replace(budgetUrl.path);
-            }
-            isAddView ? onTitleChange('Add expense'): onTitleChange('Edit expense');
-            onActions(<DeleteButton onClick={handleDelete}/>);
-        },
+    React.useLayoutEffect(()=> {
+        async function handleDelete () {
+            await btApp.budgetsStore.deleteExpense(budgetId, expenseId);
+            replace(budgetUrl.path);
+        }
+        isAddView ? onTitleChange('Add expense'): onTitleChange('Edit expense');
+        onActions(<DeleteButton onClick={handleDelete}/>);
     // eslint-disable-next-line
-    []);
+    }, []);
 
     React.useEffect(() => {
         async function initRates (baseCurrency: string) {

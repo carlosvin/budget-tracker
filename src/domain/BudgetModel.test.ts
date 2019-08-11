@@ -554,6 +554,12 @@ describe('Budget model statistics', () => {
             .toBe(
                 expense2.amountBaseCurrency + 
                 expense3.amountBaseCurrency);
+
+        bm.setExpense({...expense1, identifier: '5', when: new DateDay().addDays(1).timeMs});
+        expect(bm.totalsByCountry.getSubtotal([expense2.countryCode, ]))
+        .toBe(
+            expense2.amountBaseCurrency + 
+            expense3.amountBaseCurrency);
     });
 
     describe('Number of days in a country', () => { 

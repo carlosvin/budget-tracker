@@ -38,7 +38,7 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
             return () => {
                 props.onActions([]);
             }
-        // eslint-disable-next-line
+        // eslint-disable-next-line 
         }, []
     );
 

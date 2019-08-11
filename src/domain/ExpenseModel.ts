@@ -66,6 +66,10 @@ export class ExpenseModel implements Expense {
         return this.when <= budget.to && this.when >= budget.from;
     }
 
+    inDates (fromMs: number, toMs: number) {
+        return this.when <= toMs && this.when >= fromMs;
+    }
+
     addToTotals(totals: NestedTotal) {
         totals.add(this.amountBaseCurrency, this.dateParts);
     }

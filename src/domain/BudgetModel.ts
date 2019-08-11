@@ -62,20 +62,26 @@ export class BudgetModel {
     get totalsByCountry () {
         if (this._totalsByCountry === undefined) {
             this._totalsByCountry = new NestedTotal();
-            Object.values(this.expenses).forEach((e) => this._addTotalsByCountry(e));
+            const toMs = Math.min(new DateDay().timeMs, this.info.to);
+            Object
+                .values(this.expenses)
+                .filter(e => e.inDates(this.info.from, toMs))
+                .forEach((e) => this._addTotalsByCountry(e));
         }
         return this._totalsByCountry;
     }
 
-    private _addTotalsByCountry (expense: Expense) {
-        if (this._totalsByCountry) {
+    private _addTotalsByCountry (expense: ExpenseModel) {
+        const toMs = Math.min(new DateDay().timeMs, this.info.to);
+        if (this._totalsByCountry && expense.inDates(this.info.from, toMs)) {
             this._totalsByCountry.add(
                 expense.amountBaseCurrency, [expense.countryCode,]);
         }
     }
     
-    private _subtractTotalsByCountry (expense: Expense) {
-        if (this._totalsByCountry) {
+    private _subtractTotalsByCountry (expense: ExpenseModel) {
+        const toMs = Math.min(new DateDay().timeMs, this.info.to);
+        if (this._totalsByCountry && expense.inDates(this.info.from, toMs)) {
             this._totalsByCountry.subtract(
                 expense.amountBaseCurrency, [expense.countryCode,]);
         }
