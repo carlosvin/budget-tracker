@@ -38,7 +38,8 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
     React.useEffect(
         () => {
             async function fetchCategory(categoryId: string){
-                const categoryObj = await btApp.categoriesStore.getCategory(categoryId);
+                const store = await btApp.getCategoriesStore();
+                const categoryObj = await store.getCategory(categoryId);
                 if (categoryObj) {
                     setCategory(categoryObj);
                     setCategoryColor(btApp.iconsStore.getColor(categoryObj.icon));

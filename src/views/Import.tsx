@@ -48,13 +48,13 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
         setProcessing(true);
         const serialized = await FilesApi.getFileContent(selectedFile);
         const {expenses, info, categories} = JSON.parse(serialized) as ImportedStructure;
-
-        await btApp.budgetsStore.setBudget(info);
+        const store = await btApp.getBudgetsStore();
+        await store.setBudget(info);
         for (const id in expenses) {
-            await btApp.budgetsStore.setExpense(info.identifier, expenses[id]);
+            await store.setExpense(info.identifier, expenses[id]);
         }
 
-        btApp.categoriesStore.setCategories(categories);
+        await (await btApp.getCategoriesStore()).setCategories(categories);
         
         setProcessing(false);
         props.history.replace('/budgets');

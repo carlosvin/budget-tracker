@@ -16,6 +16,7 @@ import { BudgetUrl } from "../../domain/BudgetUrl";
 import { DateDay } from "../../domain/DateDay";
 import { round } from "../../domain/utils/round";
 import { uuid } from "../../domain/utils/uuid";
+import { BudgetModel } from "../../domain/BudgetModel";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -47,7 +48,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     React.useLayoutEffect(()=> {
         async function handleDelete () {
-            await btApp.budgetsStore.deleteExpense(budgetId, expenseId);
+            await (await btApp.getBudgetsStore()).deleteExpense(budgetId, expenseId);
             replace(budgetUrl.path);
         }
         isAddView ? onTitleChange('Add expense'): onTitleChange('Edit expense');
@@ -62,12 +63,18 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         async function initRates (baseCurrency: string) {
             setRates(await btApp.currenciesStore.getRates(baseCurrency));
         }
+        
         async function initBudget () {
-            const b = await btApp.budgetsStore.getBudgetInfo(budgetId);
-            setBaseCurrency(b.currency);
-            initRates(b.currency);
-            if (isAddView && !currency) {
-                setCurrency(b.currency);
+            const b = await (await btApp.getBudgetsStore()).getBudgetModel(budgetId);
+            setBaseCurrency(b.info.currency);
+            initRates(b.info.currency);
+            if (isAddView) {
+                if (!currency) {
+                    setCurrency(b.info.currency);
+                }
+                initAdd();
+            } else {
+                initEdit(b);
             }
         }
 
@@ -88,8 +95,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             }
         }
 
-        async function initEdit () {
-            const model = await btApp.budgetsStore.getBudgetModel(budgetId);
+        async function initEdit (model: BudgetModel) {
             const e = model.getExpense(expenseId);
             setAmount(e.amount);
             e.amountBaseCurrency && setAmountBaseCurrency(e.amountBaseCurrency);
@@ -102,15 +108,10 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         }
         
         initBudget();
-        if (isAddView) {
-            initAdd();
-        } else {
-            initEdit();
-        }
+        
         return function () {
             onActions([]);
         }
-
         // eslint-disable-next-line
     }, [budgetId, expenseId]);
 
@@ -147,7 +148,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 if (!firstExpenseId) {
                     firstExpenseId = expense.identifier;
                 }
-                await btApp.budgetsStore.setExpense(
+                await (await btApp.getBudgetsStore()).setExpense(
                         budgetId,
                         expense);
             }
@@ -199,55 +200,52 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         return undefined;
     }
 
-    return (
-        <React.Fragment>
-            
-            <form onSubmit={handleSubmit} autoComplete='on'>
-                <Grid container
-                    justify='space-between'
-                    alignItems='baseline'
-                    alignContent='stretch'>
-                    <Grid item >
-                        { rates && currency && <AmountWithCurrencyInput
-                            rates={ rates }
-                            amountInput={amount}
-                            amountInBaseCurrency={amountBaseCurrency}
-                            selectedCurrency={currency}
-                            onChange={handleAmountChange}
-                            onError={setError}
-                        /> }
-                    </Grid>
-                    <Grid item >
-                        <CategoriesSelect onCategoryChange={setCategoryId} selectedCategory={categoryId}/>
-                    </Grid>
-                    <Grid item>
-                        <WhenInput />
-                    </Grid>
-                    <Grid item>
-                        <CountryInput 
-                            selectedCountry={ countryCode } 
-                            onCountryChange={ handleCountry }/>
-                    </Grid>
-                    <Grid item >
-                        <TextInput 
-                            label='Description' 
-                            value={ description || '' }
-                            onChange={ handleDescription } />
-                    </Grid>
-                    <Grid item>
-                        <TextInput 
-                            type='number'
-                            label={'Split in days'}
-                            value={ splitInDays }
-                            helperText={ amountPerDay() }
-                            onChange={ handleSplitInDays }
-                            inputProps={ { min: 1 } }
-                        />
-                    </Grid>
+    return (            
+        <form onSubmit={handleSubmit} autoComplete='on'>
+            <Grid container
+                justify='space-between'
+                alignItems='baseline'
+                alignContent='stretch'>
+                <Grid item >
+                    { rates && currency && <AmountWithCurrencyInput
+                        rates={ rates }
+                        amountInput={amount}
+                        amountInBaseCurrency={amountBaseCurrency}
+                        selectedCurrency={currency}
+                        onChange={handleAmountChange}
+                        onError={setError}
+                    /> }
                 </Grid>
-                <SaveButtonFab type='submit' color='primary' disabled={error !== undefined}/>
-            </form>
-        </React.Fragment>
+                <Grid item >
+                    <CategoriesSelect onCategoryChange={setCategoryId} selectedCategory={categoryId}/>
+                </Grid>
+                <Grid item>
+                    <WhenInput />
+                </Grid>
+                <Grid item>
+                    <CountryInput 
+                        selectedCountry={ countryCode } 
+                        onCountryChange={ handleCountry }/>
+                </Grid>
+                <Grid item >
+                    <TextInput 
+                        label='Description' 
+                        value={ description || '' }
+                        onChange={ handleDescription } />
+                </Grid>
+                <Grid item>
+                    <TextInput 
+                        type='number'
+                        label={'Split in days'}
+                        value={ splitInDays }
+                        helperText={ amountPerDay() }
+                        onChange={ handleSplitInDays }
+                        inputProps={ { min: 1 } }
+                    />
+                </Grid>
+            </Grid>
+            <SaveButtonFab type='submit' color='primary' disabled={error !== undefined}/>
+        </form>
         );
 }
 

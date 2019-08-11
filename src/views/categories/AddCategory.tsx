@@ -21,8 +21,8 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
     // eslint-disable-next-line
     }, []);
 
-    const handleSave = (category: Category) => {
-        btApp.categoriesStore.setCategory(category);
+    const handleSave = async (category: Category) => {
+        await (await btApp.getCategoriesStore()).setCategory(category);
         handleClose();
     }
     

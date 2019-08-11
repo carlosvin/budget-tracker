@@ -21,7 +21,7 @@ export const BudgetStats: React.FC<BudgetStatsProps> = (props) => {
     React.useEffect(
         () => {
             async function fetchBudget() {
-                const budget = await btApp.budgetsStore.getBudgetModel(budgetId);
+                const budget = await (await btApp.getBudgetsStore()).getBudgetModel(budgetId);
                 setBudget(budget);
             }
             fetchBudget();
@@ -32,7 +32,7 @@ export const BudgetStats: React.FC<BudgetStatsProps> = (props) => {
     React.useEffect(
         () => {
             async function fetchCategories() {
-                const categories = await btApp.categoriesStore.getCategories();
+                const categories = await (await btApp.getCategoriesStore()).getCategories();
                 setCategories(categories);
             }
             fetchCategories();

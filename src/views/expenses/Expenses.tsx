@@ -38,7 +38,8 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     
     React.useEffect(() => {
         async function fetchExpenses () {
-            const bm = await btApp.budgetsStore.getBudgetModel(budgetId); 
+            const bm = await (await btApp.getBudgetsStore()).getBudgetModel(budgetId);
+            setBudget(bm.info);
             const expenseGroups = bm.expenseGroups;
             if (expenseGroups) {
                 const expensesMap = expenseGroups[year][month][day];    
@@ -47,13 +48,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
                 setTotalSpent(bm.getTotalExpensesByDay(year, month, day));
             }
         }
-        async function initBudget () {
-            const b = await btApp.budgetsStore.getBudgetInfo(budgetId);
-            setBudget(b);
-        }
-
         fetchExpenses();
-        initBudget();
     }, [year, month, day, budgetId]);
 
     if (expenses && expectedDailyAvg && budget) {

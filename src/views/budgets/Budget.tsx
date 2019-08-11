@@ -31,7 +31,8 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
     React.useEffect(
         () => {
             async function init() {
-                const budgetModel = await btApp.budgetsStore.getBudgetModel(budgetId);
+                const store = await btApp.getBudgetsStore();
+                const budgetModel = await store.getBudgetModel(budgetId);
                 setBudgetModel(budgetModel);
                 onTitleChange(`${budgetModel.info.name} ${budgetModel.info.currency}`);
             }
@@ -43,7 +44,8 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
         () => {
             async function handleExport() {
                 if (budgetModel){
-                    const categories = await btApp.categoriesStore.getCategories();
+                    const store  = await btApp.getCategoriesStore();
+                    const categories = await store.getCategories();
                     const json = budgetModel.getJson(categories);
                     window.open(
                         'data:application/octet-stream,' +
@@ -74,7 +76,8 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
         if (budgetModel) {
             setShowConfirmDialog(false);
             if (deletionConfirmed) {
-                await btApp.budgetsStore.deleteBudget(budgetModel.identifier);
+                const store = await btApp.getBudgetsStore()
+                await store.deleteBudget(budgetModel.identifier);
                 props.history.replace(BudgetUrl.base);
             }
         } else {

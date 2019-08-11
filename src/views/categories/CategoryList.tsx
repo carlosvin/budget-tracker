@@ -14,7 +14,7 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
 
     React.useEffect(() => {
         async function fetchCategories () {
-            setCategories(await btApp.categoriesStore.getCategories());
+            setCategories(await (await btApp.getCategoriesStore()).getCategories());
         }
 
         props.onTitleChange('Categories');
@@ -62,9 +62,9 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
         setChanged(true);
     }
 
-    const handleSave = (e: React.SyntheticEvent) => {
+    const handleSave = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        btApp.categoriesStore.setCategories(categories);
+        await (await btApp.getCategoriesStore()).setCategories(categories);
         setChanged(false);
     }
 

@@ -1,7 +1,8 @@
 import { Categories, Category } from "../interfaces";
 import { StorageApi } from "../api/storage/StorageApi";
+import { CategoriesStore } from './interfaces';
 
-export class CategoriesStore {
+export default class CategoriesStoreImpl implements CategoriesStore {
 
     private _categories?: Categories;
     private readonly _storage: StorageApi;

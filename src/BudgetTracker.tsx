@@ -2,42 +2,58 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { AppStorageManager } from './api/storage/AppStorageManager';
-import { LocalStorage } from './api/storage/LocalStorage';
-import { BudgetsStore } from './stores/BudgetsStore';
-import { CategoriesStore } from './stores/CategoriesStore';
 import { IconsStore } from './stores/IconsStore';
 import { CurrenciesStore } from './stores/CurrenciesStore';
 import { CountriesStore } from './stores/CountriesStore';
+import { BudgetsIndexStore } from './stores/BudgetsIndexStore';
+import { StorageApi } from './api/storage/StorageApi';
+import { CategoriesStore, BudgetsStore } from './stores/interfaces';
 
 class BudgetTracker {
 
-    private _storage?: AppStorageManager;
+    private _storage?: StorageApi;
     private _budgetsStore?: BudgetsStore;
     private _categoriesStore?: CategoriesStore;
     private _iconsStore?: IconsStore;
     private _currenciesStore?: CurrenciesStore;
     private _countriesStore?: CountriesStore;
+    private _budgetsIndex?: BudgetsIndexStore;
 
-    get storage () {
+    async getStorage () {
         if (!this._storage) {
-            this._storage = new AppStorageManager(new LocalStorage());
+            const storage  = await import('./api/storage/AppStorageManager');
+            this._storage = storage.default;
         }
-        return this._storage;
+        if (this._storage) {
+            return this._storage;
+        }
+        throw Error('Error Loading Storage');
     }
 
-    get budgetsStore () {
+    async getBudgetsStore () {
         if (!this._budgetsStore) {
-            this._budgetsStore = new BudgetsStore(this.storage, this.currenciesStore);
+            const BudgetsStoreImpl  = (await import('./stores/BudgetsStoreImpl')).default;
+
+            this._budgetsStore = new BudgetsStoreImpl(
+                await this.getBudgetsIndex(), 
+                this.currenciesStore);
         }
         return this._budgetsStore;
     }
 
-    get categoriesStore () {
+    async getCategoriesStore () {
         if (!this._categoriesStore) {
-            this._categoriesStore = new CategoriesStore(this.storage);
+            const CategoriesStoreImpl  = (await import('./stores/CategoriesStoreImpl')).default;
+            this._categoriesStore = new CategoriesStoreImpl(await this.getStorage());
         }
         return this._categoriesStore;
+    }
+
+    async getBudgetsIndex () {
+        if (!this._budgetsIndex) {
+            this._budgetsIndex = new BudgetsIndexStore(await this.getStorage());
+        }
+        return this._budgetsIndex;
     }
 
     get iconsStore () {

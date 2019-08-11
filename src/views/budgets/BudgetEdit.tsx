@@ -33,7 +33,7 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
     }
 
     async function fetchBudget(budgetId: string) {
-        setBudgetInfo(await btApp.budgetsStore.getBudgetInfo(budgetId));
+        setBudgetInfo(await (await btApp.getBudgetsIndex()).getBudgetInfo(budgetId));
     }
 
     React.useEffect(
@@ -56,7 +56,7 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
 
     async function handleSubmit (budget: Budget) {
         setSaving(true);
-        await btApp.budgetsStore.setBudget(budget);
+        await (await btApp.getBudgetsStore()).setBudget(budget);
         setSaving(false);
         props.history.replace(new BudgetUrl(budget.identifier).path);
     }

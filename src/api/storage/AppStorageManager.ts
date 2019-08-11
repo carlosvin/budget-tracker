@@ -1,7 +1,8 @@
 import { StorageApi } from "./StorageApi";
 import { Budget, Expense, Category, Categories } from "../../interfaces";
+import { LocalStorage } from "./LocalStorage";
 
-export class AppStorageManager implements StorageApi {
+class AppStorageManager implements StorageApi {
     private _storage: StorageApi;
     
     constructor (storage: StorageApi) {
@@ -48,3 +49,6 @@ export class AppStorageManager implements StorageApi {
         throw new Error('Not implemented');
     }
 }
+
+const appStorage: StorageApi = new AppStorageManager(new LocalStorage());
+export default appStorage;

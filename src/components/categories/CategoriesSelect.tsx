@@ -32,7 +32,8 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
 
     React.useEffect(() => {
         const initCategories = async () => {
-            const cs = await btApp.categoriesStore.getCategories();
+            const store = await btApp.getCategoriesStore();
+            const cs = await store.getCategories();
             setCategories(cs);
         }
         initCategories();
@@ -51,9 +52,10 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
         setAddCategoryOpen(true);
     }
 
-    const handleAddCategoryClose = (category?: Category) => {
+    const handleAddCategoryClose = async (category?: Category) => {
         if (category) {
-            btApp.categoriesStore.setCategory(category);
+            const store = await btApp.getCategoriesStore();
+            store.setCategory(category);
             setCategories({...categories, category});
             props.onCategoryChange(category.id);
         }

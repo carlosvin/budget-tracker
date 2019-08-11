@@ -26,7 +26,7 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
             </React.Fragment>
         );
         async function fetchBudgets() {
-            const index = await btApp.budgetsStore.getBudgetsIndex();
+            const index = await (await btApp.getBudgetsIndex()).getBudgetsIndex();
             setBudgets(Object.values(index));
         }
         fetchBudgets();
