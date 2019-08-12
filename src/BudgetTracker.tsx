@@ -2,10 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { CountriesStore } from './stores/CountriesStore';
 import { BudgetsIndexStore } from './stores/BudgetsIndexStore';
 import { StorageApi } from './api/storage/StorageApi';
-import { CategoriesStore, BudgetsStore, IconsStore, CurrenciesStore } from './stores/interfaces';
+import { CategoriesStore, BudgetsStore, IconsStore, CurrenciesStore, CountriesStore } from './stores/interfaces';
 
 class BudgetTracker {
 
@@ -70,9 +69,10 @@ class BudgetTracker {
         return this._currenciesStore;
     }
 
-    get countriesStore () {
+    async getCountriesStore () {
         if (!this._countriesStore) {
-            this._countriesStore = new CountriesStore();
+            const CountriesStoreImpl  = (await import('./stores/CountriesStoreImpl')).default;
+            this._countriesStore = new CountriesStoreImpl();
         }
         return this._countriesStore;
     }

@@ -1,4 +1,4 @@
-import { Categories, Category, Budget, Expense, ExpensesMap, CurrencyRates } from "../interfaces";
+import { Categories, Category, Budget, Expense, ExpensesMap, CurrencyRates, CountryEntry } from "../interfaces";
 import { BudgetModel } from '../domain/BudgetModel';
 import { SvgIconProps } from "@material-ui/core/SvgIcon";
 
@@ -61,4 +61,13 @@ export interface CurrenciesStore {
     getFromCountry (countryCode: string): Promise<string>;
 
     readonly lastCurrencyUsed?: string;
+}
+
+export interface CountriesStore {
+
+    getCountries(): Promise<CountryEntry[]>;
+
+    readonly currentCountryCode: string;
+
+    getCurrentCountry (): Promise<string>;
 }

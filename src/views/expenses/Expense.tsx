@@ -27,7 +27,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     const [currency, setCurrency] = React.useState<string|undefined>();
     const [amount, setAmount] = React.useState<number>();
-    const [countryCode, setCountryCode] = React.useState<string>(btApp.countriesStore.currentCountryCode);
+    const [countryCode, setCountryCode] = React.useState<string|undefined>();
     const [dateString, setDateString] = React.useState(getISODateString());
     const [identifier, setIdentifier] = React.useState(uuid());
     const [categoryId, setCategoryId] = React.useState('');
@@ -45,11 +45,28 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const budgetUrl = new BudgetUrl(budgetId);
     const isAddView = expenseId === undefined;
 
-    React.useLayoutEffect(()=> {
-        async function initCurrency () {
-            const store = await btApp.getCurrenciesStore();
-            if (!currency) {
-                setCurrency(store.lastCurrencyUsed);
+    React.useEffect(
+        () => {
+            async function initCurrency () {
+                const store = await btApp.getCurrenciesStore();
+                let currencyFromCountry = store.lastCurrencyUsed;
+                if (countryCode) {
+                    currencyFromCountry = await store.getFromCountry(countryCode);
+                }
+                setCurrency(currencyFromCountry);
+            }
+            if (isAddView) {
+                initCurrency();
+            }
+
+        },
+    [countryCode, isAddView]);
+
+    React.useEffect(()=> {
+        async function initCountry () {
+            const store = await btApp.getCountriesStore();
+            if (!countryCode) {
+                setCountryCode(store.currentCountryCode);
             }
         }
 
@@ -57,7 +74,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             await (await btApp.getBudgetsStore()).deleteExpense(budgetId, expenseId);
             replace(budgetUrl.path);
         }
-        initCurrency();
+        initCountry();
         isAddView ? onTitleChange('Add expense'): onTitleChange('Edit expense');
         onActions(<DeleteButton onClick={handleDelete}/>);
         return function () {
@@ -78,9 +95,6 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             setBaseCurrency(b.info.currency);
             initRates(b.info.currency);
             if (isAddView) {
-                if (!currency) {
-                    setCurrency(b.info.currency);
-                }
                 initAdd();
             } else {
                 initEdit(b);
@@ -88,7 +102,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         }
 
         async function initAdd () {
-            const currentCountryFetched = await btApp.countriesStore.getCurrentCountry();
+            const countriesStore = await btApp.getCountriesStore();
+            const currentCountryFetched = await countriesStore.getCurrentCountry();
             if (countryCode !== currentCountryFetched) {
                 setCountryCode(currentCountryFetched);
             }
@@ -129,7 +144,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         inputAmount: number, 
         inputAmountBase: number, 
         timeMs: number): Expense {
-        if (currency) {
+        if (currency && countryCode) {
             return {   
                 amount: inputAmount, 
                 categoryId,
@@ -141,7 +156,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 description
             };
         }
-        throw new Error(`Invalid expense data: Currency is missing`);
+        throw new Error(`Invalid expense data: Currency or country code are missing`);
     }
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
@@ -232,9 +247,10 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                     <WhenInput />
                 </Grid>
                 <Grid item>
-                    <CountryInput 
+                    { countryCode && <CountryInput 
                         selectedCountry={ countryCode } 
                         onCountryChange={ handleCountry }/>
+                    }
                 </Grid>
                 <Grid item >
                     <TextInput 

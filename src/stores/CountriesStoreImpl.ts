@@ -1,16 +1,13 @@
 import { GeoApi } from '../api/GeoApi';
-
-export interface CountryEntry {
-    code: string;
-    name: string;
-}
+import { CountryEntry } from '../interfaces';
+import { CountriesStore } from './interfaces';
 
 interface CachedCountry {
     code: string;
     timestamp?: number;
 }
 
-export class CountriesStore {
+export default class CountriesStoreImpl implements CountriesStore {
 
     private _countries: CountryEntry[];
     private readonly geoApi: GeoApi;

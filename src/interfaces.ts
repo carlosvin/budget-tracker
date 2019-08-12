@@ -68,3 +68,8 @@ export interface YMD {
     month: number,
     day: number
 }
+
+export interface CountryEntry {
+    code: string;
+    name: string;
+}
