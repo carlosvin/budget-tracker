@@ -29,14 +29,19 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
 
     const [categories, setCategories] = React.useState<Categories>();
     const [addCategoryOpen, setAddCategoryOpen] = React.useState(false);
+    const [iconNames, setIconNames] = React.useState<string[]>([]);
 
     React.useEffect(() => {
-        const initCategories = async () => {
+        async function initCategories () {
             const store = await btApp.getCategoriesStore();
             const cs = await store.getCategories();
             setCategories(cs);
         }
+        async function initIconNames () {
+            setIconNames((await btApp.getIconsStore()).iconNames);
+        }
         initCategories();
+        initIconNames()
     // eslint-disable-next-line
     }, []);
 
@@ -83,7 +88,7 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
                     <CategoryOptions categories={categories}/>
                 </TextInput>
                 <CategoryFormDialog
-                    iconNames={btApp.iconsStore.iconNames}
+                    iconNames={iconNames}
                     open={addCategoryOpen} 
                     onClose={handleAddCategoryClose} />
             </React.Fragment>

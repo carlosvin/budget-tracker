@@ -1,5 +1,6 @@
 import { Categories, Category, Budget, Expense, ExpensesMap } from "../interfaces";
 import { BudgetModel } from '../domain/BudgetModel';
+import { SvgIconProps } from "@material-ui/core/SvgIcon";
 
 export interface CategoriesStore {
     getCategories(): Promise<Categories>;
@@ -20,4 +21,14 @@ export interface BudgetsStore {
     getExpense(budgetId: string, expenseId: string): Promise<Expense>;
     deleteBudget(budgetId: string): Promise<void>;
     deleteExpense(budgetId: string, expenseId: string): Promise<void>;
+}
+
+export declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
+
+export interface IconsStore {
+    readonly iconNames: string[];
+    readonly defaultIcon: LazyIcon;
+
+    getColor (name: string): string;
+    getIcon (name: string): LazyIcon;
 }

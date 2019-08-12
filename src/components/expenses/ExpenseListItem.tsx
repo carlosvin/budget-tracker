@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { Budget, Expense, Category } from "../../interfaces";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import { LazyIcon } from "../../stores/IconsStore";
 import { btApp } from "../../BudgetTracker";
 import { Redirect } from 'react-router-dom';
 import { round } from "../../domain/utils/round";
@@ -17,17 +16,10 @@ interface ExpenseListItemProps {
     expense: Expense;
 }
 
-interface ExpenseListItemState {
-    category?: Category,
-    categoryIcon: LazyIcon;
-    categoryColor: string;
-    redirect?: string;
-}
-
 export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
 
     const [category, setCategory] = React.useState<Category>();
-    const [CategoryIcon, setCategoryIcon] = React.useState<LazyIcon>(btApp.iconsStore.defaultIcon);
+    const [CategoryIcon, setCategoryIcon] = React.useState();
     const [categoryColor, setCategoryColor] = React.useState('#ccc');
     const [redirect, setRedirect] = React.useState();
 
@@ -41,9 +33,10 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
                 const store = await btApp.getCategoriesStore();
                 const categoryObj = await store.getCategory(categoryId);
                 if (categoryObj) {
+                    const iconsStore = await btApp.getIconsStore();
                     setCategory(categoryObj);
-                    setCategoryColor(btApp.iconsStore.getColor(categoryObj.icon));
-                    setCategoryIcon(btApp.iconsStore.getIcon(categoryObj.icon));
+                    setCategoryColor(iconsStore.getColor(categoryObj.icon));
+                    setCategoryIcon(iconsStore.getIcon(categoryObj.icon));
                 }
             }
             fetchCategory(categoryId);
@@ -78,7 +71,7 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
             >
             <ListItemAvatar >
                 <React.Suspense fallback={'icon'}>
-                    <CategoryIcon style={{color: categoryColor}}/>
+                    { CategoryIcon && <CategoryIcon style={{color: categoryColor}}/> }
                 </React.Suspense>
             </ListItemAvatar>
             <ListItemText 

@@ -2,12 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import { IconsStore } from './stores/IconsStore';
 import { CurrenciesStore } from './stores/CurrenciesStore';
 import { CountriesStore } from './stores/CountriesStore';
 import { BudgetsIndexStore } from './stores/BudgetsIndexStore';
 import { StorageApi } from './api/storage/StorageApi';
-import { CategoriesStore, BudgetsStore } from './stores/interfaces';
+import { CategoriesStore, BudgetsStore, IconsStore } from './stores/interfaces';
 
 class BudgetTracker {
 
@@ -56,9 +55,10 @@ class BudgetTracker {
         return this._budgetsIndex;
     }
 
-    get iconsStore () {
+    async getIconsStore () {
         if (!this._iconsStore) {
-            this._iconsStore = new IconsStore();
+            const IconsStoreImpl  = (await import('./stores/IconsStoreImpl')).default;
+            this._iconsStore = new IconsStoreImpl();
         }
         return this._iconsStore;
     }
