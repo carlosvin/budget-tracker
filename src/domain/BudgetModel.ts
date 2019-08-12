@@ -1,9 +1,9 @@
 import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMap } from "../interfaces";
 import { dateDiff } from "./date";
-import { CurrenciesStore } from "../stores/CurrenciesStore";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
 import { DateDay } from "./DateDay";
+import applyRate from "./utils/applyRate";
 
 export class BudgetModel {
 
@@ -249,8 +249,7 @@ export class BudgetModel {
                 if (rate === undefined) {
                     throw new Error(`Cannot get currency exchange rate from ${rates.base} to ${currency}`);
                 }
-                this._expenses[k].amountBaseCurrency = CurrenciesStore.convert(
-                    this._expenses[k].amount, rate);
+                this._expenses[k].amountBaseCurrency = applyRate(this._expenses[k].amount, rate);
             }
             this._expenses[k].addToTotals(newTotals);
         }

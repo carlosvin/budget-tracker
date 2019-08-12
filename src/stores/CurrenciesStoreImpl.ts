@@ -1,8 +1,10 @@
 import { CurrencyRates } from "../interfaces";
 import { currenciesApi } from "../api/CurrenciesApi";
 import { dateDiff } from "../domain/date";
+import { CurrenciesStore } from "./interfaces";
+import applyRate from "../domain/utils/applyRate";
 
-export class CurrenciesStore {
+export default class CurrenciesStoreImpl implements CurrenciesStore {
     static readonly KEY = 'currencyRates';
     static readonly KEY_TS = 'currencyTimestamps';
     static readonly KEY_LAST = 'lastCurrency';
@@ -76,13 +78,9 @@ export class CurrenciesStore {
     async getAmountInBaseCurrency (baseCurrency: string, currency: string, amount: number) {
         if (baseCurrency && currency !== baseCurrency) {
             const rate = await this.getRate(baseCurrency, currency);
-            return CurrenciesStore.convert(amount, rate);
+            return applyRate(amount, rate);
         }
         return amount;
-    }
-
-    static convert (amount: number, rate: number) {
-        return amount / rate;
     }
 
     private isUpdated(baseCurrency: string) {
@@ -90,7 +88,7 @@ export class CurrenciesStore {
             dateDiff(
                 this._timestamps[baseCurrency], 
                 new Date().getTime()
-            ) <= CurrenciesStore.MAX_DAYS;
+            ) <= CurrenciesStoreImpl.MAX_DAYS;
     }
 
     private async importCurrencies () {
@@ -141,7 +139,7 @@ export class CurrenciesStore {
     }
 
     private getRatesFromDisk () {
-        const ratesStr = localStorage.getItem(CurrenciesStore.KEY);
+        const ratesStr = localStorage.getItem(CurrenciesStoreImpl.KEY);
         if (ratesStr && ratesStr.length > 0) {
             return JSON.parse(ratesStr);
         }
@@ -149,7 +147,7 @@ export class CurrenciesStore {
     }
 
     private getTimestampsFromDisk () {
-        const timestampsStr = localStorage.getItem(CurrenciesStore.KEY_TS);
+        const timestampsStr = localStorage.getItem(CurrenciesStoreImpl.KEY_TS);
         if (timestampsStr && timestampsStr.length > 0) {
             return JSON.parse(timestampsStr);
         }
@@ -157,11 +155,11 @@ export class CurrenciesStore {
     }
 
     private saveRatesToDisk () {
-        localStorage.setItem(CurrenciesStore.KEY, JSON.stringify(this._rates));
+        localStorage.setItem(CurrenciesStoreImpl.KEY, JSON.stringify(this._rates));
     }
 
     private saveTimestampsToDisk () {
-        localStorage.setItem(CurrenciesStore.KEY_TS, JSON.stringify(this._timestamps));
+        localStorage.setItem(CurrenciesStoreImpl.KEY_TS, JSON.stringify(this._timestamps));
     }
 
     async getFromCountry (countryCode: string) {
@@ -178,7 +176,7 @@ export class CurrenciesStore {
 
     get lastCurrencyUsed () {
         if (!this._lastCurrencyUsed) {
-            this._lastCurrencyUsed =  localStorage.getItem(CurrenciesStore.KEY_LAST) || undefined;
+            this._lastCurrencyUsed =  localStorage.getItem(CurrenciesStoreImpl.KEY_LAST) || undefined;
         }
         return this._lastCurrencyUsed;
     }
@@ -186,7 +184,7 @@ export class CurrenciesStore {
     private setLastCurrencyUsed (currency: string) {
         if (this._lastCurrencyUsed !== currency) {
             this._lastCurrencyUsed = currency;
-            localStorage.setItem(CurrenciesStore.KEY_LAST, currency);
+            localStorage.setItem(CurrenciesStoreImpl.KEY_LAST, currency);
         }
     }
 }

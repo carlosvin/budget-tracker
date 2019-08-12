@@ -21,7 +21,7 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
 
     React.useEffect(() => {
         async function initCurrencies () {
-            setCurrencies(await btApp.currenciesStore.getCurrencies());
+            setCurrencies(await(await btApp.getCurrenciesStore()).getCurrencies());
         }
 
         initCurrencies();

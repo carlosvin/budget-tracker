@@ -1,8 +1,7 @@
 import { Budget, Expense } from "../interfaces";
 import { BudgetModel } from "../domain/BudgetModel";
-import { CurrenciesStore } from "./CurrenciesStore";
 import { BudgetsIndexStore } from "./BudgetsIndexStore";
-import { BudgetsStore } from "./interfaces";
+import { BudgetsStore, CurrenciesStore } from "./interfaces";
 
 export default class BudgetsStoreImpl implements BudgetsStore {
 

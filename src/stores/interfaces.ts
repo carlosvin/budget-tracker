@@ -1,4 +1,4 @@
-import { Categories, Category, Budget, Expense, ExpensesMap } from "../interfaces";
+import { Categories, Category, Budget, Expense, ExpensesMap, CurrencyRates } from "../interfaces";
 import { BudgetModel } from '../domain/BudgetModel';
 import { SvgIconProps } from "@material-ui/core/SvgIcon";
 
@@ -31,4 +31,34 @@ export interface IconsStore {
 
     getColor (name: string): string;
     getIcon (name: string): LazyIcon;
+}
+
+export interface CurrenciesStore {
+    getCurrencies(): Promise<{ [currency: string]: string }>;
+
+    /** 
+     * @returns Currency exchange rate
+     * @throws Error when there is no rate for that pair of currencies
+     */
+    getRate(baseCurrency: string, currencyTo: string): Promise<number>;
+
+    /** 
+     * @returns Currency exchange rates for a base currency
+     */
+    getRates(baseCurrency: string): Promise<CurrencyRates>;
+    
+    /** 
+     * @returns amount in base currency. \ 
+     * If baseCurrency == currency it returns the same input @param amount.
+     * It returns undefined if cannot get currency rate.
+     * @throws Error when there is no rate for that pair of currencies
+     */
+    getAmountInBaseCurrency (
+        baseCurrency: string, 
+        currency: string, 
+        amount: number): Promise<number>;
+
+    getFromCountry (countryCode: string): Promise<string>;
+
+    readonly lastCurrencyUsed?: string;
 }

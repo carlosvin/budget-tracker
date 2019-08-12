@@ -5,8 +5,8 @@ import CardContent from "@material-ui/core/CardContent";
 import { CurrencyInput } from "./CurrencyInput";
 import { AmountInput } from "./AmountInput";
 import { CurrencyRates } from "../interfaces";
-import { CurrenciesStore } from "../stores/CurrenciesStore";
 import { round } from "../domain/utils/round";
+import applyRate from "../domain/utils/applyRate";
 
 interface AmountCurrencyInputProps  {
     selectedCurrency: string;
@@ -39,7 +39,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         function calculateAmountInBaseCurrency(inputAmount: number) {
             const rate = rates[currency];
             if (rate) {
-                const calculatedAmount = CurrenciesStore.convert(inputAmount, rate);
+                const calculatedAmount = applyRate(inputAmount, rate);
                 setAmountInBaseCurrency(round(calculatedAmount));
                 setError(undefined);
             } else {

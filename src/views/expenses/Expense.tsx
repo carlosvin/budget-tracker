@@ -25,8 +25,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     const [error, setError] = React.useState<string|undefined>();
 
-    const [currency, setCurrency] = React.useState<string|undefined>(
-        btApp.currenciesStore.lastCurrencyUsed);
+    const [currency, setCurrency] = React.useState<string|undefined>();
     const [amount, setAmount] = React.useState<number>();
     const [countryCode, setCountryCode] = React.useState<string>(btApp.countriesStore.currentCountryCode);
     const [dateString, setDateString] = React.useState(getISODateString());
@@ -47,10 +46,18 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const isAddView = expenseId === undefined;
 
     React.useLayoutEffect(()=> {
+        async function initCurrency () {
+            const store = await btApp.getCurrenciesStore();
+            if (!currency) {
+                setCurrency(store.lastCurrencyUsed);
+            }
+        }
+
         async function handleDelete () {
             await (await btApp.getBudgetsStore()).deleteExpense(budgetId, expenseId);
             replace(budgetUrl.path);
         }
+        initCurrency();
         isAddView ? onTitleChange('Add expense'): onTitleChange('Edit expense');
         onActions(<DeleteButton onClick={handleDelete}/>);
         return function () {
@@ -60,8 +67,10 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     }, []);
 
     React.useEffect(() => {
+
         async function initRates (baseCurrency: string) {
-            setRates(await btApp.currenciesStore.getRates(baseCurrency));
+            const store = await btApp.getCurrenciesStore();
+            setRates(await store.getRates(baseCurrency));
         }
         
         async function initBudget () {
@@ -84,9 +93,9 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 setCountryCode(currentCountryFetched);
             }
             if (currentCountryFetched) {
-                const fetchedCurrency = await btApp
-                    .currenciesStore
-                    .getFromCountry(currentCountryFetched);
+                const store = await btApp.getCurrenciesStore();
+
+                const fetchedCurrency = await store.getFromCountry(currentCountryFetched);
                 if (fetchedCurrency !== currency) {
                     setCurrency(fetchedCurrency);
                 }

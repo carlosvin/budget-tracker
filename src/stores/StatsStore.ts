@@ -6,6 +6,7 @@ export class StatsStore {
 
     static async getTotalExpenses(budget: Budget, expenses: {[identifier: string]: Expense}) {
         if (expenses && budget) {
+            const currenciesStore = await btApp.getCurrenciesStore();
             const values = Object.values(expenses);
             if (values.length > 0) {
                 let total = 0;
@@ -13,7 +14,7 @@ export class StatsStore {
                     if (expense.amountBaseCurrency !== undefined) {
                         total = total + expense.amountBaseCurrency;
                     } else {
-                        const amountBaseCurrency = await btApp.currenciesStore.getAmountInBaseCurrency(
+                        const amountBaseCurrency = await currenciesStore.getAmountInBaseCurrency(
                             budget.currency, 
                             expense.currency, 
                             expense.amount);
