@@ -1,11 +1,8 @@
 import * as React from "react";
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { Budget, Expense, Category } from "../../interfaces";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import { btApp } from "../../BudgetTracker";
 import { Redirect } from 'react-router-dom';
 import { round } from "../../domain/utils/round";
@@ -69,7 +66,7 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
             onClick={ handleClick }
             id={expense.identifier}
             >
-            <ListItemAvatar >
+            <ListItemAvatar>
                 <React.Suspense fallback={'icon'}>
                     { CategoryIcon && <CategoryIcon style={{color: categoryColor}}/> }
                 </React.Suspense>
@@ -77,24 +74,13 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
             <ListItemText 
                 primary={category && category.name} 
                 secondary={expense.description}
+                secondaryTypographyProps={{ noWrap: true }}
             />
-            <ListItemSecondaryAction>
-                <ListItemText>
-                    <Grid container 
-                        direction='column' 
-                        alignItems='flex-end' 
-                        justify='flex-end'>
-                        <Typography variant="body1">
-                            { amountBase() }
-                        </Typography>
-                        { !isBaseCurrency() && 
-                            <Typography variant="body2" color="textSecondary">
-                                {amount()}
-                            </Typography> 
-                        }
-                    </Grid>
-                </ListItemText>  
-            </ListItemSecondaryAction>
+            <ListItemText 
+                style={{textAlign: 'right'}}
+                primary={amountBase()} 
+                secondary={!isBaseCurrency() && amount()}
+            />
         </ListItem>
     );
 }
