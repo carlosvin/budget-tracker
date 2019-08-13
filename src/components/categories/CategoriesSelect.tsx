@@ -53,13 +53,13 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
     }
 
     const handleAddCategoryClose = async (category?: Category) => {
+        setAddCategoryOpen(false);
         if (category) {
             const store = await btApp.getCategoriesStore();
-            store.setCategory(category);
+            await store.setCategory(category);
             setCategories({...categories, category});
             props.onCategoryChange(category.id);
         }
-        setAddCategoryOpen(false);
     }
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

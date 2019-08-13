@@ -100,9 +100,7 @@ export class LocalStorage implements StorageApi {
 
     async saveCategory (category: Category) {
         const categories = await this.getCategories();
-        if (category.id in categories) {
-            delete categories[category.id];
-            this.saveCategories(categories);
-        }
+        categories[category.id] = category;
+        this.saveCategories(categories);
     }
 }

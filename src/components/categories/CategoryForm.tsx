@@ -16,6 +16,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         {name: '', icon: 'Label', id: uuid()});
     
     const handleSave = (e: React.SyntheticEvent) => {
+        e.stopPropagation();
         e.preventDefault();
         props.onSubmit(category);
     }
