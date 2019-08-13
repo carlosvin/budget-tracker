@@ -16,10 +16,10 @@ export function useBudgetModel(budgetId: string) {
         if (isSubscribed) {
             fetchBudget();
         }
-        
-        return () => {isSubscribed = false};
 
-    });
+        return () => {isSubscribed = false};
+        
+    }, [budgetId]);
 
     return budgetModel;
 }

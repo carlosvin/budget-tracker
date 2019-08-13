@@ -4,7 +4,10 @@ import './index.css';
 import App from './App';
 import { BudgetsIndexStore } from './stores/BudgetsIndexStore';
 import { StorageApi } from './api/storage/StorageApi';
-import { CategoriesStore, BudgetsStore, IconsStore, CurrenciesStore, CountriesStore } from './stores/interfaces';
+import { 
+    CategoriesStore, BudgetsStore, 
+    IconsStore, CurrenciesStore, 
+    CountriesStore } from './stores/interfaces';
 
 class BudgetTracker {
 

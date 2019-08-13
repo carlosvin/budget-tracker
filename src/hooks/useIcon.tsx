@@ -1,23 +1,23 @@
 import { useState, useEffect } from 'react';
 import { btApp } from '../BudgetTracker';
+import { ColoredLazyIcon } from '../stores/interfaces';
 
-export function useIconNames() {
-    const [iconNames, setIconNames] = useState<string[]>();
+export function useIcon(name: string) {
+    const [icon, setIcon] = useState<ColoredLazyIcon>();
 
     useEffect(() => {
-        async function fetchIconNames () {
+        async function fetchIcon () {
             const store = await btApp.getIconsStore();
-            setIconNames(store.iconNames);
+            setIcon(store.getIcon(name));
         }
 
         let isSubscribed = true;
         if (isSubscribed) {
-            fetchIconNames();
+            fetchIcon();
         }
         
         return () => {isSubscribed = false};
+    }, [name]);
 
-    }, []);
-
-    return iconNames;
+    return icon;
 }

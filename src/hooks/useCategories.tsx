@@ -19,7 +19,7 @@ export function useCategories() {
         
         return () => {isSubscribed = false};
 
-    });
+    }, []);
 
     return categories;
 }

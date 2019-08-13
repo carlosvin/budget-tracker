@@ -25,12 +25,17 @@ export interface BudgetsStore {
 
 export declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
 
+export interface ColoredLazyIcon { 
+    Icon: LazyIcon;
+    color: string; 
+}
+
+
 export interface IconsStore {
     readonly iconNames: string[];
-    readonly defaultIcon: LazyIcon;
+    readonly defaultIcon: ColoredLazyIcon;
 
-    getColor (name: string): string;
-    getIcon (name: string): LazyIcon;
+    getIcon(name: string): ColoredLazyIcon;
 }
 
 export interface CurrenciesStore {
