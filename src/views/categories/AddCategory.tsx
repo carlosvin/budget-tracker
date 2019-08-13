@@ -9,15 +9,10 @@ import { goBack } from '../../domain/utils/goBack';
 
 export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
 
-    const [iconNames, setIconNames] = React.useState<string[]>([]);
     const handleClose = () => (goBack(props.history, '/categories'));
     
     React.useEffect(() => {
-        async function initIconNames () {
-            const store = await btApp.getIconsStore();
-            setIconNames(store.iconNames);
-        }
-        initIconNames();
+        
         props.onTitleChange('Add category');
         props.onActions(<CloseButton onClick={handleClose} />);
         return function () {
@@ -32,7 +27,7 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
         handleClose();
     }
     
-    return <CategoryForm iconNames={iconNames} onSubmit={handleSave}/>;
+    return <CategoryForm onSubmit={handleSave}/>;
 }
 
 export default AddCategory;

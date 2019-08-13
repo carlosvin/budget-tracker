@@ -4,17 +4,17 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import Grid from '@material-ui/core/Grid';
 import { CategoryIconButton } from '../../components/categories/CategoryIconButton';
+import { useIconNames } from '../../hooks/useIconNames';
 
-interface CategoryIconSelectorProps {
+interface CategoryIconDialogSelectorProps {
     selectedValue: string;
     open: boolean;
     onClose: (selectedValue: string) => void;
-    iconNames: string[];
 };
 
 const titleId = 'dialog-title';
 
-export const CategoryIconSelector: React.FC<CategoryIconSelectorProps> = (props) => {
+export const CategoryIconDialogSelector: React.FC<CategoryIconDialogSelectorProps> = (props) => {
 
     function handleClose() {
         props.onClose(props.selectedValue);
@@ -24,6 +24,8 @@ export const CategoryIconSelector: React.FC<CategoryIconSelectorProps> = (props)
         props.onClose(value);
     }
 
+    const iconNames = useIconNames();
+
     return (
         <Dialog
             onClose={handleClose}
@@ -31,7 +33,7 @@ export const CategoryIconSelector: React.FC<CategoryIconSelectorProps> = (props)
             <DialogTitle id={titleId}>Select icon for category</DialogTitle>
             <DialogContent>
                 <Grid container direction='row' justify='center'>
-                    {props.iconNames.map(name =>
+                    {iconNames && iconNames.map(name =>
                         <CategoryIconButton
                             onClick={handleItemClick}
                             name={name}
@@ -42,4 +44,4 @@ export const CategoryIconSelector: React.FC<CategoryIconSelectorProps> = (props)
     );
 }
 
-export default CategoryIconSelector;
+export default CategoryIconDialogSelector;

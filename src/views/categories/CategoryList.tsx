@@ -11,20 +11,13 @@ import { AddButton } from '../../components/buttons/AddButton';
 export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
     
     const [categories, setCategories] = React.useState<Categories>({});
-    const [iconNames, setIconNames] = React.useState<string[]>([]);
 
     React.useLayoutEffect(() => {
         async function fetchCategories () {
             setCategories(await (await btApp.getCategoriesStore()).getCategories());
         }
-
-        async function initIconNames () {
-            const store = await btApp.getIconsStore();
-            setIconNames(store.iconNames);
-        }
-
+        
         props.onTitleChange('Categories');
-        initIconNames();
         fetchCategories();
         return function () {
             props.onTitleChange('');
@@ -42,7 +35,6 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
                         <CategoryInput 
                             {...props} 
                             {...c}
-                            iconNames={iconNames}
                             direction='row' 
                             key={`category-entry-${c.id}`}
                             onChange={ handleChange }

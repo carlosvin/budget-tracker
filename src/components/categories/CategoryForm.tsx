@@ -7,7 +7,6 @@ import { uuid } from '../../domain/utils/uuid';
 interface CategoryFormProps {
     onSubmit: (category: Category) => void,
     category?: Category;
-    iconNames: string[];
 }
 
 export const CategoryForm: React.FC<CategoryFormProps> = (props) => {
@@ -28,7 +27,6 @@ export const CategoryForm: React.FC<CategoryFormProps> = (props) => {
                 name={category.name} 
                 id={category.id} 
                 onChange={setCategory}
-                iconNames={props.iconNames}
                 />
             <SaveButtonFab type='submit' color='primary' disabled={category.name === ''} />
         </form>);
