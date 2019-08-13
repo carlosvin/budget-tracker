@@ -7,6 +7,7 @@ import { TextInput } from '../components/TextInput';
 import { RouterProps } from 'react-router';
 import { btApp } from '../BudgetTracker';
 import { SaveButton } from '../components/buttons/SaveButton';
+import { BudgetUrl } from '../domain/BudgetUrl';
 
 const Import = (props: HeaderNotifierProps&RouterProps) => {
 
@@ -57,7 +58,7 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
         await (await btApp.getCategoriesStore()).setCategories(categories);
         
         setProcessing(false);
-        props.history.replace('/budgets');
+        props.history.replace(BudgetUrl.base);
     }
 
     const startProcess = () => {

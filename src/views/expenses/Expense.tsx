@@ -17,6 +17,7 @@ import { DateDay } from "../../domain/DateDay";
 import { round } from "../../domain/utils/round";
 import { uuid } from "../../domain/utils/uuid";
 import { BudgetModel } from "../../domain/BudgetModel";
+import { useBudgetModel } from "../../hooks/useBudgetModel";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -44,6 +45,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const {replace} = history;
     const budgetUrl = new BudgetUrl(budgetId);
     const isAddView = expenseId === undefined;
+
+    const budgetModel = useBudgetModel(budgetId);
 
     React.useEffect(
         () => {
@@ -90,14 +93,15 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             setRates(await store.getRates(baseCurrency));
         }
         
-        async function initBudget () {
-            const b = await (await btApp.getBudgetsStore()).getBudgetModel(budgetId);
-            setBaseCurrency(b.info.currency);
-            initRates(b.info.currency);
-            if (isAddView) {
-                initAdd();
-            } else {
-                initEdit(b);
+        function initBudget () {
+            if (budgetModel) {
+                setBaseCurrency(budgetModel.info.currency);
+                initRates(budgetModel.info.currency);
+                if (isAddView) {
+                    initAdd();
+                } else {
+                    initEdit(budgetModel);
+                }
             }
         }
 
@@ -119,7 +123,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             }
         }
 
-        async function initEdit (model: BudgetModel) {
+        function initEdit (model: BudgetModel) {
             const e = model.getExpense(expenseId);
             setAmount(e.amount);
             e.amountBaseCurrency && setAmountBaseCurrency(e.amountBaseCurrency);
@@ -137,7 +141,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             onActions([]);
         }
         // eslint-disable-next-line
-    }, [budgetId, expenseId]);
+    }, [budgetModel, expenseId]);
 
     function createExpense (
         dayNumber: number, 

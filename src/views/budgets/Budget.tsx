@@ -4,7 +4,6 @@ import { AppButton } from "../../components/buttons/buttons";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { HeaderNotifierProps } from "../../routes";
 import Typography from "@material-ui/core/Typography";
-import { BudgetModel } from "../../domain/BudgetModel";
 import { BudgetQuickStats } from "../../components/budgets/BudgetQuickStats";
 import { YesNoDialog } from "../../components/YesNoDialog";
 import { btApp } from "../../BudgetTracker";
@@ -15,6 +14,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { AddButton } from "../../components/buttons/AddButton";
 import { BudgetUrl } from "../../domain/BudgetUrl";
+import { useBudgetModel } from "../../hooks/useBudgetModel";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -26,19 +26,17 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
     const url = new BudgetUrl(budgetId); 
 
     const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
-    const [budgetModel, setBudgetModel] = React.useState<BudgetModel>();
+
+    const budgetModel = useBudgetModel(budgetId);
 
     React.useEffect(
         () => {
-            async function init() {
-                const store = await btApp.getBudgetsStore();
-                const budgetModel = await store.getBudgetModel(budgetId);
-                setBudgetModel(budgetModel);
+            if (budgetModel) {
                 onTitleChange(`${budgetModel.info.name} ${budgetModel.info.currency}`);
             }
-            init();
         },
-    [budgetId, onTitleChange]);
+    // eslint-disable-next-line
+    [budgetModel]);
 
     React.useEffect(
         () => {
