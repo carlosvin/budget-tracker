@@ -3,7 +3,7 @@ import { btApp } from '../BudgetTracker';
 import { Categories } from '../interfaces';
 
 export function useCategories() {
-    const [categories, setCategories] = useState<Categories>();
+    const [categories, setCategories] = useState<Categories>({});
 
     useEffect(() => {
         async function fetchCategories () {
@@ -12,13 +12,10 @@ export function useCategories() {
         }
 
         let isSubscribed = true;
-
         if (isSubscribed) {
             fetchCategories();
         }
-        
         return () => {isSubscribed = false};
-
     }, []);
 
     return categories;
