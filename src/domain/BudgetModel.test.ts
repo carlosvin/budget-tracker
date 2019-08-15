@@ -223,20 +223,10 @@ describe('Expense operations', () => {
         expect(bm.getExpense('2').amountBaseCurrency)
             .toBe(modifiedExpense2Date.amountBaseCurrency);
     
-        const expense2ModifiedDate2 = new Date(modifiedExpense2Date.when);
-        const expenseGroupsModified = {
-            [expense1Date.getFullYear()]: {
-                [expense1Date.getMonth()]: {
-                    [expense1Date.getDate()]: {
-                        [expense1.identifier]: new ExpenseModel(expense1)
-                    } ,
-                    [expense2ModifiedDate2.getDate()]: {
-                        [modifiedExpense2Date.identifier]: new ExpenseModel(modifiedExpense2Date)
-                    }    
-                }
-            }
-        }
-            
+        const expenseGroupsModified = {};
+        addExpenseToGroups(expenseGroupsModified, new ExpenseModel(expense1));
+        addExpenseToGroups(expenseGroupsModified, new ExpenseModel(modifiedExpense2Date));
+
         expect(bm.expenseGroups).toStrictEqual(expenseGroupsModified);
     
     });
