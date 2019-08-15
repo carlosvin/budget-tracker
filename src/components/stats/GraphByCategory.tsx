@@ -12,12 +12,17 @@ interface GraphByCategoryProps {
 export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
     const {budget, categoriesMap} = props;
 
+    // It might happen that an expense has a category that was already deleted
+    function getCategoryName (index: string) {
+        return categoriesMap[index] ? categoriesMap[index].name : 'Deleted category';
+    }
+
     function getData () {
         const totals = budget.totalsByCategory;
         const indexes = totals.indexes;
         const ignoreThreshold = totals.total * 0.05;
         return indexes
-            .map(k => ({x: categoriesMap[k].name, y: totals.getSubtotal([k,])}))
+            .map(k => ({x: getCategoryName(k), y: totals.getSubtotal([k,])}))
             .filter(({y}) => y > ignoreThreshold)
             .map(({x, y}) => ({x, y: round(y, 0)})
         );
