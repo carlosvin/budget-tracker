@@ -5,7 +5,8 @@ import { TextInput } from '../TextInput';
 import { getISODateString } from '../../domain/date';
 import { AmountInput } from '../AmountInput';
 import { CurrencyInput } from '../CurrencyInput';
-import { SaveButtonFab } from '../buttons/SaveButton';
+import MaterialIcon from '@material/react-material-icon';
+import { Fab } from '@material/react-fab';
 
 interface BudgetFormProps {
     budget: Budget;
@@ -79,7 +80,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
                 onCurrencyChange={handleCurrencyChange}
                 selectedCurrency={budget.currency}
             />
-            <SaveButtonFab disabled={props.disabled} color='primary' type='submit'/>
+            <Fab icon={<MaterialIcon icon='save'/>} type='submit' disabled={props.disabled}/>
         </form>
     );
 }

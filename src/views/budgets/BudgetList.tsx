@@ -1,30 +1,34 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, Redirect } from "react-router";
 import { Budget } from "../../interfaces";
 import { BudgetListItem } from "../../components/budgets/BudgetListItem";
 import { HeaderNotifierProps } from "../../routes";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { btApp } from "../../BudgetTracker";
-import { AddButton } from "../../components/buttons/AddButton";
-import { ImportExportButton } from "../../components/buttons/ImportExportButton";
 import { BudgetUrl } from "../../domain/BudgetUrl";
+import MaterialIcon from "@material/react-material-icon";
+import { FabButton } from "../../components/buttons";
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
 
 export const BudgetList: React.FC<BudgetListProps> = (props) => {
 
     const [budgets, setBudgets] = React.useState<Budget[]>();
+    const [redirect, setRedirect] = React.useState();
 
     React.useEffect(() => {
+        function redirectToAdd () {
+            setRedirect(BudgetUrl.add);
+        }
+        function redirectToImport () {
+            setRedirect('/import');
+        }
         props.onTitleChange('Budget list');
-        props.onActions(
-            <React.Fragment>
-                <AddButton to={BudgetUrl.add}/>
-                <ImportExportButton to='/import'/>
-            </React.Fragment>
-        );
+        props.onActions([
+            <MaterialIcon icon='import' onClick={redirectToImport}/>
+        ]);
         async function fetchBudgets() {
             const index = await (await btApp.getBudgetsIndex()).getBudgetsIndex();
             setBudgets(Object.values(index));
@@ -33,6 +37,10 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
     // eslint-disable-next-line
     }, []);
 
+    if (redirect) {
+        return <Redirect to={redirect} />;
+    }
+    
     if (budgets === undefined) {
         return null;
     }
@@ -42,7 +50,9 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
                 budgets
                     .map(budget => <BudgetListItem key={budget.identifier} {...budget} />)
             }
-            </List>);
+            <FabButton path={BudgetUrl.add} onRedirect={setRedirect} icon='add'/>
+            </List>
+        );
     } else {
         return <Card>
             <CardContent>

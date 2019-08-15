@@ -4,8 +4,8 @@ import { Category } from '../../interfaces';
 import { HeaderNotifierProps } from '../../routes';
 import { CategoryForm } from '../../components/categories/CategoryForm';
 import { btApp } from '../../BudgetTracker';
-import { CloseButton } from '../../components/buttons/CloseButton';
 import { goBack } from '../../domain/utils/goBack';
+import MaterialIcon from '@material/react-material-icon';
 
 export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
 
@@ -14,7 +14,7 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
     React.useEffect(() => {
         
         props.onTitleChange('Add category');
-        props.onActions(<CloseButton onClick={handleClose} />);
+        props.onActions([<MaterialIcon icon='close' onClick={handleClose} />]);
         return function () {
             props.onActions([]);
             props.onTitleChange('');

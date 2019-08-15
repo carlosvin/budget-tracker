@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Category } from '../../interfaces';
 import CategoryInput from './CategoryInput';
-import { SaveButtonFab } from '../buttons/SaveButton';
 import { uuid } from '../../domain/utils/uuid';
+import MaterialIcon from '@material/react-material-icon';
+import { Fab } from '@material/react-fab';
 
 interface CategoryFormProps {
     onSubmit: (category: Category) => void,
@@ -24,6 +25,6 @@ export const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     return (
         <form onSubmit={handleSave}>
             <CategoryInput {...category} onChange={setCategory} />
-            <SaveButtonFab type='submit' color='primary' disabled={category.name === ''} />
+            <Fab type='submit' disabled={category.name === ''} icon={<MaterialIcon icon='save'/>}/>
         </form>);
 }

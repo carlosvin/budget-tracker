@@ -1,13 +1,13 @@
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, Redirect } from "react-router";
 import { ExpensesDayMap } from "../../interfaces";
 import { ExpenseList } from "../../components/expenses/ExpenseList";
 import { HeaderNotifierProps } from "../../routes";
 import { VersusInfo } from "../../components/VersusInfo";
 import Box from "@material-ui/core/Box";
-import { AddButton } from "../../components/buttons/AddButton";
 import { BudgetUrl } from "../../domain/BudgetUrl";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
+import { FabButton } from "../../components/buttons";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
@@ -36,6 +36,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     const [expenses, setExpenses] = React.useState<ExpensesDayMap>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState();
     const [totalSpent, setTotalSpent] = React.useState();
+    const [redirect, setRedirect] = React.useState<string>();
 
     const budgetModel = useBudgetModel(budgetId);
     
@@ -51,6 +52,10 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
         }
     }, [year, month, day, budgetModel]);
 
+    if (redirect) {
+        return <Redirect to={redirect}/>;
+    }
+
     if (expenses && expectedDailyAvg && budgetModel) {
         // TODO show link to parent budget
         return (
@@ -62,7 +67,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
                     budget={budgetModel.info}
                     expensesByDay={expenses} 
                     expectedDailyAvg={expectedDailyAvg}  />
-                <AddButton to={pathAddExpense}/>
+                <FabButton path={pathAddExpense} onRedirect={setRedirect} icon='add'/>
             </React.Fragment>
         );
     }

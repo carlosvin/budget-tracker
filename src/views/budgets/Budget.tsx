@@ -1,6 +1,5 @@
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import { AppButton } from "../../components/buttons/buttons";
+import { RouteComponentProps, Redirect } from "react-router";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { HeaderNotifierProps } from "../../routes";
 import Typography from "@material-ui/core/Typography";
@@ -9,12 +8,10 @@ import { YesNoDialog } from "../../components/YesNoDialog";
 import { btApp } from "../../BudgetTracker";
 import { ExpensesCalendar } from "../../components/expenses/ExpensesCalendar";
 import { YMD } from "../../interfaces";
-import DownloadIcon from '@material-ui/icons/SaveAlt';
-import EditIcon from '@material-ui/icons/Edit';
-import { DeleteButton } from "../../components/buttons/DeleteButton";
-import { AddButton } from "../../components/buttons/AddButton";
 import { BudgetUrl } from "../../domain/BudgetUrl";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
+import MaterialIcon from "@material/react-material-icon";
+import { FabButton } from "../../components/buttons";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -26,6 +23,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
     const url = new BudgetUrl(budgetId); 
 
     const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
+    const [redirect, setRedirect] = React.useState<string>();
 
     const budgetModel = useBudgetModel(budgetId);
 
@@ -51,14 +49,16 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
                 }
             }
 
-            onActions(
-                <React.Fragment>
-                    <AppButton icon={EditIcon} aria-label='Edit budget' to={url.pathEdit}/>
-                    <AppButton icon={DownloadIcon} aria-label='Download' onClick={handleExport}/>
-                    <DeleteButton onClick={handleDeleteRequest}/>
-                </React.Fragment>
+            function redirectToEdit () {
+                setRedirect(url.pathEdit);
+            }
+
+            onActions([
+                    <MaterialIcon icon='edit' aria-label='Edit budget' onClick={redirectToEdit}/>,
+                    <MaterialIcon icon='download' aria-label='Download' onClick={handleExport}/>,
+                    <MaterialIcon icon='delete' onClick={handleDeleteRequest}/>]
             );
-            return () => onActions(null);
+            return () => onActions([]);
         }
     ,[onActions, budgetModel, url.pathEdit]);
     
@@ -83,6 +83,10 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
         }
     }
 
+    if (redirect) {
+        return <Redirect to={redirect}/>;
+    }
+
     if (budgetModel) {
         return (
             <React.Fragment>
@@ -105,7 +109,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
                 } 
                 { budgetModel.numberOfExpenses === 0 && 
                     <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
-                <AddButton to={url.pathAddExpense} />
+                <FabButton path={url.pathAddExpense} icon='add' onRedirect={setRedirect} />
                 <YesNoDialog 
                     open={showConfirmDialog} 
                     onClose={handleDelete}

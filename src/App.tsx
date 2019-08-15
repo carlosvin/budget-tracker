@@ -6,6 +6,7 @@ import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { TopAppBarFixedAdjust } from '@material/react-top-app-bar';
 
 const App: React.FC = () => {
     const [title, setTitle] = React.useState('Budget tracker');
@@ -15,6 +16,7 @@ const App: React.FC = () => {
         <Router basename='/budget-tracker'>
             <CssBaseline />
                 <Header title={title} actions={actions} />
+                <TopAppBarFixedAdjust>
                 <main>
                     <Container maxWidth='lg'>
                         <Box mt={2}>
@@ -24,6 +26,8 @@ const App: React.FC = () => {
                         </Box>
                     </Container>
                 </main>
+                </TopAppBarFixedAdjust>
+                
         </Router>);
 }
 

@@ -4,11 +4,11 @@ import { Budget } from "../../interfaces";
 import { HeaderNotifierProps } from "../../routes";
 import { BudgetForm } from "../../components/budgets/BudgetForm";
 import { btApp } from "../../BudgetTracker";
-import { CloseButton } from "../../components/buttons/CloseButton";
 import { goBack } from "../../domain/utils/goBack";
 import { BudgetUrl } from "../../domain/BudgetUrl";
 import { DateDay } from "../../domain/DateDay";
 import { uuid } from "../../domain/utils/uuid";
+import MaterialIcon from "@material/react-material-icon";
 
 interface BudgetEditProps extends 
     RouteComponentProps<{ budgetId: string }>, 
@@ -44,7 +44,7 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
             } else {
                 props.onTitleChange('New budget');
             }
-            props.onActions(<CloseButton onClick={handleClose} />);
+            props.onActions([<MaterialIcon icon='close' onClick={handleClose} />]);
             return () => {
                 props.onActions([]);
             }

@@ -9,8 +9,6 @@ import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
 import { CurrencyRates, Expense } from "../../interfaces";
 import { btApp } from "../../BudgetTracker";
 import CategoriesSelect from "../../components/categories/CategoriesSelect";
-import { DeleteButton } from "../../components/buttons/DeleteButton";
-import { SaveButtonFab } from "../../components/buttons/SaveButton";
 import { goBack } from "../../domain/utils/goBack";
 import { BudgetUrl } from "../../domain/BudgetUrl";
 import { DateDay } from "../../domain/DateDay";
@@ -18,6 +16,8 @@ import { round } from "../../domain/utils/round";
 import { uuid } from "../../domain/utils/uuid";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
+import MaterialIcon from "@material/react-material-icon";
+import { Fab } from "@material/react-fab";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -79,9 +79,9 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         }
         initCountry();
         isAddView ? onTitleChange('Add expense'): onTitleChange('Edit expense');
-        onActions(<DeleteButton onClick={handleDelete}/>);
+    onActions([<MaterialIcon icon='delete' onClick={handleDelete}/>]);
         return function () {
-            onActions(null); 
+            onActions([]); 
         }
         // eslint-disable-next-line
     }, []);
@@ -273,7 +273,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                     />
                 </Grid>
             </Grid>
-            <SaveButtonFab type='submit' color='primary' disabled={error !== undefined}/>
+            <Fab type='submit' disabled={error !== undefined} icon={<MaterialIcon icon='save'/>}/>
         </form>
         );
 }

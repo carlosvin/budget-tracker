@@ -6,8 +6,8 @@ import { Expense, Budget, Categories } from '../interfaces';
 import { TextInput } from '../components/TextInput';
 import { RouterProps } from 'react-router';
 import { btApp } from '../BudgetTracker';
-import { SaveButton } from '../components/buttons/SaveButton';
 import { BudgetUrl } from '../domain/BudgetUrl';
+import MaterialIcon from '@material/react-material-icon';
 
 const Import = (props: HeaderNotifierProps&RouterProps) => {
 
@@ -23,11 +23,12 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
     }, []);
 
     React.useLayoutEffect(() => {
-        props.onActions(
-            <SaveButton 
+        props.onActions([
+            <MaterialIcon
+                icon='save' 
                 disabled={!selectedFile || isProcessing} 
                 onClick={startProcess} />
-        );
+        ]);
         return function () {
             props.onActions([]);
         }

@@ -16,7 +16,7 @@ const routes = {
 
 export interface HeaderNotifierProps {
     onTitleChange: (title: string) => void;
-    onActions: (actions: React.ReactNode) => void;
+    onActions: (actions: React.ReactElement[]) => void;
 }
 
 // Function to inject properties to components rendered by router

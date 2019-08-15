@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { RouterProps } from 'react-router';
+import { RouterProps, Redirect } from 'react-router';
 import { Category, Categories } from '../../interfaces';
 import CategoryInput from '../../components/categories/CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
-import { SaveButtonFab } from '../../components/buttons/SaveButton';
-import { AddButton } from '../../components/buttons/AddButton';
 import { btApp } from '../../BudgetTracker';
+import { FabButton } from '../../components/buttons';
+import { Fab } from '@material/react-fab';
+import MaterialIcon from '@material/react-material-icon';
 
 interface CategoriesMapProps {
     onDelete: (id: string) => void;
@@ -33,6 +34,7 @@ const CategoriesMap: React.FC<CategoriesMapProps> = (props) => {
 
 export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
     
+    const [redirect, setRedirect] = React.useState<string>();
     const [categories, setCategories] = React.useState<Categories>({});
     const [viewCategories, setViewCategories] = React.useState<Categories>({});
 
@@ -76,14 +78,18 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
         setChanged(false);
     }
 
+    if (redirect) {
+        return <Redirect to={redirect}/>;
+    }
+
     return (
         <form onSubmit={handleSave}>
             <CategoriesMap 
                 onChange={handleChange} 
                 onDelete={handleDelete} 
                 categories={viewCategories}/>
-            <AddButton to='/categories/add'/>
-            <SaveButtonFab type='submit' disabled={!changed}/>
+            <FabButton path='/categories/add' onRedirect={setRedirect} icon='add'/>
+            <Fab icon={<MaterialIcon icon='save'/>} type='submit' disabled={!changed}/>
         </form>
     );
 

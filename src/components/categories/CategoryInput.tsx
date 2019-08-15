@@ -5,7 +5,7 @@ import { TextInput } from '../TextInput';
 import CategoryIconButton from './CategoryIconButton';
 import CategoryIconDialogSelector from '../../views/categories/CategoryIconSelector';
 import { Category } from '../../interfaces';
-import { DeleteButton } from '../buttons/DeleteButton';
+import MaterialIcon from '@material/react-material-icon';
 
 interface CategoryInputProps extends Category {
     direction?: GridDirection;
@@ -56,7 +56,7 @@ export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
                         name={ category.icon } 
                         onClick={ handleClickChangeIcon } />
                 </Grid>
-                { props.onDelete && <Grid item><DeleteButton onClick={handleDelete}/></Grid> }
+                { props.onDelete && <Grid item><MaterialIcon icon='delete' onClick={handleDelete}/></Grid> }
             </Grid>
             <CategoryIconDialogSelector 
                 onClose={handleCloseDialog} 
