@@ -16,33 +16,38 @@ interface BudgetEditProps extends
 }
 
 const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
-    const fromDate = new DateDay();
     const budgetId = props.match.params.budgetId;
     
-    const [budgetInfo, setBudgetInfo] = React.useState<Budget>({ 
-        name: '', 
-        from: fromDate.timeMs, 
-        to: fromDate.addDays(30).timeMs,
-        currency: 'EUR',
-        total: 0,
-        identifier: uuid()
-    }); 
+    const [budgetInfo, setBudgetInfo] = React.useState<Budget>(); 
 
     function handleClose () {
         goBack(props.history);
     }
 
-    async function fetchBudget(budgetId: string) {
-        setBudgetInfo(await (await btApp.getBudgetsIndex()).getBudgetInfo(budgetId));
+    function newEmptyBudget () {
+        const fromDate = new DateDay();
+        return { 
+            name: '', 
+            from: fromDate.timeMs, 
+            to: fromDate.addDays(30).timeMs,
+            currency: 'EUR',
+            total: 0,
+            identifier: uuid()
+        };
     }
 
     React.useEffect(
         () => {
+            async function fetchBudget(budgetId: string) {
+                setBudgetInfo(await (await btApp.getBudgetsIndex()).getBudgetInfo(budgetId));
+            }
+
             if (budgetId) {
                 props.onTitleChange(`Edit budget`);
                 fetchBudget(budgetId);
             } else {
                 props.onTitleChange('New budget');
+                setBudgetInfo(newEmptyBudget());
             }
             props.onActions(<CloseButton onClick={handleClose} />);
             return () => {
@@ -61,11 +66,15 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
         props.history.replace(new BudgetUrl(budget.identifier).path);
     }
 
-    return  <BudgetForm 
+    if (budgetInfo) {
+        return  <BudgetForm 
         budget={budgetInfo}
         onSubmit={handleSubmit}
         disabled={saving}
         />;
+    }
+    return <p>Loading...</p>;
+
 }
 
 export default BudgetEdit;
