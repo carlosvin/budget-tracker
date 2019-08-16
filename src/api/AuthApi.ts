@@ -25,7 +25,6 @@ class AuthApi {
 
     readonly uiConfig = {
         signInFlow: 'popup',
-        // signInSuccessUrl: '<url-to-redirect-to-on-success>',
         signInOptions: [
             // Leave the lines as is for the providers you want to offer your users.
             firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -44,7 +43,8 @@ class AuthApi {
     async startAuth() {
         if (!this.isAuth) {
             const firebaseui = await import('firebaseui');
-            const ui = new firebaseui.auth.AuthUI(firebase.auth());
+            const ui = new firebaseui.auth.AuthUI(this.auth);
+            this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
             return new Promise<string>((resolve, reject) => {
                 ui.start('#root', {
                     ...this.uiConfig,
@@ -64,8 +64,8 @@ class AuthApi {
         }
     }
 
-    logout() {
-        this.auth.signOut();
+    async logout() {
+        return this.auth.signOut();
     }
 
     get userId() {
