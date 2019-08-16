@@ -6,15 +6,29 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { Link } from 'react-router-dom';
+import { authApi } from "../api/AuthApi";
 
-export const AppMenu: React.FC<{href: string, name: string}[]> = (props) => {
+export const AppMenu: React.FC<{ href: string, name: string }[]> = (props) => {
 
-    const [anchorEl, setAnchorEl] = React.useState<Element|null>(null);
+    const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
 
     const handleClick = (event: React.SyntheticEvent) => (setAnchorEl(event.currentTarget));
-  
+
     const handleClose = () => (setAnchorEl(null));
-    
+
+    async function handleLogin() {
+        console.log('login', authApi.userId);
+        await authApi.startAuth();
+        handleClose();
+
+    }
+
+    async function handleLogout() {
+        console.log('logout');
+        await authApi.logout();
+        handleClose();
+    }
+
     return (
         <React.Fragment>
             <IconButton edge="start" color="inherit" aria-label="Menu" onClick={handleClick}>
@@ -26,17 +40,23 @@ export const AppMenu: React.FC<{href: string, name: string}[]> = (props) => {
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
-                >
-                    { Object.values(props).map(
-                        e => <MenuItem 
-                            onClick={handleClose}
-                            key={`menu-item-${e.name}`} 
-                            component={Link} 
-                            to={e.href}>
-                                {e.name}
-                            </MenuItem>
-)}
-             </Menu>
+            >
+                {Object.values(props).map(
+                    e => <MenuItem
+                        onClick={handleClose}
+                        key={`menu-item-${e.name}`}
+                        component={Link}
+                        to={e.href}>
+                        {e.name}
+                    </MenuItem>
+                )}
+
+                <MenuItem
+                    onClick={authApi.isAuth ? handleLogout : handleLogin}
+                    key={`menu-item-login`} >
+                    {authApi.isAuth ? 'Logout' : 'Login'}
+                </MenuItem>
+            </Menu>
         </React.Fragment>
     );
 }

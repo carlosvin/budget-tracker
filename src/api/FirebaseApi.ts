@@ -14,16 +14,44 @@ require("firebase/auth");
 
 // Configure Firebase.
 const config = {
-    apiKey: "AIzaSyA92s-EdRUHKfWTY8p7ZRiufzDLt9Quge8",
-    authDomain: "budget-tracker-ce0d6.firebaseapp.com",
-    databaseURL: "https://budget-tracker-ce0d6.firebaseio.com",
-    projectId: "budget-tracker-ce0d6",
-    storageBucket: "budget-tracker-ce0d6.appspot.com",
-    messagingSenderId: "536810665670",
-    appId: "1:536810665670:web:5d0ebe50bdd63013"
+    apiKey: "AIzaSyDYiJ453cQ7Gw2rJoc2aUT8-eIR-3o_--c",
+    authDomain: "budget-tracker-e611b.firebaseapp.com",
+    databaseURL: "https://budget-tracker-e611b.firebaseio.com",
+    projectId: "budget-tracker-e611b",
+    storageBucket: "",
+    messagingSenderId: "52933279347",
+    appId: "1:52933279347:web:3c02df71353d7cab"
 };
 
 export class FirebaseApi {
+
+    readonly uiConfig = {
+        callbacks: {
+          signInSuccessWithAuthResult: function(authResult: string, redirectUrl: string) {
+            // User successfully signed in.
+            // Return type determines whether we continue the redirect automatically
+            // or whether we leave that to developer to handle.
+            return true;
+          },
+          uiShown: function() {
+            // The widget is rendered.
+            // Hide the loader.
+            // document.getElementById('loader').style.display = 'none';
+          }
+        },
+        // Will use popup for IDP Providers sign-in flow instead of the default, redirect.
+        signInFlow: 'popup',
+        // signInSuccessUrl: '<url-to-redirect-to-on-success>',
+        signInOptions: [
+          // Leave the lines as is for the providers you want to offer your users.
+          firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+          firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+          firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+          firebase.auth.GithubAuthProvider.PROVIDER_ID,
+          firebase.auth.EmailAuthProvider.PROVIDER_ID,
+          firebase.auth.PhoneAuthProvider.PROVIDER_ID
+        ],
+      };
 
     private readonly db: firebase.firestore.Firestore;
 
@@ -31,6 +59,20 @@ export class FirebaseApi {
         firebase.initializeApp(config);
         this.db = firebase.firestore();
         this.enablePersistence();
+    }
+
+    async startAuth () {
+        const firebaseui = await import('firebaseui');
+        const ui = new firebaseui.auth.AuthUI(firebase.auth());
+        ui.start('#root', {
+            signInOptions: [
+              // List of OAuth providers supported.
+              firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+              firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+              firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+              firebase.auth.GithubAuthProvider.PROVIDER_ID
+            ],
+        });
     }
 
     private async enablePersistence() {

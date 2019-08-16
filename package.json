@@ -6,27 +6,30 @@
     "dependencies": {
         "@material-ui/core": "^4",
         "@material-ui/icons": "^4",
+        "@react-firebase/auth": "^0.2.9",
         "axios": "^0.19",
+        "firebase": "^6.4.0",
+        "firebaseui": "^4.1.0",
         "react": "^16",
         "react-dom": "^16",
         "react-router-dom": "^5",
         "victory": "^32"
     },
     "devDependencies": {
-        "gh-pages": "2.0.1",
-        "husky": "^3",
-        "react-scripts": "^3",
-        "react-test-renderer": "^16",
-        "serve": "*",
-        "source-map-explorer": "^2",
-        "typescript": "^3",
         "@types/jest": "^24",
         "@types/node": "^12",
         "@types/react": "^16",
         "@types/react-dom": "^16",
         "@types/react-router-dom": "^4",
         "@types/react-test-renderer": "^16",
-        "@types/victory": "^31"
+        "@types/victory": "^31",
+        "gh-pages": "2.0.1",
+        "husky": "^3",
+        "react-scripts": "^3",
+        "react-test-renderer": "^16",
+        "serve": "*",
+        "source-map-explorer": "^2",
+        "typescript": "^3"
     },
     "scripts": {
         "analyze": "source-map-explorer 'build/static/js/*.js'",
