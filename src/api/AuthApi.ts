@@ -1,6 +1,6 @@
-import { Budget, BudgetsMap } from '../interfaces';
+// import { Budget, BudgetsMap } from '../interfaces';
 import firebase from 'firebase/app';
-require("firebase/auth");
+import 'firebase/auth';
 
 // TODO try    https://medium.com/firebase-developers/how-to-setup-firebase-authentication-with-react-in-5-minutes-maybe-10-bb8bb53e8834
 
@@ -23,44 +23,18 @@ const config = {
 
 class AuthApi {
 
-    readonly uiConfig = {
-        signInFlow: 'popup',
-        signInOptions: [
-            // Leave the lines as is for the providers you want to offer your users.
-            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-            firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-            firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-            firebase.auth.GithubAuthProvider.PROVIDER_ID,
-            firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            firebase.auth.PhoneAuthProvider.PROVIDER_ID
-        ],
-    };
+    private readonly _provider: firebase.auth.GoogleAuthProvider;
+    readonly auth: firebase.auth.Auth;
 
     constructor() {
-        firebase.initializeApp(config);
+        this.auth = firebase.initializeApp(config).auth();
+        this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        this._provider = new firebase.auth.GoogleAuthProvider();
     }
 
     async startAuth() {
         if (!this.isAuth) {
-            const firebaseui = await import('firebaseui');
-            const ui = new firebaseui.auth.AuthUI(this.auth);
-            this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-            return new Promise<string>((resolve, reject) => {
-                ui.start('#root', {
-                    ...this.uiConfig,
-                    callbacks: {
-                        signInSuccessWithAuthResult: (authResult: any, redirectUrl: string) => {
-                            resolve(authResult);
-                            return false;
-                        },
-                        signInFailure: (error: firebaseui.auth.AuthUIError) => {
-                            console.error(error);
-                            return Promise.reject();
-                        }
-
-                    }
-                });
-            });
+            return this.auth.signInWithPopup(this._provider);
         }
     }
 
@@ -75,10 +49,6 @@ class AuthApi {
 
     get isAuth() {
         return Boolean(this.userId);
-    }
-
-    get auth() {
-        return firebase.auth();
     }
 }
 

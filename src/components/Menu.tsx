@@ -6,7 +6,6 @@ import MenuIcon from "@material-ui/icons/Menu";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import { Link } from 'react-router-dom';
-import { authApi } from "../api/AuthApi";
 
 export const AppMenu: React.FC<{ href: string, name: string }[]> = (props) => {
 
@@ -15,20 +14,7 @@ export const AppMenu: React.FC<{ href: string, name: string }[]> = (props) => {
     const handleClick = (event: React.SyntheticEvent) => (setAnchorEl(event.currentTarget));
 
     const handleClose = () => (setAnchorEl(null));
-
-    async function handleLogin() {
-        console.log('login', authApi.userId);
-        await authApi.startAuth();
-        handleClose();
-
-    }
-
-    async function handleLogout() {
-        console.log('logout');
-        await authApi.logout();
-        handleClose();
-    }
-
+    
     return (
         <React.Fragment>
             <IconButton edge="start" color="inherit" aria-label="Menu" onClick={handleClick}>
@@ -52,9 +38,11 @@ export const AppMenu: React.FC<{ href: string, name: string }[]> = (props) => {
                 )}
 
                 <MenuItem
-                    onClick={authApi.isAuth ? handleLogout : handleLogin}
-                    key={`menu-item-login`} >
-                    {authApi.isAuth ? 'Logout' : 'Login'}
+                    onClick={handleClose}
+                    key={`menu-item-login`}
+                    component={Link}
+                    to='/login'>
+                    Account sync
                 </MenuItem>
             </Menu>
         </React.Fragment>
