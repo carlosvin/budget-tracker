@@ -6,6 +6,7 @@ export class LocalStorage implements StorageApi {
     private readonly KEY_BUDGETS = 'budgets';
     private readonly KEY_EXPENSES = 'expenses';
     private readonly KEY_CATEGORIES = 'categories';
+    private readonly KEY_LAST_TS = 'lastTimeSaved';
 
     async getBudgets(): Promise<BudgetsMap> {
         const serializedBudgets = localStorage.getItem(this.KEY_BUDGETS);
@@ -103,4 +104,14 @@ export class LocalStorage implements StorageApi {
         categories[category.id] = category;
         this.saveCategories(categories);
     }
+
+    async getLastTimeSaved() {
+        const tsString = localStorage.getItem(this.KEY_LAST_TS);
+        if (tsString) {
+            return parseInt(tsString);
+        } else {
+            return 0;
+        }
+    }
+
 }

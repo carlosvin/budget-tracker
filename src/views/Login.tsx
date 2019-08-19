@@ -2,7 +2,6 @@
 import React from 'react';
 import { authApi } from '../api/AuthApi';
 
-
 export const Login: React.FC = () => {
 
     const [isLoggedIn, setIsLoggedIn] = React.useState<boolean|undefined>();

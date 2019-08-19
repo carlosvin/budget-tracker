@@ -73,3 +73,7 @@ export interface CountryEntry {
     code: string;
     name: string;
 }
+
+export interface User {
+    timestamp: number;
+}

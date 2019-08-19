@@ -12,9 +12,11 @@ class AppStorageManager implements StorageApi {
     async getBudgets() {
         return this._storage.getBudgets();
     }
+
     async getExpenses(budgetId: string) {
         return this._storage.getExpenses(budgetId);
     }
+    
     async saveBudget(budget: Budget) {
         return this._storage.saveBudget(budget);
     }
@@ -43,10 +45,14 @@ class AppStorageManager implements StorageApi {
         return this._storage.saveCategories(categories);
     }
 
-    async switchStorage (storage: StorageApi) {
+    async addSecondaryStorage (storage: StorageApi) {
         // TODO dump data from current storage to new one
         this._storage = storage;
         throw new Error('Not implemented');
+    }
+
+    async getLastTimeSaved(){
+        return this._storage.getLastTimeSaved();
     }
 }
 
