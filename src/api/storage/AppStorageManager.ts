@@ -3,56 +3,90 @@ import { Budget, Expense, Category, Categories } from "../../interfaces";
 import { LocalStorage } from "./LocalStorage";
 
 class AppStorageManager implements StorageApi {
-    private _storage: StorageApi;
+    private _local: StorageApi;
+    private _remote?: StorageApi;
+
     
-    constructor (storage: StorageApi) {
-        this._storage = storage;
+    constructor (local: StorageApi, remote?: StorageApi) {
+        this._local = local;
+        if (remote) {
+            this._remote = remote;
+            AppStorageManager.sync(this._local, this._remote);
+        }
+    }
+
+    private static async sync(local: StorageApi, remote: StorageApi) {
+        const [remoteTime, localTime] = await Promise.all([
+            remote.getLastTimeSaved(), 
+            local.getLastTimeSaved()]);
+        if (remoteTime > localTime) {
+            return AppStorageManager.dump(remote, local);
+        } else if (remoteTime < localTime) {
+            return AppStorageManager.dump(local, remote);
+        }
+    }
+
+    private static async dump(from: StorageApi, to: StorageApi){
+        throw Error('not implemented');
+
     }
 
     async getBudgets() {
-        return this._storage.getBudgets();
+        return this._local.getBudgets();
     }
 
     async getExpenses(budgetId: string) {
-        return this._storage.getExpenses(budgetId);
+        return this._local.getExpenses(budgetId);
     }
     
     async saveBudget(budget: Budget) {
-        return this._storage.saveBudget(budget);
+        if (this._remote) {
+            this._remote.saveBudget(budget);
+        }
+        return this._local.saveBudget(budget);
     }
     
     async deleteBudget(budgetId: string) {
-        return this._storage.deleteBudget(budgetId);
+        if (this._remote) {
+            this._remote.deleteBudget(budgetId);
+        }
+        return this._local.deleteBudget(budgetId);
     }
     
     async saveExpense(budgetId: string, expense: Expense) {
-        return this._storage.saveExpense(budgetId, expense);
+        if (this._remote) {
+            this._remote.saveExpense(budgetId, expense);
+        }
+        return this._local.saveExpense(budgetId, expense);
     }
 
     async deleteExpense(budgetId: string, expenseId: string) {
-        return this._storage.deleteExpense(budgetId, expenseId);
+        if (this._remote) {
+            this._remote.deleteExpense(budgetId, expenseId);
+        }
+        return this._local.deleteExpense(budgetId, expenseId);
     }
 
     async getCategories() {
-        return this._storage.getCategories();
+        return this._local.getCategories();
     }
 
     async saveCategory(category: Category) {
-        return this._storage.saveCategory(category);
+        if (this._remote) {
+            this._remote.saveCategory(category);
+        }
+        return this._local.saveCategory(category);
     }
 
     async saveCategories(categories: Categories) {
-        return this._storage.saveCategories(categories);
-    }
-
-    async addSecondaryStorage (storage: StorageApi) {
-        // TODO dump data from current storage to new one
-        this._storage = storage;
-        throw new Error('Not implemented');
+        if (this._remote) {
+            this._remote.saveCategories(categories);
+        }
+        return this._local.saveCategories(categories);
     }
 
     async getLastTimeSaved(){
-        return this._storage.getLastTimeSaved();
+        return this._local.getLastTimeSaved();
     }
 }
 
