@@ -1,6 +1,5 @@
-// Import FirebaseAuth and firebase.
 import React from 'react';
-import { authApi } from '../api/AuthApi';
+import { btApp } from '../BudgetTracker';
 
 export const Login: React.FC = () => {
 
@@ -8,16 +7,25 @@ export const Login: React.FC = () => {
 
     React.useEffect(
         () => {
-            return authApi.auth.onAuthStateChanged((user)=>{
-                console.log(user);
-                setIsLoggedIn(!!user);
-            });
+            async function initUserId () {
+                const auth = await btApp.getAuth();
+                const userId = await auth.getUserId();
+                console.log(userId);
+                setIsLoggedIn(!!userId);
+            }
+            initUserId();
         }, []);
 
     async function handleLogin() {
         setIsLoggedIn(undefined);
-        await authApi.startAuth();
-        setIsLoggedIn(true);
+        const uid = await (await btApp.getAuth()).startAuth();
+        setIsLoggedIn(!!uid);
+    }
+
+    async function handleLogout() {
+        setIsLoggedIn(undefined);
+        const uid = await (await btApp.getAuth()).getUserId();
+        setIsLoggedIn(!!uid);
     }
 
     if (isLoggedIn===undefined) {
@@ -25,7 +33,7 @@ export const Login: React.FC = () => {
     }
 
     if (isLoggedIn) {
-        return <button onClick={() => authApi.logout()}>Logout</button>;
+        return <button onClick={handleLogout}>Logout</button>;
     } else {
         return <button onClick={handleLogin}>Login using google</button>;
     }

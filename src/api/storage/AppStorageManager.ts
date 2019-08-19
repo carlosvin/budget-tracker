@@ -1,17 +1,22 @@
 import { StorageApi } from "./StorageApi";
 import { Budget, Expense, Category, Categories } from "../../interfaces";
-import { LocalStorage } from "./LocalStorage";
 
-class AppStorageManager implements StorageApi {
+export class AppStorageManager implements StorageApi {
     private _local: StorageApi;
     private _remote?: StorageApi;
 
-    
-    constructor (local: StorageApi, remote?: StorageApi) {
+    constructor (local: StorageApi, remote?: Promise<StorageApi|undefined>) {
         this._local = local;
-        if (remote) {
-            this._remote = remote;
-            AppStorageManager.sync(this._local, this._remote);
+        this.initRemote(remote);
+        
+    }
+
+    private async initRemote (remotePromise ?: Promise<StorageApi|undefined>) {
+        if (remotePromise) {
+            this._remote = await remotePromise;
+            if (this._remote) {
+                AppStorageManager.sync(this._local, this._remote);
+            }
         }
     }
 
@@ -90,5 +95,3 @@ class AppStorageManager implements StorageApi {
     }
 }
 
-const appStorage: StorageApi = new AppStorageManager(new LocalStorage());
-export default appStorage;

@@ -9,12 +9,13 @@ export class FirestoreApi implements StorageApi {
     private readonly userId: string;
 
     constructor(userId: string) {
-        if (!userId) {
-            throw Error('User ID is required');
+        if (userId) {
+            this.userId = userId;
+            this.db = firebase.firestore();
+            this.db.enablePersistence();    
+        } else {
+            throw Error('User must be logged in to be able to use firestore');
         }
-        this.userId = userId;
-        this.db = firebase.firestore();
-        this.db.enablePersistence();
     }
 
     get userDoc () {
