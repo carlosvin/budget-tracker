@@ -136,10 +136,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         }
         
         initBudget();
-        
-        return function () {
-            onActions([]);
-        }
+
         // eslint-disable-next-line
     }, [budgetModel, expenseId]);
 
