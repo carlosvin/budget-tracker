@@ -54,7 +54,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
             onActions(
                 <React.Fragment>
                     <AppButton icon={EditIcon} aria-label='Edit budget' to={url.pathEdit}/>
-                    <AppButton icon={DownloadIcon} aria-label='Download' onClick={handleExport}/>
+                    <AppButton icon={DownloadIcon} aria-label='Download' to={url.pathExport}/>
                     <DeleteButton onClick={handleDeleteRequest}/>
                 </React.Fragment>
             );

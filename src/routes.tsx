@@ -6,6 +6,7 @@ const routes = {
     BudgetList: React.lazy(() => import('./views/budgets/BudgetList')),
     BudgetEdit: React.lazy(() => import('./views/budgets/BudgetEdit')),
     BudgetStats: React.lazy(() => import('./views/budgets/Stats')),
+    BudgetExport: React.lazy(() => import('./views/budgets/Export')),
     ExpenseView: React.lazy(() => import('./views/expenses/Expense')),
     ExpensesView: React.lazy(() => import('./views/expenses/Expenses')),
     CategoryList: React.lazy(() => import('./views/categories/CategoryList')),
@@ -32,6 +33,7 @@ export const Routes: React.FC<HeaderNotifierProps> = (props) => (
         <Route exact path='/budgets/add' render={_render(routes.BudgetEdit, props)} />
         <Route exact path='/budgets/:budgetId/edit' render={_render(routes.BudgetEdit, props)} />
         <Route exact path='/budgets/:budgetId/stats' render={_render(routes.BudgetStats, props)} />
+        <Route exact path='/budgets/:budgetId/export' render={_render(routes.BudgetExport, props)} />
         <Route exact path='/budgets/:budgetId' render={_render(routes.BudgetView, props)} />
         <Route exact path='/budgets/:budgetId/expenses/add' render={_render(routes.ExpenseView, props)} />
         <Route exact path='/budgets/:budgetId/expenses/:expenseId' render={_render(routes.ExpenseView, props)} />
