@@ -1,5 +1,5 @@
+import nanoid from 'nanoid';
 
 export function uuid() {
-    // TODO generate uuid following spec
-    return new Date().getTime().toString();
+    return nanoid();
 }
