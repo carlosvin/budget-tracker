@@ -6,6 +6,20 @@ import CopyIcon from '@material-ui/icons/Code';
 import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { useCategories } from "../../hooks/useCategories";
 
+/** TODO we might want to add popup export to allow to download a file
+ * 
+ * async function handleExport() {
+        if (budgetModel){
+            const store  = await btApp.getCategoriesStore();
+            const categories = await store.getCategories();
+            const json = budgetModel.getJson(categories);
+            window.open(
+                'data:application/octet-stream,' +
+                encodeURIComponent(json));
+        }
+    }
+*/
+
 interface ExportBudgetProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
 export const ExportBudget: React.FC<ExportBudgetProps> = (props) => {
@@ -17,23 +31,15 @@ export const ExportBudget: React.FC<ExportBudgetProps> = (props) => {
     const [json, setJson] = React.useState<string>('Generating json...');
 
     React.useEffect(() => {
-        function handleCopy() {
-            navigator.clipboard.writeText(json);
-        }
-
         if (budgetModel && categories) {
             onTitleChange(`Export ${budgetModel.info.name}`);
-            onActions(
-                <AppButton 
-                    icon={CopyIcon} 
-                    disabled={!budgetModel} 
-                    aria-label='Copy JSON' 
-                    onClick={handleCopy}/>);
             setJson(budgetModel.getJson(categories));
         }
-    },
+        return function () {
+            onTitleChange('');
+        } 
     // eslint-disable-next-line
-    [budgetModel, categories]);
+    }, [budgetModel, categories]);
 
     React.useEffect(() => {
         function handleCopy() {
@@ -44,7 +50,9 @@ export const ExportBudget: React.FC<ExportBudgetProps> = (props) => {
                 icon={CopyIcon} 
                 aria-label='Copy JSON' 
                 onClick={handleCopy}/>);
-    
+        return function () {
+            onActions(undefined);
+        }
         // eslint-disable-next-line
     }, [json]);
 

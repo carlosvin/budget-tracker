@@ -40,17 +40,6 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
 
     React.useEffect(
         () => {
-            async function handleExport() {
-                if (budgetModel){
-                    const store  = await btApp.getCategoriesStore();
-                    const categories = await store.getCategories();
-                    const json = budgetModel.getJson(categories);
-                    window.open(
-                        'data:application/octet-stream,' +
-                        encodeURIComponent(json));
-                }
-            }
-
             onActions(
                 <React.Fragment>
                     <AppButton icon={EditIcon} aria-label='Edit budget' to={url.pathEdit}/>
@@ -60,7 +49,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
             );
             return () => onActions(null);
         }
-    ,[onActions, budgetModel, url.pathEdit]);
+    ,[onActions, budgetModel, url.pathEdit, url.pathExport]);
     
     function handleDeleteRequest () {
         setShowConfirmDialog(true);
