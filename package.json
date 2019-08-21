@@ -17,6 +17,7 @@
     },
     "devDependencies": {
         "@types/jest": "^24",
+        "@types/nanoid": "^2.0.0",
         "@types/node": "^12",
         "@types/react": "^16",
         "@types/react-dom": "^16",

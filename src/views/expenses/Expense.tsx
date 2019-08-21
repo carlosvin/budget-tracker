@@ -6,7 +6,7 @@ import { TextInput } from "../../components/TextInput";
 import { HeaderNotifierProps } from "../../routes";
 import CountryInput from "../../components/CountryInput";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
-import { CurrencyRates, Expense } from "../../interfaces";
+import { CurrencyRates } from "../../interfaces";
 import { btApp } from "../../BudgetTracker";
 import CategoriesSelect from "../../components/categories/CategoriesSelect";
 import { DeleteButton } from "../../components/buttons/DeleteButton";
@@ -18,6 +18,7 @@ import { round } from "../../domain/utils/round";
 import { uuid } from "../../domain/utils/uuid";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
+import { ExpenseModel } from "../../domain/ExpenseModel";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -30,7 +31,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const [amount, setAmount] = React.useState<number>();
     const [countryCode, setCountryCode] = React.useState<string|undefined>();
     const [dateString, setDateString] = React.useState(getISODateString());
-    const [identifier, setIdentifier] = React.useState(uuid());
+    const [identifier, setIdentifier] = React.useState();
     const [categoryId, setCategoryId] = React.useState('');
     const [amountBaseCurrency, setAmountBaseCurrency] = React.useState<number>();
     const [baseCurrency, setBaseCurrency] = React.useState<string>();
@@ -136,50 +137,27 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         }
         
         initBudget();
-        
-        return function () {
-            onActions([]);
-        }
+
         // eslint-disable-next-line
     }, [budgetModel, expenseId]);
-
-    function createExpense (
-        dayNumber: number, 
-        inputAmount: number, 
-        inputAmountBase: number, 
-        timeMs: number): Expense {
-        if (currency && countryCode) {
-            return {   
-                amount: inputAmount, 
-                categoryId,
-                currency,
-                countryCode,
-                identifier: isAddView ? identifier + dayNumber : identifier,
-                when: DateDay.fromTimeMs(timeMs).addDays(dayNumber).timeMs,
-                amountBaseCurrency: inputAmountBase,
-                description
-            };
-        }
-        throw new Error(`Invalid expense data: Currency or country code are missing`);
-    }
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const max = splitInDays || 1;
-        if (amount && amountBaseCurrency) {
-            const inputAmount = amount / max;
-            const inputAmountBase = amountBaseCurrency / max;
+        if (amount && amountBaseCurrency && currency && countryCode) {
             const date = new Date(dateString);
-            let firstExpenseId = undefined;
-            for (let i=0; i < max; i++) {
-                const expense = createExpense(i, inputAmount, inputAmountBase, date.getTime());
-                if (!firstExpenseId) {
-                    firstExpenseId = expense.identifier;
-                }
-                await (await btApp.getBudgetsStore()).setExpense(
-                        budgetId,
-                        expense);
-            }
+            const expenseModel = new ExpenseModel({
+                identifier: identifier || uuid(), 
+                amount,
+                amountBaseCurrency, 
+                currency,
+                countryCode,
+                categoryId,
+                description,
+                when: date.getTime()
+            });
+            const store = await btApp.getBudgetsStore();
+            await store.setExpenses(budgetId, expenseModel.split(max));
             goBack(props.history, budgetUrl.pathExpensesByDay(new DateDay(date)));
         } else {
             throw new Error('Invalid expense data: Missing amount');

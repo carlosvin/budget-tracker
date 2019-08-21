@@ -56,10 +56,14 @@ export default class BudgetsStoreImpl implements BudgetsStore {
         throw new Error('No expenses found');
     }
 
-    async setExpense(budgetId: string, expense: Expense){
+    async setExpenses(budgetId: string, expenses: Expense[]) {
         const model = await this.getBudgetModel(budgetId);
-        model.setExpense(expense);
-        return this._budgetsIndex.saveExpense(budgetId, expense);      
+        const promises = [];
+        for (const expense of expenses) {
+            model.setExpense(expense);
+            promises.push(this._budgetsIndex.saveExpense(budgetId, expense));
+        }
+        await Promise.all(promises);
     }
 
     async getExpense(budgetId: string, expenseId: string){

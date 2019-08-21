@@ -35,6 +35,9 @@ export class DateDay implements YMD {
         return DateDay.isToday(this);
     }
 
+    /**
+     * @returns current object instance with days added to previous date
+     */
     addDays (days: number) {
         this._date.setDate(this._date.getDate() + days);
         return this;

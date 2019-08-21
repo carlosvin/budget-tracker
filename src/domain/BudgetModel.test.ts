@@ -517,7 +517,7 @@ describe('Budget model statistics', () => {
         expect(bm.totalsByCountry.getSubtotal([expense3.countryCode, ]))
             .toBe(expense3.amountBaseCurrency + expense4.amountBaseCurrency);
 
-        expense1.countryCode = expense1.countryCode + '_VIS';
+        expense1.countryCode = 'OO';
         bm.setExpense(expense1);
         expect(bm.totalsByCountry.getSubtotal([expense1.countryCode, ]))
             .toBe(expense1.amountBaseCurrency);
