@@ -1,9 +1,11 @@
 import { Budget, Expense } from "../interfaces";
 import { NestedTotal } from "./NestedTotal";
+import { DateDay } from "./DateDay";
+import { uuid } from "./utils/uuid";
 
 export class ExpenseModel implements Expense {
 
-    readonly date: Date;
+    readonly date: DateDay;
     readonly amount: number;
     private _amountBaseCurrency: number;
     readonly currency: string;
@@ -14,7 +16,7 @@ export class ExpenseModel implements Expense {
     readonly when: number;
 
     constructor (info: Expense) {
-        this.date = new Date(info.when);
+        this.date = DateDay.fromTimeMs(info.when);
         this.identifier = info.identifier;
         this._amountBaseCurrency = info.amountBaseCurrency;
         this.amount = info.amount;
@@ -41,15 +43,15 @@ export class ExpenseModel implements Expense {
     }
 
     get day () {
-        return this.date.getDate();
+        return this.date.day;
     }
 
     get month () {
-        return this.date.getMonth();
+        return this.date.month;
     }
 
     get year () {
-        return this.date.getFullYear();
+        return this.date.year;
     }
 
     get dateParts (): number[] {
@@ -79,8 +81,42 @@ export class ExpenseModel implements Expense {
     }
 
     validate () {
+        const fieldErrors = [];
         if (this.amountBaseCurrency === undefined) {
-            throw new Error(`Amount in base currency required, expense id: ${this.identifier}`);
+            fieldErrors.push('amount in base currency');
+        }
+        if (this.countryCode.length !== 2) {
+            fieldErrors.push('country code');
+        }
+        if (this.currency.length !== 3) {
+            fieldErrors.push('currency code');
+        }
+        if (fieldErrors.length > 0) {
+            throw Error(`Invalid expense (${this.identifier}) fields: ${fieldErrors.join(', ')}`);
+        }
+    }
+
+    /** 
+     * @returns List of split expenses, first element will be current split expense
+     */
+    split(days: number, idGen = uuid) {
+        if (days < 1) {
+            throw Error('You cannot split an expense in less than one piece');
+        } else if (days === 1) {
+            return [this];
+        } else {
+            const amountBaseCurrency =  this.amountBaseCurrency / days;
+            const amount = this.amount / days;
+            const expenses = [{...this, amount, amountBaseCurrency}];
+            for (let i=1; i<days; i++) {
+                expenses.push({
+                    ...this,
+                    amount, amountBaseCurrency,
+                    when: DateDay.fromTimeMs(this.when).addDays(i).timeMs,
+                    identifier: idGen()
+                });
+            }
+            return expenses;
         }
     }
 }
