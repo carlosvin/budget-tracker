@@ -15,9 +15,9 @@ export class ExpenseModel implements Expense {
     readonly identifier: string;
     readonly when: number;
 
-    constructor (info: Expense&{_amountBaseCurrency?: number}) {
+    constructor (info: Expense) {
         this.identifier = info.identifier;
-        this.amountBaseCurrency = info._amountBaseCurrency || info.amountBaseCurrency;
+        this.amountBaseCurrency = info.amountBaseCurrency;
         this.amount = info.amount;
         this.currency = info.currency;
         this.categoryId = info.categoryId;
