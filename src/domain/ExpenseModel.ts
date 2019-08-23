@@ -5,9 +5,9 @@ import { uuid } from "./utils/uuid";
 
 export class ExpenseModel implements Expense {
 
-    readonly date: DateDay;
+    private _date?: DateDay;
     readonly amount: number;
-    private _amountBaseCurrency: number;
+    readonly amountBaseCurrency: number;
     readonly currency: string;
     readonly categoryId: string;
     readonly countryCode: string;
@@ -15,10 +15,9 @@ export class ExpenseModel implements Expense {
     readonly identifier: string;
     readonly when: number;
 
-    constructor (info: Expense) {
-        this.date = DateDay.fromTimeMs(info.when);
+    constructor (info: Expense&{_amountBaseCurrency?: number}) {
         this.identifier = info.identifier;
-        this._amountBaseCurrency = info.amountBaseCurrency;
+        this.amountBaseCurrency = info._amountBaseCurrency || info.amountBaseCurrency;
         this.amount = info.amount;
         this.currency = info.currency;
         this.categoryId = info.categoryId;
@@ -33,13 +32,15 @@ export class ExpenseModel implements Expense {
         return { amount, amountBaseCurrency, categoryId, description, identifier, when, countryCode, currency };
     }
 
-    get amountBaseCurrency () {
-        return this._amountBaseCurrency;
+    get json (): string {
+        return JSON.stringify(this.info);
     }
 
-    set amountBaseCurrency (amount: number) {
-        this._amountBaseCurrency = amount;
-        this.validate();
+    get date () {
+        if (!this._date) {
+            this._date = DateDay.fromTimeMs(this.when);
+        }
+        return this._date;
     }
 
     get day () {
