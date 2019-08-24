@@ -9,12 +9,12 @@ import { YesNoDialog } from "../../components/YesNoDialog";
 import { btApp } from "../../BudgetTracker";
 import { ExpensesCalendar } from "../../components/expenses/ExpensesCalendar";
 import { YMD } from "../../interfaces";
-import DownloadIcon from '@material-ui/icons/SaveAlt';
 import EditIcon from '@material-ui/icons/Edit';
 import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { AddButton } from "../../components/buttons/AddButton";
 import { BudgetUrl } from "../../domain/BudgetUrl";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
+import { ImportExportButton } from "../../components/buttons/ImportExportButton";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -29,38 +29,26 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
 
     const budgetModel = useBudgetModel(budgetId);
 
-    React.useEffect(
-        () => {
-            if (budgetModel) {
-                onTitleChange(`${budgetModel.info.name} ${budgetModel.info.currency}`);
-            }
-        },
+    React.useEffect(() => {
+        if (budgetModel) {
+            onTitleChange(`${budgetModel.info.name} ${budgetModel.info.currency}`);
+        }
+    },
     // eslint-disable-next-line
     [budgetModel]);
 
     React.useEffect(
         () => {
-            async function handleExport() {
-                if (budgetModel){
-                    const store  = await btApp.getCategoriesStore();
-                    const categories = await store.getCategories();
-                    const json = budgetModel.getJson(categories);
-                    window.open(
-                        'data:application/octet-stream,' +
-                        encodeURIComponent(json));
-                }
-            }
-
             onActions(
                 <React.Fragment>
                     <AppButton icon={EditIcon} aria-label='Edit budget' to={url.pathEdit}/>
-                    <AppButton icon={DownloadIcon} aria-label='Download' onClick={handleExport}/>
+                    <ImportExportButton to={url.pathExport}/>
                     <DeleteButton onClick={handleDeleteRequest}/>
                 </React.Fragment>
             );
             return () => onActions(null);
         }
-    ,[onActions, budgetModel, url.pathEdit]);
+    ,[onActions, budgetModel, url.pathEdit, url.pathExport]);
     
     function handleDeleteRequest () {
         setShowConfirmDialog(true);

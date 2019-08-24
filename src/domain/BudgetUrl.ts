@@ -16,6 +16,10 @@ export class BudgetUrl {
         return `${this.path}/stats`;   
     }
 
+    get pathExport () {
+        return `${this.path}/export`;   
+    }
+
     get pathExpenses () {
         return `${this.path}/expenses`;   
     }

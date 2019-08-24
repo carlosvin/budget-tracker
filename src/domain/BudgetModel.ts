@@ -242,14 +242,18 @@ export class BudgetModel {
         const newTotals = new NestedTotal();
         for (const k in this._expenses) {
             if (rates.base === this._expenses[k].currency) {
-                this._expenses[k].amountBaseCurrency = this._expenses[k].amount; 
+                this._expenses[k] = new ExpenseModel({
+                    ...this._expenses[k], 
+                    amountBaseCurrency: this._expenses[k].amount}); 
             } else {
                 const currency = this._expenses[k].currency;
                 const rate = rates.rates[currency];
                 if (rate === undefined) {
                     throw new Error(`Cannot get currency exchange rate from ${rates.base} to ${currency}`);
                 }
-                this._expenses[k].amountBaseCurrency = applyRate(this._expenses[k].amount, rate);
+                this._expenses[k] = new ExpenseModel({
+                    ...this._expenses[k], 
+                    amountBaseCurrency: applyRate(this._expenses[k].amount, rate)}); 
             }
             this._expenses[k].addToTotals(newTotals);
         }
