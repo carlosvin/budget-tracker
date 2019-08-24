@@ -30,7 +30,9 @@
         "react-test-renderer": "^16",
         "serve": "*",
         "source-map-explorer": "^2",
-        "typescript": "^3"
+        "typescript": "^3",
+        "@firebase/testing": "0.10.0",
+        "filesystem": "1.0.1"
     },
     "scripts": {
         "analyze": "source-map-explorer 'build/static/js/*.js'",
