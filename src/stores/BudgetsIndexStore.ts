@@ -51,8 +51,8 @@ export class BudgetsIndexStore {
         return this._storage.getExpenses(budgetId);
     }
 
-    async saveExpense(budgetId: string, expense: Expense) {
-        return this._storage.saveExpense(budgetId, expense);
+    async saveExpenses(budgetId: string, expenses: Iterable<Expense>) {
+        return this._storage.saveExpenses(budgetId, expenses);
     }
 
     async deleteExpense(budgetId: string, expenseId: string) {

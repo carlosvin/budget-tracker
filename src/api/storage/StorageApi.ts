@@ -5,7 +5,8 @@ export interface StorageApi {
     getExpenses(budgetId: string): Promise<ExpensesMap>;
     saveBudget(budget: Budget): Promise<void>;
     deleteBudget(budgetId: string): Promise<void>;
-    saveExpense(budgetId: string, expense: Expense): Promise<void>;
+    // saveExpense(budgetId: string, expense: Expense): Promise<void>;
+    saveExpenses(budgetId: string, expense: Iterable<Expense>): Promise<void>;
     deleteExpense(budgetId: string, expenseId: string): Promise<void>;
 
     getCategories(): Promise<Categories>;

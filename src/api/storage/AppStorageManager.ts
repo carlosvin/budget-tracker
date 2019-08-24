@@ -58,11 +58,11 @@ export class AppStorageManager implements StorageApi {
         return this._local.deleteBudget(budgetId);
     }
     
-    async saveExpense(budgetId: string, expense: Expense) {
+    async saveExpenses(budgetId: string, expenses: Expense[]) {
         if (this._remote) {
-            this._remote.saveExpense(budgetId, expense);
+            this._remote.saveExpenses(budgetId, expenses);
         }
-        return this._local.saveExpense(budgetId, expense);
+        return this._local.saveExpenses(budgetId, expenses);
     }
 
     async deleteExpense(budgetId: string, expenseId: string) {

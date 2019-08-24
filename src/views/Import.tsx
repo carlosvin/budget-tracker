@@ -51,7 +51,7 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
         const {expenses, info, categories} = JSON.parse(serialized) as ImportedStructure;
         const store = await btApp.getBudgetsStore();
         await store.setBudget(info);
-        await store.setExpenses(info.identifier, Object.values(expenses));
+        await store.saveExpenses(info.identifier, Object.values(expenses));
         await (await btApp.getCategoriesStore()).setCategories(categories);
         
         setProcessing(false);
