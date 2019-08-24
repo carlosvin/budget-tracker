@@ -17,7 +17,7 @@ export interface BudgetsStore {
 
     getExpensesByDay(budgetId: string, y: number, m: number, d: number): Promise<ExpensesMap>;
 
-    setExpenses(budgetId: string, expense: Expense[]): Promise<void>;
+    saveExpenses(budgetId: string, expense: Expense[]): Promise<void>;
     getExpense(budgetId: string, expenseId: string): Promise<Expense>;
     deleteBudget(budgetId: string): Promise<void>;
     deleteExpense(budgetId: string, expenseId: string): Promise<void>;

@@ -44,15 +44,11 @@ export class LocalStorage implements StorageApi {
         localStorage.setItem(this.KEY_BUDGETS, JSON.stringify(budgets));
     }
 
-    async saveExpense (budgetId: string, expense: Expense) {
-        const expenses = await this.getExpenses(budgetId);
-        expenses[expense.identifier] = expense;
-        return this.saveExpenses(budgetId, expenses);
-    }
-
-    async saveExpenses(budgetId: string, expenses: ExpensesMap) {
+    async saveExpenses(budgetId: string, expenses: Expense[]) {
+        const expensesMap = await this.getExpenses(budgetId);
+        expenses.forEach(e => expensesMap[e.identifier] = e);
         const identifier = this.getExpensesKey(budgetId);
-        localStorage.setItem(identifier, JSON.stringify(expenses));
+        localStorage.setItem(identifier, JSON.stringify(expensesMap));
     }
 
     private getExpensesKey(id: string) {

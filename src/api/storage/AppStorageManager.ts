@@ -23,8 +23,8 @@ class AppStorageManager implements StorageApi {
         return this._storage.deleteBudget(budgetId);
     }
     
-    async saveExpense(budgetId: string, expense: Expense) {
-        return this._storage.saveExpense(budgetId, expense);
+    async saveExpenses(budgetId: string, expense: Expense[]) {
+        return this._storage.saveExpenses(budgetId, expense);
     }
 
     async deleteExpense(budgetId: string, expenseId: string) {
