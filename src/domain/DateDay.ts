@@ -49,4 +49,9 @@ export class DateDay implements YMD {
             date.month === now.getMonth() && 
             date.year === now.getFullYear();
     }
+
+    get shortString () {
+        const dt = new Intl.DateTimeFormat(undefined, {day: 'numeric', month: 'long', year: 'numeric'});
+        return dt.format(this._date);
+    }
 }
