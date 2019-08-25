@@ -2,7 +2,6 @@ import * as React from "react";
 import { YMD } from "../../interfaces";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { CalendarYear } from "./CalendarYear";
-import { desc } from "../../domain/utils/sorting";
 
 interface ExpensesCalendarProps {
     budgetModel: BudgetModel;
@@ -16,7 +15,6 @@ export const ExpensesCalendar: React.FC<ExpensesCalendarProps> = (props) => {
     return <React.Fragment>
         {
             Object.values(budgetModel.years)
-                .sort(desc)
                 .map(year => (
                     <CalendarYear 
                         budgetModel={budgetModel}

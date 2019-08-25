@@ -645,7 +645,7 @@ describe('Budget model statistics', () => {
             };
             const model = new BudgetModel(info, expenses);
 
-            expect(model.years).toStrictEqual([fromDate.year, fromDate.year + 3]);
+            expect(model.years).toStrictEqual([fromDate.year + 3, fromDate.year]);
         });
 
         it ('List of days with expenses in a year/month', () => {
@@ -670,7 +670,7 @@ describe('Budget model statistics', () => {
 
             expect(
                 model.getDays(day1.getFullYear(), day1.getMonth())
-            ).toStrictEqual([day1.getDate(), day2.getDate()]);
+            ).toStrictEqual([day2.getDate(), day1.getDate()]);
         });
 
         it( 'Totals by dates', () => {

@@ -18,7 +18,7 @@ export function getISODateString (date = new Date()) {
 /** 
  * @returns month name from Date input
  */
-export function monthToString (date: Date) {
+export function monthToString (month: number) {
     const dt = new Intl.DateTimeFormat(undefined, {month: 'long'});
-    return dt.format(date);
+    return dt.format(new Date(2000, month, 1));
 }
