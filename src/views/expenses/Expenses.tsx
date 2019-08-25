@@ -8,10 +8,13 @@ import Box from "@material-ui/core/Box";
 import { AddButton } from "../../components/buttons/AddButton";
 import { BudgetUrl } from "../../domain/BudgetUrl";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
-import { Link } from "react-router-dom";
 import { DateDay } from "../../domain/DateDay";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
+import { AppButton } from "../../components/buttons/buttons";
+import NavigateBefore from "@material-ui/icons/NavigateBefore";
+import NavigateNext from "@material-ui/icons/NavigateNext";
+import DateRange from "@material-ui/icons/DateRange";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
@@ -70,9 +73,9 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
             <Box padding={1} marginBottom={2} >
                 <VersusInfo title='Daily expenses' spent={totalSpent} total={expectedDailyAvg}/>
                 <Grid container justify='space-between' direction='row' style={{marginTop: '1.5em'}}>
-                    <Link to={url.pathExpensesByDay(prevDate)}>Prev</Link>
-                    <Link to={url.path}>To budget</Link>
-                    <Link to={url.pathExpensesByDay(nextDate)}>Next</Link>
+                    <AppButton to={url.pathExpensesByDay(prevDate)} icon={NavigateBefore} replace/>
+                    <AppButton to={url.path} icon={DateRange} replace/>
+                    <AppButton to={url.pathExpensesByDay(nextDate)} icon={NavigateNext} replace/>
                 </Grid>
             </Box>
             { expenses===undefined && <Typography>No expenses</Typography> }
