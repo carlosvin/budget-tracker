@@ -49,11 +49,11 @@ beforeEach(async () => {
   await firebase.clearFirestoreData({ projectId });
 });
 
-before(async () => {
+beforeAll(async () => {
   await firebase.loadFirestoreRules({ projectId, rules });
 });
 
-after(async () => {
+afterAll(async () => {
   await Promise.all(firebase.apps().map(app => app.delete()));
   console.log(`View rule coverage information at ${coverageUrl}\n`);
 });
