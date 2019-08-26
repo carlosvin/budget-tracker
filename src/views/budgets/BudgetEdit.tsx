@@ -1,11 +1,14 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Budget } from "../../interfaces";
-import { BudgetUrl, goBack } from "../../utils";
 import { HeaderNotifierProps } from "../../routes";
 import { BudgetForm } from "../../components/budgets/BudgetForm";
 import { btApp } from "../../BudgetTracker";
 import { CloseButton } from "../../components/buttons/CloseButton";
+import { goBack } from "../../domain/utils/goBack";
+import { BudgetUrl } from "../../domain/BudgetUrl";
+import { DateDay } from "../../domain/DateDay";
+import { uuid } from "../../domain/utils/uuid";
 
 interface BudgetEditProps extends 
     RouteComponentProps<{ budgetId: string }>, 
@@ -13,31 +16,44 @@ interface BudgetEditProps extends
 }
 
 const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
-
     const budgetId = props.match.params.budgetId;
-    const [budgetInfo, setBudgetInfo] = React.useState<Budget|undefined>(); 
+    
+    const [budgetInfo, setBudgetInfo] = React.useState<Budget>(); 
 
     function handleClose () {
         goBack(props.history);
     }
 
-    async function fetchBudget(budgetId: string) {
-        setBudgetInfo(await btApp.budgetsStore.getBudgetInfo(budgetId));
+    function newEmptyBudget () {
+        const fromDate = new DateDay();
+        return { 
+            name: '', 
+            from: fromDate.timeMs, 
+            to: fromDate.addDays(30).timeMs,
+            currency: 'EUR',
+            total: 0,
+            identifier: uuid()
+        };
     }
 
     React.useEffect(
         () => {
+            async function fetchBudget(budgetId: string) {
+                setBudgetInfo(await (await btApp.getBudgetsIndex()).getBudgetInfo(budgetId));
+            }
+
             if (budgetId) {
                 props.onTitleChange(`Edit budget`);
                 fetchBudget(budgetId);
             } else {
                 props.onTitleChange('New budget');
+                setBudgetInfo(newEmptyBudget());
             }
             props.onActions(<CloseButton onClick={handleClose} />);
             return () => {
                 props.onActions([]);
             }
-        // eslint-disable-next-line
+        // eslint-disable-next-line 
         }, []
     );
 
@@ -45,16 +61,20 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
 
     async function handleSubmit (budget: Budget) {
         setSaving(true);
-        await btApp.budgetsStore.setBudget(budget);
+        await (await btApp.getBudgetsStore()).setBudget(budget);
         setSaving(false);
         props.history.replace(new BudgetUrl(budget.identifier).path);
     }
 
-    return <BudgetForm 
+    if (budgetInfo) {
+        return  <BudgetForm 
         budget={budgetInfo}
         onSubmit={handleSubmit}
         disabled={saving}
-    />;
+        />;
+    }
+    return <p>Loading...</p>;
+
 }
 
 export default BudgetEdit;

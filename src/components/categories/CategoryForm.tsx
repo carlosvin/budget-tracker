@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Category } from '../../interfaces';
-import { uuid } from '../../utils';
 import CategoryInput from './CategoryInput';
 import { SaveButtonFab } from '../buttons/SaveButton';
+import { uuid } from '../../domain/utils/uuid';
 
 interface CategoryFormProps {
     onSubmit: (category: Category) => void,
@@ -16,18 +16,14 @@ export const CategoryForm: React.FC<CategoryFormProps> = (props) => {
         {name: '', icon: 'Label', id: uuid()});
     
     const handleSave = (e: React.SyntheticEvent) => {
+        e.stopPropagation();
         e.preventDefault();
         props.onSubmit(category);
     }
     
     return (
         <form onSubmit={handleSave}>
-            <CategoryInput 
-                icon={category.icon} 
-                name={category.name} 
-                id={category.id} 
-                onChange={setCategory}
-                />
+            <CategoryInput {...category} onChange={setCategory} />
             <SaveButtonFab type='submit' color='primary' disabled={category.name === ''} />
         </form>);
 }

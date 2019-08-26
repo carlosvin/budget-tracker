@@ -7,14 +7,22 @@ import { TextInput } from '../components/TextInput';
 import { RouterProps } from 'react-router';
 import { btApp } from '../BudgetTracker';
 import { SaveButton } from '../components/buttons/SaveButton';
+import { BudgetUrl } from '../domain/BudgetUrl';
 
 const Import = (props: HeaderNotifierProps&RouterProps) => {
 
     const [selectedFile, setFile] = React.useState();
     const [isProcessing, setProcessing] = React.useState(false);
 
-    React.useEffect(() => {
+    React.useLayoutEffect(() => {
         props.onTitleChange('Import budget');
+        return function () {
+            props.onTitleChange('');
+        }
+    // eslint-disable-next-line
+    }, []);
+
+    React.useLayoutEffect(() => {
         props.onActions(
             <SaveButton 
                 disabled={!selectedFile || isProcessing} 
@@ -22,7 +30,6 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
         );
         return function () {
             props.onActions([]);
-            props.onTitleChange('');
         }
     // eslint-disable-next-line
     }, [isProcessing, selectedFile]);
@@ -39,18 +46,16 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
     };
 
     const process = async () => {
+        setProcessing(true);
         const serialized = await FilesApi.getFileContent(selectedFile);
         const {expenses, info, categories} = JSON.parse(serialized) as ImportedStructure;
-
-        await btApp.budgetsStore.setBudget(info);
-        for (const id in expenses) {
-            await btApp.budgetsStore.setExpense(info.identifier, expenses[id]);
-        }
-
-        btApp.categoriesStore.setCategories(categories);
+        const store = await btApp.getBudgetsStore();
+        await store.setBudget(info);
+        await store.saveExpenses(info.identifier, Object.values(expenses));
+        await (await btApp.getCategoriesStore()).setCategories(categories);
         
         setProcessing(false);
-        props.history.replace('/budgets');
+        props.history.replace(BudgetUrl.base);
     }
 
     const startProcess = () => {
@@ -60,11 +65,12 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
 
     return (
         <form>
-        { 
-            isProcessing ? 
-                <CircularProgress /> :
-                <TextInput type='file' onChange={handleFileChange}/>
-        }
+            { isProcessing && <CircularProgress /> }
+            <TextInput 
+                disabled={isProcessing} 
+                type='file' 
+                onChange={handleFileChange}
+                />
         </form>);
 
 }

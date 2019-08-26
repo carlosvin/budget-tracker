@@ -1,7 +1,8 @@
 import { StorageApi } from "./StorageApi";
 import { Budget, Expense, Category, Categories } from "../../interfaces";
+import { LocalStorage } from "./LocalStorage";
 
-export class AppStorageManager implements StorageApi {
+class AppStorageManager implements StorageApi {
     private _storage: StorageApi;
     
     constructor (storage: StorageApi) {
@@ -22,8 +23,8 @@ export class AppStorageManager implements StorageApi {
         return this._storage.deleteBudget(budgetId);
     }
     
-    async saveExpense(budgetId: string, expense: Expense) {
-        return this._storage.saveExpense(budgetId, expense);
+    async saveExpenses(budgetId: string, expense: Expense[]) {
+        return this._storage.saveExpenses(budgetId, expense);
     }
 
     async deleteExpense(budgetId: string, expenseId: string) {
@@ -48,3 +49,6 @@ export class AppStorageManager implements StorageApi {
         throw new Error('Not implemented');
     }
 }
+
+const appStorage: StorageApi = new AppStorageManager(new LocalStorage());
+export default appStorage;

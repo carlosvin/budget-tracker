@@ -2,35 +2,27 @@ import * as React from 'react';
 
 import Grid, { GridDirection } from '@material-ui/core/Grid';
 import { TextInput } from '../TextInput';
-import { uuid } from '../../utils';
 import CategoryIconButton from './CategoryIconButton';
-import CategoryIconSelector from '../../views/categories/CategoryIconSelector';
+import CategoryIconDialogSelector from '../../views/categories/CategoryIconSelector';
 import { Category } from '../../interfaces';
 import { DeleteButton } from '../buttons/DeleteButton';
 
 interface CategoryInputProps extends Category {
     direction?: GridDirection;
-    onChange?: (category: Category) => void;
     onDelete?: (id: string) => void;
+    onChange: (category: Category) => void;
 }
 
 export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
     const [dialogOpen, setDialogOpen] = React.useState(false);
-    const [category, setCategory] = React.useState<Category>({
-        id: props.id || uuid(), 
-        name: props.name || '',
-        icon: props.icon || 'Label'
-    });
+    const [category, setCategory] = React.useState<Category>(props);
 
     const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
         const name = event.target.value;
-        const cat = {
-            ...category,
-            name
-        };
+        const cat = { ...category, name };
         setCategory(cat);
-        props.onChange && props.onChange(cat);
+        props.onChange(cat);
     }
 
     const handleClickChangeIcon = () => {
@@ -39,9 +31,9 @@ export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
 
     const handleCloseDialog = (selectedIcon: string) => {
         if (category.icon !== selectedIcon) {
-            const iCategory = {...category, icon: selectedIcon };
-            setCategory(iCategory);
-            props.onChange && props.onChange(iCategory);
+            const cat = {...category, icon: selectedIcon };
+            setCategory(cat);
+            props.onChange(cat);
         }
         setDialogOpen(false);        
     }
@@ -66,7 +58,7 @@ export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
                 </Grid>
                 { props.onDelete && <Grid item><DeleteButton onClick={handleDelete}/></Grid> }
             </Grid>
-            <CategoryIconSelector 
+            <CategoryIconDialogSelector 
                 onClose={handleCloseDialog} 
                 open={dialogOpen} 
                 selectedValue={category.icon}/>

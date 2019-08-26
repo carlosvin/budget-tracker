@@ -54,4 +54,8 @@ export class NestedTotal {
         }
         return this.total;
     }
+
+    get indexes () {
+        return Object.keys(this._subTotals);
+    }
 }

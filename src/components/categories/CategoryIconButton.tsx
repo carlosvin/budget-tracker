@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Button from '@material-ui/core/Button';
-import { btApp } from '../../BudgetTracker';
+import CategoryIcon from './CategoryIcon';
 
 interface CategoryIconButtonProp {
     name: string;
@@ -8,13 +8,12 @@ interface CategoryIconButtonProp {
 };
 
 export const CategoryIconButton: React.FC<CategoryIconButtonProp> = (props) => {
-    const Icon = btApp.iconsStore.getIcon(props.name);
-    const color = btApp.iconsStore.getColor(props.name);
+
+    const {name} = props;
+
     return (
-        <Button onClick={() => props.onClick(props.name)} variant='outlined'>
-            <React.Suspense fallback={props.name}>
-                <Icon style={{color: color}}/>
-            </React.Suspense>
+        <Button onClick={() => props.onClick(name)} variant='outlined'>
+            <CategoryIcon name={name}/>
         </Button>
     );
 }

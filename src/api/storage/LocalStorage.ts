@@ -30,7 +30,6 @@ export class LocalStorage implements StorageApi {
     }
 
     async saveBudget(budget: Budget) {
-
         let budgets: BudgetsMap;
         try {
             budgets = await this.getBudgets();
@@ -41,20 +40,15 @@ export class LocalStorage implements StorageApi {
         this.saveBudgets(budgets);
     }
 
-    saveBudgets(budgets: BudgetsMap) {
+    private saveBudgets(budgets: BudgetsMap) {
         localStorage.setItem(this.KEY_BUDGETS, JSON.stringify(budgets));
     }
 
-
-    async saveExpense (budgetId: string, expense: Expense) {
-        const expenses = await this.getExpenses(budgetId);
-        expenses[expense.identifier] = expense;
-        return this.saveExpenses(budgetId, expenses);
-    }
-
-    async saveExpenses(budgetId: string, expenses: ExpensesMap) {
+    async saveExpenses(budgetId: string, expenses: Expense[]) {
+        const expensesMap = await this.getExpenses(budgetId);
+        expenses.forEach(e => expensesMap[e.identifier] = e);
         const identifier = this.getExpensesKey(budgetId);
-        localStorage.setItem(identifier, JSON.stringify(expenses));
+        localStorage.setItem(identifier, JSON.stringify(expensesMap));
     }
 
     private getExpensesKey(id: string) {
@@ -100,9 +94,7 @@ export class LocalStorage implements StorageApi {
 
     async saveCategory (category: Category) {
         const categories = await this.getCategories();
-        if (category.id in categories) {
-            delete categories[category.id];
-            this.saveCategories(categories);
-        }
+        categories[category.id] = category;
+        this.saveCategories(categories);
     }
 }

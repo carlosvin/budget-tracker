@@ -1,13 +1,20 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Budget, ExpensesDayMap } from "../../interfaces";
-import { btApp } from "../../BudgetTracker";
+import { ExpensesDayMap } from "../../interfaces";
 import { ExpenseList } from "../../components/expenses/ExpenseList";
 import { HeaderNotifierProps } from "../../routes";
 import { VersusInfo } from "../../components/VersusInfo";
-import { BudgetUrl } from "../../utils";
 import Box from "@material-ui/core/Box";
 import { AddButton } from "../../components/buttons/AddButton";
+import { BudgetUrl } from "../../domain/BudgetUrl";
+import { useBudgetModel } from "../../hooks/useBudgetModel";
+import { DateDay } from "../../domain/DateDay";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import { AppButton } from "../../components/buttons/buttons";
+import NavigateBefore from "@material-ui/icons/NavigateBefore";
+import NavigateNext from "@material-ui/icons/NavigateNext";
+import DateRange from "@material-ui/icons/DateRange";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
@@ -22,57 +29,62 @@ function getParamInt(name: string, params: URLSearchParams) {
 export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
 
     const {budgetId} = props.match.params;
-    const {pathAddExpense} = new BudgetUrl(budgetId);
+    const url = new BudgetUrl(budgetId);
+    const {pathAddExpense} = url;
+    
     const params = new URLSearchParams(props.location.search);
+
     // TODO get expenses even if a search param is missing
     const year = getParamInt('year', params) || 0;
     const month = getParamInt('month', params) || 0;
     const day = getParamInt('day', params)|| 0;
-    props.onTitleChange(new Date(year, month, day).toDateString());
+    const date = new Date(year, month, day);
+    const dateDay = new DateDay(date);
+    const prevDate = new DateDay(date).addDays(-1);
+    const nextDate = new DateDay(date).addDays(1);
+
+    props.onTitleChange(dateDay.shortString);
 
     const [expenses, setExpenses] = React.useState<ExpensesDayMap>();
-    const [budget, setBudget] = React.useState<Budget>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState();
     const [totalSpent, setTotalSpent] = React.useState();
-    
+
+    const budgetModel = useBudgetModel(budgetId);
     
     React.useEffect(() => {
-        async function fetchExpenses () {
-            const bm = await btApp.budgetsStore.getBudgetModel(budgetId); 
-            const expenseGroups = bm.expenseGroups;
+        if (budgetModel) {
+            const expenseGroups = budgetModel.expenseGroups;
             if (expenseGroups) {
-                const expensesMap = expenseGroups[year][month][day];    
-                setExpenses({[day]: expensesMap});
-                setExpectedDailyAvg(bm.expectedDailyExpensesAverage);
-                setTotalSpent(bm.getTotalExpensesByDay(year, month, day));
+                const expensesMap = expenseGroups[year][month][day];
+                if (expensesMap) {
+                    setExpenses({[day]: expensesMap});
+                    setTotalSpent(budgetModel.getTotalExpensesByDay(year, month, day));
+                } else {
+                    setExpenses(undefined);
+                    setTotalSpent(0);
+                }
+                setExpectedDailyAvg(budgetModel.expectedDailyExpensesAverage);
             }
         }
-        async function initBudget () {
-            const b = await btApp.budgetsStore.getBudgetInfo(budgetId);
-            setBudget(b);
-        }
+    }, [year, month, day, budgetModel]);
 
-        fetchExpenses();
-        initBudget();
-    }, [year, month, day, budgetId]);
-
-    if (expenses && expectedDailyAvg && budget) {
-        // show link to parent budget
-        return (
-            <React.Fragment>
-                <Box padding={1} marginBottom={3} >
-                    <VersusInfo title='Daily expenses' spent={totalSpent} total={expectedDailyAvg}/>
-                </Box>
-                <ExpenseList 
-                    budget={budget}
-                    expensesByDay={expenses} 
-                    expectedDailyAvg={expectedDailyAvg}  />
-                <AddButton href={pathAddExpense}/>
-            </React.Fragment>
-        );
-    }
-    return <p>Loading...</p>;
-    
+    return (
+        <React.Fragment>
+            <Box padding={1} marginBottom={2} >
+                <VersusInfo title='Daily expenses' spent={totalSpent} total={expectedDailyAvg}/>
+                <Grid container justify='space-between' direction='row' style={{marginTop: '1.5em'}}>
+                    <AppButton to={url.pathExpensesByDay(prevDate)} icon={NavigateBefore} replace/>
+                    <AppButton to={url.path} icon={DateRange} replace/>
+                    <AppButton to={url.pathExpensesByDay(nextDate)} icon={NavigateNext} replace/>
+                </Grid>
+            </Box>
+            { expenses===undefined && <Typography>No expenses</Typography> }
+            { budgetModel && expenses && <ExpenseList 
+                budget={budgetModel.info}
+                expensesByDay={expenses} 
+                expectedDailyAvg={expectedDailyAvg} /> }
+            <AddButton to={pathAddExpense}/>
+        </React.Fragment>);
 }
 
 export default ExpensesView;

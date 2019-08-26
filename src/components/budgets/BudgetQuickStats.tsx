@@ -2,6 +2,7 @@ import * as React from 'react';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import { VersusInfo } from '../VersusInfo';
+import { Link } from 'react-router-dom';
 
 interface BudgetQuickStatsProps {
     totalBudget: number,
@@ -9,7 +10,8 @@ interface BudgetQuickStatsProps {
     totalDays: number,
     passedDays: number,
     expectedDailyAverage: number,
-    dailyAverage?: number
+    dailyAverage?: number,
+    urlStats?: string;
 }
 
 export const BudgetQuickStats: React.FC<BudgetQuickStatsProps> = (props) => (
@@ -32,4 +34,6 @@ export const BudgetQuickStats: React.FC<BudgetQuickStatsProps> = (props) => (
                 spent={props.dailyAverage}
                 title='Daily Average'/>
         </GridListTile> }
+        { props.urlStats && <Link style={{fontSize: 'smaller', marginTop: '-1.2rem', zIndex: 100}} to={props.urlStats}>
+            More Stats</Link> }
     </GridList>);

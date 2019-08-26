@@ -3,13 +3,13 @@ import List from '@material-ui/core/List';
 import { RouteComponentProps } from "react-router";
 import { Budget } from "../../interfaces";
 import { BudgetListItem } from "../../components/budgets/BudgetListItem";
-import { BudgetUrl } from "../../utils";
 import { HeaderNotifierProps } from "../../routes";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { btApp } from "../../BudgetTracker";
 import { AddButton } from "../../components/buttons/AddButton";
 import { ImportExportButton } from "../../components/buttons/ImportExportButton";
+import { BudgetUrl } from "../../domain/BudgetUrl";
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
 
@@ -21,23 +21,17 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
         props.onTitleChange('Budget list');
         props.onActions(
             <React.Fragment>
-                <AddButton href={BudgetUrl.add}/>
+                <AddButton to={BudgetUrl.add}/>
                 <ImportExportButton to='/import'/>
             </React.Fragment>
         );
+        async function fetchBudgets() {
+            const index = await (await btApp.getBudgetsIndex()).getBudgetsIndex();
+            setBudgets(Object.values(index));
+        }
+        fetchBudgets();
     // eslint-disable-next-line
     }, []);
-
-    React.useEffect(
-        () => {
-            async function fetchBudgets() {
-                const index = await btApp.budgetsStore.getBudgetsIndex();
-                setBudgets(Object.values(index));
-            }
-            fetchBudgets();
-        },
-        [budgets]
-    );
 
     if (budgets === undefined) {
         return null;

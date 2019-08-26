@@ -1,5 +1,6 @@
 import * as React from "react";
 import { TextInput } from "./TextInput";
+import { round } from "../domain/utils/round";
 
 interface AmountInputProps {
     label?: string;
@@ -16,18 +17,25 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
         props.onAmountChange(amountFloat);
     }
 
+    function value() {
+        if (props.amountInput) {
+            return round(props.amountInput, 2);
+        }
+        return '';
+    }
+
     return (
-        <TextInput 
+        <TextInput
             autoFocus
             required
             type='number'
             label={props.label || 'Amount'}
-            value={props.amountInput || ''}
+            value={value()}
             inputProps={{ step: '.01', 'aria-required': true }}
             onChange={handleAmountChange}
             helperText={props.helperText}
             disabled={props.disabled}
         />
-    );           
+    );
 }
 

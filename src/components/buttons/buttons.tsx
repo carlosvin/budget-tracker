@@ -17,39 +17,40 @@ export interface AppButtonProps {
     disabled?: boolean;
     type?: 'button' | 'submit' | 'reset';
     variant?: 'text' | 'outlined' | 'contained';
+    replace?: boolean;
     onClick?: (e: React.SyntheticEvent) => void;
 }
 
-export const AppButton: React.FC<AppButtonProps> = (props) => {
-    
-    function derivedProps () {
-        const derivedProps = {
-            component: props.to ? Link : undefined,
-        };
-        if (props.onClick && props.to) {
-            console.warn('Button should not have both onClick and href properties');
-        }
-        return derivedProps;
+function derivedProps (props: AppButtonProps) {
+    const derivedProps = {
+        component: props.to ? Link : undefined,
+    };
+    if (props.onClick && props.to) {
+        console.warn('Button should not have both onClick and href properties');
     }
-
-    return (
-        <Button color='inherit' {...props} {...derivedProps()}>
-            { props.icon && <props.icon />}
-            { props.text }
-        </Button>
-    );
+    return derivedProps;
 }
+
+export const AppButton: React.FC<AppButtonProps> = (props) => (
+    <Button color='inherit' {...props} {...derivedProps(props)}>
+        { props.icon && <props.icon />}
+        { props.text }
+    </Button>
+);
 
 export interface ButtonFabProps {
     disabled?: boolean;
     type?: Type;
     color?: Color;
+    to?: string;
 }
 
 export const ButtonFab = (props: ButtonFabProps&{children: React.ReactNode}) => (
     <Fab className={props.color === 'primary' ? 'fabR':'fabL'} 
         color={props.color||'secondary'}
-        {...props}>
+        {...props}
+        {...derivedProps(props)}
+        >
         {props.children}
     </Fab>);
 

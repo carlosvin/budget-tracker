@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { SvgIconProps } from '@material-ui/core/SvgIcon';
-import { stringToColorCss } from '../utils';
+import { stringToColorCss } from '../domain/utils/stringToColor';
+import { LazyIcon, IconsStore } from './interfaces';
 
-export declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;
 interface IconsMap {[k: string]: LazyIcon};
 
-export class IconsStore {
+export default class IconsStoreImpl implements IconsStore {
 
     private _icons: IconsMap = {
         Beach: React.lazy(() => import('@material-ui/icons/BeachAccess')),
@@ -62,19 +61,26 @@ export class IconsStore {
         return this._iconNames;
     }
 
-    getColor (name: string): string {
+    private _getColor (name: string): string {
         if (!(name in this._colors)) {
             this._colors[name] = stringToColorCss(name);
         }
         return this._colors[name];
     }
 
-    getIcon (name: string): LazyIcon {
-        return name in this._icons ? this._icons[name] : this.defaultIcon;
+    private _getIcon (name: string): LazyIcon {
+        return name in this._icons ? this._icons[name] : this._icons.Label;
     }
 
-    get defaultIcon (): LazyIcon {
-        return this._icons.Label;
+    getIcon(name: string) {
+        return {
+            Icon: this._getIcon(name),
+            color: this._getColor(name)
+        };
+    }
+
+    get defaultIcon () {
+        return this.getIcon(this.iconNames[0]);
     }
 
 }

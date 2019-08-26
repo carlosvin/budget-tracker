@@ -1,17 +1,24 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import Grid from "@material-ui/core/Grid";
-import { BudgetUrl, getDateString, uuid, round, goBack, convertToYMD } from "../../utils";
+import { getISODateString } from "../../domain/date";
 import { TextInput } from "../../components/TextInput";
 import { HeaderNotifierProps } from "../../routes";
 import CountryInput from "../../components/CountryInput";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
-import { CurrencyRates, Expense } from "../../interfaces";
+import { CurrencyRates } from "../../interfaces";
 import { btApp } from "../../BudgetTracker";
-import { DAY_MS } from "../../domain/BudgetModel";
 import CategoriesSelect from "../../components/categories/CategoriesSelect";
 import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { SaveButtonFab } from "../../components/buttons/SaveButton";
+import { goBack } from "../../domain/utils/goBack";
+import { BudgetUrl } from "../../domain/BudgetUrl";
+import { DateDay } from "../../domain/DateDay";
+import { round } from "../../domain/utils/round";
+import { uuid } from "../../domain/utils/uuid";
+import { BudgetModel } from "../../domain/BudgetModel";
+import { useBudgetModel } from "../../hooks/useBudgetModel";
+import { ExpenseModel } from "../../domain/ExpenseModel";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -20,12 +27,11 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
 
     const [error, setError] = React.useState<string|undefined>();
 
-    const [currency, setCurrency] = React.useState<string|undefined>(
-        btApp.currenciesStore.lastCurrencyUsed);
+    const [currency, setCurrency] = React.useState<string|undefined>();
     const [amount, setAmount] = React.useState<number>();
-    const [countryCode, setCountryCode] = React.useState<string>(btApp.countriesStore.currentCountryCode);
-    const [dateString, setDateString] = React.useState(getDateString());
-    const [identifier, setIdentifier] = React.useState(uuid());
+    const [countryCode, setCountryCode] = React.useState<string|undefined>();
+    const [dateString, setDateString] = React.useState(getISODateString());
+    const [identifier, setIdentifier] = React.useState();
     const [categoryId, setCategoryId] = React.useState('');
     const [amountBaseCurrency, setAmountBaseCurrency] = React.useState<number>();
     const [baseCurrency, setBaseCurrency] = React.useState<string>();
@@ -41,40 +47,75 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const budgetUrl = new BudgetUrl(budgetId);
     const isAddView = expenseId === undefined;
 
-    React.useLayoutEffect(
-        ()=> {
-            async function handleDelete () {
-                await btApp.budgetsStore.deleteExpense(budgetId, expenseId);
-                replace(budgetUrl.path);
+    const budgetModel = useBudgetModel(budgetId);
+
+    React.useEffect(
+        () => {
+            async function initCurrency () {
+                const store = await btApp.getCurrenciesStore();
+                let currencyFromCountry = store.lastCurrencyUsed;
+                if (countryCode) {
+                    currencyFromCountry = await store.getFromCountry(countryCode);
+                }
+                setCurrency(currencyFromCountry);
             }
-            isAddView ? onTitleChange('Add expense'): onTitleChange('Edit expense');
-            onActions(<DeleteButton onClick={handleDelete}/>);
+            if (isAddView) {
+                initCurrency();
+            }
+
         },
-    // eslint-disable-next-line
-    []);
+    [countryCode, isAddView]);
+
+    React.useEffect(()=> {
+        async function initCountry () {
+            const store = await btApp.getCountriesStore();
+            if (!countryCode) {
+                setCountryCode(store.currentCountryCode);
+            }
+        }
+
+        async function handleDelete () {
+            await (await btApp.getBudgetsStore()).deleteExpense(budgetId, expenseId);
+            replace(budgetUrl.path);
+        }
+        initCountry();
+        isAddView ? onTitleChange('Add expense'): onTitleChange('Edit expense');
+        onActions(<DeleteButton onClick={handleDelete}/>);
+        return function () {
+            onActions(null); 
+        }
+        // eslint-disable-next-line
+    }, []);
 
     React.useEffect(() => {
+
         async function initRates (baseCurrency: string) {
-            setRates(await btApp.currenciesStore.getRates(baseCurrency));
+            const store = await btApp.getCurrenciesStore();
+            setRates(await store.getRates(baseCurrency));
         }
-        async function initBudget () {
-            const b = await btApp.budgetsStore.getBudgetInfo(budgetId);
-            setBaseCurrency(b.currency);
-            initRates(b.currency);
-            if (isAddView && !currency) {
-                setCurrency(b.currency);
+        
+        function initBudget () {
+            if (budgetModel) {
+                setBaseCurrency(budgetModel.info.currency);
+                initRates(budgetModel.info.currency);
+                if (isAddView) {
+                    initAdd();
+                } else {
+                    initEdit(budgetModel);
+                }
             }
         }
 
         async function initAdd () {
-            const currentCountryFetched = await btApp.countriesStore.getCurrentCountry();
+            const countriesStore = await btApp.getCountriesStore();
+            const currentCountryFetched = await countriesStore.getCurrentCountry();
             if (countryCode !== currentCountryFetched) {
                 setCountryCode(currentCountryFetched);
             }
             if (currentCountryFetched) {
-                const fetchedCurrency = await btApp
-                    .currenciesStore
-                    .getFromCountry(currentCountryFetched);
+                const store = await btApp.getCurrenciesStore();
+
+                const fetchedCurrency = await store.getFromCountry(currentCountryFetched);
                 if (fetchedCurrency !== currency) {
                     setCurrency(fetchedCurrency);
                 }
@@ -83,8 +124,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             }
         }
 
-        async function initEdit () {
-            const model = await btApp.budgetsStore.getBudgetModel(budgetId);
+        function initEdit (model: BudgetModel) {
             const e = model.getExpense(expenseId);
             setAmount(e.amount);
             e.amountBaseCurrency && setAmountBaseCurrency(e.amountBaseCurrency);
@@ -92,61 +132,33 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             setCountryCode(e.countryCode);
             setCurrency(e.currency);
             setDescription(e.description);
-            setDateString(getDateString(new Date(e.when)));
+            setDateString(getISODateString(new Date(e.when)));
             setIdentifier(e.identifier);
         }
         
         initBudget();
-        if (isAddView) {
-            initAdd();
-        } else {
-            initEdit();
-        }
-        return function () {
-            onActions([]);
-        }
 
         // eslint-disable-next-line
-    }, [budgetId, expenseId]);
-
-    function createExpense (
-        dayNumber: number, 
-        inputAmount: number, 
-        inputAmountBase: number, 
-        timeMs: number): Expense {
-        if (currency) {
-            return {   
-                amount: inputAmount, 
-                categoryId,
-                currency,
-                countryCode,
-                identifier: isAddView ? identifier + dayNumber : identifier,
-                when: timeMs + (DAY_MS * dayNumber),
-                amountBaseCurrency: inputAmountBase,
-                description
-            };
-        }
-        throw new Error(`Invalid expense data: Currency is missing`);
-    }
+    }, [budgetModel, expenseId]);
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const max = splitInDays || 1;
-        if (amount && amountBaseCurrency) {
-            const inputAmount = amount / max;
-            const inputAmountBase = amountBaseCurrency / max;
+        if (amount && amountBaseCurrency && currency && countryCode) {
             const date = new Date(dateString);
-            let firstExpenseId = undefined;
-            for (let i=0; i < max; i++) {
-                const expense = createExpense(i, inputAmount, inputAmountBase, date.getTime());
-                if (!firstExpenseId) {
-                    firstExpenseId = expense.identifier;
-                }
-                await btApp.budgetsStore.setExpense(
-                        budgetId,
-                        expense);
-            }
-            goBack(props.history, budgetUrl.pathExpensesByDay(convertToYMD(date)));
+            const expenseModel = new ExpenseModel({
+                identifier: identifier || uuid(), 
+                amount,
+                amountBaseCurrency, 
+                currency,
+                countryCode,
+                categoryId,
+                description,
+                when: date.getTime()
+            });
+            const store = await btApp.getBudgetsStore();
+            await store.saveExpenses(budgetId, expenseModel.split(max));
+            goBack(props.history, budgetUrl.pathExpensesByDay(new DateDay(date)));
         } else {
             throw new Error('Invalid expense data: Missing amount');
         }
@@ -194,55 +206,53 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
         return undefined;
     }
 
-    return (
-        <React.Fragment>
-            
-            <form onSubmit={handleSubmit} autoComplete='on'>
-                <Grid container
-                    justify='space-between'
-                    alignItems='baseline'
-                    alignContent='stretch'>
-                    <Grid item >
-                        { rates && currency && <AmountWithCurrencyInput
-                            rates={ rates }
-                            amountInput={amount}
-                            amountInBaseCurrency={amountBaseCurrency}
-                            selectedCurrency={currency}
-                            onChange={handleAmountChange}
-                            onError={setError}
-                        /> }
-                    </Grid>
-                    <Grid item >
-                        <CategoriesSelect onCategoryChange={setCategoryId} selectedCategory={categoryId}/>
-                    </Grid>
-                    <Grid item>
-                        <WhenInput />
-                    </Grid>
-                    <Grid item>
-                        <CountryInput 
-                            selectedCountry={ countryCode } 
-                            onCountryChange={ handleCountry }/>
-                    </Grid>
-                    <Grid item >
-                        <TextInput 
-                            label='Description' 
-                            value={ description || '' }
-                            onChange={ handleDescription } />
-                    </Grid>
-                    <Grid item>
-                        <TextInput 
-                            type='number'
-                            label={'Split in days'}
-                            value={ splitInDays }
-                            helperText={ amountPerDay() }
-                            onChange={ handleSplitInDays }
-                            inputProps={ { min: 1 } }
-                        />
-                    </Grid>
+    return (            
+        <form onSubmit={handleSubmit} autoComplete='on'>
+            <Grid container
+                justify='space-between'
+                alignItems='baseline'
+                alignContent='stretch'>
+                <Grid item >
+                    { rates && currency && <AmountWithCurrencyInput
+                        rates={ rates }
+                        amountInput={amount}
+                        amountInBaseCurrency={amountBaseCurrency}
+                        selectedCurrency={currency}
+                        onChange={handleAmountChange}
+                        onError={setError}
+                    /> }
                 </Grid>
-                <SaveButtonFab type='submit' color='primary' disabled={error !== undefined}/>
-            </form>
-        </React.Fragment>
+                <Grid item >
+                    <CategoriesSelect onCategoryChange={setCategoryId} selectedCategory={categoryId}/>
+                </Grid>
+                <Grid item>
+                    <WhenInput />
+                </Grid>
+                <Grid item>
+                    { countryCode && <CountryInput 
+                        selectedCountry={ countryCode } 
+                        onCountryChange={ handleCountry }/>
+                    }
+                </Grid>
+                <Grid item >
+                    <TextInput 
+                        label='Description' 
+                        value={ description || '' }
+                        onChange={ handleDescription } />
+                </Grid>
+                <Grid item>
+                    <TextInput 
+                        type='number'
+                        label={'Split in days'}
+                        value={ splitInDays }
+                        helperText={ amountPerDay() }
+                        onChange={ handleSplitInDays }
+                        inputProps={ { min: 1 } }
+                    />
+                </Grid>
+            </Grid>
+            <SaveButtonFab type='submit' color='primary' disabled={error !== undefined}/>
+        </form>
         );
 }
 

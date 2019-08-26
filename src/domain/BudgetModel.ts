@@ -1,10 +1,10 @@
 import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMap } from "../interfaces";
-import { dateDiff } from "../utils";
-import { CurrenciesStore } from "../stores/CurrenciesStore";
-import { NestedTotal } from "../NestedTotal";
+import { dateDiff } from "./date";
+import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
-
-export const DAY_MS = 24 * 3600 * 1000;
+import { DateDay } from "./DateDay";
+import applyRate from "./utils/applyRate";
+import { desc } from "./utils/sorting";
 
 export class BudgetModel {
 
@@ -19,7 +19,7 @@ export class BudgetModel {
     private _days?: number;
     private _totalDays?: number;
 
-    constructor(info: Budget, expenses: ExpensesMap) {
+    constructor(info: Budget, expenses: ExpensesMap = {}) {
         this._info = info;
         this._expenses = {};
         for (const k in expenses) {
@@ -63,20 +63,26 @@ export class BudgetModel {
     get totalsByCountry () {
         if (this._totalsByCountry === undefined) {
             this._totalsByCountry = new NestedTotal();
-            Object.values(this.expenses).forEach((e) => this._addTotalsByCountry(e));
+            const toMs = Math.min(new DateDay().timeMs, this.info.to);
+            Object
+                .values(this.expenses)
+                .filter(e => e.inDates(this.info.from, toMs))
+                .forEach((e) => this._addTotalsByCountry(e));
         }
         return this._totalsByCountry;
     }
 
-    private _addTotalsByCountry (expense: Expense) {
-        if (this._totalsByCountry) {
+    private _addTotalsByCountry (expense: ExpenseModel) {
+        const toMs = Math.min(new DateDay().timeMs, this.info.to);
+        if (this._totalsByCountry && expense.inDates(this.info.from, toMs)) {
             this._totalsByCountry.add(
                 expense.amountBaseCurrency, [expense.countryCode,]);
         }
     }
     
-    private _subtractTotalsByCountry (expense: Expense) {
-        if (this._totalsByCountry) {
+    private _subtractTotalsByCountry (expense: ExpenseModel) {
+        const toMs = Math.min(new DateDay().timeMs, this.info.to);
+        if (this._totalsByCountry && expense.inDates(this.info.from, toMs)) {
             this._totalsByCountry.subtract(
                 expense.amountBaseCurrency, [expense.countryCode,]);
         }
@@ -116,11 +122,6 @@ export class BudgetModel {
         return this.nestedTotalExpenses.getSubtotal([year,]);
     }
 
-    getDays(year: number, month: number): number[]{
-        return Object.keys(this.expenseGroups[year][month])
-            .map(d => parseInt(d));
-    }
-
     private _updateTotalExpenses(newExpense: ExpenseModel, oldExpense?: ExpenseModel) {
         if (oldExpense === undefined || 
             oldExpense.amountBaseCurrency !== newExpense.amountBaseCurrency || 
@@ -134,9 +135,20 @@ export class BudgetModel {
         }
     }
 
+    // TODO remove this sorting methods and implement a sorted insertion in expenseGroups
+    getMonths(year: number): number[] {
+        return Object.keys(this.expenseGroups[year])
+            .map(month => parseInt(month)).sort(desc);
+    }
+
+    getDays(year: number, month: number): number[] {
+        return Object.keys(this.expenseGroups[year][month])
+            .map(d => parseInt(d)).sort(desc);
+    }
+
     get years(): number[]{
         return Object.keys(this.expenseGroups)
-            .map(d => parseInt(d));
+            .map(d => parseInt(d)).sort(desc);
     }
 
     setExpense(expense: Expense) {
@@ -182,10 +194,6 @@ export class BudgetModel {
         return Math.round(this._info.total / this.totalDays);
     }
 
-    get expectedMonthlyExpensesAverage () {
-        return this.expectedDailyExpensesAverage * 30;
-    }
-
     deleteExpense (expenseId: string) {
         if (expenseId in this._expenses) {
             const expense = this._expenses[expenseId];
@@ -211,19 +219,17 @@ export class BudgetModel {
         if (this._expenseGroups === undefined) {
             this._expenseGroups = {};
         }
-        if (this._expenseGroups !== undefined) {
-            const {year, month, day} = expense;
-            if (!(year in this._expenseGroups)) {
-                this._expenseGroups[year] = {};
-            }
-            if (!(month in this._expenseGroups[year])) {
-                this._expenseGroups[year][month] = {};
-            }
-            if (!(day in this._expenseGroups[year][month])) {
-                this._expenseGroups[year][month][day] = {};
-            }
-            this._expenseGroups[year][month][day][expense.identifier] = expense;
+        const {year, month, day} = expense;
+        if (!(year in this._expenseGroups)) {
+            this._expenseGroups[year] = {};
         }
+        if (!(month in this._expenseGroups[year])) {
+            this._expenseGroups[year][month] = {};
+        }
+        if (!(day in this._expenseGroups[year][month])) {
+            this._expenseGroups[year][month][day] = {};
+        }
+        this._expenseGroups[year][month][day][expense.identifier] = expense;
     }
 
     private _removeFromGroup (expense: ExpenseModel) {
@@ -241,15 +247,18 @@ export class BudgetModel {
         const newTotals = new NestedTotal();
         for (const k in this._expenses) {
             if (rates.base === this._expenses[k].currency) {
-                this._expenses[k].amountBaseCurrency = this._expenses[k].amount; 
+                this._expenses[k] = new ExpenseModel({
+                    ...this._expenses[k], 
+                    amountBaseCurrency: this._expenses[k].amount}); 
             } else {
                 const currency = this._expenses[k].currency;
                 const rate = rates.rates[currency];
                 if (rate === undefined) {
                     throw new Error(`Cannot get currency exchange rate from ${rates.base} to ${currency}`);
                 }
-                this._expenses[k].amountBaseCurrency = CurrenciesStore.convert(
-                    this._expenses[k].amount, rate);
+                this._expenses[k] = new ExpenseModel({
+                    ...this._expenses[k], 
+                    amountBaseCurrency: applyRate(this._expenses[k].amount, rate)}); 
             }
             this._expenses[k].addToTotals(newTotals);
         }
@@ -304,12 +313,46 @@ export class BudgetModel {
     }
 
     getJson(categories: Categories) {
+        const expenses: ExpensesMap = {};
+        Object
+            .keys(this.expenses)
+            .forEach(k => (expenses[k] = this.expenses[k].info));
         return JSON.stringify(
             {
                 info: this.info,
-                expenses: this.expenses as ExpensesMap,
+                expenses,
                 categories
             }, null, 2
         );
+    }
+
+    get totalDaysByCountry () {
+        const groups = this.expenseGroups; 
+        const daysByCountry: {[country: string]: number} = {};
+        const todayMs = new Date().getTime();
+        let from = DateDay.fromTimeMs(this.info.from);
+        do {
+            const {year, month, day} = from;
+            if (year in groups && 
+                month in groups[year] && 
+                day in groups[year][month]) {
+                const countriesInADay = new Set<string>();
+                for (const id in groups[year][month][day]) {
+                    const expense = groups[year][month][day][id];
+                    countriesInADay.add(expense.countryCode);
+                }
+                countriesInADay.forEach(c=> {
+                    if (c in daysByCountry) {
+                        daysByCountry[c] += 1;
+                    } else {
+                        daysByCountry[c] = 1;
+                    }
+                });
+            }
+            
+            from.addDays(1);
+        } while (from.timeMs <= todayMs);
+
+        return daysByCountry;
     }
 }

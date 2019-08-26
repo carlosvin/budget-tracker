@@ -31,8 +31,9 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
     const [addCategoryOpen, setAddCategoryOpen] = React.useState(false);
 
     React.useEffect(() => {
-        const initCategories = async () => {
-            const cs = await btApp.categoriesStore.getCategories();
+        async function initCategories () {
+            const store = await btApp.getCategoriesStore();
+            const cs = await store.getCategories();
             setCategories(cs);
         }
         initCategories();
@@ -51,13 +52,14 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
         setAddCategoryOpen(true);
     }
 
-    const handleAddCategoryClose = (category?: Category) => {
+    const handleAddCategoryClose = async (category?: Category) => {
+        setAddCategoryOpen(false);
         if (category) {
-            btApp.categoriesStore.setCategory(category);
+            const store = await btApp.getCategoriesStore();
+            await store.setCategory(category);
             setCategories({...categories, category});
             props.onCategoryChange(category.id);
         }
-        setAddCategoryOpen(false);
     }
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

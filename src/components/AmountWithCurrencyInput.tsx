@@ -3,10 +3,10 @@ import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { CurrencyInput } from "./CurrencyInput";
-import { round } from "../utils";
 import { AmountInput } from "./AmountInput";
 import { CurrencyRates } from "../interfaces";
-import { CurrenciesStore } from "../stores/CurrenciesStore";
+import { round } from "../domain/utils/round";
+import applyRate from "../domain/utils/applyRate";
 
 interface AmountCurrencyInputProps  {
     selectedCurrency: string;
@@ -26,52 +26,55 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         setAmountInBaseCurrency
     ] = React.useState<number|undefined>(props.amountInBaseCurrency);
 
-    const [currency, setCurrency] = React.useState(props.selectedCurrency);
+    const [currency, setCurrency] = React.useState<string>(props.selectedCurrency);
+    const [amount, setAmount] = React.useState<number|undefined>(props.amountInput);
 
     const [error, setError] = React.useState<string|undefined>(); 
-
-    function calculateAmountInBaseCurrency(amount: number, currency: string) {
-        const rate = props.rates.rates[currency];
-        let error = undefined;
-        if (rate) {
-            const calculatedAmount = currency !== props.rates.base ? CurrenciesStore.convert(amount, rate) : amount;
-            setAmountInBaseCurrency(round(calculatedAmount));
-            props.onChange(amount, currency, calculatedAmount);
-        } else {
-            error = 'Cannot get currency exchange rate';
-        }
-        if (props.onError) {
-            setError(error);
-            props.onError(error);
-        }
-    }
     
+    const {onChange, onError} = props;
+    const {rates, base} = props.rates;
+
     // calculate amount in base currency
     React.useEffect(() => {
+        function calculateAmountInBaseCurrency(inputAmount: number) {
+            const rate = rates[currency];
+            if (rate) {
+                const calculatedAmount = applyRate(inputAmount, rate);
+                setAmountInBaseCurrency(round(calculatedAmount));
+                setError(undefined);
+            } else {
+                setError('Cannot get currency exchange rate');
+            }
+        }
+
         let isSubscribed = true;
         if (isSubscribed &&
-            props.rates.base &&
-            currency && 
-            props.amountInput && 
-            props.rates.base !== currency) {
-            calculateAmountInBaseCurrency(
-                props.amountInput, 
-                currency);
+            base &&
+            currency && amount) {
+            if (base === currency) {
+                setAmountInBaseCurrency(round(amount));
+            } else {
+                calculateAmountInBaseCurrency(amount);    
+            }
         }
         return () => {isSubscribed = false};
-    }, 
-    // eslint-disable-next-line
-    [
-        props.rates.base, props.amountInput, props.selectedCurrency, currency
-    ]);
+    }, [base, rates, amount, currency]);
 
-    const handleAmountChange = (amount: number) => {
-        calculateAmountInBaseCurrency(amount, currency);
-    }
+    React.useEffect(() => {
+        if (onError) {
+            onError(error);
+        }
+    }, [error, onError]);
+
+    React.useEffect(() => {
+        if (amount !== undefined && amountInBaseCurrency !== undefined) {
+            onChange(amount, currency, amountInBaseCurrency);
+        }
+    }, [amount, currency, amountInBaseCurrency, onChange]);
 
     const baseAmountString = () => {
-        if (props.rates.base !== currency && amountInBaseCurrency) {
-            return `${round(amountInBaseCurrency)} ${props.rates.base}`;
+        if (base !== currency && amountInBaseCurrency) {
+            return `${round(amountInBaseCurrency)} ${base}`;
         }
         return undefined;
     }
@@ -80,9 +83,9 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         <Grid container direction='row' alignItems='baseline'>
             <Grid item>
                 <AmountInput
-                    amountInput={props.amountInput}
+                    amountInput={amount}
                     label={props.label}
-                    onAmountChange={handleAmountChange}
+                    onAmountChange={setAmount}
                     helperText={baseAmountString()} 
                     disabled={props.disabled}/>
             </Grid>

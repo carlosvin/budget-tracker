@@ -3,22 +3,52 @@ import { RouterProps } from 'react-router';
 import { Category, Categories } from '../../interfaces';
 import CategoryInput from '../../components/categories/CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
-import Typography from '@material-ui/core/Typography';
-import { btApp } from '../../BudgetTracker';
 import { SaveButtonFab } from '../../components/buttons/SaveButton';
 import { AddButton } from '../../components/buttons/AddButton';
+import { btApp } from '../../BudgetTracker';
+
+interface CategoriesMapProps {
+    onDelete: (id: string) => void;
+    onChange: (category: Category) => void;
+    categories: Categories;
+}
+
+const CategoriesMap: React.FC<CategoriesMapProps> = (props) => {
+    const CategoriesMemo = React.useMemo(() => (
+        <React.Fragment>
+                {Object.values(props.categories).map(c => 
+                    <CategoryInput 
+                        {...c}
+                        direction='row' 
+                        key={`category-entry-${c.id}`}
+                        onChange={ props.onChange }
+                        onDelete={ props.onDelete }/>)
+                }
+            </React.Fragment>
+    // eslint-disable-next-line
+    ), [props.categories]);
+
+    return CategoriesMemo;
+}
 
 export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
     
     const [categories, setCategories] = React.useState<Categories>({});
+    const [viewCategories, setViewCategories] = React.useState<Categories>({});
 
     React.useEffect(() => {
-        async function fetchCategories () {
-            setCategories(await btApp.categoriesStore.getCategories());
+        async function init() {
+            setCategories(await (await btApp.getCategoriesStore()).getCategories());
         }
+        init();
+    }, []);
 
+    React.useEffect(() => {
+        setViewCategories({...categories});
+    }, [categories]);
+
+    React.useLayoutEffect(() => {
         props.onTitleChange('Categories');
-        fetchCategories();
         return function () {
             props.onTitleChange('');
         };
@@ -27,49 +57,32 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
 
     const [changed, setChanged] = React.useState(false);
 
-    const CategoriesMap = () => {
-        if (Object.values(categories).length > 0) {
-            return (
-                <React.Fragment>
-                    {Object.values(categories).map(c => 
-                        <CategoryInput 
-                            {...props} 
-                            {...c}
-                            direction='row' 
-                            key={`category-entry-${c.id}`}
-                            onChange={ handleChange }
-                            onDelete={ handleDelete }/>)
-                    }
-                </React.Fragment>);
-        } else {
-            return  <Typography variant='h5' color='textSecondary'>There are no categories</Typography>;
-        }
-    }
-    
     const handleChange = (category: Category) => {
-        const cats = {...categories};
-        cats[category.id] = category;
-        setCategories(cats);
+        viewCategories[category.id] = category;
+        setViewCategories(viewCategories);
         setChanged(true);
     }
 
     const handleDelete = (id: string) => {
-        const cats = {...categories};
-        delete cats[id];
-        setCategories(cats);
+        delete viewCategories[id];
+        setCategories(viewCategories);
         setChanged(true);
     }
 
-    const handleSave = (e: React.SyntheticEvent) => {
+    const handleSave = async (e: React.SyntheticEvent) => {
         e.preventDefault();
-        btApp.categoriesStore.setCategories(categories);
+        await (await btApp.getCategoriesStore()).setCategories(viewCategories);
+        setCategories(viewCategories);
         setChanged(false);
     }
 
     return (
         <form onSubmit={handleSave}>
-            <CategoriesMap />
-            <AddButton href='/categories/add'/>
+            <CategoriesMap 
+                onChange={handleChange} 
+                onDelete={handleDelete} 
+                categories={viewCategories}/>
+            <AddButton to='/categories/add'/>
             <SaveButtonFab type='submit' disabled={!changed}/>
         </form>
     );
