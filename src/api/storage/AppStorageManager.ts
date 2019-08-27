@@ -5,17 +5,15 @@ export class AppStorageManager implements StorageApi {
     private _local: StorageApi;
     private _remote?: StorageApi;
 
-    constructor (local: StorageApi, remote?: Promise<StorageApi|undefined>) {
+    constructor (local: StorageApi) {
         this._local = local;
-        this.initRemote(remote);
-        
     }
 
-    private async initRemote (remotePromise ?: Promise<StorageApi|undefined>) {
+    async initRemote (remotePromise ?: Promise<StorageApi|undefined>) {
         if (remotePromise) {
             this._remote = await remotePromise;
             if (this._remote) {
-                AppStorageManager.sync(this._local, this._remote);
+                await AppStorageManager.sync(this._local, this._remote);
             }
         }
     }
@@ -28,12 +26,20 @@ export class AppStorageManager implements StorageApi {
             return AppStorageManager.dump(remote, local);
         } else if (remoteTime < localTime) {
             return AppStorageManager.dump(local, remote);
+        } else {
+            console.info('Nothing to sync');
         }
     }
 
-    private static async dump(from: StorageApi, to: StorageApi){
-        throw Error('not implemented');
-
+    private static async dump(from: StorageApi, to: StorageApi) {
+        await to.saveCategories(await from.getCategories());
+        const budgets = Object.values(await from.getBudgets());
+        await Promise.all(budgets.map(budget => to.saveBudget(budget)));
+        for (const budget of budgets) {
+            const expenses = await from.getExpenses(budget.identifier);
+            await to.saveExpenses(budget.identifier, Object.values(expenses));
+        }
+        return to.setLastTimeSaved(await from.getLastTimeSaved());
     }
 
     async getBudgets() {
@@ -93,5 +99,8 @@ export class AppStorageManager implements StorageApi {
     async getLastTimeSaved(){
         return this._local.getLastTimeSaved();
     }
-}
 
+    async setLastTimeSaved(timestamp = new Date().getTime()) {
+        return this._local.setLastTimeSaved(timestamp);
+    }
+}

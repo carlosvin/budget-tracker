@@ -12,7 +12,7 @@ import { AuthApi } from './api/AuthApi';
 
 class BudgetTracker {
 
-    private _storage?: StorageApi;
+    private _storage?: StorageApi&{initRemote (remotePromise ?: Promise<StorageApi|undefined>): Promise<void>};
     private _firestore?: StorageApi;
     private _localStorage?: StorageApi;
     private _auth?: AuthApi;
@@ -26,14 +26,17 @@ class BudgetTracker {
     async getStorage () {
         if (!this._storage) {
             const storage  = await import('./api/storage/AppStorageManager');
-            this._storage = new storage.AppStorageManager(
-                await this.getLocalStorage(), 
-                this.getFirestore());
+            this._storage = new storage.AppStorageManager(await this.getLocalStorage());
+            this._storage.initRemote(this.getFirestore());
         }
         if (this._storage) {
             return this._storage;
         }
         throw Error('Error Loading Storage');
+    }
+
+    async initRemoteStorage() {
+        return (await this.getStorage()).initRemote(this.getFirestore());
     }
 
     private async getFirestore () {

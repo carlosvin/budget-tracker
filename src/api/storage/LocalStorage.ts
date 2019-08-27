@@ -39,10 +39,12 @@ export class LocalStorage implements StorageApi {
         }
         budgets[budget.identifier] = budget;
         this.saveBudgets(budgets);
+        this.setLastTimeSaved();
     }
 
     private saveBudgets(budgets: BudgetsMap) {
         localStorage.setItem(this.KEY_BUDGETS, JSON.stringify(budgets));
+        this.setLastTimeSaved();
     }
 
     async saveExpenses(budgetId: string, expenses: Expense[]) {
@@ -50,6 +52,7 @@ export class LocalStorage implements StorageApi {
         expenses.forEach(e => expensesMap[e.identifier] = e);
         const identifier = this.getExpensesKey(budgetId);
         localStorage.setItem(identifier, JSON.stringify(expensesMap));
+        this.setLastTimeSaved();
     }
 
     private getExpensesKey(id: string) {
@@ -61,6 +64,7 @@ export class LocalStorage implements StorageApi {
         if (expenses && expenseId in expenses) {
             delete expenses[expenseId];
             this.saveExpenses(budgetId, expenses);
+            this.setLastTimeSaved();
         }
     }
 
@@ -70,6 +74,7 @@ export class LocalStorage implements StorageApi {
             delete budgets[budgetId];
             this.saveBudgets(budgets);
             localStorage.removeItem(this.getExpensesKey(budgetId));
+            this.setLastTimeSaved();
         }
     }
 
@@ -88,15 +93,16 @@ export class LocalStorage implements StorageApi {
     }
 
     async saveCategories (categories: Categories) {
-            localStorage.setItem(
-                this.KEY_CATEGORIES, 
-                JSON.stringify(categories));
+        localStorage.setItem(
+            this.KEY_CATEGORIES, 
+            JSON.stringify(categories));
+        this.setLastTimeSaved();
     }
 
     async saveCategory (category: Category) {
         const categories = await this.getCategories();
         categories[category.id] = category;
-        this.saveCategories(categories);
+        return this.saveCategories(categories);
     }
 
     async getLastTimeSaved() {
@@ -106,6 +112,10 @@ export class LocalStorage implements StorageApi {
         } else {
             return 0;
         }
+    }
+
+    async setLastTimeSaved(timestamp = new Date().getTime()) {
+        localStorage.setItem(this.KEY_LAST_TS, timestamp.toString());
     }
 
 }

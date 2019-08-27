@@ -14,4 +14,6 @@ export interface StorageApi {
     saveCategories(categories: Categories): Promise<void>;
 
     getLastTimeSaved(): Promise<number>;
+    setLastTimeSaved(timestamp: number): Promise<void>;
+
 }

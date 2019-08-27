@@ -19,6 +19,9 @@ export const Login: React.FC = () => {
     async function handleLogin() {
         setIsLoggedIn(undefined);
         const uid = await (await btApp.getAuth()).startAuth();
+        if (uid) {
+            await btApp.initRemoteStorage();
+        }
         setIsLoggedIn(!!uid);
     }
 

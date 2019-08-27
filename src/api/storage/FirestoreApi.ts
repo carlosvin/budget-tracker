@@ -46,34 +46,25 @@ export class FirestoreApi implements StorageApi {
         return this.categoriesCol.doc(categoryId);
     }
 
-    async addBudget(budget: Budget) {
-        const docRef = await this.db
-            .collection('budgets')
-            .add(budget);
-        return docRef.id;
-    }
-
     async saveBudget(budget: Budget) {
-        return this.getBudgetDoc(budget.identifier).set(budget);
+        await this.getBudgetDoc(budget.identifier).set(budget);
+        return this.setLastTimeSaved();
     }
 
     async deleteBudget(budgetId: string) {
-        return this.getBudgetDoc(budgetId).delete();
+        await this.getBudgetDoc(budgetId).delete();
+        return this.setLastTimeSaved();
     }
 
     async setBudgets(budgets: BudgetsMap) {
-        try {
-            const batch = this.db.batch();
-            Object
-                .entries(budgets)
-                .forEach(([k,budget]) => batch.set(
-                    this.db.collection('budgets').doc(k), 
-                    budget));
-            return batch.commit();
-        } catch (error) {
-            console.warn('Cannot save budgets: ', error);
-            return null;
-        }
+        const batch = this.db.batch();
+        Object
+            .entries(budgets)
+            .forEach(([k,budget]) => batch.set(
+                this.db.collection('budgets').doc(k), 
+                budget));
+        await batch.commit();
+        return this.setLastTimeSaved();
     }
 
     async getBudget (id: string) {
@@ -107,12 +98,20 @@ export class FirestoreApi implements StorageApi {
         return expenses;
     }
 
-    async saveExpense(budgetId: string, expense: Expense){
-        return this.getExpenseDoc(budgetId, expense.identifier).set(expense);
+    async saveExpenses(budgetId: string, expenses: Expense[]) {
+        const batch = this.db.batch();
+        Object
+            .entries(expenses)
+            .forEach(([k, expense]) => batch.set(
+                this.getExpensesCol(budgetId).doc(k), 
+                expense));
+        await batch.commit();
+        return this.setLastTimeSaved();
     }
 
     async deleteExpense(budgetId: string, expenseId: string) {
-        return this.getExpenseDoc(budgetId, expenseId).delete();
+        await this.getExpenseDoc(budgetId, expenseId).delete();
+        return this.setLastTimeSaved();
     }
 
     async getCategories(): Promise<Categories> {
@@ -125,22 +124,36 @@ export class FirestoreApi implements StorageApi {
     }
 
     async saveCategory(category: Category){
-        return this.getCategoryDoc(category.id).set(category);
+        await this.getCategoryDoc(category.id).set(category);
+        return this.setLastTimeSaved();
     }
 
     async saveCategories(categories: Categories){
-        throw Error('Not implemented, we have to remove this method and use finer grain ones');
+        const batch = this.db.batch();
+        Object
+            .entries(categories)
+            .forEach(([k, category]) => batch.set(
+                this.categoriesCol.doc(k), 
+                category));
+        await batch.commit();
+        return this.setLastTimeSaved();
     }
 
     async deleteCategory(categoryId: string){
-        return this.getCategoryDoc(categoryId).delete();
+        await this.getCategoryDoc(categoryId).delete();
+        return this.setLastTimeSaved();
     }
 
     async getLastTimeSaved () {
-        return ((await this.userDoc.get()).data() as User).timestamp;
+        try {
+            return ((await this.userDoc.get()).data() as User).timestamp || 0;
+        } catch (error) {
+            console.warn('Cannot retrieve timestamp from firebase');
+            return 0;
+        }
     }
 
-    async updateUserTimestamp () {
-        return this.userDoc.update({timestamp: new Date().getTime()});
+    async setLastTimeSaved (timestamp=new Date().getTime()) {
+        return this.userDoc.set({timestamp});
     }
 }
