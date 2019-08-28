@@ -1,15 +1,15 @@
-import { StorageApi } from "./StorageApi";
+import { StorageApi, SubStorageApi } from "./StorageApi";
 import { Budget, Expense, Category, Categories } from "../../interfaces";
 
 export class AppStorageManager implements StorageApi {
-    private _local: StorageApi;
-    private _remote?: StorageApi;
+    private _local: SubStorageApi;
+    private _remote?: SubStorageApi;
 
-    constructor (local: StorageApi) {
+    constructor (local: SubStorageApi) {
         this._local = local;
     }
 
-    async initRemote (remotePromise ?: Promise<StorageApi|undefined>) {
+    async initRemote (remotePromise ?: Promise<SubStorageApi|undefined>) {
         if (remotePromise) {
             this._remote = await remotePromise;
             if (this._remote) {
@@ -18,28 +18,17 @@ export class AppStorageManager implements StorageApi {
         }
     }
 
-    private static async sync(local: StorageApi, remote: StorageApi) {
+    private static async sync(local: SubStorageApi, remote: SubStorageApi) {
         const [remoteTime, localTime] = await Promise.all([
             remote.getLastTimeSaved(), 
             local.getLastTimeSaved()]);
         if (remoteTime > localTime) {
-            return AppStorageManager.dump(remote, local);
+            return local.import(await remote.export());
         } else if (remoteTime < localTime) {
-            return AppStorageManager.dump(local, remote);
+            return remote.import(await local.export());
         } else {
             console.info('Nothing to sync');
         }
-    }
-
-    private static async dump(from: StorageApi, to: StorageApi) {
-        await to.saveCategories(await from.getCategories());
-        const budgets = Object.values(await from.getBudgets());
-        await Promise.all(budgets.map(budget => to.saveBudget(budget)));
-        for (const budget of budgets) {
-            const expenses = await from.getExpenses(budget.identifier);
-            await to.saveExpenses(budget.identifier, Object.values(expenses));
-        }
-        return to.setLastTimeSaved(await from.getLastTimeSaved());
     }
 
     async getBudgets() {
@@ -50,57 +39,57 @@ export class AppStorageManager implements StorageApi {
         return this._local.getExpenses(budgetId);
     }
     
-    async saveBudget(budget: Budget) {
+    async saveBudget(budget: Budget, timestamp = new Date().getTime()) {
         if (this._remote) {
-            this._remote.saveBudget(budget);
+            this._remote.saveBudget(budget, timestamp);
         }
-        return this._local.saveBudget(budget);
+        return this._local.saveBudget(budget, timestamp);
     }
     
-    async deleteBudget(budgetId: string) {
+    async deleteBudget(budgetId: string, timestamp = new Date().getTime()) {
         if (this._remote) {
-            this._remote.deleteBudget(budgetId);
+            this._remote.deleteBudget(budgetId, timestamp);
         }
-        return this._local.deleteBudget(budgetId);
+        return this._local.deleteBudget(budgetId, timestamp);
     }
     
-    async saveExpenses(budgetId: string, expenses: Expense[]) {
+    async saveExpenses(budgetId: string, expenses: Expense[], timestamp = new Date().getTime()) {
         if (this._remote) {
-            this._remote.saveExpenses(budgetId, expenses);
+            this._remote.saveExpenses(budgetId, expenses, timestamp);
         }
-        return this._local.saveExpenses(budgetId, expenses);
+        return this._local.saveExpenses(budgetId, expenses, timestamp);
     }
 
-    async deleteExpense(budgetId: string, expenseId: string) {
+    async deleteExpense(budgetId: string, expenseId: string, timestamp = new Date().getTime()) {
         if (this._remote) {
-            this._remote.deleteExpense(budgetId, expenseId);
+            this._remote.deleteExpense(budgetId, expenseId, timestamp);
         }
-        return this._local.deleteExpense(budgetId, expenseId);
+        return this._local.deleteExpense(budgetId, expenseId, timestamp);
     }
 
     async getCategories() {
         return this._local.getCategories();
     }
 
-    async saveCategory(category: Category) {
+    async saveCategory(category: Category, timestamp = new Date().getTime()) {
         if (this._remote) {
-            this._remote.saveCategory(category);
+            this._remote.saveCategory(category, timestamp);
         }
-        return this._local.saveCategory(category);
+        return this._local.saveCategory(category, timestamp);
     }
 
-    async saveCategories(categories: Categories) {
+    async saveCategories(categories: Categories, timestamp = new Date().getTime()) {
         if (this._remote) {
-            this._remote.saveCategories(categories);
+            this._remote.saveCategories(categories, timestamp);
         }
-        return this._local.saveCategories(categories);
+        return this._local.saveCategories(categories, timestamp);
     }
 
     async getLastTimeSaved(){
         return this._local.getLastTimeSaved();
     }
 
-    async setLastTimeSaved(timestamp = new Date().getTime()) {
-        return this._local.setLastTimeSaved(timestamp);
+    async setLastTimeSaved(timestamp: number) {
+        throw new Error('App storage manager should not implement set timestamp method');
     }
 }

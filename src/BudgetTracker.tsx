@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import { BudgetsIndexStore } from './stores/BudgetsIndexStore';
-import { StorageApi } from './api/storage/StorageApi';
+import { StorageApi, SubStorageApi } from './api/storage/StorageApi';
 import { 
     CategoriesStore, BudgetsStore, 
     IconsStore, CurrenciesStore, 
@@ -13,8 +13,8 @@ import { AuthApi } from './api/AuthApi';
 class BudgetTracker {
 
     private _storage?: StorageApi&{initRemote (remotePromise ?: Promise<StorageApi|undefined>): Promise<void>};
-    private _firestore?: StorageApi;
-    private _localStorage?: StorageApi;
+    private _firestore?: SubStorageApi;
+    private _localStorage?: SubStorageApi;
     private _auth?: AuthApi;
     private _budgetsStore?: BudgetsStore;
     private _categoriesStore?: CategoriesStore;

@@ -1,0 +1,4 @@
+TODO 
+ - Add extra granularity to save data in smaller pieces. Add also timestamps for each entity. 
+ - Pass timestamp from app storage manager to sub storages, so we ensure both have the same
+ - Identify when it is first sync to dump data in more efficient way

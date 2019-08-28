@@ -1,9 +1,9 @@
-import { Budget, BudgetsMap, ExpensesMap, Expense, Categories, Category, User } from '../../interfaces';
+import { Budget, BudgetsMap, ExpensesMap, Expense, Categories, Category, User, ExportDataSet } from '../../interfaces';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { StorageApi } from './StorageApi';
+import { SubStorageApi } from './StorageApi';
 
-export class FirestoreApi implements StorageApi {
+export class FirestoreApi implements SubStorageApi {
     
     private readonly db: firebase.firestore.Firestore;
     private readonly userId: string;
@@ -46,17 +46,17 @@ export class FirestoreApi implements StorageApi {
         return this.categoriesCol.doc(categoryId);
     }
 
-    async saveBudget(budget: Budget) {
+    async saveBudget(budget: Budget, timestamp?: number) {
         await this.getBudgetDoc(budget.identifier).set(budget);
-        return this.setLastTimeSaved();
+        return this.setLastTimeSaved(timestamp);
     }
 
-    async deleteBudget(budgetId: string) {
+    async deleteBudget(budgetId: string, timestamp?: number) {
         await this.getBudgetDoc(budgetId).delete();
-        return this.setLastTimeSaved();
+        return this.setLastTimeSaved(timestamp);
     }
 
-    async setBudgets(budgets: BudgetsMap) {
+    async setBudgets(budgets: BudgetsMap, timestamp?: number) {
         const batch = this.db.batch();
         Object
             .entries(budgets)
@@ -64,7 +64,7 @@ export class FirestoreApi implements StorageApi {
                 this.db.collection('budgets').doc(k), 
                 budget));
         await batch.commit();
-        return this.setLastTimeSaved();
+        return this.setLastTimeSaved(timestamp);
     }
 
     async getBudget (id: string) {
@@ -98,20 +98,20 @@ export class FirestoreApi implements StorageApi {
         return expenses;
     }
 
-    async saveExpenses(budgetId: string, expenses: Expense[]) {
+    async saveExpenses(budgetId: string, expenses: Expense[], timestamp?: number) {
         const batch = this.db.batch();
         Object
-            .entries(expenses)
-            .forEach(([k, expense]) => batch.set(
-                this.getExpensesCol(budgetId).doc(k), 
+            .values(expenses)
+            .forEach(expense => batch.set(
+                this.getExpensesCol(budgetId).doc(expense.identifier), 
                 expense));
         await batch.commit();
-        return this.setLastTimeSaved();
+        return this.setLastTimeSaved(timestamp);
     }
 
-    async deleteExpense(budgetId: string, expenseId: string) {
+    async deleteExpense(budgetId: string, expenseId: string, timestamp?: number) {
         await this.getExpenseDoc(budgetId, expenseId).delete();
-        return this.setLastTimeSaved();
+        return this.setLastTimeSaved(timestamp);
     }
 
     async getCategories(): Promise<Categories> {
@@ -123,12 +123,12 @@ export class FirestoreApi implements StorageApi {
         return categories;    
     }
 
-    async saveCategory(category: Category){
+    async saveCategory(category: Category, timestamp?: number){
         await this.getCategoryDoc(category.id).set(category);
-        return this.setLastTimeSaved();
+        return this.setLastTimeSaved(timestamp);
     }
 
-    async saveCategories(categories: Categories){
+    async saveCategories(categories: Categories, timestamp?: number){
         const batch = this.db.batch();
         Object
             .entries(categories)
@@ -136,12 +136,12 @@ export class FirestoreApi implements StorageApi {
                 this.categoriesCol.doc(k), 
                 category));
         await batch.commit();
-        return this.setLastTimeSaved();
+        return this.setLastTimeSaved(timestamp);
     }
 
-    async deleteCategory(categoryId: string){
+    async deleteCategory(categoryId: string, timestamp?: number){
         await this.getCategoryDoc(categoryId).delete();
-        return this.setLastTimeSaved();
+        return this.setLastTimeSaved(timestamp);
     }
 
     async getLastTimeSaved () {
@@ -153,7 +153,43 @@ export class FirestoreApi implements StorageApi {
         }
     }
 
-    async setLastTimeSaved (timestamp=new Date().getTime()) {
-        return this.userDoc.set({timestamp});
+    async setLastTimeSaved (timestamp?: number) {
+        if (timestamp) {
+            return this.userDoc.set({timestamp});
+        }
+    }
+
+    async import(data: ExportDataSet) {
+        const {budgets, expenses, categories} = data;
+        const batch = this.db.batch();
+        Object
+            .values(categories)
+            .forEach(category => batch.set(this.getCategoryDoc(category.id), category));
+        for (const budgetId in data.budgets) {
+            batch.set(
+                this.getBudgetDoc(budgetId), 
+                budgets[budgetId]);
+            for (const expenseId in expenses[budgetId]) {
+                batch.set(
+                    this.getExpenseDoc(budgetId, expenseId), 
+                    expenses[budgetId][expenseId]);
+            }
+        }
+        return batch.commit();
+    }
+
+    private async getExpensesWithBudgetId (budgetId: string): Promise<[string, ExpensesMap]> {
+        return [budgetId, await this.getExpenses(budgetId)];
+    }
+
+    async export(): Promise<ExportDataSet> {
+        const [budgets, categories, lastTimeSaved] = await Promise.all([this.getBudgets(), this.getCategories(), this.getLastTimeSaved()]);
+        const expensesEntries = await Promise.all(Object
+            .keys(budgets)
+            .map(budgetId => this.getExpensesWithBudgetId(budgetId)));
+        const expenses: {[budgetId: string]: ExpensesMap} = {};
+        expensesEntries.forEach(([budgetId, eMap]) => expenses[budgetId] = eMap);
+
+        return {budgets, expenses, categories, lastTimeSaved};
     }
 }
