@@ -7,15 +7,16 @@ import CategoryIconDialogSelector from '../../views/categories/CategoryIconSelec
 import { Category } from '../../interfaces';
 import { DeleteButton } from '../buttons/DeleteButton';
 
-interface CategoryInputProps extends Category {
+interface CategoryInputProps {
     direction?: GridDirection;
     onDelete?: (id: string) => void;
     onChange: (category: Category) => void;
+    category: Category;
 }
 
 export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
     const [dialogOpen, setDialogOpen] = React.useState(false);
-    const [category, setCategory] = React.useState<Category>(props);
+    const [category, setCategory] = React.useState<Category>(props.category);
 
     const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -39,7 +40,7 @@ export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
     }
 
     const handleDelete = () => {
-        props.onDelete && props.onDelete(props.id);
+        props.onDelete && props.onDelete(props.category.id);
     }
 
     return (

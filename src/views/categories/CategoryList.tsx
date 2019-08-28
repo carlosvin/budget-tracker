@@ -16,15 +16,15 @@ interface CategoriesMapProps {
 const CategoriesMap: React.FC<CategoriesMapProps> = (props) => {
     const CategoriesMemo = React.useMemo(() => (
         <React.Fragment>
-                {Object.values(props.categories).map(c => 
-                    <CategoryInput 
-                        {...c}
-                        direction='row' 
-                        key={`category-entry-${c.id}`}
-                        onChange={ props.onChange }
-                        onDelete={ props.onDelete }/>)
-                }
-            </React.Fragment>
+            {Object.values(props.categories).map(c => 
+                <CategoryInput 
+                    category={c}
+                    direction='row' 
+                    key={`category-entry-${c.id}`}
+                    onChange={ props.onChange }
+                    onDelete={ props.onDelete }/>)
+            }
+        </React.Fragment>
     // eslint-disable-next-line
     ), [props.categories]);
 
