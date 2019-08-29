@@ -21,6 +21,7 @@ jobs:
         git clone https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
         cd budget-tracker
         npm install
+        npm run lint
         npm run deploy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
