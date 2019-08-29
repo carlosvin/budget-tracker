@@ -1,4 +1,4 @@
-name: Node CD
+name: Deploy to gp-pages
 
 on:
   push:
@@ -14,12 +14,12 @@ jobs:
     - uses: actions/setup-node@master
       with:
         node-version: 12.x 
-    - name: Deploy
+    - name: Deploy to gh-pages
       run: |
-        npm install
+        git clone https://${GITHUB_AUTHOR}:${GITHUB_TOKEN}/github.com/${GITHUB_REPOSITORY}
         git config --global user.email "carlosvin@gmail.com"
         git config --global user.name "Carlos Martin Sanchez"
-        git config --get remote.origin.url
+        npm install
         npm run deploy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
