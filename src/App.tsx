@@ -10,6 +10,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 const App: React.FC = () => {
     const [title, setTitle] = React.useState('Budget tracker');
     const [actions, setActions] = React.useState();
+    const a = 'asdf';
 
     return (
         <Router basename='/budget-tracker'>
