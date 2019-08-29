@@ -1,4 +1,4 @@
-name: CI: Development flow
+name: CI Development flow
 
 on:
   push:
