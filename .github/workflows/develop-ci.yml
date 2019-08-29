@@ -17,6 +17,6 @@ jobs:
       - name: Build
         run: yarn build
       - name: Test
-        run: yarn test
+        run: yarn coverage
       - name: Analyze bundle size
         run: yarn analyze
