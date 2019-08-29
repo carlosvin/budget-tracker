@@ -667,7 +667,7 @@ describe('Budget model statistics', () => {
             if (day1.month === day2.month) {
                 expect(
                     model.getDays(day1.year, day1.month)
-                ).toStrictEqual([day1.day, day2.day]);    
+                ).toStrictEqual([day2.day, day1.day]);    
             } else {
                 expect(
                     model.getDays(day1.year, day1.month)
