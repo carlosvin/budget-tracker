@@ -17,9 +17,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Set env vars to build app
-      env:
-        REACT_APP_CURRENCY_API_KEY: ${{ secrets.CURRENCY_PUBLIC_API_KEY }}
     - name: npm install, build, and test
       run: |
         npm install
@@ -27,3 +24,5 @@ jobs:
         npm test
       env:
         CI: true
+        REACT_APP_CURRENCY_API_KEY: ${{ secrets.CURRENCY_PUBLIC_API_KEY }}
+
