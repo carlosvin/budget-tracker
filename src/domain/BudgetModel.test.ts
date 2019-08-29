@@ -162,7 +162,7 @@ describe('Expense operations', () => {
             {
                 '1': expense1,
             });
-        const {year, month, day, identifier} = new ExpenseModel(expense1);
+        const {year, month, day} = new ExpenseModel(expense1);
         delete bm.expenseGroups[year][month][day];
         expect(bm.deleteExpense('1')).toBe(true);
 
@@ -189,10 +189,7 @@ describe('Expense operations', () => {
             modifiedExpense2.amountBaseCurrency);
         expect(bm.getExpense('2').amountBaseCurrency)
             .toBe(modifiedExpense2.amountBaseCurrency);
-    
-        const expense1Date = new Date(expense1.when);
-        const expense2ModifiedDate = new Date(modifiedExpense2.when);
-    
+
         const expenseGroups = {}; 
         addExpenseToGroups(expenseGroups, new ExpenseModel(expense1));
         addExpenseToGroups(expenseGroups, new ExpenseModel(modifiedExpense2));
@@ -263,8 +260,6 @@ describe('Expense groups in budget model', () => {
                 [expense1.identifier]: expense1, 
                 [expense2.identifier]: expense2, 
             });
-    
-    
     
         const expenseGroups = {};
         addExpenseToGroups(expenseGroups, new ExpenseModel(expense1));
