@@ -30,6 +30,21 @@ function createExpense (id: string, budget: Budget) {
     };
 }
 
+function addExpenseToGroups (groups: ExpensesYearMap, expense: ExpenseModel) {
+    const {year, month, day} = expense;
+    if (!(year in groups)) {
+        groups[year] = {};
+    }
+    if (!(month in groups[year])) {
+        groups[year][month] = {};
+    }
+    if (!(day in groups[year][month])) {
+        groups[year][month][day] = {};
+    }
+    groups[year][month][day][expense.identifier] = expense;
+
+}
+
 describe('Budget Model Creation', () => {
 
     it('Budget model creation without expenses', async () => {
@@ -106,21 +121,6 @@ describe('Budget Model Creation', () => {
     });
 });
 
-function addExpenseToGroups (groups: ExpensesYearMap, expense: ExpenseModel) {
-    const {year, month, day} = expense;
-    if (!(year in groups)) {
-        groups[year] = {};
-    }
-    if (!(month in groups[year])) {
-        groups[year][month] = {};
-    }
-    if (!(day in groups[year][month])) {
-        groups[year][month][day] = {};
-    }
-    groups[year][month][day][expense.identifier] = expense;
-
-}
-
 describe('Expense operations', () => {
     it('Remove expense', () => {
         const budget = createBudget('EUR', 30, 1000);
@@ -189,10 +189,7 @@ describe('Expense operations', () => {
             modifiedExpense2.amountBaseCurrency);
         expect(bm.getExpense('2').amountBaseCurrency)
             .toBe(modifiedExpense2.amountBaseCurrency);
-    
-        const expense1Date = new Date(expense1.when);
-        const expense2ModifiedDate = new Date(modifiedExpense2.when);
-    
+        
         const expenseGroups = {}; 
         addExpenseToGroups(expenseGroups, new ExpenseModel(expense1));
         addExpenseToGroups(expenseGroups, new ExpenseModel(modifiedExpense2));
@@ -242,6 +239,23 @@ describe('Expense operations', () => {
         } catch (error) {
             expect(error).toBeTruthy();
         }
+    });
+
+    it('Set Expense out of budget dates is possible, but expense will be ignored in calculations', () => {
+        const info = createBudget('USD', 180, 56000);
+        const expense1 = {
+            ...createExpense('1', info), 
+            when: DateDay.fromTimeMs(info.from).addDays(-1).timeMs};
+        const expense2 = {
+            ...createExpense('2', info), 
+            when: DateDay.fromTimeMs(info.to).addDays(1).timeMs};
+
+        const bm = new BudgetModel(info, {'1': expense1 });
+        bm.setExpense(expense2);
+
+        expect(bm.totalExpenses).toBe(0);
+        expect(bm.average).toBe(0);        
+
     });
     
 });
