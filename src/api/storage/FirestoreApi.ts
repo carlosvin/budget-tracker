@@ -61,7 +61,7 @@ export class FirestoreApi implements SubStorageApi {
         Object
             .entries(budgets)
             .forEach(([k,budget]) => batch.set(
-                this.db.collection('budgets').doc(k), 
+                this.getBudgetDoc(k), 
                 budget));
         await batch.commit();
         return this.setLastTimeSaved(timestamp);
@@ -69,7 +69,7 @@ export class FirestoreApi implements SubStorageApi {
 
     async getBudget (id: string) {
         try {
-            const doc = await this.db.collection('budgets').doc(id).get();
+            const doc = await this.getBudgetDoc(id).get();
             return doc.data() as Budget;
         } catch (error) {
             console.warn('Cannot get budget: ', error);
