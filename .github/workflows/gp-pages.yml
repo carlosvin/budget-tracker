@@ -25,6 +25,7 @@ jobs:
       run: |
         cd budget-tracker
         yarn install
+        yarn lint
         yarn deploy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
