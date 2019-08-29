@@ -14,10 +14,12 @@ jobs:
           node-version: 12.x
       - name: Install yarn
         run: sudo apt-get update && sudo apt-get install yarn
-        
+
       - uses: actions/checkout@v1
       - name: Install project dependencies
         run: yarn install
+      - name: Lint
+        run: yarn lint
       - name: Build
         run: yarn build
       - name: Test

@@ -35,7 +35,7 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
-        "lint": "eslint --ext js,ts,tsx src",
+        "lint": "eslint --max-warnings 0 --ext js,ts,tsx src",
         "coverage": "yarn test --coverage --watchAll=false",
         "eject": "react-scripts eject",
         "serve": "serve -s build",
