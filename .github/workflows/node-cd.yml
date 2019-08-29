@@ -1,6 +1,9 @@
-name: Node CI
+name: Node CD
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -25,4 +28,6 @@ jobs:
       env:
         CI: true
         REACT_APP_CURRENCY_API_KEY: ${{ secrets.CURRENCY_PUBLIC_API_KEY }}
+    - name: Deploy
+      run: npm run deploy
 
