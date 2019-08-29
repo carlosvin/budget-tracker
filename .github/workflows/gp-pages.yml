@@ -1,0 +1,28 @@
+name: Deploy to gp-pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/setup-node@master
+      with:
+        node-version: 12.x 
+    - name: Deploy to gh-pages
+      run: |
+        git config --global user.email "carlosvin@gmail.com"
+        git config --global user.name "Carlos Martin Sanchez"
+        git clone https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
+        cd budget-tracker
+        npm install
+        npm run deploy
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        REACT_APP_CURRENCY_API_KEY: ${{ secrets.CURRENCY_PUBLIC_API_KEY }}
+
