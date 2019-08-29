@@ -16,7 +16,7 @@ jobs:
         node-version: 12.x 
     - name: Deploy to gh-pages
       run: |
-        git clone https://${GITHUB_AUTHOR}:${GITHUB_TOKEN}/github.com/${GITHUB_REPOSITORY}
+        git clone https://github.com/${GITHUB_REPOSITORY}
         git config --global user.email "carlosvin@gmail.com"
         git config --global user.name "Carlos Martin Sanchez"
         npm install
