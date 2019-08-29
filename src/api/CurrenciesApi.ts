@@ -1,5 +1,4 @@
 import { CurrencyRates } from "../interfaces";
-import * as conf from '../env.json';
 import { RemoteApi } from "./RemoteApi";
 
 class CurrenciesApi {
@@ -30,7 +29,7 @@ class CurrenciesApi {
                 params: {
                     base: baseCurrency,
                     target: targetCurrencies.join(','),
-                    apikey: conf.currencyApiKey
+                    apikey: process.env.REACT_APP_CURRENCY_API_KEY
                 }
             });
     }
