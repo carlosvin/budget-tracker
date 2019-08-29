@@ -23,8 +23,9 @@ jobs:
     - name: Deploy
       run: |
         npm install
-        git config --global user.email ${GITHUB_ACTOR}
+        git config --global user.email "carlosvin@gmail.com"
         git config --global user.name "Carlos Martin Sanchez"
+        git config --get remote.origin.url
         npm run deploy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
