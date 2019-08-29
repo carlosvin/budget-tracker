@@ -14,19 +14,16 @@ jobs:
     - uses: actions/setup-node@master
       with:
         node-version: 12.x
-    - name: Install yarn
-      run: sudo apt-get update && sudo apt-get install yarn
-    - name: Config git repository
+    - name: Deploy to gh-pages
       run: |
         git config --global user.email "carlosvin@gmail.com"
         git config --global user.name "Carlos Martin Sanchez"
         git clone https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
-    - name: Deploy to gh-pages
-      run: |
         cd budget-tracker
-        yarn install
-        yarn lint
-        yarn deploy
+        npm install
+        npm run lint
+        npm run deploy
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         REACT_APP_CURRENCY_API_KEY: ${{ secrets.CURRENCY_PUBLIC_API_KEY }}
+
