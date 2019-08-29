@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Install yarn
-        run: npm -g i yarn 
+        run: sudo npm -g i yarn 
       - name: Install project dependencies
         run: yarn install
       - name: Build
