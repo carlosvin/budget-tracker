@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  build:
+  build-deploy:
 
     runs-on: ubuntu-latest
 
@@ -23,7 +23,7 @@ jobs:
     - name: Deploy
       run: |
         npm install
-        git config --global user.email carlosvin@gmail.com
+        git config --global user.email ${GITHUB_ACTOR}
         git config --global user.name "Carlos Martin Sanchez"
         npm run deploy
       env:
