@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Install yarn
-        run: sudo npm -g i yarn 
+        run: sudo apt-get update && sudo apt-get install yarn
       - name: Install project dependencies
         run: yarn install
       - name: Build
