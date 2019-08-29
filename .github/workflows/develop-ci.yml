@@ -9,9 +9,13 @@ jobs:
     name: Build and test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/setup-node@master
+        with:
+          node-version: 12.x
       - name: Install yarn
         run: sudo apt-get update && sudo apt-get install yarn
+        
+      - uses: actions/checkout@v1
       - name: Install project dependencies
         run: yarn install
       - name: Build

@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/setup-node@master
       with:
-        node-version: 12.x 
+        node-version: 12.x
     - name: Deploy to gh-pages
       run: |
         git config --global user.email "carlosvin@gmail.com"
