@@ -23,10 +23,11 @@ jobs:
     - name: Deploy
       run: |
         npm install
-        git config user.email carlosvin@gmail.com
-        git config user.name "Carlos Martin Sanchez"
+        git config --global user.email carlosvin@gmail.com
+        git config --global user.name "Carlos Martin Sanchez"
         npm run deploy
       env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         CI: true
         REACT_APP_CURRENCY_API_KEY: ${{ secrets.CURRENCY_PUBLIC_API_KEY }}
 
