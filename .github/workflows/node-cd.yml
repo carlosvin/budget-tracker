@@ -20,14 +20,13 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: npm install, build, and test
+    - name: Deploy
       run: |
         npm install
-        npm run build --if-present
-        npm test
+        git config user.email carlosvin@gmail.com
+        git config user.name "Carlos Martin Sanchez"
+        npm run deploy
       env:
         CI: true
         REACT_APP_CURRENCY_API_KEY: ${{ secrets.CURRENCY_PUBLIC_API_KEY }}
-    - name: Deploy
-      run: npm run deploy
 
