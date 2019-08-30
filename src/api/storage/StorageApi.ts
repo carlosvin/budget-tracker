@@ -13,6 +13,10 @@ export interface StorageApi {
     saveCategories(categories: Categories,timestamp?: number): Promise<void>;
 }
 
+export interface AppStorageApi extends StorageApi {
+    initRemote (remotePromise?: Promise<StorageApi|undefined>): Promise<StorageApi|undefined>;
+}
+
 export interface SubStorageApi extends StorageApi {
     getLastTimeSaved(): Promise<number>;
     setLastTimeSaved(timestamp: number): Promise<void>;

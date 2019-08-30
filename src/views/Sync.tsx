@@ -13,6 +13,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import SyncDisabledIcon from '@material-ui/icons/SyncDisabled';
 import SyncIcon from '@material-ui/icons/Sync';
 import { HeaderNotifierProps } from '../routes';
+import { CircularProgress } from '@material-ui/core';
 
 export const Sync: React.FC<HeaderNotifierProps> = (props) => {
 
@@ -34,37 +35,53 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
             initUserId();
             props.onTitleChange('Account sync');
         // eslint-disable-next-line
-        }, [isLoggedIn]);
+        }, []);
 
-    async function handleLogin() {
+    React.useLayoutEffect(()=>{}, [isLoggedIn]);
+
+    function handleLogin() {
         setIsLoggedIn(undefined);
+        login();
+    }
+
+    async function login(){
         const uid = await (await btApp.getAuth()).startAuth();
         if (uid) {
-            await btApp.initRemoteStorage();
+            await btApp.cleanupStores();
         }
         setIsLoggedIn(!!uid);
     }
 
-    async function handleLogout() {
+    function handleLogout() {
         setIsLoggedIn(undefined);
+        logout();
+    }
+
+    async function logout () {
         const auth = await btApp.getAuth();
         await auth.logout();
         const uid = await auth.getUserId();
         setIsLoggedIn(!!uid);
     }
 
-    if (isLoggedIn===undefined) {
-        return <p>Loading</p>;
-    }
-
     function title () {
-        return isLoggedIn ? 
-            'Your account is synchronized' : 
-            'Account not synchronized';
+        if (isLoggedIn === undefined) {
+            return 'Synchronizing...';
+        } else if (isLoggedIn) {
+            return 'Your account is synchronized';
+        } else {
+            return 'Account not synchronized';
+        }
     }
 
     function avatar () {
-        return isLoggedIn ? <SyncIcon/> : <SyncDisabledIcon />;
+        if (isLoggedIn === undefined) {
+            return <CircularProgress/>;
+        } else if (isLoggedIn) {
+            return <SyncIcon/>;
+        } else {
+            return <SyncDisabledIcon />;
+        }
     }
 
     return <Card>
@@ -76,7 +93,8 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
             <Benefits />
         </CardContent>
         <CardActions>
-            <ActionButton 
+            <ActionButton
+                disabled={ isLoggedIn === undefined } 
                 onAction={ isLoggedIn ? handleLogout : handleLogin }>
                 { isLoggedIn ? 'Logout' : 'Synchronize' }
             </ActionButton>
@@ -101,8 +119,8 @@ const Benefits = () => (
     </List>
 );
 
-const ActionButton: React.FC<{onAction: () => Promise<void>}> = (props) => (
-    <Button onClick={props.onAction} color='primary'>
+const ActionButton: React.FC<{onAction: () => void, disabled?: boolean}> = (props) => (
+    <Button onClick={props.onAction} color='primary' disabled={props.disabled}>
         {props.children}
     </Button>
 );

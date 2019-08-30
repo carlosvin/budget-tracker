@@ -14,7 +14,10 @@ export class AppStorageManager implements StorageApi {
             this._remote = await remotePromise;
             if (this._remote) {
                 await AppStorageManager.sync(this._local, this._remote);
+                return this._remote;
             }
+        } else {
+            this._remote = undefined;
         }
     }
 
