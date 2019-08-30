@@ -13,7 +13,7 @@ import CardHeader from '@material-ui/core/CardHeader';
 import SyncDisabledIcon from '@material-ui/icons/SyncDisabled';
 import SyncIcon from '@material-ui/icons/Sync';
 import { HeaderNotifierProps } from '../routes';
-import { CircularProgress } from '@material-ui/core';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 export const Sync: React.FC<HeaderNotifierProps> = (props) => {
 
