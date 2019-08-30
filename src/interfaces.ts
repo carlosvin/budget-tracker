@@ -11,10 +11,6 @@ export interface Budget {
     to: number;
 }
 
-export interface BudgetExpenses {
-    expenses: {[timestamp: number]: Expense};
-}
-
 export interface Expense {
     amount: number;
     amountBaseCurrency: number;
@@ -72,4 +68,15 @@ export interface YMD {
 export interface CountryEntry {
     code: string;
     name: string;
+}
+
+export interface User {
+    timestamp: number;
+}
+
+export interface ExportDataSet {
+    budgets: BudgetsMap;
+    categories: Categories;
+    expenses: {[budgetId: string]: ExpensesMap };
+    lastTimeSaved: number;
 }

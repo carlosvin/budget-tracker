@@ -23,7 +23,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = (props) => {
     
     return (
         <form onSubmit={handleSave}>
-            <CategoryInput {...category} onChange={setCategory} />
+            <CategoryInput category={category} onChange={setCategory} />
             <SaveButtonFab type='submit' color='primary' disabled={category.name === ''} />
         </form>);
 }

@@ -29,7 +29,7 @@ export default class CategoriesStoreImpl implements CategoriesStore {
             name: category.name,
             id: category.id
         };
-        return this._storage.saveCategory(category);
+        return this._storage.saveCategory(categories[category.id]);
     }
 
     async setCategories(categories: Categories) {

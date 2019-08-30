@@ -1,19 +1,23 @@
 {
     "name": "budget-tracker",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "private": true,
     "homepage": "https://carlosvin.github.io/budget-tracker",
     "dependencies": {
         "@material-ui/core": "^4",
         "@material-ui/icons": "^4",
+        "@react-firebase/auth": "^0.2.9",
         "axios": "^0.19",
-        "nanoid": "^2.0.3",
+        "firebase": "^6.4.0",
+        "firebaseui": "^4.1.0",
+        "nanoid": "^2.0.4",
         "react": "^16",
         "react-dom": "^16",
         "react-router-dom": "^5",
         "victory": "^32"
     },
     "devDependencies": {
+        "@firebase/testing": "^0.12.2",
         "@types/jest": "^24",
         "@types/nanoid": "^2.0.0",
         "@types/node": "^12",
@@ -22,6 +26,7 @@
         "@types/react-router-dom": "^4",
         "@types/react-test-renderer": "^16",
         "@types/victory": "^31",
+        "filesystem": "1.0.1",
         "gh-pages": "2.0.1",
         "husky": "^3",
         "react-scripts": "^3",
