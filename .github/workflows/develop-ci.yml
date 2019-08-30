@@ -3,7 +3,7 @@ name: CI Development flow
 on:
   push:
     branches:
-      - !master
+      - '!master'
 jobs:
   build:
     name: Build and test
