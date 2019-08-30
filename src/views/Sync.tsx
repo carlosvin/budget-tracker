@@ -4,11 +4,17 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import { SnackbarError } from '../components/SnackbarError';
-import { CardHeader, CardContent, List, ListItemText, Link, ListSubheader } from '@material-ui/core';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import Link from '@material-ui/core/Link';
+import ListItemText from '@material-ui/core/ListItemText';
+import List from '@material-ui/core/List';
+import CardContent from '@material-ui/core/CardContent';
+import CardHeader from '@material-ui/core/CardHeader';
 import SyncDisabledIcon from '@material-ui/icons/SyncDisabled';
 import SyncIcon from '@material-ui/icons/Sync';
+import { HeaderNotifierProps } from '../routes';
 
-export const Sync: React.FC = () => {
+export const Sync: React.FC<HeaderNotifierProps> = (props) => {
 
     const [isLoggedIn, setIsLoggedIn] = React.useState<boolean|undefined>();
     const [error, setError] = React.useState();
@@ -26,6 +32,8 @@ export const Sync: React.FC = () => {
                 }  
             }
             initUserId();
+            props.onTitleChange('Account sync');
+        // eslint-disable-next-line
         }, [isLoggedIn]);
 
     async function handleLogin() {
