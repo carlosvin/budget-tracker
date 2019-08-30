@@ -8,6 +8,13 @@ import Box from "@material-ui/core/Box";
 import { AddButton } from "../../components/buttons/AddButton";
 import { BudgetUrl } from "../../domain/BudgetUrl";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
+import { DateDay } from "../../domain/DateDay";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
+import { AppButton } from "../../components/buttons/buttons";
+import NavigateBefore from "@material-ui/icons/NavigateBefore";
+import NavigateNext from "@material-ui/icons/NavigateNext";
+import DateRange from "@material-ui/icons/DateRange";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
@@ -22,7 +29,8 @@ function getParamInt(name: string, params: URLSearchParams) {
 export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
 
     const {budgetId} = props.match.params;
-    const {pathAddExpense} = new BudgetUrl(budgetId);
+    const url = new BudgetUrl(budgetId);
+    const {pathAddExpense} = url;
     
     const params = new URLSearchParams(props.location.search);
 
@@ -30,8 +38,12 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     const year = getParamInt('year', params) || 0;
     const month = getParamInt('month', params) || 0;
     const day = getParamInt('day', params)|| 0;
+    const date = new Date(year, month, day);
+    const dateDay = new DateDay(date);
+    const prevDate = new DateDay(date).addDays(-1);
+    const nextDate = new DateDay(date).addDays(1);
 
-    props.onTitleChange(new Date(year, month, day).toDateString());
+    props.onTitleChange(dateDay.shortString);
 
     const [expenses, setExpenses] = React.useState<ExpensesDayMap>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState();
@@ -43,30 +55,36 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
         if (budgetModel) {
             const expenseGroups = budgetModel.expenseGroups;
             if (expenseGroups) {
-                const expensesMap = expenseGroups[year][month][day];    
-                setExpenses({[day]: expensesMap});
+                const expensesMap = expenseGroups[year][month][day];
+                if (expensesMap) {
+                    setExpenses({[day]: expensesMap});
+                    setTotalSpent(budgetModel.getTotalExpensesByDay(year, month, day));
+                } else {
+                    setExpenses(undefined);
+                    setTotalSpent(0);
+                }
                 setExpectedDailyAvg(budgetModel.expectedDailyExpensesAverage);
-                setTotalSpent(budgetModel.getTotalExpensesByDay(year, month, day));
             }
         }
     }, [year, month, day, budgetModel]);
 
-    if (expenses && expectedDailyAvg && budgetModel) {
-        // TODO show link to parent budget
-        return (
-            <React.Fragment>
-                <Box padding={1} marginBottom={3} >
-                    <VersusInfo title='Daily expenses' spent={totalSpent} total={expectedDailyAvg}/>
-                </Box>
-                <ExpenseList 
-                    budget={budgetModel.info}
-                    expensesByDay={expenses} 
-                    expectedDailyAvg={expectedDailyAvg}  />
-                <AddButton to={pathAddExpense}/>
-            </React.Fragment>
-        );
-    }
-    return <p>Loading...</p>;
+    return (
+        <React.Fragment>
+            <Box padding={1} marginBottom={2} >
+                <VersusInfo title='Daily expenses' spent={totalSpent} total={expectedDailyAvg}/>
+                <Grid container justify='space-between' direction='row' style={{marginTop: '1.5em'}}>
+                    <AppButton to={url.pathExpensesByDay(prevDate)} icon={NavigateBefore} replace/>
+                    <AppButton to={url.path} icon={DateRange} replace/>
+                    <AppButton to={url.pathExpensesByDay(nextDate)} icon={NavigateNext} replace/>
+                </Grid>
+            </Box>
+            { expenses===undefined && <Typography>No expenses</Typography> }
+            { budgetModel && expenses && <ExpenseList 
+                budget={budgetModel.info}
+                expensesByDay={expenses} 
+                expectedDailyAvg={expectedDailyAvg} /> }
+            <AddButton to={pathAddExpense}/>
+        </React.Fragment>);
 }
 
 export default ExpensesView;

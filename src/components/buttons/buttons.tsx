@@ -17,6 +17,7 @@ export interface AppButtonProps {
     disabled?: boolean;
     type?: 'button' | 'submit' | 'reset';
     variant?: 'text' | 'outlined' | 'contained';
+    replace?: boolean;
     onClick?: (e: React.SyntheticEvent) => void;
 }
 
@@ -30,17 +31,12 @@ function derivedProps (props: AppButtonProps) {
     return derivedProps;
 }
 
-export const AppButton: React.FC<AppButtonProps> = (props) => {
-    
-    
-
-    return (
-        <Button color='inherit' {...props} {...derivedProps(props)}>
-            { props.icon && <props.icon />}
-            { props.text }
-        </Button>
-    );
-}
+export const AppButton: React.FC<AppButtonProps> = (props) => (
+    <Button color='inherit' {...props} {...derivedProps(props)}>
+        { props.icon && <props.icon />}
+        { props.text }
+    </Button>
+);
 
 export interface ButtonFabProps {
     disabled?: boolean;

@@ -4,6 +4,7 @@ import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
 import { DateDay } from "./DateDay";
 import applyRate from "./utils/applyRate";
+import { desc } from "./utils/sorting";
 
 export class BudgetModel {
 
@@ -121,11 +122,6 @@ export class BudgetModel {
         return this.nestedTotalExpenses.getSubtotal([year,]);
     }
 
-    getDays(year: number, month: number): number[]{
-        return Object.keys(this.expenseGroups[year][month])
-            .map(d => parseInt(d));
-    }
-
     private _updateTotalExpenses(newExpense: ExpenseModel, oldExpense?: ExpenseModel) {
         if (oldExpense === undefined || 
             oldExpense.amountBaseCurrency !== newExpense.amountBaseCurrency || 
@@ -139,9 +135,20 @@ export class BudgetModel {
         }
     }
 
+    // TODO remove this sorting methods and implement a sorted insertion in expenseGroups
+    getMonths(year: number): number[] {
+        return Object.keys(this.expenseGroups[year])
+            .map(month => parseInt(month)).sort(desc);
+    }
+
+    getDays(year: number, month: number): number[] {
+        return Object.keys(this.expenseGroups[year][month])
+            .map(d => parseInt(d)).sort(desc);
+    }
+
     get years(): number[]{
         return Object.keys(this.expenseGroups)
-            .map(d => parseInt(d));
+            .map(d => parseInt(d)).sort(desc);
     }
 
     setExpense(expense: Expense) {
@@ -212,19 +219,17 @@ export class BudgetModel {
         if (this._expenseGroups === undefined) {
             this._expenseGroups = {};
         }
-        if (this._expenseGroups !== undefined) {
-            const {year, month, day} = expense;
-            if (!(year in this._expenseGroups)) {
-                this._expenseGroups[year] = {};
-            }
-            if (!(month in this._expenseGroups[year])) {
-                this._expenseGroups[year][month] = {};
-            }
-            if (!(day in this._expenseGroups[year][month])) {
-                this._expenseGroups[year][month][day] = {};
-            }
-            this._expenseGroups[year][month][day][expense.identifier] = expense;
+        const {year, month, day} = expense;
+        if (!(year in this._expenseGroups)) {
+            this._expenseGroups[year] = {};
         }
+        if (!(month in this._expenseGroups[year])) {
+            this._expenseGroups[year][month] = {};
+        }
+        if (!(day in this._expenseGroups[year][month])) {
+            this._expenseGroups[year][month][day] = {};
+        }
+        this._expenseGroups[year][month][day][expense.identifier] = expense;
     }
 
     private _removeFromGroup (expense: ExpenseModel) {

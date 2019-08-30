@@ -18,29 +18,28 @@ interface CalendarMonthProps {
 }
 
 export const CalendarMonth: React.FC<CalendarMonthProps> = (props) => {
-    const {year, month, budgetModel, days} = props;
+    const { year, month, budgetModel, days } = props;
 
     return (
-    <Card key={`expenses-month-${year}-${month}`} style={{marginBottom: '1rem'}}>
-            <CardHeader 
-                title={<SubHeader 
-                    leftText={monthToString(new Date(2000, props.month, 1))}
-                    rightText={round(budgetModel.getTotalExpensesByMonth(year, month), 0)} 
-                    variant='h6'/>} />                
+        <Card key={`expenses-month-${year}-${month}`} style={{ marginBottom: '1rem' }}>
+            <CardHeader
+                title={<SubHeader
+                    leftText={monthToString(props.month)}
+                    rightText={round(budgetModel.getTotalExpensesByMonth(year, month), 0)}
+                    variant='h6' />} />
             <CardContent>
                 {
                     Object.values(days)
-                    .map((day) => (
-                        <CalendarDay 
-                            onDaySelected={props.onDaySelected}
-                            expected={budgetModel.expectedDailyExpensesAverage}
-                            total={ budgetModel.getTotalExpensesByDay(year, month, day) }
-                            budgetId={budgetModel.identifier}
-                            date={{year, month, day}}
-                            key={`calendar-day-${year}-${month}-${day}`} />
-                    ))
+                        .map((day) => (
+                            <CalendarDay
+                                onDaySelected={props.onDaySelected}
+                                expected={budgetModel.expectedDailyExpensesAverage}
+                                total={budgetModel.getTotalExpensesByDay(year, month, day)}
+                                budgetId={budgetModel.identifier}
+                                date={{ year, month, day }}
+                                key={`calendar-day-${year}-${month}-${day}`} />
+                        ))
                 }
             </CardContent>
-        </Card >
-    );
+        </Card >);
 }
