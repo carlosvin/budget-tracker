@@ -1,5 +1,6 @@
 import React from 'react';
-import { Snackbar, IconButton } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
 
 export const SnackbarError: React.FC<{error: string}> = (props) => {
