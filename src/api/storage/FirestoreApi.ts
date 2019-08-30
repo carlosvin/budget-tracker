@@ -12,7 +12,11 @@ export class FirestoreApi implements SubStorageApi {
         if (userId) {
             this.userId = userId;
             this.db = firebase.firestore();
-            this.db.enablePersistence();    
+            try {
+                this.db.enablePersistence();    
+            } catch (error) {
+                console.warn(error);
+            }
         } else {
             throw Error('User must be logged in to be able to use firestore');
         }

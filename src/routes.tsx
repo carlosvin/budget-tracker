@@ -13,7 +13,7 @@ const routes = {
     AddCategory: React.lazy(() => import('./views/categories/AddCategory')),
     Import: React.lazy(() => import('./views/Import')),
     About: React.lazy(() => import('./views/About')),
-    Login: React.lazy(() => import('./views/Login'))
+    Sync: React.lazy(() => import('./views/Sync'))
 };
 
 export interface HeaderNotifierProps {
@@ -46,6 +46,6 @@ export const Routes: React.FC<HeaderNotifierProps> = (props) => (
         <Route exact path='/' render={_render(routes.BudgetList, props)} />
         <Route exact path='/import' render={_render(routes.Import, props)} />
         <Route exact path='/about' render={_render(routes.About, props)} />
-        <Route exact path='/login' render={_render(routes.Login, props)} />
+        <Route exact path='/sync' render={_render(routes.Sync, props)} />
     </Switch>
 );

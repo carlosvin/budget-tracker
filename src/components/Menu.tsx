@@ -39,9 +39,9 @@ export const AppMenu: React.FC<{ href: string, name: string }[]> = (props) => {
 
                 <MenuItem
                     onClick={handleClose}
-                    key={`menu-item-login`}
+                    key={`menu-item-sync`}
                     component={Link}
-                    to='/login'>
+                    to='/sync'>
                     Account sync
                 </MenuItem>
             </Menu>
