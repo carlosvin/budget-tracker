@@ -30,6 +30,21 @@ function createExpense (id: string, budget: Budget) {
     };
 }
 
+function addExpenseToGroups (groups: ExpensesYearMap, expense: ExpenseModel) {
+    const {year, month, day} = expense;
+    if (!(year in groups)) {
+        groups[year] = {};
+    }
+    if (!(month in groups[year])) {
+        groups[year][month] = {};
+    }
+    if (!(day in groups[year][month])) {
+        groups[year][month][day] = {};
+    }
+    groups[year][month][day][expense.identifier] = expense;
+
+}
+
 describe('Budget Model Creation', () => {
 
     it('Budget model creation without expenses', async () => {
@@ -105,21 +120,6 @@ describe('Budget Model Creation', () => {
         expect(bm.expenseGroups).toStrictEqual(expectedGroups);
     });
 });
-
-function addExpenseToGroups (groups: ExpensesYearMap, expense: ExpenseModel) {
-    const {year, month, day} = expense;
-    if (!(year in groups)) {
-        groups[year] = {};
-    }
-    if (!(month in groups[year])) {
-        groups[year][month] = {};
-    }
-    if (!(day in groups[year][month])) {
-        groups[year][month][day] = {};
-    }
-    groups[year][month][day][expense.identifier] = expense;
-
-}
 
 describe('Expense operations', () => {
     it('Remove expense', () => {
@@ -239,6 +239,23 @@ describe('Expense operations', () => {
         } catch (error) {
             expect(error).toBeTruthy();
         }
+    });
+
+    it('Set Expense out of budget dates is possible, but expense will be ignored in calculations', () => {
+        const info = createBudget('USD', 180, 56000);
+        const expense1 = {
+            ...createExpense('1', info), 
+            when: DateDay.fromTimeMs(info.from).addDays(-1).timeMs};
+        const expense2 = {
+            ...createExpense('2', info), 
+            when: DateDay.fromTimeMs(info.to).addDays(1).timeMs};
+
+        const bm = new BudgetModel(info, {'1': expense1 });
+        bm.setExpense(expense2);
+
+        expect(bm.totalExpenses).toBe(0);
+        expect(bm.average).toBe(0);        
+
     });
     
 });

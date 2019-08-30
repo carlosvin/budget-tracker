@@ -3,15 +3,19 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import { BudgetsIndexStore } from './stores/BudgetsIndexStore';
-import { StorageApi } from './api/storage/StorageApi';
+import { SubStorageApi, AppStorageApi } from './api/storage/StorageApi';
 import { 
     CategoriesStore, BudgetsStore, 
     IconsStore, CurrenciesStore, 
     CountriesStore } from './stores/interfaces';
+import { AuthApi } from './api/AuthApi';
 
 class BudgetTracker {
 
-    private _storage?: StorageApi;
+    private _storage?: AppStorageApi;
+    private _firestore?: SubStorageApi;
+    private _localStorage?: SubStorageApi;
+    private _auth?: AuthApi;
     private _budgetsStore?: BudgetsStore;
     private _categoriesStore?: CategoriesStore;
     private _iconsStore?: IconsStore;
@@ -22,12 +26,45 @@ class BudgetTracker {
     async getStorage () {
         if (!this._storage) {
             const storage  = await import('./api/storage/AppStorageManager');
-            this._storage = storage.default;
+            this._storage = new storage.AppStorageManager(await this.getLocalStorage());
+            this._storage.initRemote(this.getFirestore());
         }
         if (this._storage) {
             return this._storage;
         }
         throw Error('Error Loading Storage');
+    }
+
+    async cleanupStores() {
+        await (await this.getStorage()).initRemote(this.getFirestore());
+        this._budgetsIndex = this._budgetsStore = this._categoriesStore = undefined;
+    }
+
+    private async getFirestore () {
+        if (!this._firestore) {
+            const userId = await (await this.getAuth()).getUserId();
+            if (userId) {
+                const storage  = await import('./api/storage/FirestoreApi');
+                this._firestore = new storage.FirestoreApi(userId);
+            }
+        }
+        return this._firestore;
+    }
+
+    private async getLocalStorage () {
+        if (!this._localStorage) {
+            const storage  = await import('./api/storage/LocalStorage');
+            this._localStorage = new storage.LocalStorage();
+        }
+        return this._localStorage;
+    }
+
+    async getAuth () {
+        if (!this._auth) {
+            const auth  = await import('./api/AuthApiImpl');
+            this._auth = new auth.AuthApiImpl();
+        }
+        return this._auth;
     }
 
     async getBudgetsStore () {
