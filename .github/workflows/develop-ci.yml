@@ -33,6 +33,6 @@ jobs:
         run: yarn analyze
       - uses: actions/upload-artifact@master
         with:
-          name: build-reports
+          name: bundle-size.html
           path: ./reports/bundle-size.html
 
