@@ -25,10 +25,13 @@ jobs:
         run: yarn build
       - name: Test
         run: yarn coverage
+        with:
+          name: coverage
+          path: ./reports/coverage
       - name: Analyze bundle size
         run: yarn analyze
       - uses: actions/upload-artifact@master
         with:
           name: build-reports
-          path: ./reports
+          path: ./reports/bundle-size.html
 
