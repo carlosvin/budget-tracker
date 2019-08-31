@@ -2,8 +2,9 @@ name: CI Development flow
 
 on:
   push:
-    branches:
+    branches:    
       - develop
+      - 'hotfix/*'
 jobs:
   build:
     name: Build and test
