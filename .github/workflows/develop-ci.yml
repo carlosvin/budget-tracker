@@ -25,5 +25,14 @@ jobs:
         run: yarn build
       - name: Test
         run: yarn coverage
+      - uses: actions/upload-artifact@master
+        with:
+          name: coverage
+          path: ./reports/coverage
       - name: Analyze bundle size
         run: yarn analyze
+      - uses: actions/upload-artifact@master
+        with:
+          name: bundle-size.html
+          path: ./reports/bundle-size.html
+
