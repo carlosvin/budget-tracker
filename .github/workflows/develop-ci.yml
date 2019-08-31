@@ -25,6 +25,7 @@ jobs:
         run: yarn build
       - name: Test
         run: yarn coverage
+      - uses: actions/upload-artifact@master
         with:
           name: coverage
           path: ./reports/coverage
