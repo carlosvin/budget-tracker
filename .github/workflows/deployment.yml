@@ -20,7 +20,7 @@ jobs:
     - name: Install project dependencies
       run: yarn install
     - name: Deploy to gh-pages
-      run: yarn deploy --user "${GITHUB_ACTOR} <${GITHUB_ACTOR}@users.noreply.github.com>" --repo https://${GITHUB_ACTOR}:${GH_TOKEN}/github.com/${GITHUB_REPOSITORY}
+      run: yarn deploy --user "${GITHUB_ACTOR} <${GITHUB_ACTOR}@users.noreply.github.com>" --repo "https://${GITHUB_ACTOR}:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         REACT_APP_CURRENCY_API_KEY: ${{ secrets.CURRENCY_PUBLIC_API_KEY }}
