@@ -3,8 +3,15 @@ import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 import CloseIcon from '@material-ui/icons/Close';
 
-export const SnackbarError: React.FC<{error: string}> = (props) => {
+interface SnackbarAppProps {
+    message: string;
+    type?: string;
+}
+
+export const SnackbarApp: React.FC<SnackbarAppProps> = (props) => {
     const [close, setClose] = React.useState();
+    const type = props.type || 'default';
+    const messageId = `${type}-message-id`;
 
     function handleClose () {
         setClose(true);
@@ -16,8 +23,8 @@ export const SnackbarError: React.FC<{error: string}> = (props) => {
         open={!close}
         autoHideDuration={6000}
         onClose={handleClose}
-        ContentProps={{ 'aria-describedby': 'error-message-id', }}
-        message={<span id="error-message-id">{props.error}</span>}
+        ContentProps={{ 'aria-describedby': messageId }}
+        message={<span id={messageId}>{props.message}</span>}
         action={[
             <IconButton
                 key="close"
@@ -30,3 +37,11 @@ export const SnackbarError: React.FC<{error: string}> = (props) => {
         ]}
     />);
 }
+
+export const SnackbarError: React.FC<SnackbarAppProps> = (props) => (
+    <SnackbarApp type='error' {...props}/>
+); 
+
+export const SnackbarInfo: React.FC<SnackbarAppProps> = (props) => (
+    <SnackbarApp type='info' {...props}/>
+); 

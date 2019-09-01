@@ -2,10 +2,9 @@ import * as React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { FilesApi } from '../api/FileApi';
 import {  ExportDataSet } from '../interfaces';
-import { TextInput } from './TextInput';
 import { btApp } from '../BudgetTracker';
 import { SaveButton } from './buttons/SaveButton';
-import { SnackbarError } from './SnackbarError';
+import { SnackbarError } from './snackbars';
 
 interface ImportFormProps {
     onImportedData: (data: Partial<ExportDataSet>) => void;
@@ -36,6 +35,7 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
                 await (await btApp.getCategoriesStore()).setCategories(categories);
                 await (await btApp.getBudgetsStore()).import(budgets, expenses);    
                 props.onImportedData(data);
+                setFile(undefined);
             } catch (error) {
                 console.error(error);
                 setError('Invalid input format. Expected a JSON file with following format {budgets, categories, expenses}');
@@ -47,7 +47,7 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
 
     return (
         <form onSubmit={handleSubmit}>
-            { error && <SnackbarError error={error}/>}
+            { error && <SnackbarError message={error}/>}
             { isProcessing && <CircularProgress /> }
             <input 
                 disabled={isProcessing} 

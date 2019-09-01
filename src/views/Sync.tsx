@@ -3,7 +3,7 @@ import { btApp } from '../BudgetTracker';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-import { SnackbarError } from '../components/SnackbarError';
+import { SnackbarError } from '../components/snackbars';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Link from '@material-ui/core/Link';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -86,7 +86,7 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
     }
 
     return <Card>
-        {error && <SnackbarError error={error}/>}
+        {error && <SnackbarError message={error}/>}
         <CardHeader
             action={ avatar() } 
             title={ title() }/>

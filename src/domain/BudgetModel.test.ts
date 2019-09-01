@@ -741,12 +741,14 @@ describe('Budget model statistics', () => {
                 name: expense1.categoryId, 
                 icon: expense1.categoryId};
             const categories = {[category.id]: category};
-            const json = model.getJson({[category.id]: category});
+            const exportedData = model.export({[category.id]: category});
+            // ignore this timestamp
+            delete exportedData['lastTimeSaved'];
 
-            expect(JSON.parse(json)).toStrictEqual(
+            expect(exportedData).toStrictEqual(
                 {
-                    info: budgetInfo,
-                    expenses,
+                    budgets: {[budgetInfo.identifier]: budgetInfo},
+                    expenses: {[budgetInfo.identifier]: expenses},
                     categories 
                 }
             );

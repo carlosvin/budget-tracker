@@ -1,4 +1,4 @@
-import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMap } from "../interfaces";
+import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMap, ExportDataSet } from "../interfaces";
 import { dateDiff } from "./date";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
@@ -312,18 +312,17 @@ export class BudgetModel {
         return Promise.resolve();
     }
 
-    getJson(categories: Categories) {
-        const expenses: ExpensesMap = {};
+    export(categories: Categories): ExportDataSet {
+        const expenses: {[budgetId: string]: ExpensesMap} = {[this.identifier]: {}};
         Object
             .keys(this.expenses)
-            .forEach(k => (expenses[k] = this.expenses[k].info));
-        return JSON.stringify(
-            {
-                info: this.info,
-                expenses,
-                categories
-            }, null, 2
-        );
+            .forEach(k => (expenses[this.identifier][k] = this.expenses[k].info));
+        return {
+            budgets: {[this.identifier]: this.info},
+            expenses,
+            categories,
+            lastTimeSaved: new Date().getTime()
+        };
     }
 
     get totalDaysByCountry () {
