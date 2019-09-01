@@ -34,6 +34,7 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
             }
             initUserId();
             props.onTitleChange('Account sync');
+            props.onActions([]);
         // eslint-disable-next-line
         }, []);
 
