@@ -1,4 +1,4 @@
-import { Budget, Expense } from "../interfaces";
+import { Budget, Expense, BudgetsMap, ExpensesMap } from "../interfaces";
 import { BudgetModel } from "../domain/BudgetModel";
 import { BudgetsIndexStore } from "./BudgetsIndexStore";
 import { BudgetsStore, CurrenciesStore } from "./interfaces";
@@ -80,4 +80,16 @@ export default class BudgetsStoreImpl implements BudgetsStore {
         model.deleteExpense(expenseId);
         return this._budgetsIndex.deleteExpense(budgetId, expenseId);
     }
+
+    async import(budgets: BudgetsMap, expenses: {[budgetId: string]: ExpensesMap }) {
+        const budgetIds = await Promise.all(Object.values(budgets).map(async (budget) => {
+            await this.setBudget(budget);
+            return budget.identifier;
+        }));
+
+        await Promise.all(budgetIds
+            .filter(budgetId => budgetId in expenses)
+            .map(budgetId => this.saveExpenses(budgetId, Object.values(expenses[budgetId]))));
+    }
+
 }

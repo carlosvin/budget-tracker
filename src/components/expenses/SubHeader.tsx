@@ -5,7 +5,7 @@ import Grid from "@material-ui/core/Grid";
 interface SubHeaderProps {
     rightText: string|number;
     leftText: string|number;
-    variant: 'h3'|'h4'|'h5'|'h6';
+    variant: 'h3'|'h4'|'h5'|'h6'|'body1';
 }
 
 export const SubHeader: React.FC<SubHeaderProps> = (props) => (
