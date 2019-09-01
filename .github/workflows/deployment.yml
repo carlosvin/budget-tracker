@@ -24,10 +24,10 @@ jobs:
       env:
         REACT_APP_CURRENCY_API_KEY: ${{ secrets.CURRENCY_PUBLIC_API_KEY }}
     - name: Deploy to gh-pages
-        if: success()
-        uses: crazy-max/ghaction-github-pages@master
-        with:
-          target_branch: gh-pages
-          build_dir: build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: success()
+      uses: crazy-max/ghaction-github-pages@master
+      with:
+        target_branch: gh-pages
+        build_dir: build
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
