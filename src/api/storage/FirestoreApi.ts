@@ -164,7 +164,7 @@ export class FirestoreApi implements SubStorageApi {
     }
 
     async import(data: ExportDataSet) {
-        const {budgets, expenses, categories} = data;
+        const {budgets, expenses, categories, lastTimeSaved} = data;
         const batch = this.db.batch();
         Object
             .values(categories)
@@ -179,6 +179,7 @@ export class FirestoreApi implements SubStorageApi {
                     expenses[budgetId][expenseId]);
             }
         }
+        batch.set(this.userDoc, {timestamp: lastTimeSaved});
         return batch.commit();
     }
 
@@ -193,7 +194,6 @@ export class FirestoreApi implements SubStorageApi {
             .map(budgetId => this.getExpensesWithBudgetId(budgetId)));
         const expenses: {[budgetId: string]: ExpensesMap} = {};
         expensesEntries.forEach(([budgetId, eMap]) => expenses[budgetId] = eMap);
-
         return {budgets, expenses, categories, lastTimeSaved};
     }
 }
