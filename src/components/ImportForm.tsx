@@ -24,7 +24,9 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
         setFile((event.target.files && event.target.files[0]) || undefined);
     }
 
-    async function handleSubmit () {
+    async function handleSubmit (e: React.FormEvent) {
+        e.stopPropagation(); 
+        e.preventDefault();
         if (selectedFile) {
             setProcessing(true);
             try {
@@ -35,7 +37,8 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
                 await (await btApp.getBudgetsStore()).import(budgets, expenses);    
                 props.onImportedData(data);
             } catch (error) {
-                setError(error);
+                console.error(error);
+                setError('Invalid input format. Expected a JSON file with following format {budgets, categories, expenses}');
             }
             setProcessing(false);
         }
@@ -46,11 +49,12 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
         <form onSubmit={handleSubmit}>
             { error && <SnackbarError error={error}/>}
             { isProcessing && <CircularProgress /> }
-            <TextInput 
+            <input 
                 disabled={isProcessing} 
                 type='file' 
                 onChange={handleFileChange}
                 required
+                accept="application/json"
                 />
             <SaveButton 
                 disabled={!selectedFile || isProcessing} 

@@ -3,7 +3,7 @@ import { HeaderNotifierProps } from '../routes';
 import { RouterProps } from 'react-router';
 import { ImportForm } from '../components/ImportForm';
 import { ExportDataSet } from '../interfaces';
-import { Card, CardActionArea, CardContent, CardHeader } from '@material-ui/core';
+import { Card, CardContent, CardHeader, CardActions } from '@material-ui/core';
 import { SubHeader } from '../components/expenses/SubHeader';
 
 const Import = (props: HeaderNotifierProps&RouterProps) => {
@@ -11,7 +11,7 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
     const [data, setData] = React.useState<Partial<ExportDataSet>>();
 
     React.useLayoutEffect(() => {
-        props.onTitleChange('Import budgets');
+        props.onTitleChange('Import/Export budgets');
         props.onActions([]);
         return function () {
             props.onTitleChange('');
@@ -23,15 +23,15 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
     
     return (
         <Card>
-            <CardHeader title='Import budgets'></CardHeader>
+            <CardHeader title='Import JSON'></CardHeader>
             { data &&  <CardContent>
                 <ImportedElementInfo name='Budgets' elements={data.budgets}/>
                 <ImportedElementInfo name='Expenses' elements={data.expenses}/>
                 <ImportedElementInfo name='Categories' elements={data.categories}/>
             </CardContent> }
-            <CardActionArea>
-                <ImportForm onImportedData={setData}/>);
-            </CardActionArea>
+            <CardActions>
+                <ImportForm onImportedData={setData}/>
+            </CardActions>
         </Card>);
 
 }
