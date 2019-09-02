@@ -23,7 +23,7 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
         props.onActions(
             <React.Fragment>
                 <AddButton to={BudgetPath.add}/>
-                <ImportExportButton to={AppPaths.About}/>
+                <ImportExportButton to={AppPaths.ImportExport}/>
             </React.Fragment>
         );
         async function fetchBudgets() {
