@@ -47,7 +47,12 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
     }
 
     async function login(){
-        const uid = await (await btApp.getAuth()).startAuth();
+        let uid = undefined;
+        try {
+            uid = await (await btApp.getAuth()).startAuth();
+        } catch (error) {
+            console.error(error);
+        }
         if (uid) {
             await btApp.cleanupStores();
         }
