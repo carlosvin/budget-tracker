@@ -11,7 +11,7 @@ import { AppPaths } from "../domain/paths";
 const MenuItems = [
     {name: 'Budgets', href: BudgetPath.base },
     {name: 'Categories', href: CategoryPaths.List},
-    {name: 'Import', href: AppPaths.ImportExport},
+    {name: 'Import & Export', href: AppPaths.ImportExport},
     {name: 'Account sync', href: AppPaths.Sync},
 ];
 

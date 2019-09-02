@@ -5,7 +5,7 @@ import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { useCategories } from "../../hooks/useCategories";
 import { ExportCard } from "../../components/ExportCard";
 import { ExportDataSet } from "../../interfaces";
-import { CircularProgress } from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 interface ExportBudgetProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
