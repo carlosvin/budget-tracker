@@ -6,10 +6,11 @@ import { CategoryForm } from '../../components/categories/CategoryForm';
 import { btApp } from '../../BudgetTracker';
 import { CloseButton } from '../../components/buttons/CloseButton';
 import { goBack } from '../../domain/utils/goBack';
+import { CategoryPaths } from '../../domain/paths/CategoryPaths';
 
 export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
 
-    const handleClose = () => (goBack(props.history, '/categories'));
+    const handleClose = () => (goBack(props.history, CategoryPaths.List));
     
     React.useEffect(() => {
         

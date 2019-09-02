@@ -12,7 +12,7 @@ import CategoriesSelect from "../../components/categories/CategoriesSelect";
 import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { SaveButtonFab } from "../../components/buttons/SaveButton";
 import { goBack } from "../../domain/utils/goBack";
-import { BudgetUrl } from "../../domain/BudgetUrl";
+import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { DateDay } from "../../domain/DateDay";
 import { round } from "../../domain/utils/round";
 import { uuid } from "../../domain/utils/uuid";
@@ -44,7 +44,7 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const {budgetId, expenseId} = props.match.params;
     const {onActions, onTitleChange, history} = props;
     const {replace} = history;
-    const budgetUrl = new BudgetUrl(budgetId);
+    const budgetUrl = new BudgetPath(budgetId);
     const isAddView = expenseId === undefined;
 
     const budgetModel = useBudgetModel(budgetId);

@@ -12,7 +12,7 @@ import { YMD } from "../../interfaces";
 import EditIcon from '@material-ui/icons/Edit';
 import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { AddButton } from "../../components/buttons/AddButton";
-import { BudgetUrl } from "../../domain/BudgetUrl";
+import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { ImportExportButton } from "../../components/buttons/ImportExportButton";
 
@@ -23,7 +23,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
     const {budgetId} = props.match.params;
     const {onActions, onTitleChange} = props;
 
-    const url = new BudgetUrl(budgetId); 
+    const url = new BudgetPath(budgetId); 
 
     const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
 
@@ -64,7 +64,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
             if (deletionConfirmed) {
                 const store = await btApp.getBudgetsStore()
                 await store.deleteBudget(budgetModel.identifier);
-                props.history.replace(BudgetUrl.base);
+                props.history.replace(BudgetPath.base);
             }
         } else {
             throw new Error('Budget is undefined');

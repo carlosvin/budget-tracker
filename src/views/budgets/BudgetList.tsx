@@ -9,7 +9,8 @@ import CardContent from "@material-ui/core/CardContent";
 import { btApp } from "../../BudgetTracker";
 import { AddButton } from "../../components/buttons/AddButton";
 import { ImportExportButton } from "../../components/buttons/ImportExportButton";
-import { BudgetUrl } from "../../domain/BudgetUrl";
+import { BudgetPath } from "../../domain/paths/BudgetPath";
+import { AppPaths } from "../../domain/paths";
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
 
@@ -21,8 +22,8 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
         props.onTitleChange('Budget list');
         props.onActions(
             <React.Fragment>
-                <AddButton to={BudgetUrl.add}/>
-                <ImportExportButton to='/import'/>
+                <AddButton to={BudgetPath.add}/>
+                <ImportExportButton to={AppPaths.About}/>
             </React.Fragment>
         );
         async function fetchBudgets() {

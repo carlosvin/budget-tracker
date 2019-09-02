@@ -6,7 +6,7 @@ import { HeaderNotifierProps } from "../../routes";
 import { VersusInfo } from "../../components/VersusInfo";
 import Box from "@material-ui/core/Box";
 import { AddButton } from "../../components/buttons/AddButton";
-import { BudgetUrl } from "../../domain/BudgetUrl";
+import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { DateDay } from "../../domain/DateDay";
 import Grid from "@material-ui/core/Grid";
@@ -29,7 +29,7 @@ function getParamInt(name: string, params: URLSearchParams) {
 export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
 
     const {budgetId} = props.match.params;
-    const url = new BudgetUrl(budgetId);
+    const url = new BudgetPath(budgetId);
     const {pathAddExpense} = url;
     
     const params = new URLSearchParams(props.location.search);

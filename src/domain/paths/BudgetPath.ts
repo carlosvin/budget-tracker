@@ -1,11 +1,11 @@
-import { YMD } from "../interfaces";
+import { YMD } from "../../interfaces";
 
-export class BudgetUrl {
+export class BudgetPath {
 
     readonly path: string;
 
     constructor(budgetId: string) {
-        this.path = `${BudgetUrl.base}/${budgetId}`;
+        this.path = `${BudgetPath.base}/${budgetId}`;
     }
 
     get pathEdit () {
@@ -36,8 +36,8 @@ export class BudgetUrl {
         return `${this.base}/add`;
     }
 
-    static get import () {
-        return `${this.base}/import`;
+    get exportPath () {
+        return `${this.path}/export`;
     }
 
     pathExpensesByDay(date: YMD){

@@ -1,5 +1,9 @@
 import * as React from "react";
 import { Route, Switch, RouteComponentProps } from "react-router";
+import { BudgetPath } from "./domain/paths/BudgetPath";
+import { ExpensePath } from "./domain/paths/ExpensePath";
+import { CategoryPaths } from "./domain/paths/CategoryPaths";
+import { AppPaths } from "./domain/paths";
 
 const routes = {
     BudgetView: React.lazy(() => import('./views/budgets/Budget')),
@@ -11,7 +15,7 @@ const routes = {
     ExpensesView: React.lazy(() => import('./views/expenses/Expenses')),
     CategoryList: React.lazy(() => import('./views/categories/CategoryList')),
     AddCategory: React.lazy(() => import('./views/categories/AddCategory')),
-    Import: React.lazy(() => import('./views/Import')),
+    ImportExport: React.lazy(() => import('./views/ImportExport')),
     About: React.lazy(() => import('./views/About')),
     Sync: React.lazy(() => import('./views/Sync'))
 };
@@ -28,24 +32,25 @@ function _render(ComponentType: React.ComponentType<any>, parentProps: HeaderNot
         </React.Suspense>;
 }
 
+const budgetUrl = new BudgetPath(':budgetId');
+const expenseUrl = new ExpensePath(':expenseId', budgetUrl);
+
 export const Routes: React.FC<HeaderNotifierProps> = (props) => (
     <Switch>
-        <Route exact path="/budgets" render={_render(routes.BudgetList, props)} />
-        <Route exact path='/budgets/add' render={_render(routes.BudgetEdit, props)} />
-        <Route exact path='/budgets/:budgetId/edit' render={_render(routes.BudgetEdit, props)} />
-        <Route exact path='/budgets/:budgetId/stats' render={_render(routes.BudgetStats, props)} />
-        <Route exact path='/budgets/:budgetId/export' render={_render(routes.BudgetExport, props)} />
-        <Route exact path='/budgets/:budgetId' render={_render(routes.BudgetView, props)} />
-        <Route exact path='/budgets/:budgetId/expenses/add' render={_render(routes.ExpenseView, props)} />
-        <Route exact path='/budgets/:budgetId/expenses/:expenseId' render={_render(routes.ExpenseView, props)} />
-        <Route exact 
-            path='/budgets/:budgetId/expenses' 
-            render={_render(routes.ExpensesView, props)} />
-        <Route exact path='/categories' render={_render(routes.CategoryList, props)} />
-        <Route exact path='/categories/add' render={_render(routes.AddCategory, props)} />
+        <Route exact path={BudgetPath.base} render={_render(routes.BudgetList, props)} />
+        <Route exact path={BudgetPath.add} render={_render(routes.BudgetEdit, props)} />
+        <Route exact path={budgetUrl.pathEdit} render={_render(routes.BudgetEdit, props)} />
+        <Route exact path={budgetUrl.pathStats} render={_render(routes.BudgetStats, props)} />
+        <Route exact path={budgetUrl.pathExport} render={_render(routes.BudgetExport, props)} />
+        <Route exact path={budgetUrl.path} render={_render(routes.BudgetView, props)} />
+        <Route exact path={budgetUrl.pathAddExpense} render={_render(routes.ExpenseView, props)} />
+        <Route exact path={expenseUrl.path} render={_render(routes.ExpenseView, props)} />
+        <Route exact path={budgetUrl.pathExpenses} render={_render(routes.ExpensesView, props)} />
+        <Route exact path={CategoryPaths.List} render={_render(routes.CategoryList, props)} />
+        <Route exact path={CategoryPaths.Add} render={_render(routes.AddCategory, props)} />
         <Route exact path='/' render={_render(routes.BudgetList, props)} />
-        <Route exact path='/import' render={_render(routes.Import, props)} />
-        <Route exact path='/about' render={_render(routes.About, props)} />
-        <Route exact path='/sync' render={_render(routes.Sync, props)} />
+        <Route exact path={AppPaths.ImportExport} render={_render(routes.ImportExport, props)} />
+        <Route exact path={AppPaths.About} render={_render(routes.About, props)} />
+        <Route exact path={AppPaths.Sync} render={_render(routes.Sync, props)} />
     </Switch>
 );

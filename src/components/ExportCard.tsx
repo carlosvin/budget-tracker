@@ -2,7 +2,7 @@ import * as React from "react";
 import { AppButton } from "./buttons/buttons";
 import FileCopy from '@material-ui/icons/FileCopy';
 import { ExportDataSet } from "../interfaces";
-import { Card, Link, CardContent, CardActions, IconButton, Typography } from "@material-ui/core";
+import { Card, Link, CardContent, CardActions, IconButton, Typography, CardHeader } from "@material-ui/core";
 import DownloadIcon from '@material-ui/icons/SaveAlt';
 import { SnackbarInfo } from "./snackbars";
 
@@ -40,6 +40,7 @@ export const ExportCard: React.FC<ExportCardProps> = (props) => {
     }
 
     return <Card>
+        <CardHeader title='Export to JSON'></CardHeader>
         {info && <SnackbarInfo message={info} />}
         <CardContent>
             <Typography 

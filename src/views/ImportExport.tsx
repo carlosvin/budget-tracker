@@ -8,20 +8,18 @@ import { SubHeader } from '../components/expenses/SubHeader';
 import { ExportCard } from '../components/ExportCard';
 import { btApp } from '../BudgetTracker';
 
-const Import = (props: HeaderNotifierProps&RouterProps) => {
+const ImportExport = (props: HeaderNotifierProps&RouterProps) => {
 
     const [data, setData] = React.useState<Partial<ExportDataSet>>();
 
     React.useLayoutEffect(() => {
-        props.onTitleChange('Import/Export budgets');
+        props.onTitleChange('Import & Export');
         props.onActions([]);
         return function () {
             props.onTitleChange('');
         }
     // eslint-disable-next-line
     }, []);
-
-    // React.useEffect(()=>{}, [data]);
     
     return (
         <React.Fragment>
@@ -53,4 +51,4 @@ const ImportedElementInfo: React.FC<{elements?:{[k: string]: any}, name: string}
     return null;
 }
 
-export default Import;
+export default ImportExport;

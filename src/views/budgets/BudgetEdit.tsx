@@ -6,7 +6,7 @@ import { BudgetForm } from "../../components/budgets/BudgetForm";
 import { btApp } from "../../BudgetTracker";
 import { CloseButton } from "../../components/buttons/CloseButton";
 import { goBack } from "../../domain/utils/goBack";
-import { BudgetUrl } from "../../domain/BudgetUrl";
+import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { DateDay } from "../../domain/DateDay";
 import { uuid } from "../../domain/utils/uuid";
 
@@ -63,7 +63,7 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
         setSaving(true);
         await (await btApp.getBudgetsStore()).setBudget(budget);
         setSaving(false);
-        props.history.replace(new BudgetUrl(budget.identifier).path);
+        props.history.replace(new BudgetPath(budget.identifier).path);
     }
 
     if (budgetInfo) {
