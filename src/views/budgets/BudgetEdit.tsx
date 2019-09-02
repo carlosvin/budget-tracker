@@ -4,11 +4,10 @@ import { Budget } from "../../interfaces";
 import { HeaderNotifierProps } from "../../routes";
 import { BudgetForm } from "../../components/budgets/BudgetForm";
 import { btApp } from "../../BudgetTracker";
-import { CloseButton } from "../../components/buttons/CloseButton";
-import { goBack } from "../../domain/utils/goBack";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { DateDay } from "../../domain/DateDay";
 import { uuid } from "../../domain/utils/uuid";
+import { CloseButton } from "../../components/buttons/CloseButton";
 
 interface BudgetEditProps extends 
     RouteComponentProps<{ budgetId: string }>, 
@@ -19,10 +18,6 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
     const budgetId = props.match.params.budgetId;
     
     const [budgetInfo, setBudgetInfo] = React.useState<Budget>(); 
-
-    function handleClose () {
-        goBack(props.history);
-    }
 
     function newEmptyBudget () {
         const fromDate = new DateDay();
@@ -49,8 +44,8 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
                 props.onTitleChange('New budget');
                 setBudgetInfo(newEmptyBudget());
             }
-            props.onActions(<CloseButton onClick={handleClose} />);
-            return () => {
+            props.onActions([<CloseButton history={props.history}/>]);
+            return function () {
                 props.onActions([]);
             }
         // eslint-disable-next-line 

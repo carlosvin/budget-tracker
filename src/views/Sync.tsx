@@ -5,7 +5,6 @@ import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import { SnackbarError } from '../components/snackbars';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import Link from '@material-ui/core/Link';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import CardContent from '@material-ui/core/CardContent';
@@ -14,6 +13,8 @@ import SyncDisabledIcon from '@material-ui/icons/SyncDisabled';
 import SyncIcon from '@material-ui/icons/Sync';
 import { HeaderNotifierProps } from '../routes';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { Link } from 'react-router-dom';
+import { AppPaths } from '../domain/paths';
 
 export const Sync: React.FC<HeaderNotifierProps> = (props) => {
 
@@ -99,9 +100,9 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
                 onAction={ isLoggedIn ? handleLogout : handleLogin }>
                 { isLoggedIn ? 'Logout' : 'Synchronize' }
             </ActionButton>
-            <Link 
-                href='/privacy_policy.html' 
-                variant='caption'>Privacy policy</Link>
+            <Button component={Link}
+                to={AppPaths.Privacy} 
+                variant='text'>Privacy policy</Button>
         </CardActions>
     </Card>;
 }

@@ -4,18 +4,16 @@ import { Category } from '../../interfaces';
 import { HeaderNotifierProps } from '../../routes';
 import { CategoryForm } from '../../components/categories/CategoryForm';
 import { btApp } from '../../BudgetTracker';
-import { CloseButton } from '../../components/buttons/CloseButton';
 import { goBack } from '../../domain/utils/goBack';
 import { CategoryPaths } from '../../domain/paths/CategoryPaths';
+import { CloseButton } from '../../components/buttons/CloseButton';
 
 export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
-
-    const handleClose = () => (goBack(props.history, CategoryPaths.List));
     
     React.useEffect(() => {
         
         props.onTitleChange('Add category');
-        props.onActions(<CloseButton onClick={handleClose} />);
+        props.onActions([<CloseButton history={props.history}/>]);
         return function () {
             props.onActions([]);
             props.onTitleChange('');
@@ -23,9 +21,13 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
     // eslint-disable-next-line
     }, []);
 
-    const handleSave = async (category: Category) => {
+    function close () {
+        goBack(props.history, CategoryPaths.List);
+    }
+
+    async function handleSave (category: Category) {
         await (await btApp.getCategoriesStore()).setCategory(category);
-        handleClose();
+        close();
     }
     
     return <CategoryForm onSubmit={handleSave}/>;

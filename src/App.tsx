@@ -8,7 +8,9 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 const App: React.FC = () => {
+
     const [title, setTitle] = React.useState('Budget tracker');
+    // maybe use callback effect is for this purpose
     const [actions, setActions] = React.useState();
 
     return (

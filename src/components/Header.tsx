@@ -15,7 +15,11 @@ const MenuItems = [
     {name: 'Account sync', href: AppPaths.Sync},
 ];
 
-export const Header = (props: {title: string, actions: React.ReactNode}) => {
+export interface HeaderProps {
+    title: string; 
+    actions?: React.ReactElement[];
+}
+export const Header: React.FC<HeaderProps> = (props) => {
 
     return (
     <AppBar position='sticky'>
