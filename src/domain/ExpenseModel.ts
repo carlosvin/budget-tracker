@@ -28,7 +28,7 @@ export class ExpenseModel implements Expense {
     }
 
     get info (): Expense {
-        const {amount, amountBaseCurrency, categoryId, countryCode, currency, description, identifier, when} = this;
+        const { amount, amountBaseCurrency, categoryId, countryCode, currency, description, identifier, when} = this;
         return { amount, amountBaseCurrency, categoryId, description, identifier, when, countryCode, currency };
     }
 
