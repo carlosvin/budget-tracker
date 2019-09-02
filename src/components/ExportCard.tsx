@@ -6,28 +6,37 @@ import { Card, Link, CardContent, CardActions, IconButton, Typography } from "@m
 import DownloadIcon from '@material-ui/icons/SaveAlt';
 import { SnackbarInfo } from "./snackbars";
 
-interface ExportFormProps {
+interface ExportCardProps {
     fileName: string;
-    data: ExportDataSet;
+    fetchDataPromise: Promise<ExportDataSet>;
 }
 
-export const ExportForm: React.FC<ExportFormProps> = (props) => {
+export const ExportCard: React.FC<ExportCardProps> = (props) => {
 
     const [info, setInfo] = React.useState<string>();
     const fileName = `${props.fileName}.json`;
+    const [json, setJson] = React.useState<string>();
 
-    function handleCopy() {
-        navigator.clipboard.writeText(json());
-        setInfo('Copied to clipboard');
-    }
+    React.useEffect(() => {
+        async function fetchJson () {
+            setJson(JSON.stringify(await props.fetchDataPromise));
+        }
+        fetchJson();
+    }, [props.fetchDataPromise]);
 
-    function json(){
-        return JSON.stringify(props.data);
+    async function handleCopy() {
+        if (json) {
+            navigator.clipboard.writeText(json);
+            setInfo('Copied to clipboard');
+        }
     }
 
     function url () {
-        const blob = new Blob([json()], { type: 'application/octet-stream' });
-        return URL.createObjectURL(blob);
+        if (json) {
+            const blob = new Blob([json], { type: 'application/octet-stream' });
+            return URL.createObjectURL(blob);    
+        }
+        return '#';
     }
 
     return <Card>
@@ -42,10 +51,12 @@ export const ExportForm: React.FC<ExportFormProps> = (props) => {
             </Link>
         </CardContent>
         <CardActions>
-            <IconButton color='primary' href={url()} download={ `${props.fileName}.json`}>
+            <IconButton disabled={!json} color='primary' href={url()} download={ `${props.fileName}.json`}>
                 <DownloadIcon />
             </IconButton>
-            <AppButton key='export-copy-to-clipboard'
+            <AppButton
+                disabled={!json} 
+                key='export-copy-to-clipboard'
                 icon={FileCopy} 
                 aria-label='Copy JSON' 
                 onClick={handleCopy} />

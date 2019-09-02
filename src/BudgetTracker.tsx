@@ -131,6 +131,10 @@ class BudgetTracker {
     render () {
         ReactDOM.render(<App />, document.getElementById('root'));
     }
+
+    async export () {
+        return (await this.getLocalStorage()).export();
+    }
 }
 
 export const btApp = new BudgetTracker();

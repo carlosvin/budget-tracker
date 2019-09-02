@@ -3,7 +3,7 @@ import { RouteComponentProps } from "react-router";
 import { HeaderNotifierProps } from "../../routes";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { useCategories } from "../../hooks/useCategories";
-import { ExportForm } from "../../components/ExportForm";
+import { ExportCard } from "../../components/ExportCard";
 import { ExportDataSet } from "../../interfaces";
 import { CircularProgress } from "@material-ui/core";
 
@@ -30,7 +30,9 @@ export const ExportBudget: React.FC<ExportBudgetProps> = (props) => {
     }, [budgetModel, categories]);
 
     if (data && budgetModel) {
-        return <ExportForm fileName={budgetModel.info.name} data={data} />;   
+        return <ExportCard 
+            fileName={budgetModel.info.name} 
+            fetchDataPromise={Promise.resolve(budgetModel.export(categories))}/>;   
     } else {
         return <CircularProgress />;
     }

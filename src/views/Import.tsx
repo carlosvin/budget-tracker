@@ -5,6 +5,8 @@ import { ImportForm } from '../components/ImportForm';
 import { ExportDataSet } from '../interfaces';
 import { Card, CardContent, CardHeader, CardActions } from '@material-ui/core';
 import { SubHeader } from '../components/expenses/SubHeader';
+import { ExportCard } from '../components/ExportCard';
+import { btApp } from '../BudgetTracker';
 
 const Import = (props: HeaderNotifierProps&RouterProps) => {
 
@@ -22,7 +24,8 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
     // React.useEffect(()=>{}, [data]);
     
     return (
-        <Card>
+        <React.Fragment>
+        <Card style={{marginBottom: '1rem'}}>
             <CardHeader title='Import JSON'></CardHeader>
             { data &&  <CardContent>
                 <ImportedElementInfo name='Budgets' elements={data.budgets}/>
@@ -32,7 +35,11 @@ const Import = (props: HeaderNotifierProps&RouterProps) => {
             <CardActions>
                 <ImportForm onImportedData={setData}/>
             </CardActions>
-        </Card>);
+        </Card>
+        <ExportCard fileName='exportedData' fetchDataPromise={btApp.export()}/>
+        </React.Fragment>
+       
+    );
 
 }
 
