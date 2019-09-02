@@ -1,11 +1,6 @@
 name: CI Development flow
 
-on:
-  push:
-    branches:
-      - '!master'
-      - '*'
-      - '*/*'
+on: [push]
 jobs:
   build:
     name: Build and test
