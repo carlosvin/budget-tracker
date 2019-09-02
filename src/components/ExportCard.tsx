@@ -25,7 +25,12 @@ export const ExportCard: React.FC<ExportCardProps> = (props) => {
 
     React.useEffect(() => {
         async function fetchJson () {
-            setJson(JSON.stringify(await props.fetchDataPromise));
+            try {
+                setJson(JSON.stringify(await props.fetchDataPromise));
+            } catch (error) {
+                console.warn(error);
+                setInfo('There is nothing to export');
+            }
         }
         fetchJson();
     }, [props.fetchDataPromise]);
@@ -46,18 +51,13 @@ export const ExportCard: React.FC<ExportCardProps> = (props) => {
     }
 
     return <Card>
-        <CardHeader title='Export to JSON'></CardHeader>
+        <CardHeader title='Export to JSON' />
         {info && <SnackbarInfo message={info} />}
         <CardContent>
-            <Typography 
-                color='textSecondary' 
-                variant='body2'>You can download all the data saved in this app in JSON file.
-            </Typography>
-            <Link href={url()} download={ fileName } variant='body1'>
-                { fileName }
-            </Link>
+            {!json && info && <Typography color='error'>{info}</Typography> }
+            {json && <Content fileName={fileName} url={url()} /> }
         </CardContent>
-        <CardActions>
+        {json && <CardActions>
             <IconButton disabled={!json} color='primary' href={url()} download={ `${props.fileName}.json`}>
                 <DownloadIcon />
             </IconButton>
@@ -67,7 +67,18 @@ export const ExportCard: React.FC<ExportCardProps> = (props) => {
                 icon={FileCopy} 
                 aria-label='Copy JSON' 
                 onClick={handleCopy} />
-
-        </CardActions>
+        </CardActions> }
     </Card>;
 }
+
+const Content: React.FC<{fileName: string, url: string}> = (props) => (
+    <React.Fragment>
+        <Typography 
+            color='textSecondary' 
+            variant='body2'>You can download all the data saved in this app in JSON file.
+        </Typography>
+        <Link href={props.url} download={ props.fileName } variant='body1'>
+            { props.fileName }
+        </Link>
+    </React.Fragment>
+);
