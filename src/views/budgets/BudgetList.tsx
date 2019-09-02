@@ -11,6 +11,14 @@ import { AddButton } from "../../components/buttons/AddButton";
 import { ImportExportButton } from "../../components/buttons/ImportExportButton";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { AppPaths } from "../../domain/paths";
+import Typography from "@material-ui/core/Typography";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardActions from "@material-ui/core/CardActions";
+import Button from "@material-ui/core/Button";
+import Link from "@material-ui/core/Link";
+import { Link as RouterLink } from "react-router-dom";
+import AddIcon from '@material-ui/icons/Add';
+import SyncIcon from '@material-ui/icons/Sync';
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
 
@@ -46,9 +54,17 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
             </List>);
     } else {
         return <Card>
+            <CardHeader title='There are no budgets'></CardHeader>
             <CardContent>
-                There are no budgets, please add one.
+                <Typography>
+                    You can just <Link component={RouterLink} to={BudgetPath.add}>create a new one</Link>, <Link component={RouterLink} to={AppPaths.Sync}>synchronize your account</Link> to fetch your data from the cloud, <Link component={RouterLink}to={AppPaths.ImportExport}>import it from a JSON file</Link>
+                </Typography>
             </CardContent>
+            <CardActions>
+                <Button component={RouterLink} to={BudgetPath.add} ><AddIcon/></Button>
+                <Button component={RouterLink} to={AppPaths.Sync} ><SyncIcon/></Button>
+                <ImportExportButton to={AppPaths.ImportExport}/>
+            </CardActions>
         </Card>;
     }
 }
