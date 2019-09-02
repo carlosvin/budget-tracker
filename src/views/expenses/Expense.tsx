@@ -157,7 +157,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 when: date.getTime()
             });
             const store = await btApp.getBudgetsStore();
-            await store.saveExpenses(budgetId, expenseModel.split(max).map(em => em.info));
+            const expenses = expenseModel.split(max).map(em => (em.info));
+            await store.saveExpenses(budgetId, expenses);
             goBack(props.history, budgetUrl.pathExpensesByDay(new DateDay(date)));
         } else {
             throw new Error('Invalid expense data: Missing amount');

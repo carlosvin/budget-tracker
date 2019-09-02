@@ -81,11 +81,11 @@ describe('Expense Model', () => {
 
         it('splits in 3 days', () => {
             expect(expense.split(3, () => 'randomID')).toStrictEqual([
-                {...expense, amount: 33, amountBaseCurrency: 330},
-                {...expense, amount: 33, amountBaseCurrency: 330, 
-                    identifier: 'randomID', when: new Date('2019/1/2').getTime()},
-                {...expense, amount: 33, amountBaseCurrency: 330, 
-                    identifier: 'randomID', when: new Date('2019/1/3').getTime()},
+                new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330}),
+                new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330, 
+                    identifier: 'randomID', when: new Date('2019/1/2').getTime()}),
+                    new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330, 
+                    identifier: 'randomID', when: new Date('2019/1/3').getTime()}),
             ]);
 
         });
