@@ -121,9 +121,13 @@ export class LocalStorage implements SubStorageApi {
     }
 
     async import (data: ExportDataSet) {
-        await this.saveBudgets(data.budgets);
-        const promises = Object.entries(data.expenses).map(([id, e]) => this.saveExpenses(id, Object.values(e)));
-        promises.push(this.saveCategories(data.categories));
+        const budgets = await this.getBudgets();
+        const categories = await this.getCategories();
+        await this.saveBudgets({...budgets, ...data.budgets});
+        const promises = Object
+            .entries(data.expenses)
+            .map(([id, e]) => this.saveExpenses(id, Object.values(e)));
+        promises.push(this.saveCategories({...categories, ...data.categories}));
         promises.push(this.setLastTimeSaved(data.lastTimeSaved));
         await Promise.all(promises);
     }
