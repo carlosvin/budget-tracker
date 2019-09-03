@@ -26,12 +26,15 @@ export class AppStorageManager implements StorageApi {
             remote.getLastTimeSaved(), 
             local.getLastTimeSaved()]);
         if (remoteTime > localTime) {
+            console.debug('Remote > Local');
             return local.import(await remote.export());
         } else if (remoteTime < localTime) {
+            console.debug('Local > Remote');
             return remote.import(await local.export());
         } else {
-            console.info('Nothing to sync');
+            console.debug('Nothing to sync');
         }
+        console.debug('Sync done');
     }
 
     async getBudgets() {

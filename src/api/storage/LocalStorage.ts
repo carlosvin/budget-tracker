@@ -13,7 +13,7 @@ export class LocalStorage implements SubStorageApi {
         if (serializedBudgets) {
             return JSON.parse(serializedBudgets);
         }
-        throw new Error('Error fetching budgets');
+        return {};
     }
 
     getExpensesSync (budgetId: string): ExpensesMap {
