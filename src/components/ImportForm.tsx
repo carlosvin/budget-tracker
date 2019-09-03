@@ -4,7 +4,7 @@ import { FilesApi } from '../api/FileApi';
 import {  ExportDataSet } from '../interfaces';
 import { btApp } from '../BudgetTracker';
 import { SnackbarError } from './snackbars';
-import { IconButton } from '@material-ui/core';
+import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
 
 interface ImportFormProps {
