@@ -16,10 +16,13 @@ interface ExportCardProps {
     dataToExport: ExportDataSet;
 }
 
+function download (fileName: string) {
+    return `${fileName}-${new Date().toLocaleDateString()}.json`;
+}
+
 export const ExportCard: React.FC<ExportCardProps> = (props) => {
 
     const [info, setInfo] = React.useState<string>();
-    const fileName = `${props.fileName}.json`;
     const [json, setJson] = React.useState<string>();
 
     React.useEffect(() => {
@@ -46,13 +49,14 @@ export const ExportCard: React.FC<ExportCardProps> = (props) => {
         {info && <SnackbarInfo message={info} />}
         <CardContent>
             {!json && info && <Typography color='error'>{info}</Typography> }
-            {json && <Content fileName={fileName} url={url()} /> }
+            {json && <Content fileName={props.fileName} url={url()} /> }
         </CardContent>
         {json && <CardActions>
             <IconButton 
+                color='primary'
                 disabled={!json} 
                 href={url()} 
-                download={ `${props.fileName}.json`}>
+                download={download(props.fileName)}>
                 <DownloadIcon />
             </IconButton>
             <IconButton
@@ -72,8 +76,8 @@ const Content: React.FC<{fileName: string, url: string}> = (props) => (
             color='textSecondary' 
             variant='body2'>You can download all the data saved in this app in JSON file.
         </Typography>
-        <Link href={props.url} download={ props.fileName } variant='body1'>
-            { props.fileName }
+        <Link href={props.url} download={ download(props.fileName) } variant='body1'>
+            { `${props.fileName}.json` }
         </Link>
     </React.Fragment>
 );

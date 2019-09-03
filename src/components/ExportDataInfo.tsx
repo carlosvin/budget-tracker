@@ -15,7 +15,7 @@ const ImportedElementInfo: React.FC<{elements?:{[k: string]: any}, name: string}
     const {elements, name} = props;
     if (elements) {
         return (
-            <SubHeader leftText={Object.keys(elements).length} rightText={`${name} imported`} variant='body1' />
+            <SubHeader leftText={Object.keys(elements).length} rightText={name} variant='body1' />
         );
     }
     return null;
