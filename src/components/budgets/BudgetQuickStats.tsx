@@ -1,9 +1,11 @@
 import * as React from 'react';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import Link from '@material-ui/core/Link';
+import { Link } from 'react-router-dom';
 import { VersusInfo } from '../VersusInfo';
-import { Link as RouterLink } from 'react-router-dom';
+import CardActions from '@material-ui/core/CardActions';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Button from '@material-ui/core/Button';
+import Box from '@material-ui/core/Box';
 
 interface BudgetQuickStatsProps {
     totalBudget: number,
@@ -12,29 +14,38 @@ interface BudgetQuickStatsProps {
     passedDays: number,
     expectedDailyAverage: number,
     dailyAverage?: number,
-    urlStats?: string;
+    urlStats: string;
 }
+const spacing = '0.5rem';
 
 export const BudgetQuickStats: React.FC<BudgetQuickStatsProps> = (props) => (
-    <GridList cellHeight={50} cols={2} >
-        <GridListTile key='total' cols={2}>
-            <VersusInfo 
+    <Card style={{ marginBottom: '1rem' }}>
+        <CardContent>
+            <VersusInfo
                 total={props.totalBudget}
                 spent={props.totalSpent}
-                title='Spent'/>
-        </GridListTile>
-        <GridListTile key='days' cols={2}>
-            <VersusInfo 
-                total={props.totalDays}
-                spent={props.passedDays} 
-                title='Days'/>
-        </GridListTile>
-        { props.dailyAverage !== undefined && <GridListTile key='average' cols={2}>
-            <VersusInfo 
-                total={props.expectedDailyAverage} 
-                spent={props.dailyAverage}
-                title='Daily Average'/>
-        </GridListTile> }
-        { props.urlStats && <Link variant='caption' component={RouterLink} to={props.urlStats}>
-            More Stats</Link> }
-    </GridList>);
+                title='Spent' />
+            <Box marginTop={spacing}>
+                <VersusInfo
+                    total={props.totalDays}
+                    spent={props.passedDays}
+                    title='Days' /></Box>
+            {props.dailyAverage !== undefined &&
+                <Box marginTop={spacing}>
+                    <VersusInfo
+                        total={props.expectedDailyAverage}
+                        spent={props.dailyAverage}
+                        title='Daily Average' /></Box>}
+        </CardContent>
+        <CardActions>
+            <Button 
+                size='small' 
+                component={Link} 
+                color='primary' 
+                to={props.urlStats}>
+                More Stats
+            </Button>
+        </CardActions>
+    </Card>
+
+);
