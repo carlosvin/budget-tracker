@@ -44,9 +44,9 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
                 props.onTitleChange('New budget');
                 setBudgetInfo(newEmptyBudget());
             }
-            props.onActions([<CloseButton history={props.history}/>]);
+            props.onActions(<CloseButton history={props.history}/>);
             return function () {
-                props.onActions([]);
+                props.onActions(undefined);
             }
         // eslint-disable-next-line 
         }, []

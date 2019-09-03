@@ -22,7 +22,7 @@ export const ExportBudget: React.FC<ExportBudgetProps> = (props) => {
     const [data, setData] = React.useState<ExportDataSet>();
 
     React.useEffect(() => {
-        onActions([<CloseButton history={history} to={budgetPath.path}/>]);
+        onActions(<CloseButton history={history} to={budgetPath.path}/>);
         if (budgetModel && categories) {
             onTitleChange(`Export ${budgetModel.info.name}`);
             setData(budgetModel.export(categories));

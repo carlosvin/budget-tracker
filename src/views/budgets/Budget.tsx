@@ -40,9 +40,9 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
     React.useEffect(
         () => {
             onActions([
-                <AppButton icon={EditIcon} aria-label='Edit budget' to={url.pathEdit}/>,
-                <ImportExportButton to={url.pathExport}/>,
-                <DeleteButton onClick={handleDeleteRequest}/>
+                <AppButton key='cb-edit-budget' icon={EditIcon} aria-label='Edit budget' to={url.pathEdit}/>,
+                <ImportExportButton key='cb-export-budget' to={url.pathExport}/>,
+                <DeleteButton onClick={handleDeleteRequest} key='cb-delete-budget'/>
             ]);
             return () => onActions(null);
         }

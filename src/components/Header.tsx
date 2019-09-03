@@ -16,8 +16,8 @@ const MenuItems = [
 ];
 
 export interface HeaderProps {
-    title: string; 
-    actions?: React.ReactElement[];
+    title: string;
+    actions?: React.ReactNode;
 }
 export const Header: React.FC<HeaderProps> = (props) => {
 
@@ -26,7 +26,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
         <Toolbar>
             <AppMenu {...MenuItems}/>
             <Typography color='inherit' variant='h6' className='headerAppTitle'>{props.title}</Typography>
-            {props.actions}
+            { props.actions }
         </Toolbar>
     </AppBar>);
 }

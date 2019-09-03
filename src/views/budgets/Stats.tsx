@@ -23,7 +23,7 @@ export const BudgetStats: React.FC<BudgetStatsProps> = (props) => {
 
     React.useEffect(
         () => {
-            onActions([<CloseButton history={history} to={budgetPath.path}/>]);
+            onActions(<CloseButton history={history} to={budgetPath.path}/>);
             return function () { onActions([]); }
         // eslint-disable-next-line 
         }, []);

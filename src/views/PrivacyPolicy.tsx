@@ -7,9 +7,9 @@ export const PrivacyPolicy: React.FC<HeaderNotifierProps&RouterProps> = (props) 
     // TODO try to reuse this hook
     React.useEffect(() => {
         props.onTitleChange('Privacy Policy');
-        props.onActions([<CloseButton history={props.history}/>])
+        props.onActions(<CloseButton history={props.history}/>)
         return function () {
-            props.onActions([])
+            props.onActions(undefined)
         }
     // eslint-disable-next-line 
     }, []);

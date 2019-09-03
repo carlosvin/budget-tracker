@@ -13,9 +13,9 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
     React.useEffect(() => {
         
         props.onTitleChange('Add category');
-        props.onActions([<CloseButton history={props.history}/>]);
+        props.onActions(<CloseButton history={props.history}/>);
         return function () {
-            props.onActions([]);
+            props.onActions(undefined);
             props.onTitleChange('');
         }
     // eslint-disable-next-line

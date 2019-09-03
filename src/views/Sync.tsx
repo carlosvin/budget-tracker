@@ -15,11 +15,14 @@ import { HeaderNotifierProps } from '../routes';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Link } from 'react-router-dom';
 import { AppPaths } from '../domain/paths';
+import { CloseButton } from '../components/buttons/CloseButton';
+import { RouterProps } from 'react-router';
 
-export const Sync: React.FC<HeaderNotifierProps> = (props) => {
+export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
 
     const [isLoggedIn, setIsLoggedIn] = React.useState<boolean|undefined>();
     const [error, setError] = React.useState();
+    const {history, onActions, onTitleChange} = props;
 
     React.useEffect(
         () => {
@@ -34,8 +37,9 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
                 }  
             }
             initUserId();
-            props.onTitleChange('Account sync');
-            props.onActions([]);
+            onTitleChange('Account sync');
+            onActions(<CloseButton history={history}/>);
+            return function () { onActions(undefined); }
         // eslint-disable-next-line
         }, []);
 

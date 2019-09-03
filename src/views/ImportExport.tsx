@@ -10,16 +10,19 @@ import CardActions from '@material-ui/core/CardActions';
 import { SubHeader } from '../components/expenses/SubHeader';
 import { ExportCard } from '../components/ExportCard';
 import { btApp } from '../BudgetTracker';
+import { CloseButton } from '../components/buttons/CloseButton';
 
 const ImportExport = (props: HeaderNotifierProps&RouterProps) => {
 
     const [data, setData] = React.useState<Partial<ExportDataSet>>();
+    const {history, onActions, onTitleChange} = props;
 
     React.useLayoutEffect(() => {
-        props.onTitleChange('Import & Export');
-        props.onActions([]);
+        onTitleChange('Import & Export');
+        onActions(<CloseButton history={history}/>);
         return function () {
-            props.onTitleChange('');
+            onTitleChange('');
+            onActions(undefined);
         }
     // eslint-disable-next-line
     }, []);
