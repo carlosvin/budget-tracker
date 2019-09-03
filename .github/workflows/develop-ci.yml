@@ -1,6 +1,7 @@
-name: CI Development flow
+name: CI flow
 
 on: [push]
+
 jobs:
   build:
     name: Build and test
