@@ -16,6 +16,7 @@ class BudgetTracker {
     private _firestore?: SubStorageApi;
     private _localStorage?: SubStorageApi;
     private _auth?: AuthApi;
+    private _authPromise?: Promise<AuthApi>;
     private _budgetsStore?: BudgetsStore;
     private _categoriesStore?: CategoriesStore;
     private _iconsStore?: IconsStore;
@@ -36,6 +37,7 @@ class BudgetTracker {
     }
 
     async cleanupStores() {
+        this._firestore = undefined;
         await (await this.getStorage()).initRemote(this.getFirestore());
         this._budgetsIndex = this._budgetsStore = this._categoriesStore = undefined;
     }
@@ -60,11 +62,21 @@ class BudgetTracker {
     }
 
     async getAuth () {
-        if (!this._auth) {
-            const auth  = await import('./api/AuthApiImpl');
-            this._auth = new auth.AuthApiImpl();
+        if (this._auth) {
+            return this._auth;
         }
+        if (this._authPromise) {
+            return this._authPromise;
+        }
+        this._authPromise = this.getAuthPromise();
+        this._auth = await this._authPromise;
+        this._authPromise = undefined;
         return this._auth;
+    }
+
+    private async getAuthPromise () {
+        const auth  = await import('./api/AuthApiImpl');
+        return new auth.AuthApiImpl();
     }
 
     async getBudgetsStore () {
@@ -119,6 +131,10 @@ class BudgetTracker {
 
     render () {
         ReactDOM.render(<App />, document.getElementById('root'));
+    }
+
+    async export () {
+        return (await this.getLocalStorage()).export();
     }
 }
 

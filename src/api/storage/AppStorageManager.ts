@@ -43,31 +43,35 @@ export class AppStorageManager implements StorageApi {
     }
     
     async saveBudget(budget: Budget, timestamp = new Date().getTime()) {
+        const localPromise = this._local.saveBudget(budget, timestamp);
         if (this._remote) {
             this._remote.saveBudget(budget, timestamp);
         }
-        return this._local.saveBudget(budget, timestamp);
+        return localPromise;
     }
     
     async deleteBudget(budgetId: string, timestamp = new Date().getTime()) {
+        const localPromise = this._local.deleteBudget(budgetId, timestamp);
         if (this._remote) {
             this._remote.deleteBudget(budgetId, timestamp);
         }
-        return this._local.deleteBudget(budgetId, timestamp);
+        return localPromise;
     }
     
     async saveExpenses(budgetId: string, expenses: Expense[], timestamp = new Date().getTime()) {
+        const localPromise = this._local.saveExpenses(budgetId, expenses, timestamp);
         if (this._remote) {
             this._remote.saveExpenses(budgetId, expenses, timestamp);
         }
-        return this._local.saveExpenses(budgetId, expenses, timestamp);
+        return localPromise;
     }
 
     async deleteExpense(budgetId: string, expenseId: string, timestamp = new Date().getTime()) {
+        const localPromise = this._local.deleteExpense(budgetId, expenseId, timestamp);
         if (this._remote) {
             this._remote.deleteExpense(budgetId, expenseId, timestamp);
         }
-        return this._local.deleteExpense(budgetId, expenseId, timestamp);
+        return localPromise;
     }
 
     async getCategories() {
@@ -75,17 +79,19 @@ export class AppStorageManager implements StorageApi {
     }
 
     async saveCategory(category: Category, timestamp = new Date().getTime()) {
+        const localPromise = this._local.saveCategory(category, timestamp);
         if (this._remote) {
             this._remote.saveCategory(category, timestamp);
         }
-        return this._local.saveCategory(category, timestamp);
+        return localPromise;
     }
 
     async saveCategories(categories: Categories, timestamp = new Date().getTime()) {
+        const localPromise = this._local.saveCategories(categories, timestamp);
         if (this._remote) {
             this._remote.saveCategories(categories, timestamp);
         }
-        return this._local.saveCategories(categories, timestamp);
+        return localPromise;
     }
 
     async getLastTimeSaved(){

@@ -16,7 +16,7 @@ export class LocalStorage implements SubStorageApi {
         throw new Error('Error fetching budgets');
     }
 
-    getExpensesSync (budgetId: string) {
+    getExpensesSync (budgetId: string): ExpensesMap {
         const expensesKey = this.getExpensesKey(budgetId);
         const serializedExpenses = localStorage.getItem(expensesKey);
         if (serializedExpenses) {
@@ -49,7 +49,7 @@ export class LocalStorage implements SubStorageApi {
 
     async saveExpenses(budgetId: string, expenses: Expense[], timestamp?: number) {
         const expensesMap = await this.getExpenses(budgetId);
-        expenses.forEach(e => expensesMap[e.identifier] = e);
+        expenses.forEach(e => (expensesMap[e.identifier] = e));
         const identifier = this.getExpensesKey(budgetId);
         localStorage.setItem(identifier, JSON.stringify(expensesMap));
         this.setLastTimeSaved(timestamp);
@@ -63,7 +63,7 @@ export class LocalStorage implements SubStorageApi {
         const expenses = this.getExpensesSync(budgetId);
         if (expenses && expenseId in expenses) {
             delete expenses[expenseId];
-            this.saveExpenses(budgetId, expenses);
+            this.saveExpenses(budgetId, Object.values(expenses));
             this.setLastTimeSaved(timestamp);
         }
     }
@@ -114,7 +114,7 @@ export class LocalStorage implements SubStorageApi {
         }
     }
 
-    async setLastTimeSaved(timestamp?: number) {
+    async setLastTimeSaved(timestamp=new Date().getTime()) {
         if (timestamp) {
             localStorage.setItem(this.KEY_LAST_TS, timestamp.toString());
         }
