@@ -28,7 +28,7 @@ export class ExpenseModel implements Expense {
     }
 
     get info (): Expense {
-        const {amount, amountBaseCurrency, categoryId, countryCode, currency, description, identifier, when} = this;
+        const { amount, amountBaseCurrency, categoryId, countryCode, currency, description, identifier, when} = this;
         return { amount, amountBaseCurrency, categoryId, description, identifier, when, countryCode, currency };
     }
 
@@ -100,7 +100,7 @@ export class ExpenseModel implements Expense {
     /** 
      * @returns List of split expenses, first element will be current split expense
      */
-    split(days: number, idGen = uuid) {
+    split(days: number, idGen = uuid): ExpenseModel[] {
         if (days < 1) {
             throw Error('You cannot split an expense in less than one piece');
         } else if (days === 1) {
@@ -108,14 +108,14 @@ export class ExpenseModel implements Expense {
         } else {
             const amountBaseCurrency =  this.amountBaseCurrency / days;
             const amount = this.amount / days;
-            const expenses = [{...this, amount, amountBaseCurrency}];
+            const expenses = [new ExpenseModel({...this, amount, amountBaseCurrency})];
             for (let i=1; i<days; i++) {
-                expenses.push({
+                expenses.push(new ExpenseModel({
                     ...this,
                     amount, amountBaseCurrency,
                     when: DateDay.fromTimeMs(this.when).addDays(i).timeMs,
                     identifier: idGen()
-                });
+                }));
             }
             return expenses;
         }

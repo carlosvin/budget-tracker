@@ -5,9 +5,10 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { Budget, Expense } from "../../interfaces";
 import { Redirect } from 'react-router-dom';
 import { round } from "../../domain/utils/round";
-import { ExpenseUrl } from "../../domain/ExpenseUrl";
+import { ExpensePath } from "../../domain/paths/ExpensePath";
 import { useCategory } from "../../hooks/useCategory";
 import CategoryIcon from "../categories/CategoryIcon";
+import { BudgetPath } from "../../domain/paths/BudgetPath";
 
 interface ExpenseListItemProps {
     budget: Budget;
@@ -17,7 +18,7 @@ interface ExpenseListItemProps {
 export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
     const {expense, budget} = props;
     const {categoryId} = expense;
-    const expenseUrl = new ExpenseUrl(props.budget.identifier, props.expense.identifier);
+    const expenseUrl = new ExpensePath(props.expense.identifier, new BudgetPath(props.budget.identifier));
 
     const category = useCategory(categoryId);
 

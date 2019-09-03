@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Grid from "@material-ui/core/Grid";
 import { Budget } from "../../interfaces";
 import { Link } from 'react-router-dom';
-import { BudgetUrl } from "../../domain/BudgetUrl";
+import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { dateDiff } from "../../domain/date";
 
 export const BudgetListItem: React.FC<Budget> = (props) => {
@@ -16,7 +16,7 @@ export const BudgetListItem: React.FC<Budget> = (props) => {
         button
         divider
         component={Link}
-        to={new BudgetUrl(props.identifier).path}>
+        to={new BudgetPath(props.identifier).path}>
             <ListItemText
                 primary={props.name}
                 secondary={

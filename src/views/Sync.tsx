@@ -3,9 +3,8 @@ import { btApp } from '../BudgetTracker';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-import { SnackbarError } from '../components/SnackbarError';
+import { SnackbarError } from '../components/snackbars';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import Link from '@material-ui/core/Link';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import CardContent from '@material-ui/core/CardContent';
@@ -14,11 +13,16 @@ import SyncDisabledIcon from '@material-ui/icons/SyncDisabled';
 import SyncIcon from '@material-ui/icons/Sync';
 import { HeaderNotifierProps } from '../routes';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { Link } from 'react-router-dom';
+import { AppPaths } from '../domain/paths';
+import { CloseButton } from '../components/buttons/CloseButton';
+import { RouterProps } from 'react-router';
 
-export const Sync: React.FC<HeaderNotifierProps> = (props) => {
+export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
 
     const [isLoggedIn, setIsLoggedIn] = React.useState<boolean|undefined>();
     const [error, setError] = React.useState();
+    const {history, onActions, onTitleChange} = props;
 
     React.useEffect(
         () => {
@@ -33,7 +37,9 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
                 }  
             }
             initUserId();
-            props.onTitleChange('Account sync');
+            onTitleChange('Account sync');
+            onActions(<CloseButton history={history}/>);
+            return function () { onActions(undefined); }
         // eslint-disable-next-line
         }, []);
 
@@ -45,7 +51,13 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
     }
 
     async function login(){
-        const uid = await (await btApp.getAuth()).startAuth();
+        let uid = undefined;
+        try {
+            uid = await (await btApp.getAuth()).startAuth();
+        } catch (error) {
+            setError('Error synchronizing account, please try again later.');
+            console.error(error);
+        }
         if (uid) {
             await btApp.cleanupStores();
         }
@@ -59,8 +71,15 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
 
     async function logout () {
         const auth = await btApp.getAuth();
-        await auth.logout();
-        const uid = await auth.getUserId();
+        let uid = undefined;
+        try {
+            await auth.logout();
+            uid = await auth.getUserId();
+        } catch (error) {
+            setError('There were some problems signing out');
+            console.error(error);
+        }
+        await btApp.cleanupStores();
         setIsLoggedIn(!!uid);
     }
 
@@ -85,7 +104,7 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
     }
 
     return <Card>
-        {error && <SnackbarError error={error}/>}
+        {error && <SnackbarError message={error}/>}
         <CardHeader
             action={ avatar() } 
             title={ title() }/>
@@ -98,9 +117,9 @@ export const Sync: React.FC<HeaderNotifierProps> = (props) => {
                 onAction={ isLoggedIn ? handleLogout : handleLogin }>
                 { isLoggedIn ? 'Logout' : 'Synchronize' }
             </ActionButton>
-            <Link 
-                href='/privacy_policy.html' 
-                variant='caption'>Privacy policy</Link>
+            <Button component={Link}
+                to={AppPaths.Privacy} 
+                variant='text'>Privacy policy</Button>
         </CardActions>
     </Card>;
 }

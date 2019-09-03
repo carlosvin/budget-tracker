@@ -38,6 +38,12 @@ describe('Expense Model', () => {
         
     });
 
+    it('Info', () => {
+        const expenseInfo = createExpense('Expense identifier');
+        const expenseModel = new ExpenseModel(expenseInfo);
+        expect(expenseModel.info).toStrictEqual(expenseInfo);
+    });
+
     it('Sum of expenses', () => {
         const values = [];
         const numberOfExpenses = Math.random() * 1000;
@@ -81,13 +87,12 @@ describe('Expense Model', () => {
 
         it('splits in 3 days', () => {
             expect(expense.split(3, () => 'randomID')).toStrictEqual([
-                {...expense, amount: 33, amountBaseCurrency: 330},
-                {...expense, amount: 33, amountBaseCurrency: 330, 
-                    identifier: 'randomID', when: new Date('2019/1/2').getTime()},
-                {...expense, amount: 33, amountBaseCurrency: 330, 
-                    identifier: 'randomID', when: new Date('2019/1/3').getTime()},
+                new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330}),
+                new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330, 
+                    identifier: 'randomID', when: new Date('2019/1/2').getTime()}),
+                    new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330, 
+                    identifier: 'randomID', when: new Date('2019/1/3').getTime()}),
             ]);
-
         });
         
     });

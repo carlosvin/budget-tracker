@@ -6,6 +6,7 @@ import { HeaderNotifierProps } from '../../routes';
 import { SaveButtonFab } from '../../components/buttons/SaveButton';
 import { AddButton } from '../../components/buttons/AddButton';
 import { btApp } from '../../BudgetTracker';
+import { CategoryPaths } from '../../domain/paths/CategoryPaths';
 
 interface CategoriesMapProps {
     onDelete: (id: string) => void;
@@ -82,7 +83,7 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
                 onChange={handleChange} 
                 onDelete={handleDelete} 
                 categories={viewCategories}/>
-            <AddButton to='/categories/add'/>
+            <AddButton to={CategoryPaths.Add}/>
             <SaveButtonFab type='submit' disabled={!changed}/>
         </form>
     );

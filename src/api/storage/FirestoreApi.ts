@@ -22,6 +22,16 @@ export class FirestoreApi implements SubStorageApi {
         }
     }
 
+    // Firestore throws an error while saving fields with undefined values
+    private removeUndefined <T>(object: T) {
+        for (const id in object) {
+            if (object[id] === undefined) {
+                delete object[id];
+            }
+        }
+        return object;
+    }
+
     get userDoc () {
         return this.db.collection('users').doc(this.userId);
     }
@@ -51,6 +61,7 @@ export class FirestoreApi implements SubStorageApi {
     }
 
     async saveBudget(budget: Budget, timestamp?: number) {
+        this.removeUndefined(budget);
         await this.getBudgetDoc(budget.identifier).set(budget);
         return this.setLastTimeSaved(timestamp);
     }
@@ -66,7 +77,7 @@ export class FirestoreApi implements SubStorageApi {
             .entries(budgets)
             .forEach(([k,budget]) => batch.set(
                 this.getBudgetDoc(k), 
-                budget));
+                this.removeUndefined(budget)));
         await batch.commit();
         return this.setLastTimeSaved(timestamp);
     }
@@ -107,10 +118,10 @@ export class FirestoreApi implements SubStorageApi {
         Object
             .values(expenses)
             .forEach(expense => batch.set(
-                this.getExpensesCol(budgetId).doc(expense.identifier), 
-                expense));
-        await batch.commit();
-        return this.setLastTimeSaved(timestamp);
+                this.getExpenseDoc(budgetId, expense.identifier), 
+                this.removeUndefined(expense)));
+        this.setLastTimeSaved(timestamp, batch);
+        return batch.commit();
     }
 
     async deleteExpense(budgetId: string, expenseId: string, timestamp?: number) {
@@ -128,7 +139,7 @@ export class FirestoreApi implements SubStorageApi {
     }
 
     async saveCategory(category: Category, timestamp?: number){
-        await this.getCategoryDoc(category.id).set(category);
+        await this.getCategoryDoc(category.id).set(this.removeUndefined(category));
         return this.setLastTimeSaved(timestamp);
     }
 
@@ -138,7 +149,7 @@ export class FirestoreApi implements SubStorageApi {
             .entries(categories)
             .forEach(([k, category]) => batch.set(
                 this.categoriesCol.doc(k), 
-                category));
+                this.removeUndefined(category)));
         await batch.commit();
         return this.setLastTimeSaved(timestamp);
     }
@@ -157,28 +168,32 @@ export class FirestoreApi implements SubStorageApi {
         }
     }
 
-    async setLastTimeSaved (timestamp?: number) {
-        if (timestamp) {
+    async setLastTimeSaved (timestamp=new Date().getTime() , batch?: firebase.firestore.WriteBatch) {
+        if (batch) {
+            batch.set(this.userDoc, {timestamp});
+        } else {
             return this.userDoc.set({timestamp});
         }
     }
 
     async import(data: ExportDataSet) {
-        const {budgets, expenses, categories} = data;
+        const {budgets, expenses, categories, lastTimeSaved} = data;
         const batch = this.db.batch();
         Object
             .values(categories)
-            .forEach(category => batch.set(this.getCategoryDoc(category.id), category));
+            .forEach(category => batch.set(
+                this.getCategoryDoc(category.id), this.removeUndefined(category)));
         for (const budgetId in data.budgets) {
             batch.set(
                 this.getBudgetDoc(budgetId), 
-                budgets[budgetId]);
+                this.removeUndefined(budgets[budgetId]));
             for (const expenseId in expenses[budgetId]) {
                 batch.set(
                     this.getExpenseDoc(budgetId, expenseId), 
-                    expenses[budgetId][expenseId]);
+                    this.removeUndefined(expenses[budgetId][expenseId]));
             }
         }
+        batch.set(this.userDoc, {timestamp: lastTimeSaved});
         return batch.commit();
     }
 
@@ -193,7 +208,6 @@ export class FirestoreApi implements SubStorageApi {
             .map(budgetId => this.getExpensesWithBudgetId(budgetId)));
         const expenses: {[budgetId: string]: ExpensesMap} = {};
         expensesEntries.forEach(([budgetId, eMap]) => expenses[budgetId] = eMap);
-
         return {budgets, expenses, categories, lastTimeSaved};
     }
 }

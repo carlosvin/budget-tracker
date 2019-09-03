@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SnackbarError } from './SnackbarError';
+import { SnackbarError } from './snackbars';
 
 export class ErrorBoundary extends React.Component<{}, { error: string | null }> {
 
@@ -15,7 +15,7 @@ export class ErrorBoundary extends React.Component<{}, { error: string | null }>
 
     render() {
         if (this.state.error) {
-            return <SnackbarError error={this.state.error}/>      
+            return <SnackbarError message={this.state.error}/>      
         }
         return this.props.children;
     }
