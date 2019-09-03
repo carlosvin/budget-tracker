@@ -1,3 +1,7 @@
+1.3.0 Import/export merge
+-------------------------
+- BC: Import data is not overriding budgets anymore, not budgets and categories are merged.
+- Import export UI improvements.
 
 1.2.0 Import/export UI changes
 -----------------------------------
