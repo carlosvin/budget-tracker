@@ -21,8 +21,6 @@ export interface BudgetsStore {
     getExpense(budgetId: string, expenseId: string): Promise<Expense>;
     deleteBudget(budgetId: string): Promise<void>;
     deleteExpense(budgetId: string, expenseId: string): Promise<void>;
-
-    import(budgets: BudgetsMap, expenses: {[budgetId: string]: ExpensesMap }): Promise<void>;
 }
 
 export declare type LazyIcon = React.LazyExoticComponent<React.ComponentType<SvgIconProps>>;

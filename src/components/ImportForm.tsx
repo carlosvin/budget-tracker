@@ -32,9 +32,7 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
             try {
                 const serialized = await FilesApi.getFileContent(selectedFile);
                 const data = JSON.parse(serialized) as ExportDataSet;
-                const {budgets, expenses, categories} = data;
-                await (await btApp.getCategoriesStore()).setCategories(categories);
-                await (await btApp.getBudgetsStore()).import(budgets, expenses);    
+                await (await btApp.getStorage()).import(data);
                 props.onImportedData(data);
                 setFile(undefined);
             } catch (error) {
@@ -50,9 +48,6 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
         <form onSubmit={handleSubmit}>
             { error && <SnackbarError message={error}/>}
             { isProcessing && <CircularProgress /> }
-            <IconButton disabled={!selectedFile || isProcessing} type='submit'>
-                <SaveIcon/>
-            </IconButton>
             <input 
                 disabled={isProcessing} 
                 type='file' 
@@ -60,6 +55,9 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
                 required
                 accept="application/json"
                 />
+            <IconButton color='primary' disabled={!selectedFile || isProcessing} type='submit'>
+                <SaveIcon/>
+            </IconButton>
         </form>);
 
 }

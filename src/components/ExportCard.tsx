@@ -13,7 +13,7 @@ import { SnackbarInfo } from "./snackbars";
 
 interface ExportCardProps {
     fileName: string;
-    fetchDataPromise: Promise<ExportDataSet>;
+    dataToExport: ExportDataSet;
 }
 
 export const ExportCard: React.FC<ExportCardProps> = (props) => {
@@ -23,16 +23,8 @@ export const ExportCard: React.FC<ExportCardProps> = (props) => {
     const [json, setJson] = React.useState<string>();
 
     React.useEffect(() => {
-        async function fetchJson () {
-            try {
-                setJson(JSON.stringify(await props.fetchDataPromise));
-            } catch (error) {
-                console.warn(error);
-                setInfo('There is nothing to export');
-            }
-        }
-        fetchJson();
-    }, [props.fetchDataPromise]);
+        setJson(JSON.stringify(props.dataToExport));
+    }, [props.dataToExport]);
 
     async function handleCopy() {
         if (json) {

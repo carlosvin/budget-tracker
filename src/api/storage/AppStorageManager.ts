@@ -1,5 +1,5 @@
 import { StorageApi, SubStorageApi } from "./StorageApi";
-import { Budget, Expense, Category, Categories } from "../../interfaces";
+import { Budget, Expense, Category, Categories, ExportDataSet } from "../../interfaces";
 
 export class AppStorageManager implements StorageApi {
     private _local: SubStorageApi;
@@ -94,11 +94,16 @@ export class AppStorageManager implements StorageApi {
         return localPromise;
     }
 
-    async getLastTimeSaved(){
-        return this._local.getLastTimeSaved();
+
+    async export () {
+        return this._local.export();
     }
 
-    async setLastTimeSaved(timestamp: number) {
-        throw new Error('App storage manager should not implement set timestamp method');
+    async import (data: ExportDataSet) {
+        const localPromise = this._local.import(data);
+        if (this._remote) {
+            this._remote.import(data);
+        }
+        return localPromise;
     }
 }
