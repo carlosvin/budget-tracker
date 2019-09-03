@@ -1,4 +1,4 @@
-import { Categories, Category, Budget, Expense, ExpensesMap, CurrencyRates, CountryEntry, BudgetsMap } from "../interfaces";
+import { Categories, Category, Budget, Expense, ExpensesMap, CurrencyRates, CountryEntry } from "../interfaces";
 import { BudgetModel } from '../domain/BudgetModel';
 import { SvgIconProps } from "@material-ui/core/SvgIcon";
 
