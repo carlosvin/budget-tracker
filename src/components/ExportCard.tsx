@@ -1,5 +1,4 @@
 import * as React from "react";
-import { AppButton } from "./buttons/buttons";
 import FileCopy from '@material-ui/icons/FileCopy';
 import { ExportDataSet } from "../interfaces";
 import Card from "@material-ui/core/Card";
@@ -58,15 +57,19 @@ export const ExportCard: React.FC<ExportCardProps> = (props) => {
             {json && <Content fileName={fileName} url={url()} /> }
         </CardContent>
         {json && <CardActions>
-            <IconButton disabled={!json} color='primary' href={url()} download={ `${props.fileName}.json`}>
+            <IconButton 
+                disabled={!json} 
+                href={url()} 
+                download={ `${props.fileName}.json`}>
                 <DownloadIcon />
             </IconButton>
-            <AppButton
+            <IconButton
                 disabled={!json} 
                 key='export-copy-to-clipboard'
-                icon={FileCopy} 
                 aria-label='Copy JSON' 
-                onClick={handleCopy} />
+                onClick={handleCopy} >
+                <FileCopy/>
+            </IconButton>
         </CardActions> }
     </Card>;
 }

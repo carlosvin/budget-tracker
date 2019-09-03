@@ -3,8 +3,9 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { FilesApi } from '../api/FileApi';
 import {  ExportDataSet } from '../interfaces';
 import { btApp } from '../BudgetTracker';
-import { SaveButton } from './buttons/SaveButton';
 import { SnackbarError } from './snackbars';
+import { IconButton } from '@material-ui/core';
+import SaveIcon from '@material-ui/icons/Save';
 
 interface ImportFormProps {
     onImportedData: (data: Partial<ExportDataSet>) => void;
@@ -49,6 +50,9 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
         <form onSubmit={handleSubmit}>
             { error && <SnackbarError message={error}/>}
             { isProcessing && <CircularProgress /> }
+            <IconButton disabled={!selectedFile || isProcessing} type='submit'>
+                <SaveIcon/>
+            </IconButton>
             <input 
                 disabled={isProcessing} 
                 type='file' 
@@ -56,9 +60,6 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
                 required
                 accept="application/json"
                 />
-            <SaveButton 
-                disabled={!selectedFile || isProcessing} 
-                type='submit'/>
         </form>);
 
 }
