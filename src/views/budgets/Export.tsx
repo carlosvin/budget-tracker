@@ -6,19 +6,23 @@ import { useCategories } from "../../hooks/useCategories";
 import { ExportCard } from "../../components/ExportCard";
 import { ExportDataSet } from "../../interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { CloseButton } from "../../components/buttons/CloseButton";
+import { BudgetPath } from "../../domain/paths/BudgetPath";
 
 interface ExportBudgetProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
 export const ExportBudget: React.FC<ExportBudgetProps> = (props) => {
 
     const {budgetId} = props.match.params;
-    const {onTitleChange} = props;
+    const budgetPath = new BudgetPath(budgetId);
+    const {onTitleChange, onActions, history} = props;
     const budgetModel = useBudgetModel(budgetId);
     const categories = useCategories();
 
     const [data, setData] = React.useState<ExportDataSet>();
 
     React.useEffect(() => {
+        onActions([<CloseButton history={history} to={budgetPath.path}/>]);
         if (budgetModel && categories) {
             onTitleChange(`Export ${budgetModel.info.name}`);
             setData(budgetModel.export(categories));

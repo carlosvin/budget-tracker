@@ -39,13 +39,11 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
 
     React.useEffect(
         () => {
-            onActions(
-                <React.Fragment>
-                    <AppButton icon={EditIcon} aria-label='Edit budget' to={url.pathEdit}/>
-                    <ImportExportButton to={url.pathExport}/>
-                    <DeleteButton onClick={handleDeleteRequest}/>
-                </React.Fragment>
-            );
+            onActions([
+                <AppButton icon={EditIcon} aria-label='Edit budget' to={url.pathEdit}/>,
+                <ImportExportButton to={url.pathExport}/>,
+                <DeleteButton onClick={handleDeleteRequest}/>
+            ]);
             return () => onActions(null);
         }
     ,[onActions, budgetModel, url.pathEdit, url.pathExport]);
