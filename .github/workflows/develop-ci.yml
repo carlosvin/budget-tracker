@@ -3,7 +3,7 @@ name: CI flow
 on:
   push:
     branches:
-      - *
+      - '*'
       - '!master'
 
 jobs:
