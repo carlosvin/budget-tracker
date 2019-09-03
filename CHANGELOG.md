@@ -1,4 +1,9 @@
 
+1.2.0 Import/export UI changes
+-----------------------------------
+- Now you can export whole application or single budget data.
+- Import/Export views refactored to be independent cards.
+- Better error handling for firestore API.
 
 1.1.1 Ignore remote storage errors
 -----------------------------------
