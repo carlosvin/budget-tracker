@@ -37,6 +37,7 @@ class BudgetTracker {
     }
 
     async cleanupStores() {
+        this._firestore = undefined;
         await (await this.getStorage()).initRemote(this.getFirestore());
         this._budgetsIndex = this._budgetsStore = this._categoriesStore = undefined;
     }

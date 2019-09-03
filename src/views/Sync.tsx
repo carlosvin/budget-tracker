@@ -55,6 +55,7 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
         try {
             uid = await (await btApp.getAuth()).startAuth();
         } catch (error) {
+            setError('Error synchronizing account, please try again later.');
             console.error(error);
         }
         if (uid) {
@@ -70,8 +71,15 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
 
     async function logout () {
         const auth = await btApp.getAuth();
-        await auth.logout();
-        const uid = await auth.getUserId();
+        let uid = undefined;
+        try {
+            await auth.logout();
+            uid = await auth.getUserId();
+        } catch (error) {
+            setError('There were some problems signing out');
+            console.error(error);
+        }
+        await btApp.cleanupStores();
         setIsLoggedIn(!!uid);
     }
 
