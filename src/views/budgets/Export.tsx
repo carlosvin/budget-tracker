@@ -36,7 +36,7 @@ export const ExportBudget: React.FC<ExportBudgetProps> = (props) => {
     if (data && budgetModel) {
         return <ExportCard 
             fileName={budgetModel.info.name} 
-            fetchDataPromise={Promise.resolve(budgetModel.export(categories))}/>;   
+            dataToExport={data}/>;   
     } else {
         return <CircularProgress />;
     }

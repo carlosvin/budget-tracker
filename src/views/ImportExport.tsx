@@ -7,15 +7,17 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
-import { SubHeader } from '../components/expenses/SubHeader';
 import { ExportCard } from '../components/ExportCard';
-import { btApp } from '../BudgetTracker';
 import { CloseButton } from '../components/buttons/CloseButton';
+import { useStorage } from '../hooks/useStorage';
+import { ExportDataInfo } from '../components/ExportDataInfo';
 
 const ImportExport = (props: HeaderNotifierProps&RouterProps) => {
 
-    const [data, setData] = React.useState<Partial<ExportDataSet>>();
+    const [importData, setImportData] = React.useState<Partial<ExportDataSet>>();
+    const [exportData, setExportData] = React.useState<ExportDataSet>();
     const {history, onActions, onTitleChange} = props;
+    const storage = useStorage();
 
     React.useLayoutEffect(() => {
         onTitleChange('Import & Export');
@@ -26,35 +28,38 @@ const ImportExport = (props: HeaderNotifierProps&RouterProps) => {
         }
     // eslint-disable-next-line
     }, []);
+
+    React.useEffect(() => {
+        async function exportData () {
+            if (storage) {
+                try {
+                    setExportData(await storage.export());
+                } catch (error) {
+                    console.warn('There is no data to export: ', error);
+                    setExportData(undefined);
+                }
+            }
+        }
+        exportData();
+    }, [storage]);
     
     return (
         <React.Fragment>
         <Card style={{marginBottom: '1rem'}}>
             <CardHeader title='Import JSON'></CardHeader>
-            { data &&  <CardContent>
-                <ImportedElementInfo name='Budgets' elements={data.budgets}/>
-                <ImportedElementInfo name='Expenses' elements={data.expenses}/>
-                <ImportedElementInfo name='Categories' elements={data.categories}/>
+            { importData &&  <CardContent>
+                <ExportDataInfo {...importData}/>
             </CardContent> }
             <CardActions>
-                <ImportForm onImportedData={setData}/>
+                <ImportForm onImportedData={setImportData}/>
             </CardActions>
         </Card>
-        <ExportCard fileName='exportedData' fetchDataPromise={btApp.export()}/>
+            { exportData && <ExportCard fileName='exportedData' dataToExport={exportData}/> }
         </React.Fragment>
        
     );
 
 }
 
-const ImportedElementInfo: React.FC<{elements?:{[k: string]: any}, name: string}> = (props) => {
-    const {elements, name} = props;
-    if (elements) {
-        return (
-            <SubHeader leftText={Object.keys(elements).length} rightText={`${name} imported`} variant='body1' />
-        );
-    }
-    return null;
-}
 
 export default ImportExport;

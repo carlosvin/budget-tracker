@@ -11,6 +11,9 @@ export interface StorageApi {
     getCategories(): Promise<Categories>;
     saveCategory(category: Category, timestamp?: number): Promise<void>;
     saveCategories(categories: Categories,timestamp?: number): Promise<void>;
+
+    import(data: ExportDataSet): Promise<void>;
+    export(): Promise<ExportDataSet>;
 }
 
 export interface AppStorageApi extends StorageApi {
@@ -20,7 +23,4 @@ export interface AppStorageApi extends StorageApi {
 export interface SubStorageApi extends StorageApi {
     getLastTimeSaved(): Promise<number>;
     setLastTimeSaved(timestamp: number): Promise<void>;
-
-    import(data: ExportDataSet): Promise<void>;
-    export(): Promise<ExportDataSet>;
 }

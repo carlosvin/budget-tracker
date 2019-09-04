@@ -2,10 +2,10 @@ import * as React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { FilesApi } from '../api/FileApi';
 import {  ExportDataSet } from '../interfaces';
-import { btApp } from '../BudgetTracker';
 import { SnackbarError } from './snackbars';
 import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
+import { useStorage } from '../hooks/useStorage';
 
 interface ImportFormProps {
     onImportedData: (data: Partial<ExportDataSet>) => void;
@@ -16,6 +16,7 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
     const [selectedFile, setFile] = React.useState();
     const [isProcessing, setProcessing] = React.useState(false);
     const [error, setError] = React.useState();
+    const storage = useStorage();
 
     React.useEffect(() => setError(undefined), [selectedFile]);
 
@@ -27,14 +28,15 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
     async function handleSubmit (e: React.FormEvent) {
         e.stopPropagation(); 
         e.preventDefault();
+        if (!storage) {
+            throw Error('Storage is not loaded');
+        }
         if (selectedFile) {
             setProcessing(true);
             try {
                 const serialized = await FilesApi.getFileContent(selectedFile);
                 const data = JSON.parse(serialized) as ExportDataSet;
-                const {budgets, expenses, categories} = data;
-                await (await btApp.getCategoriesStore()).setCategories(categories);
-                await (await btApp.getBudgetsStore()).import(budgets, expenses);    
+                await storage.import(data);
                 props.onImportedData(data);
                 setFile(undefined);
             } catch (error) {
@@ -50,9 +52,6 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
         <form onSubmit={handleSubmit}>
             { error && <SnackbarError message={error}/>}
             { isProcessing && <CircularProgress /> }
-            <IconButton disabled={!selectedFile || isProcessing} type='submit'>
-                <SaveIcon/>
-            </IconButton>
             <input 
                 disabled={isProcessing} 
                 type='file' 
@@ -60,6 +59,9 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
                 required
                 accept="application/json"
                 />
+            <IconButton color='primary' disabled={!selectedFile || isProcessing} type='submit'>
+                <SaveIcon/>
+            </IconButton>
         </form>);
 
 }
