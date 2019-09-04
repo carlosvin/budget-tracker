@@ -15,7 +15,7 @@ export class FirestoreApi implements SubStorageApi {
             try {
                 this.db.enablePersistence();    
             } catch (error) {
-                console.warn(error);
+                console.warn('Persistence is already enabled: ', error);
             }
         } else {
             throw Error('User must be logged in to be able to use firestore');

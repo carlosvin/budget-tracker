@@ -44,10 +44,14 @@ class BudgetTracker {
 
     private async getFirestore () {
         if (!this._firestore) {
-            const userId = await (await this.getAuth()).getUserId();
-            if (userId) {
-                const storage  = await import('./api/storage/FirestoreApi');
-                this._firestore = new storage.FirestoreApi(userId);
+            try {
+                const userId = await (await this.getAuth()).getUserId();
+                if (userId) {
+                    const storage  = await import('./api/storage/FirestoreApi');
+                    this._firestore = new storage.FirestoreApi(userId);
+                }    
+            } catch (error) {
+                console.warn('Cannot get user ID: ', error);
             }
         }
         return this._firestore;
