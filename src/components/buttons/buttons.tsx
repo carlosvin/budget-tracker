@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import { SvgIconProps } from '@material-ui/core/SvgIcon';
 import Fab from '@material-ui/core/Fab';
-import './buttons.css';
 
 type Color = 'inherit' | 'primary' | 'secondary' | 'default';
 type Type = 'button' | 'submit' | 'reset';
@@ -45,8 +44,16 @@ export interface ButtonFabProps {
     to?: string;
 }
 
+function style (color?: Color) {
+    if (color === 'primary' || color === undefined) {
+        return {right: '1rem'};
+    } else {
+        return {left: '1rem'};
+    }
+}
+
 export const ButtonFab = (props: ButtonFabProps&{children: React.ReactNode}) => (
-    <Fab className={props.color === 'primary' ? 'fabR':'fabL'} 
+    <Fab style={{position: 'fixed', bottom: '1rem', zIndex: 10, ...style(props.color)}} 
         color={props.color||'secondary'}
         {...props}
         {...derivedProps(props)}

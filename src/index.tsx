@@ -1,5 +1,4 @@
 
-import './index.css';
 import * as serviceWorker from './serviceWorker';
 import { btApp } from './BudgetTracker';
 
