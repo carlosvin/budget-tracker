@@ -29,20 +29,18 @@
         "filesystem": "1.0.1",
         "gh-pages": "2.0.1",
         "husky": "^3",
-        "react-scripts": "^3",
         "react-test-renderer": "^16",
         "serve": "*",
-        "source-map-explorer": "^2",
-        "typescript": "^3"
+        "typescript": "^3",
+        "parcel-bundler": "^1.12.3",
+        "parcel-plugin-bundle-visualiser": "*"
     },
     "scripts": {
-        "analyze": "source-map-explorer 'build/static/js/*.js' --html reports/bundle-size.html",
-        "start": "react-scripts start",
-        "build": "react-scripts build",
-        "test": "react-scripts test",
+        "start": "parcel src/index.html",
+        "build": "parcel build src/index.html",
+        "test": "jest",
         "lint": "eslint --max-warnings 0 --ext js,ts,tsx src",
         "coverage": "yarn test --coverage --coverageDirectory=reports/coverage --watchAll=false",
-        "eject": "react-scripts eject",
         "serve": "serve -s build",
         "predeploy": "yarn build",
         "deploy": "gh-pages -d build"
