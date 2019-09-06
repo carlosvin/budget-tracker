@@ -1,7 +1,0 @@
-.expenseListRoot {
-    height: 100%;
-    background-color: #fff;
-    position: relative;
-    overflow: auto;
-    list-style-type: none;
-}
