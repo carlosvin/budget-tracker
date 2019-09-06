@@ -8,6 +8,7 @@
         "@material-ui/icons": "^4",
         "@react-firebase/auth": "^0.2.9",
         "axios": "^0.19",
+        "core-js": "3",
         "firebase": "^6.4.0",
         "firebaseui": "^4.1.0",
         "nanoid": "^2.0.4",
@@ -29,11 +30,11 @@
         "filesystem": "1.0.1",
         "gh-pages": "2.0.1",
         "husky": "^3",
+        "parcel-bundler": "^1.12.3",
+        "parcel-plugin-bundle-visualiser": "*",
         "react-test-renderer": "^16",
         "serve": "*",
-        "typescript": "^3",
-        "parcel-bundler": "^1.12.3",
-        "parcel-plugin-bundle-visualiser": "*"
+        "typescript": "^3"
     },
     "scripts": {
         "start": "parcel src/index.html",
@@ -41,7 +42,7 @@
         "test": "jest",
         "lint": "eslint --max-warnings 0 --ext js,ts,tsx src",
         "coverage": "yarn test --coverage --coverageDirectory=reports/coverage --watchAll=false",
-        "serve": "serve -s build",
+        "serve": "serve -s dist",
         "predeploy": "yarn build",
         "deploy": "gh-pages -d build"
     },

@@ -1,6 +1,8 @@
 node_modules
 dist
+build
 .cache
+.parcel-cache
 .vscode/settings.json
 env.json
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
