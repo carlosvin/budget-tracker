@@ -44,8 +44,16 @@ export interface ButtonFabProps {
     to?: string;
 }
 
+function style (color?: Color) {
+    if (color === 'primary' || color === undefined) {
+        return {right: '1rem'};
+    } else {
+        return {left: '1rem'};
+    }
+}
+
 export const ButtonFab = (props: ButtonFabProps&{children: React.ReactNode}) => (
-    <Fab style={{position: 'fixed', bottom: '1rem', zIndex: 10}} 
+    <Fab style={{position: 'fixed', bottom: '1rem', zIndex: 10, ...style(props.color)}} 
         color={props.color||'secondary'}
         {...props}
         {...derivedProps(props)}
