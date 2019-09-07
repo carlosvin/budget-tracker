@@ -21,7 +21,7 @@ test.skip('Amount Input changes', () => {
             onChange={handleChange} 
             selectedCurrency='USD' />,
     );
-    let tree = component.toJSON();
+    const tree = component.toJSON();
     expect(tree).toMatchSnapshot();
 
     // manually trigger the callback

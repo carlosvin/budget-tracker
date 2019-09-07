@@ -1,4 +1,12 @@
-import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMap, ExportDataSet } from "../interfaces";
+import { 
+    Budget, 
+    Expense, 
+    Categories, 
+    CurrencyRates, 
+    ExpensesMap, 
+    ExpensesYearMap, 
+    ExportDataSet 
+} from "../interfaces";
 import { dateDiff } from "./date";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
@@ -329,7 +337,7 @@ export class BudgetModel {
         const groups = this.expenseGroups; 
         const daysByCountry: {[country: string]: number} = {};
         const todayMs = new Date().getTime();
-        let from = DateDay.fromTimeMs(this.info.from);
+        const from = DateDay.fromTimeMs(this.info.from);
         do {
             const {year, month, day} = from;
             if (year in groups && 

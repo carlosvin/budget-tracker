@@ -30,6 +30,7 @@
         "@typescript-eslint/eslint-plugin": "^2.1.0",
         "@typescript-eslint/parser": "^2.1.0",
         "eslint": "^6.3.0",
+        "eslint-config-prettier": "^6.2.0",
         "eslint-plugin-react": "^7.14.3",
         "eslint-plugin-react-hooks": "^2.0.1",
         "filesystem": "1.0.1",
@@ -37,10 +38,11 @@
         "husky": "^3",
         "parcel-bundler": "^1.12.3",
         "parcel-plugin-bundle-visualiser": "*",
+        "prettier": "^1.18.2",
         "react-test-renderer": "^16",
         "rimraf": "^3.0.0",
         "serve": "*",
-        "typescript": "^3",
+        "typescript": "3.6.0",
         "workbox-cli": "^4.3.1"
     },
     "scripts": {
@@ -60,9 +62,6 @@
         "hooks": {
             "pre-push": "yarn lint && yarn test --watchAll=false"
         }
-    },
-    "eslintConfig": {
-        "extends": "react-app"
     },
     "browserslist": {
         "production": [
