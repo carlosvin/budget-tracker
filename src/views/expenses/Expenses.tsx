@@ -18,10 +18,10 @@ import DateRange from "@material-ui/icons/DateRange";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
-    RouteComponentProps<{budgetId: string, year: string, month: string, day: string}> { 
+    RouteComponentProps<{budgetId: string; year: string; month: string; day: string}> { 
 }
 
-function getParamInt(name: string, params: URLSearchParams) {
+function getParamInt(name: string, params: URLSearchParams): number | undefined {
     const param = params.get(name);
     return param ? parseInt(param) : undefined;
 }
