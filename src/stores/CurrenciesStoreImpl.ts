@@ -92,9 +92,8 @@ export default class CurrenciesStoreImpl implements CurrenciesStore {
     }
 
     private async importCurrencies () {
-        const importedCurrencies = await import('./currency.json');
-        importedCurrencies
-            .default
+        const imported = await import('./currency.json');
+        imported
             .filter( c => 
                 c.AlphabeticCode && 
                 (!c.AlphabeticCode.startsWith('X')) && 
