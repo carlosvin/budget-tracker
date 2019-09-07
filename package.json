@@ -19,7 +19,7 @@
     },
     "devDependencies": {
         "@firebase/testing": "^0.12.2",
-        "@types/jest": "^24",
+        "@types/jest": "^24.0.18",
         "@types/nanoid": "^2.0.0",
         "@types/node": "^12",
         "@types/react": "^16",
@@ -36,13 +36,15 @@
         "filesystem": "1.0.1",
         "gh-pages": "2.0.1",
         "husky": "^3",
+        "jest": "^24.9.0",
         "parcel-bundler": "^1.12.3",
         "parcel-plugin-bundle-visualiser": "*",
         "prettier": "^1.18.2",
         "react-test-renderer": "^16",
         "rimraf": "^3.0.0",
         "serve": "*",
-        "typescript": "3.6.0",
+        "ts-jest": "^24.0.2",
+        "typescript": "^3.6.2",
         "workbox-cli": "^4.3.1"
     },
     "scripts": {
@@ -76,9 +78,13 @@
         ]
     },
     "jest": {
+        "roots": ["src"],
         "collectCoverageFrom": [
             "src/**/*.{js,jsx,ts,tsx}",
             "!<rootDir>/node_modules/"
-        ]
+        ],
+        "preset": "ts-jest",
+        "testEnvironment": "jsdom"
+
     }
 }
