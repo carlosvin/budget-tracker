@@ -84,7 +84,7 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
                 onDelete={handleDelete} 
                 categories={viewCategories}/>
             <AddButton to={CategoryPaths.Add}/>
-            <SaveButtonFab type='submit' disabled={!changed}/>
+            <SaveButtonFab type='submit' disabled={!changed} color={'secondary'}/>
         </form>
     );
 
