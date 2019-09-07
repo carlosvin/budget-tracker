@@ -5,7 +5,7 @@ workbox.precaching.precacheAndRoute([]);
 
 workbox.routing.registerRoute(
     new RegExp('https://api.currencystack.io'),
-    workbox.strategies.cacheFirst()
+    new workbox.strategies.CacheFirst()
 );
 
 // default page handler for offline usage,
@@ -25,3 +25,17 @@ workbox.routing.registerRoute(
             });
     }
 );
+
+// Background sync
+const queue = new workbox.backgroundSync.Queue('eventsQueue');
+
+self.addEventListener('fetch', (event) => {
+    // Clone the request to ensure it's safe to read when adding to the Queue
+    const promiseChain = fetch(event.request.clone())
+    .then(e => console.log('sync... ', e))
+        .catch((err) => {
+            return queue.pushRequest({ request: event.request });
+        });
+
+    event.waitUntil(promiseChain);
+});
