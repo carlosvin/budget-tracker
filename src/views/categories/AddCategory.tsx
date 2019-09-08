@@ -8,7 +8,7 @@ import { goBack } from '../../domain/utils/goBack';
 import { CategoryPaths } from '../../domain/paths/CategoryPaths';
 import { CloseButton } from '../../components/buttons/CloseButton';
 
-export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
+export function AddCategory (props: RouterProps&HeaderNotifierProps) {
     
     React.useEffect(() => {
         

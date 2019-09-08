@@ -12,7 +12,7 @@ import { CloseButton } from "../../components/buttons/CloseButton";
 
 interface BudgetStatsProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
-export const BudgetStats: React.FC<BudgetStatsProps> = (props) => {
+function BudgetStats (props: BudgetStatsProps) {
     
     const {match, history, onActions} = props;
     const {budgetId} = match.params;

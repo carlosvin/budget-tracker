@@ -6,16 +6,20 @@
     },
     "extends": [
         "plugin:@typescript-eslint/recommended",
+        "plugin:react/recommended",
         "prettier",
         "prettier/@typescript-eslint"
     ],
     "plugins": [
         "@typescript-eslint",
-        "react-hooks"
+        "react-hooks",
+        "react"
     ],
     "rules": {
         "@typescript-eslint/explicit-function-return-type": "off",
         "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn"
+        "react-hooks/exhaustive-deps": "warn",
+        "react/jsx-uses-react": "error",
+        "react/jsx-uses-vars": "error"
     }
 }

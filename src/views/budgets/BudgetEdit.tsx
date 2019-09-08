@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router";
 import { Budget } from "../../interfaces";
 import { HeaderNotifierProps } from "../../routes";
@@ -14,7 +14,7 @@ interface BudgetEditProps extends
     HeaderNotifierProps {
 }
 
-const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
+function BudgetEdit(props: BudgetEditProps) {
     const budgetId = props.match.params.budgetId;
     
     const [budgetInfo, setBudgetInfo] = React.useState<Budget>(); 

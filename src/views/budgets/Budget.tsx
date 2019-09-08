@@ -18,16 +18,19 @@ import { ImportExportButton } from "../../components/buttons/ImportExportButton"
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
-export const BudgetView: React.FC<BudgetViewProps> = (props) => {
+function BudgetView (props: BudgetViewProps) {
 
-    const {budgetId} = props.match.params;
-    const {onActions, onTitleChange} = props;
-
+    const {onActions, onTitleChange, match} = props;
+    const {budgetId} = match.params;
     const url = new BudgetPath(budgetId); 
 
     const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
 
     const budgetModel = useBudgetModel(budgetId);
+
+    function handleDeleteRequest () {
+        setShowConfirmDialog(true);
+    }
 
     React.useEffect(() => {
         if (budgetModel) {
@@ -47,10 +50,6 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
             return () => onActions(null);
         }
     ,[onActions, budgetModel, url.pathEdit, url.pathExport]);
-    
-    function handleDeleteRequest () {
-        setShowConfirmDialog(true);
-    }
 
     function handleSelectedDay (date: YMD) {
         props.history.push(url.pathExpensesByDay(date));

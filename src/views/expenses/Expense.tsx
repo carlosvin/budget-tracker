@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router";
 import Grid from "@material-ui/core/Grid";
 import { getISODateString } from "../../domain/date";
@@ -23,7 +23,11 @@ import { ExpenseModel } from "../../domain/ExpenseModel";
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
 
-export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
+function ExpenseView(props: ExpenseViewProps) {
+
+    const {onActions, onTitleChange, history, match} = props;
+    const {replace} = history;
+    const {budgetId, expenseId} = match.params;
 
     const [error, setError] = React.useState<string|undefined>();
 
@@ -40,10 +44,6 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
     const [rates, setRates] = React.useState<CurrencyRates>();
 
     const [splitInDays, setSplitInDays] = React.useState<number|undefined>();
-
-    const {budgetId, expenseId} = props.match.params;
-    const {onActions, onTitleChange, history} = props;
-    const {replace} = history;
     const budgetUrl = new BudgetPath(budgetId);
     const isAddView = expenseId === undefined;
 
@@ -94,18 +94,6 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             setRates(await store.getRates(baseCurrency));
         }
         
-        function initBudget () {
-            if (budgetModel) {
-                setBaseCurrency(budgetModel.info.currency);
-                initRates(budgetModel.info.currency);
-                if (isAddView) {
-                    initAdd();
-                } else {
-                    initEdit(budgetModel);
-                }
-            }
-        }
-
         async function initAdd () {
             const countriesStore = await btApp.getCountriesStore();
             const currentCountryFetched = await countriesStore.getCurrentCountry();
@@ -134,6 +122,18 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
             setDescription(e.description);
             setDateString(getISODateString(new Date(e.when)));
             setIdentifier(e.identifier);
+        }
+
+        function initBudget () {
+            if (budgetModel) {
+                setBaseCurrency(budgetModel.info.currency);
+                initRates(budgetModel.info.currency);
+                if (isAddView) {
+                    initAdd();
+                } else {
+                    initEdit(budgetModel);
+                }
+            }
         }
         
         initBudget();

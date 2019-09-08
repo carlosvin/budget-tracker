@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router";
 import { ExpensesDayMap } from "../../interfaces";
 import { ExpenseList } from "../../components/expenses/ExpenseList";
@@ -26,7 +26,7 @@ function getParamInt(name: string, params: URLSearchParams): number | undefined 
     return param ? parseInt(param) : undefined;
 }
 
-export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
+function ExpensesView(props: ExpensesViewProps) {
 
     const {budgetId} = props.match.params;
     const url = new BudgetPath(budgetId);

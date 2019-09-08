@@ -14,7 +14,7 @@ interface CategoryIconDialogSelectorProps {
 
 const titleId = 'dialog-title';
 
-export const CategoryIconDialogSelector: React.FC<CategoryIconDialogSelectorProps> = (props) => {
+function CategoryIconDialogSelector (props: CategoryIconDialogSelectorProps) {
 
     function handleClose() {
         props.onClose(props.selectedValue);

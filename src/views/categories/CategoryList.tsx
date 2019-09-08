@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { RouterProps } from 'react-router';
 import { Category, Categories } from '../../interfaces';
 import CategoryInput from '../../components/categories/CategoryInput';
 import { HeaderNotifierProps } from '../../routes';
@@ -32,8 +31,7 @@ const CategoriesMap: React.FC<CategoriesMapProps> = (props) => {
     return CategoriesMemo;
 }
 
-export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
-    
+export function CategoryList({onTitleChange}: HeaderNotifierProps) {
     const [categories, setCategories] = React.useState<Categories>({});
     const [viewCategories, setViewCategories] = React.useState<Categories>({});
 
@@ -49,9 +47,9 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
     }, [categories]);
 
     React.useLayoutEffect(() => {
-        props.onTitleChange('Categories');
+        onTitleChange('Categories');
         return function () {
-            props.onTitleChange('');
+            onTitleChange('');
         };
     // eslint-disable-next-line
     }, []);
