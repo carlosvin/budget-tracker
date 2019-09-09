@@ -11,7 +11,7 @@ export const ExportDataInfo: React.FC<Partial<ExportDataSet>> = (props) => (
     </Box>
 );
 
-const ImportedElementInfo: React.FC<{elements?:{[k: string]: any}, name: string}> = (props) => {
+function ImportedElementInfo <T>(props: {elements?:{[k: string]: T}, name: string}){
     const {elements, name} = props;
     if (elements) {
         return (

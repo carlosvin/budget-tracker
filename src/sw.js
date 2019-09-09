@@ -21,6 +21,7 @@ workbox.routing.registerRoute(
                 return response || fetch(defaultBase);
             })
             .catch(err => {
+                console.debug(err);
                 return fetch(defaultBase);
             });
     }
@@ -34,6 +35,7 @@ self.addEventListener('fetch', (event) => {
     const promiseChain = fetch(event.request.clone())
     .then(e => console.log('sync... ', e))
         .catch((err) => {
+            console.debug(err);
             return queue.pushRequest({ request: event.request });
         });
 

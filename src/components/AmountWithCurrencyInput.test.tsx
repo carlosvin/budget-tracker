@@ -5,9 +5,7 @@ import { CurrencyRates } from '../interfaces';
 
 // TODO remove skip when https://github.com/mui-org/material-ui/issues/14357 is fixed
 test.skip('Amount Input changes', () => {
-    const handleChange = (amount: number, currency: string, amountBase?: number) => {
-
-    }
+    const handleChange = () => {}
 
     const rates: CurrencyRates = {
         base: 'EUR',

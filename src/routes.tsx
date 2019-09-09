@@ -27,10 +27,14 @@ export interface HeaderNotifierProps {
 }
 
 // Function to inject properties to components rendered by router
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function _render(ComponentType: React.ComponentType<any>, parentProps: HeaderNotifierProps) {
-    return (props: RouteComponentProps<any>) => <React.Suspense fallback='loading view'>
+    // eslint-disable-next-line
+    return function (props: RouteComponentProps<any>) {
+        return <React.Suspense fallback='loading view'>
             <ComponentType {...props} {...parentProps}/>
         </React.Suspense>;
+    };
 }
 
 const budgetUrl = new BudgetPath(':budgetId');

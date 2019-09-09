@@ -18,6 +18,13 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
 
     const [error, setError] = React.useState();
 
+    function validate () {
+        if (budget.from >= budget.to) {
+            return 'Invalid date range';
+        }
+        return undefined;
+    }
+
     const handleSubmit = (e: React.SyntheticEvent) => {
         e.preventDefault();
         const err = validate();
@@ -55,13 +62,6 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
         setBudget({...budget, currency});
         setError(undefined);
     };
-
-    function validate () {
-        if (budget.from >= budget.to) {
-            return 'Invalid date range';
-        }
-        return undefined;
-    }
 
     return (
         <form onSubmit={handleSubmit} >
