@@ -163,14 +163,16 @@ export default class CurrenciesStoreImpl implements CurrenciesStore {
 
     async getFromCountry (countryCode: string) {
         if (!this._countriesCurrencyMap) {
-            const cs = await import('./countryCurrency.json');
-            this._countriesCurrencyMap = cs.default;    
+            this._countriesCurrencyMap = await import('./countryCurrency.json');
         }
-        const currency = this._countriesCurrencyMap[countryCode];
-        if (currency) {
-            this.setLastCurrencyUsed(currency);
+        if (this._countriesCurrencyMap && countryCode in this._countriesCurrencyMap) {
+            const currency = this._countriesCurrencyMap[countryCode];
+            if (currency) {
+                this.setLastCurrencyUsed(currency);
+            }
+            return currency;
         }
-        return currency;
+        return undefined;
     }
 
     get lastCurrencyUsed () {
