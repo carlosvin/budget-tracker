@@ -38,9 +38,7 @@ export default class CountriesStoreImpl implements CountriesStore {
 
     async getCountries() {
         if (this._countries.length === 0) {
-            const cs = await import('./countries.json');
-
-            this._countries = cs.default;
+            this._countries = await import('./countries.json');;
         }
         return this._countries;
     }
