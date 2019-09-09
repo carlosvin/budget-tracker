@@ -21,7 +21,7 @@ const CategoriesMap: React.FC<CategoriesMapProps> = (props) => {
                 <CategoryInput 
                     category={c}
                     direction='row' 
-                    key={`category-entry-${c.id}`}
+                    key={`category-entry-${c.identifier}`}
                     onChange={ props.onChange }
                     onDelete={ props.onDelete }/>)
             }
@@ -59,7 +59,7 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
     const [changed, setChanged] = React.useState(false);
 
     const handleChange = (category: Category) => {
-        viewCategories[category.id] = category;
+        viewCategories[category.identifier] = category;
         setViewCategories(viewCategories);
         setChanged(true);
     }

@@ -10,6 +10,7 @@
         "axios": "^0.19",
         "firebase": "^6.4.0",
         "firebaseui": "^4.1.0",
+        "idb": "^4.0.4",
         "nanoid": "^2.0.4",
         "react": "^16",
         "react-dom": "^16",

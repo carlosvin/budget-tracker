@@ -17,7 +17,7 @@ const CategoryOptions: React.FC<{categories: Categories}> = (props) => {
             ([k, v]) => (
                 <option 
                     key={`category-option-${k}`} 
-                    value={v.id}>
+                    value={v.identifier}>
                     {v.name}
                 </option>))}
     </React.Fragment>;   
@@ -58,7 +58,7 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
             const store = await btApp.getCategoriesStore();
             await store.setCategory(category);
             setCategories({...categories, category});
-            props.onCategoryChange(category.id);
+            props.onCategoryChange(category.identifier);
         }
     }
     

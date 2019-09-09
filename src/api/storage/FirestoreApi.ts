@@ -139,7 +139,7 @@ export class FirestoreApi implements SubStorageApi {
     }
 
     async saveCategory(category: Category, timestamp?: number){
-        await this.getCategoryDoc(category.id).set(this.removeUndefined(category));
+        await this.getCategoryDoc(category.identifier).set(this.removeUndefined(category));
         return this.setLastTimeSaved(timestamp);
     }
 
@@ -182,7 +182,7 @@ export class FirestoreApi implements SubStorageApi {
         Object
             .values(categories)
             .forEach(category => batch.set(
-                this.getCategoryDoc(category.id), this.removeUndefined(category)));
+                this.getCategoryDoc(category.identifier), this.removeUndefined(category)));
         for (const budgetId in data.budgets) {
             batch.set(
                 this.getBudgetDoc(budgetId), 

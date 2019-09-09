@@ -24,12 +24,12 @@ export default class CategoriesStoreImpl implements CategoriesStore {
 
     async setCategory(category: Category) {
         const categories = await this.getCategories();
-        categories[category.id] = {
+        categories[category.identifier] = {
             icon: category.icon,
             name: category.name,
-            id: category.id
+            identifier: category.identifier
         };
-        return this._storage.saveCategory(categories[category.id]);
+        return this._storage.saveCategory(categories[category.identifier]);
     }
 
     async setCategories(categories: Categories) {

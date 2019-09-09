@@ -101,7 +101,7 @@ export class LocalStorage implements SubStorageApi {
 
     async saveCategory (category: Category, timestamp?: number) {
         const categories = await this.getCategories();
-        categories[category.id] = category;
+        categories[category.identifier] = category;
         return this.saveCategories(categories, timestamp);
     }
 
