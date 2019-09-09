@@ -65,7 +65,7 @@ export const PrivacyPolicy: React.FC<HeaderNotifierProps&RouterProps> = (props) 
         Cookies are files with a small amount of data that are
         commonly used as anonymous unique identifiers. These are
         sent to your browser from the websites that you visit and
-        are stored on your device's internal memory.
+        are stored on your device`&apos;`s internal memory.
                   </p> <p>
         This Service does not use these “cookies” explicitly.
         However, the app may use third party code and libraries that

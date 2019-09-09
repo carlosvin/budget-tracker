@@ -18,7 +18,7 @@ import { AppPaths } from '../domain/paths';
 import { CloseButton } from '../components/buttons/CloseButton';
 import { RouterProps } from 'react-router';
 
-export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
+export function Sync(props: HeaderNotifierProps&RouterProps) {
 
     const [isLoggedIn, setIsLoggedIn] = React.useState<boolean|undefined>();
     const [error, setError] = React.useState();
@@ -45,11 +45,6 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
 
     React.useLayoutEffect(()=>{}, [isLoggedIn]);
 
-    function handleLogin() {
-        setIsLoggedIn(undefined);
-        login();
-    }
-
     async function login(){
         let uid = undefined;
         try {
@@ -64,9 +59,9 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
         setIsLoggedIn(!!uid);
     }
 
-    function handleLogout() {
+    function handleLogin() {
         setIsLoggedIn(undefined);
-        logout();
+        login();
     }
 
     async function logout () {
@@ -81,6 +76,11 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
         }
         await btApp.cleanupStores();
         setIsLoggedIn(!!uid);
+    }
+
+    function handleLogout() {
+        setIsLoggedIn(undefined);
+        logout();
     }
 
     function title () {
