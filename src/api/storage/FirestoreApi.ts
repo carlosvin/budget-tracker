@@ -8,17 +8,23 @@ export class FirestoreApi implements SubStorageApi {
     private readonly db: firebase.firestore.Firestore;
     private readonly userId: string;
 
-    constructor(userId: string) {
+    constructor(userId: string, enablePersistence=false) {
         if (userId) {
             this.userId = userId;
             this.db = firebase.firestore();
-            try {
-                this.db.enablePersistence();    
-            } catch (error) {
-                console.warn('Persistence is already enabled: ', error);
+            if (enablePersistence) {
+                this.enablePersistence();
             }
         } else {
             throw Error('User must be logged in to be able to use firestore');
+        }
+    }
+
+    private enablePersistence () {
+        try {
+            this.db.enablePersistence();    
+        } catch (error) {
+            console.warn('Persistence is already enabled: ', error);
         }
     }
 

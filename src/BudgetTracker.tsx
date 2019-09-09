@@ -48,7 +48,7 @@ class BudgetTracker {
                 const userId = await (await this.getAuth()).getUserId();
                 if (userId) {
                     const storage = await import('./api/storage/FirestoreApi');
-                    this._firestore = new storage.FirestoreApi(userId);
+                    this._firestore = new storage.FirestoreApi(userId, true);
                 }
             } catch (error) {
                 console.warn('Cannot get user ID: ', error);
