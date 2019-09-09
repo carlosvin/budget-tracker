@@ -29,7 +29,7 @@ export class AuthApiImpl implements AuthApi {
 
     constructor() {
         this.auth = firebase.initializeApp(config).auth();
-        this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        // this.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
         this._provider = new firebase.auth.GoogleAuthProvider();
     }
 

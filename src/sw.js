@@ -1,3 +1,6 @@
+
+import { FirestoreSync } from "./api/storage/FirestoreSync";
+
 // advanced config for injectManifest approach
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js');
 
@@ -27,11 +30,13 @@ workbox.routing.registerRoute(
     }
 );
 
-//import { FirestoreApi } from './api/storage/FirestoreApi';
+const firestoreSync = new FirestoreSync ();
 
-// TODO use push event to save data to firestore
-self.addEventListener('message', event => {
-    console.log(event);
+// TODO sync pending data to firestore
+self.addEventListener('sync', event => {
+    if (event.tag === 'local->remote') {
+        firestoreSync.onSyncLocalRemote();
+    }
 });
 
 /** TODO use it to retry firestore failed requests

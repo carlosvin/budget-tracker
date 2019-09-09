@@ -24,6 +24,12 @@ class BudgetTracker {
     private _countriesStore?: CountriesStore;
     private _budgetsIndex?: BudgetsIndexStore;
 
+    readonly firestoreWorker: Worker;
+
+    constructor () {
+        this.firestoreWorker = new Worker('./firestore.worker.ts');
+    }
+
     async getStorage() {
         if (!this._storage) {
             const storage = await import('./api/storage/AppStorageManager');
@@ -139,13 +145,8 @@ class BudgetTracker {
 
     registerServiceWorker() {
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker
-                    .register('sw.js')
-                    .then(r => {
-                        console.log('service worker registered in scope: ', r.scope);
-                    })
-                    .catch(e => console.log('SW error: ', e));
+            window.addEventListener('load', async () => {
+                await navigator.serviceWorker.register('sw.js');
             });
         }
     }
