@@ -27,7 +27,32 @@ workbox.routing.registerRoute(
     }
 );
 
+//import { FirestoreApi } from './api/storage/FirestoreApi';
+
+// TODO use push event to save data to firestore
+self.addEventListener('message', event => {
+    console.log(event);
+});
+
+/** TODO use it to retry firestore failed requests
+ *
 // Background sync
+
+const bgSyncPlugin = new workbox.backgroundSync.Plugin('myQueueName', {
+  maxRetentionTime: 24 * 60 // Retry for max of 24 Hours (specified in minutes)
+});
+
+workbox.routing.registerRoute(
+  /\/api\/.*\/*.json/,
+  new workbox.strategies.NetworkOnly({
+    plugins: [bgSyncPlugin]
+  }),
+  'POST'
+);
+
+///
+
+
 const queue = new workbox.backgroundSync.Queue('eventsQueue');
 
 self.addEventListener('fetch', (event) => {
@@ -41,3 +66,7 @@ self.addEventListener('fetch', (event) => {
 
     event.waitUntil(promiseChain);
 });
+
+
+
+ */
