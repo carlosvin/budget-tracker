@@ -131,7 +131,7 @@ export class IndexedDb implements SubStorageApi {
 
     async getCategories(): Promise<Categories> {
         const db = await this.getDb();
-        const bound = IDBKeyRange.lowerBound([0, ]);
+        const bound = IDBKeyRange.upperBound([1, ], true);
         const categoriesResult = await db.getAllFromIndex(
             StoreNames.Categories, 
             'deleted, name', 
@@ -148,13 +148,14 @@ export class IndexedDb implements SubStorageApi {
         await db.put(StoreNames.Categories, {...category, timestamp, deleted: 0});
     }
 
-    async saveCategories(categories: Categories, timestamp = new Date().getTime()) {
+    async deleteCategory(identifier: string, timestamp = new Date().getTime()) {
         const db = await this.getDb();
         const tx = db.transaction(StoreNames.Categories, 'readwrite');
-        for (const id in categories) {
-            tx.store.put({deleted: 0, ...categories[id], timestamp });
+        const category = await tx.store.get(identifier);
+        if (category) {
+            tx.store.put({...category, timestamp, deleted: 1 });
         }
-        return tx.done;
+        return tx.done;    
     }
 
     async import(data: ExportDataSet) {

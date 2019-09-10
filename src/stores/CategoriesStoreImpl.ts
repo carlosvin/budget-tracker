@@ -32,21 +32,16 @@ export default class CategoriesStoreImpl implements CategoriesStore {
         return this._storage.saveCategory(categories[category.identifier]);
     }
 
-    async setCategories(categories: Categories) {
-        this._categories = categories;
-        return this._storage.saveCategories(categories);
-    }
-
     async getCategory(categoryId: string) { 
         const categories = await this.getCategories();
         return categories[categoryId];
     }
 
-    async delete(categoryId: string) {
+    async deleteCategory(categoryId: string) {
         const categories = await this.getCategories();
         if (categoryId in categories) {
+            this._storage.deleteCategory(categoryId);
             delete categories[categoryId];
-            this._storage.saveCategories(categories);
             return true;
         }
         return false;

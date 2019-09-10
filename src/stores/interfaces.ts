@@ -4,10 +4,9 @@ import { SvgIconProps } from "@material-ui/core/SvgIcon";
 
 export interface CategoriesStore {
     getCategories(): Promise<Categories>;
-    setCategories(categories: Categories): Promise<void>;
     setCategory(category: Category): Promise<void>;
     getCategory(categoryId: string): Promise<Category>;
-    delete(categoryId: string): Promise<boolean>;
+    deleteCategory(categoryId: string): Promise<boolean>;
 }
 
 export interface BudgetsStore {
