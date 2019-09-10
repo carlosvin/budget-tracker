@@ -59,7 +59,7 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
             console.error(error);
         }
         if (uid) {
-            await btApp.cleanupStores();
+            await btApp.cleanupStorage();
         }
         setIsLoggedIn(!!uid);
     }
@@ -79,7 +79,7 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
             setError('There were some problems signing out');
             console.error(error);
         }
-        await btApp.cleanupStores();
+        await btApp.cleanupStorage();
         setIsLoggedIn(!!uid);
     }
 

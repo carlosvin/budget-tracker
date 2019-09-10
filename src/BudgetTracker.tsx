@@ -35,9 +35,13 @@ class BudgetTracker {
         throw Error('Error Loading Storage');
     }
 
-    async cleanupStores() {
+    async cleanupStorage () {
         this._firestore = undefined;
         await (await this.getStorage()).initRemote(this.getFirestore());
+        this.refreshStores();
+    }
+
+    refreshStores() {
         this._budgetsIndex = this._budgetsStore = this._categoriesStore = undefined;
     }
 
