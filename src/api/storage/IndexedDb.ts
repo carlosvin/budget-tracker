@@ -70,7 +70,7 @@ export class IndexedDb implements SubStorageApi {
         const db = await this.getDb();
         const budgetsResult = await db.getAll(StoreNames.Budgets);
         const budgets: BudgetsMap = {};
-        // TODO apply the filtering in indexed DB instead of programatically
+        // TODO apply the filtering in indexed DB instead of programmatically
         budgetsResult.filter(b => !b.deleted).forEach(b => budgets[b.identifier] = b);
         return budgets;
     }
@@ -176,7 +176,7 @@ export class IndexedDb implements SubStorageApi {
         }
         for (const categoryId in data.categories) {
             tx.objectStore(StoreNames.Categories).put(
-                {...dbProps, ...data.categories[categoryId]});
+                {...dbProps, ...data.categories[categoryId], identifier: categoryId});
         }
         return tx.done;
     }
