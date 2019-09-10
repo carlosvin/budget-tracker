@@ -1,5 +1,5 @@
 import { StorageApi, SubStorageApi } from "./StorageApi";
-import { Budget, Expense, Category, Categories, ExportDataSet } from "../../interfaces";
+import { Budget, Expense, Category, ExportDataSet } from "../../interfaces";
 
 export class AppStorageManager implements StorageApi {
     private _local: SubStorageApi;
@@ -89,14 +89,13 @@ export class AppStorageManager implements StorageApi {
         return localPromise;
     }
 
-    async saveCategories(categories: Categories, timestamp = new Date().getTime()) {
-        const localPromise = this._local.saveCategories(categories, timestamp);
+    async deleteCategory(identifier: string, timestamp = new Date().getTime()) {
+        const localPromise = this._local.deleteCategory(identifier, timestamp);
         if (this._remote) {
-            this._remote.saveCategories(categories, timestamp);
+            this._remote.deleteCategory(identifier, timestamp);
         }
         return localPromise;
     }
-
 
     async export () {
         return this._local.export();

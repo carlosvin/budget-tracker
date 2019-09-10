@@ -35,9 +35,13 @@ class BudgetTracker {
         throw Error('Error Loading Storage');
     }
 
-    async cleanupStores() {
+    async cleanupStorage () {
         this._firestore = undefined;
         await (await this.getStorage()).initRemote(this.getFirestore());
+        this.refreshStores();
+    }
+
+    refreshStores() {
         this._budgetsIndex = this._budgetsStore = this._categoriesStore = undefined;
     }
 
@@ -58,8 +62,8 @@ class BudgetTracker {
 
     private async getLocalStorage () {
         if (!this._localStorage) {
-            const storage  = await import('./api/storage/LocalStorage');
-            this._localStorage = new storage.LocalStorage();
+            const storage  = await import('./api/storage/IndexedDb');
+            this._localStorage = new storage.IndexedDb();
         }
         return this._localStorage;
     }

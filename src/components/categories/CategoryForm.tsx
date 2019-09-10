@@ -13,7 +13,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = (props) => {
 
     const [category, setCategory] = React.useState<Category>(
         props.category ||
-        {name: '', icon: 'Label', id: uuid()});
+        {name: '', icon: 'Label', identifier: uuid()});
     
     const handleSave = (e: React.SyntheticEvent) => {
         e.stopPropagation();

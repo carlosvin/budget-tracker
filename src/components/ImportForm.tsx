@@ -6,6 +6,7 @@ import { SnackbarError } from './snackbars';
 import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
 import { useStorage } from '../hooks/useStorage';
+import { btApp } from '../BudgetTracker';
 
 interface ImportFormProps {
     onImportedData: (data: Partial<ExportDataSet>) => void;
@@ -37,6 +38,7 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
                 const serialized = await FilesApi.getFileContent(selectedFile);
                 const data = JSON.parse(serialized) as ExportDataSet;
                 await storage.import(data);
+                btApp.refreshStores();
                 props.onImportedData(data);
                 setFile(undefined);
             } catch (error) {
