@@ -1,6 +1,12 @@
+2.0.0 Replace LocalStore by IndexedDB
+--------------------------------------
+- BC: Export data to file, so later it could be imported to IndexedDB.
+- BC: Category.id renamed to Category.identifier.
+- Since there are no production users, there is no migration mechanism in the application. You should [export your current budgets](https://carlosvin.github.io/budget-tracker/import-export) to a file and imported later in new version.
+
 1.3.0 Import/export merge
 -------------------------
-- BC: Import data is not overriding budgets anymore, not budgets and categories are merged.
+- Import data is not overriding budgets anymore, not budgets and categories are merged.
 - Import export UI improvements.
 
 1.2.0 Import/export UI changes
