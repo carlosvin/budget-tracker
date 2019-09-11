@@ -1,4 +1,4 @@
-import { SubStorageApi } from "./StorageApi";
+import { SubStorageApi, SyncItem, LocalStorageApi } from "./StorageApi";
 import { openDB, IDBPDatabase, DBSchema } from 'idb';
 import { Budget, Category, Expense, BudgetsMap, ExpensesMap, Categories, ExportDataSet } from "../../interfaces";
 
@@ -16,7 +16,8 @@ interface CategoryDb extends Category, DbItem { }
 enum StoreNames {
     Budgets = 'budgets',
     Expenses = 'expenses',
-    Categories = 'categories'
+    Categories = 'categories',
+    PendingSync = 'pendingSync',
 }
 
 const keyPath = {keyPath: 'identifier'};
@@ -36,10 +37,14 @@ interface Schema extends DBSchema {
         value: ExpenseDb,
         key: string,
         indexes: { 'deleted, budgetId, when': [number, string, number]},
+    },
+    [StoreNames.PendingSync]: {
+        value: SyncItem,
+        key: string
     }
 }
 
-export class IndexedDb implements SubStorageApi {
+export class IndexedDb implements LocalStorageApi {
     private readonly name = 'budgetTrackerDb';
     private readonly version = 1;
     private _db?: IDBPDatabase<Schema>;
@@ -55,6 +60,8 @@ export class IndexedDb implements SubStorageApi {
                 
                 const expensesStore = db.createObjectStore(StoreNames.Expenses, keyPath);
                 expensesStore.createIndex('deleted, budgetId, when', ['deleted', 'budgetId', 'when']);
+
+                db.createObjectStore(StoreNames.PendingSync, keyPath);
             },
         });
     }
@@ -73,6 +80,11 @@ export class IndexedDb implements SubStorageApi {
         // TODO apply the filtering in indexed DB instead of programmatically
         budgetsResult.filter(b => !b.deleted).forEach(b => budgets[b.identifier] = b);
         return budgets;
+    }
+
+    async getBudget(identifier: string){
+        const db = await this.getDb();
+        return db.get(StoreNames.Budgets, identifier);
     }
 
     async saveBudget(budget: Budget, timestamp = new Date().getTime()) {
@@ -109,6 +121,12 @@ export class IndexedDb implements SubStorageApi {
         throw new Error('There is no budget with id ' + budgetId);
     }
 
+    async getExpense(budgetId: string, expenseId: string) {
+        // TODO remove budgetId from interface if it is not required by other implementations
+        const db = await this.getDb();
+        return db.get(StoreNames.Expenses, expenseId);
+    }
+
     async saveExpenses(budgetId: string, expenses: Expense[], timestamp = new Date().getTime()) {
         const db = await this.getDb();
         const tx = db.transaction(StoreNames.Expenses, 'readwrite');
@@ -142,6 +160,12 @@ export class IndexedDb implements SubStorageApi {
         }
         return categories;
     }
+
+    async getCategory(identifier: string) {
+        const db = await this.getDb();
+        return db.get(StoreNames.Categories, identifier);
+    }
+
 
     async saveCategory(category: Category, timestamp = new Date().getTime()) {
         const db = await this.getDb();
@@ -202,4 +226,15 @@ export class IndexedDb implements SubStorageApi {
     async setLastTimeSaved(timestamp: number): Promise<void> {
         localStorage.setItem('timestamp', timestamp.toString());
     }
+
+    async getSyncPending() {
+        const db = await this.getDb();
+        return db.getAll(StoreNames.PendingSync);
+    }
+
+    async deleteSyncPending(identifier: string) {
+        const db = await this.getDb();
+        return db.delete(StoreNames.PendingSync, identifier);
+    }
+
 }
