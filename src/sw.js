@@ -1,5 +1,9 @@
 
-import { FirestoreSync } from "./api/storage/FirestoreSync";
+import DataSynchronizer from "./api/storage/DataSynchronizer";
+import { SyncDirection } from "./interfaces";
+import { IndexedDb } from "./api/storage/IndexedDb";
+import { FirestoreApi } from "./api/storage/FirestoreApi";
+import { AuthApiImpl } from "./api/AuthApiImpl";
 
 // advanced config for injectManifest approach
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js');
@@ -30,14 +34,20 @@ workbox.routing.registerRoute(
     }
 );
 
-const firestoreSync = new FirestoreSync ();
+const auth = new AuthApiImpl();
+auth.getUserId().then(
+    function (userId) {
+        if (userId) {
+            const remoteSync = new DataSynchronizer (new IndexedDb(), new FirestoreApi(userId));
+            self.addEventListener('sync', event => {
+                if (event.tag === SyncDirection.LocalToRemote) {
+                    remoteSync.sync();
+                }
+            });
 
-// TODO sync pending data to firestore
-self.addEventListener('sync', event => {
-    if (event.tag === 'local->remote') {
-        firestoreSync.onSyncLocalRemote();
+        }
     }
-});
+)
 
 /** TODO use it to retry firestore failed requests
  *

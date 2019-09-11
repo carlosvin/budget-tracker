@@ -64,7 +64,7 @@ export default class BudgetsStoreImpl implements BudgetsStore {
         this._budgetsIndex.saveExpenses(budgetId, expenses);
     }
 
-    async getExpense(budgetId: string, expenseId: string){
+    async getExpense(budgetId: string, expenseId: string) {
         return (await this.getBudgetModel(budgetId)).getExpense(expenseId);
     }
 

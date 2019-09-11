@@ -2,19 +2,19 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { BudgetsIndexStore } from './stores/BudgetsIndexStore';
-import { SubStorageApi, AppStorageApi } from './api/storage/StorageApi';
+import { StorageApi } from './api/storage/StorageApi';
 import {
     CategoriesStore, BudgetsStore,
     IconsStore, CurrenciesStore,
     CountriesStore
 } from './stores/interfaces';
 import { AuthApi } from './api/AuthApi';
+import { IndexedDb } from './api/storage/IndexedDb';
+import { AppStorageManager } from './api/storage/AppStorageManager';
 
 class BudgetTracker {
 
-    private _storage?: AppStorageApi;
-    private _firestore?: SubStorageApi;
-    private _localStorage?: SubStorageApi;
+    readonly storage: StorageApi;
     private _auth?: AuthApi;
     private _authPromise?: Promise<AuthApi>;
     private _budgetsStore?: BudgetsStore;
@@ -24,55 +24,15 @@ class BudgetTracker {
     private _countriesStore?: CountriesStore;
     private _budgetsIndex?: BudgetsIndexStore;
 
-    readonly firestoreWorker: Worker;
+    // TODO remove Web Worker example: readonly firestoreWorker: Worker;
 
     constructor () {
-        this.firestoreWorker = new Worker('./firestore.worker.ts');
-    }
-
-    async getStorage() {
-        if (!this._storage) {
-            const storage = await import('./api/storage/AppStorageManager');
-            this._storage = new storage.AppStorageManager(await this.getLocalStorage());
-            this._storage.initRemote(this.getFirestore());
-        }
-        if (this._storage) {
-            return this._storage;
-        }
-        throw Error('Error Loading Storage');
-    }
-
-    async cleanupStorage () {
-        this._firestore = undefined;
-        await (await this.getStorage()).initRemote(this.getFirestore());
-        this.refreshStores();
+        // this.firestoreWorker = new Worker('./firestore.worker.ts');
+        this.storage = new AppStorageManager(new IndexedDb());
     }
 
     refreshStores() {
         this._budgetsIndex = this._budgetsStore = this._categoriesStore = undefined;
-    }
-
-    private async getFirestore() {
-        if (!this._firestore) {
-            try {
-                const userId = await (await this.getAuth()).getUserId();
-                if (userId) {
-                    const storage = await import('./api/storage/FirestoreApi');
-                    this._firestore = new storage.FirestoreApi(userId, true);
-                }
-            } catch (error) {
-                console.warn('Cannot get user ID: ', error);
-            }
-        }
-        return this._firestore;
-    }
-
-    private async getLocalStorage() {
-        if (!this._localStorage) {
-            const storage  = await import('./api/storage/IndexedDb');
-            this._localStorage = new storage.IndexedDb();
-        }
-        return this._localStorage;
     }
 
     async getAuth() {
@@ -107,14 +67,14 @@ class BudgetTracker {
     async getCategoriesStore() {
         if (!this._categoriesStore) {
             const CategoriesStoreImpl = (await import('./stores/CategoriesStoreImpl')).default;
-            this._categoriesStore = new CategoriesStoreImpl(await this.getStorage());
+            this._categoriesStore = new CategoriesStoreImpl(this.storage);
         }
         return this._categoriesStore;
     }
 
     async getBudgetsIndex() {
         if (!this._budgetsIndex) {
-            this._budgetsIndex = new BudgetsIndexStore(await this.getStorage());
+            this._budgetsIndex = new BudgetsIndexStore(this.storage);
         }
         return this._budgetsIndex;
     }

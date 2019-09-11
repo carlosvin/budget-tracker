@@ -14,6 +14,7 @@ export class ExpenseModel implements Expense {
     readonly description?: string;
     readonly identifier: string;
     readonly when: number;
+    readonly budgetId: string;
 
     constructor (info: Expense) {
         this.identifier = info.identifier;
@@ -24,12 +25,13 @@ export class ExpenseModel implements Expense {
         this.countryCode = info.countryCode;
         this.description = info.description;
         this.when = info.when;
+        this.budgetId = info.budgetId;
         this.validate();
     }
 
     get info (): Expense {
-        const { amount, amountBaseCurrency, categoryId, countryCode, currency, description, identifier, when} = this;
-        return { amount, amountBaseCurrency, categoryId, description, identifier, when, countryCode, currency };
+        const { amount, amountBaseCurrency, categoryId, countryCode, currency, description, identifier, when, budgetId} = this;
+        return { amount, amountBaseCurrency, categoryId, description, identifier, when, countryCode, currency, budgetId };
     }
 
     get json (): string {

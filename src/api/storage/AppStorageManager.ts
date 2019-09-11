@@ -1,44 +1,27 @@
 import { StorageApi, SubStorageApi } from "./StorageApi";
-import { Budget, Expense, Category, ExportDataSet } from "../../interfaces";
+import { Budget, Expense, Category, ExportDataSet, SyncDirection } from "../../interfaces";
 
 export class AppStorageManager implements StorageApi {
     private _local: SubStorageApi;
-    private _remote?: SubStorageApi;
 
     constructor (local: SubStorageApi) {
         this._local = local;
+        navigator.serviceWorker.ready.then(function(swRegistration) {
+            return swRegistration.sync.register('toRemote');
+        });
     }
 
-    async initRemote (remotePromise ?: Promise<SubStorageApi|undefined>) {
-        if (remotePromise) {
-            this._remote = await remotePromise;
-            if (this._remote) {
-                await AppStorageManager.sync(this._local, this._remote);
-                return this._remote;
-            }
-        } else {
-            this._remote = undefined;
-        }
-    }
-
-    private static async sync(local: SubStorageApi, remote: SubStorageApi) {
-        const [remoteTime, localTime] = await Promise.all([
-            remote.getLastTimeSaved(), 
-            local.getLastTimeSaved()]);
-        if (remoteTime > localTime) {
-            console.debug('Remote > Local');
-            return local.import(await remote.export());
-        } else if (remoteTime < localTime) {
-            console.debug('Local > Remote');
-            return remote.import(await local.export());
-        } else {
-            console.debug('Nothing to sync');
-        }
-        console.debug('Sync done');
+    private async notifySync () {
+        const registration = await navigator.serviceWorker.ready;
+        registration.sync.register(SyncDirection.LocalToRemote);
     }
 
     async getBudgets() {
         return this._local.getBudgets();
+    }
+
+    async getBudget(budgetId: string) {
+        return this._local.getBudget(budgetId);
     }
 
     async getExpenses(budgetId: string) {
@@ -46,55 +29,45 @@ export class AppStorageManager implements StorageApi {
     }
     
     async saveBudget(budget: Budget, timestamp = new Date().getTime()) {
-        const localPromise = this._local.saveBudget(budget, timestamp);
-        if (this._remote) {
-            this._remote.saveBudget(budget, timestamp);
-        }
-        return localPromise;
+        await this._local.saveBudget(budget, timestamp);
+        this.notifySync();
     }
     
     async deleteBudget(budgetId: string, timestamp = new Date().getTime()) {
-        const localPromise = this._local.deleteBudget(budgetId, timestamp);
-        if (this._remote) {
-            this._remote.deleteBudget(budgetId, timestamp);
-        }
-        return localPromise;
-    }
-    
-    async saveExpenses(budgetId: string, expenses: Expense[], timestamp = new Date().getTime()) {
-        const localPromise = this._local.saveExpenses(budgetId, expenses, timestamp);
-        if (this._remote) {
-            this._remote.saveExpenses(budgetId, expenses, timestamp);
-        }
-        return localPromise;
+        await this._local.deleteBudget(budgetId, timestamp);
+        this.notifySync();
     }
 
-    async deleteExpense(budgetId: string, expenseId: string, timestamp = new Date().getTime()) {
-        const localPromise = this._local.deleteExpense(budgetId, expenseId, timestamp);
-        if (this._remote) {
-            this._remote.deleteExpense(budgetId, expenseId, timestamp);
-        }
-        return localPromise;
+    async getExpense(expenseId: string) {
+        return this._local.getExpense(expenseId);
+    }
+    
+    async saveExpenses(expenses: Expense[], timestamp = new Date().getTime()) {
+        await this._local.saveExpenses(expenses, timestamp);
+        this.notifySync();
+    }
+
+    async deleteExpense(expenseId: string, timestamp = new Date().getTime()) {
+        await this._local.deleteExpense(expenseId, timestamp);
+        this.notifySync();
     }
 
     async getCategories() {
         return this._local.getCategories();
     }
 
+    async getCategory(categoryId: string) {
+        return this._local.getCategory(categoryId);
+    }
+
     async saveCategory(category: Category, timestamp = new Date().getTime()) {
-        const localPromise = this._local.saveCategory(category, timestamp);
-        if (this._remote) {
-            this._remote.saveCategory(category, timestamp);
-        }
-        return localPromise;
+        await this._local.saveCategory(category, timestamp);
+        this.notifySync();
     }
 
     async deleteCategory(identifier: string, timestamp = new Date().getTime()) {
-        const localPromise = this._local.deleteCategory(identifier, timestamp);
-        if (this._remote) {
-            this._remote.deleteCategory(identifier, timestamp);
-        }
-        return localPromise;
+        await this._local.deleteCategory(identifier, timestamp);
+        this.notifySync();
     }
 
     async export () {
@@ -102,10 +75,7 @@ export class AppStorageManager implements StorageApi {
     }
 
     async import (data: ExportDataSet) {
-        const localPromise = this._local.import(data);
-        if (this._remote) {
-            this._remote.import(data);
-        }
-        return localPromise;
+        await this._local.import(data);
+        this.notifySync();
     }
 }

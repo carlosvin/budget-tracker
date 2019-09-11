@@ -1,7 +1,12 @@
 import { Budget, BudgetsMap, ExpensesMap, Expense, Categories, Category, User, ExportDataSet } from '../../interfaces';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { SubStorageApi } from './StorageApi';
+import { SubStorageApi, DbItem } from './StorageApi';
+
+
+interface ExpenseDb extends Expense, DbItem { }
+interface BudgetDb extends Budget, DbItem { }
+interface CategoryDb extends Category, DbItem { }
 
 export class FirestoreApi implements SubStorageApi {
     
@@ -50,12 +55,12 @@ export class FirestoreApi implements SubStorageApi {
         return this.budgetsCol.doc(budgetId);
     }
 
-    getExpensesCol (budgetId: string) {
-        return this.getBudgetDoc(budgetId).collection('expenses');
+    get expensesCol() {
+        return this.userDoc.collection('expenses');
     }
 
-    getExpenseDoc (budgetId: string, expenseId: string) {
-        return this.getExpensesCol(budgetId).doc(expenseId);
+    getExpenseDoc (expenseId: string) {
+        return this.expensesCol.doc(expenseId);
     }
 
     get categoriesCol () {
@@ -66,9 +71,9 @@ export class FirestoreApi implements SubStorageApi {
         return this.categoriesCol.doc(categoryId);
     }
 
-    async saveBudget(budget: Budget, timestamp?: number) {
+    async saveBudget(budget: Budget, timestamp = new Date().getTime()) {
         this.removeUndefined(budget);
-        await this.getBudgetDoc(budget.identifier).set(budget);
+        await this.getBudgetDoc(budget.identifier).set({...budget, timestamp});
         return this.setLastTimeSaved(timestamp);
     }
 
@@ -94,24 +99,42 @@ export class FirestoreApi implements SubStorageApi {
             return doc.data() as Budget;
         } catch (error) {
             console.warn('Cannot get budget: ', error);
-            return null;
+            return undefined;
         }
     }
 
-    async getBudgets (): Promise<BudgetsMap> {
-        const querySnapshot = await this.budgetsCol.orderBy('from', 'desc').get();
+    async getBudgets (timestamp = 0): Promise<BudgetsMap> {
+        const querySnapshot = await this.budgetsCol
+            .where('deleted', '==',  0)
+            .where('timestamp', '>', timestamp)
+            .orderBy('from', 'desc')
+            .get();
         const budgets: {[k: string]: Budget} = {};
         querySnapshot.forEach((doc) => {
             budgets[doc.id] = doc.data() as Budget;
         });
         return budgets;
     }
+
+    async getExpense(expenseId: string) {
+        const expense = await this.getExpenseDoc(expenseId).get();
+        return expense.data() as Expense;
+    }
     
-    async getExpenses(budgetId: string): Promise<ExpensesMap> {
-        const querySnapshot = await this
-            .getExpensesCol(budgetId)
-            .orderBy('when', 'desc')
-            .get();
+    async getExpenses(budgetId: string, timestamp = 0): Promise<ExpensesMap> {
+        return this._getExpenses(budgetId, timestamp);
+    }
+
+    async _getExpenses(budgetId?: string, timestamp = 0): Promise<ExpensesMap> {
+        let queryBuilder = await this.expensesCol.where('deleted', '==',  0);
+        if (budgetId) {
+            queryBuilder = queryBuilder.where('budgetId', '==', budgetId);
+        }
+        if (timestamp) {
+            queryBuilder = queryBuilder.where('timestamp', '>', timestamp);
+        }
+        const querySnapshot = await queryBuilder.orderBy('when', 'desc').get();
+
         const expenses: ExpensesMap = {};
         querySnapshot.forEach((doc) => {
             expenses[doc.id] = doc.data() as Expense;
@@ -119,24 +142,35 @@ export class FirestoreApi implements SubStorageApi {
         return expenses;
     }
 
-    async saveExpenses(budgetId: string, expenses: Expense[], timestamp?: number) {
+    async saveExpenses(expenses: ExpenseDb[], timestamp = new Date().getTime()) {
         const batch = this.db.batch();
         Object
             .values(expenses)
             .forEach(expense => batch.set(
-                this.getExpenseDoc(budgetId, expense.identifier), 
-                this.removeUndefined(expense)));
+                this.getExpenseDoc(expense.identifier), 
+                this.removeUndefined({...expense, timestamp})));
         this.setLastTimeSaved(timestamp, batch);
         return batch.commit();
     }
 
-    async deleteExpense(budgetId: string, expenseId: string, timestamp?: number) {
-        await this.getExpenseDoc(budgetId, expenseId).delete();
-        return this.setLastTimeSaved(timestamp);
+    async deleteExpense(expenseId: string, timestamp = new Date().getTime()) {
+        const expense = await this.getExpense(expenseId);
+        if (expense) {
+            await this.saveExpenses([{...expense, deleted: 1, timestamp}]);
+            return this.setLastTimeSaved(timestamp);    
+        }
     }
 
-    async getCategories(): Promise<Categories> {
-        const querySnapshot = await this.categoriesCol.orderBy('name').get();
+    async getCategory(identifier: string) {
+        const category = await this.getExpenseDoc(identifier).get();
+        return category.data() as Category;
+    }
+
+    async getCategories(timestamp = 0): Promise<Categories> {
+        const querySnapshot = await this.categoriesCol
+            .where('deleted', '==',  0)
+            .where('timestamp', '>', timestamp)
+            .orderBy('name').get();
         const categories: Categories = {};
         querySnapshot.forEach((doc) => {
             categories[doc.id] = doc.data() as Category;
@@ -144,25 +178,29 @@ export class FirestoreApi implements SubStorageApi {
         return categories;    
     }
 
-    async saveCategory(category: Category, timestamp?: number){
-        await this.getCategoryDoc(category.identifier).set(this.removeUndefined(category));
+    async saveCategory(category: CategoryDb, timestamp = new Date().getTime()){
+        await this.getCategoryDoc(category.identifier)
+            .set(this.removeUndefined({...category, timestamp}));
         return this.setLastTimeSaved(timestamp);
     }
 
-    async saveCategories(categories: Categories, timestamp?: number){
+    async saveCategories(categories: Categories, timestamp = new Date().getTime()){
         const batch = this.db.batch();
         Object
             .entries(categories)
             .forEach(([k, category]) => batch.set(
                 this.categoriesCol.doc(k), 
-                this.removeUndefined(category)));
+                this.removeUndefined({...category, timestamp})));
         await batch.commit();
         return this.setLastTimeSaved(timestamp);
     }
 
-    async deleteCategory(categoryId: string, timestamp?: number){
-        await this.getCategoryDoc(categoryId).delete();
-        return this.setLastTimeSaved(timestamp);
+    async deleteCategory(categoryId: string, timestamp = new Date().getTime()){
+        const category = await this.getCategory(categoryId);
+        if (category) {
+            await this.saveCategory({...category, deleted: 1, timestamp});
+            return this.setLastTimeSaved(timestamp);    
+        }
     }
 
     async getLastTimeSaved () {
@@ -188,32 +226,51 @@ export class FirestoreApi implements SubStorageApi {
         Object
             .values(categories)
             .forEach(category => batch.set(
-                this.getCategoryDoc(category.identifier), this.removeUndefined(category)));
-        for (const budgetId in data.budgets) {
-            batch.set(
-                this.getBudgetDoc(budgetId), 
-                this.removeUndefined(budgets[budgetId]));
-            for (const expenseId in expenses[budgetId]) {
-                batch.set(
-                    this.getExpenseDoc(budgetId, expenseId), 
-                    this.removeUndefined(expenses[budgetId][expenseId]));
-            }
-        }
+                this.getCategoryDoc(category.identifier), 
+                this.removeUndefined({timestamp: lastTimeSaved, ...category})));
+        Object
+            .values(budgets)
+            .forEach(budget => batch.set(
+                this.getBudgetDoc(budget.identifier), 
+                this.removeUndefined({timestamp: lastTimeSaved, ...budget})));
+                
+        Object.values(expenses).forEach(expense => batch.set(
+            this.getExpenseDoc(expense.identifier), 
+            this.removeUndefined({timestamp: lastTimeSaved, ...expense})));
+
         batch.set(this.userDoc, {timestamp: lastTimeSaved});
         return batch.commit();
     }
 
-    private async getExpensesWithBudgetId (budgetId: string): Promise<[string, ExpensesMap]> {
-        return [budgetId, await this.getExpenses(budgetId)];
+    async export(): Promise<ExportDataSet> {
+        const [budgets, categories, expenses, lastTimeSaved] = await Promise.all(
+            [
+                this.getBudgets(), 
+                this.getCategories(), 
+                this._getExpenses(),
+                this.getLastTimeSaved()]);
+
+        return {budgets, expenses, categories, lastTimeSaved};
     }
 
-    async export(): Promise<ExportDataSet> {
-        const [budgets, categories, lastTimeSaved] = await Promise.all([this.getBudgets(), this.getCategories(), this.getLastTimeSaved()]);
-        const expensesEntries = await Promise.all(Object
-            .keys(budgets)
-            .map(budgetId => this.getExpensesWithBudgetId(budgetId)));
-        const expenses: {[budgetId: string]: ExpensesMap} = {};
-        expensesEntries.forEach(([budgetId, eMap]) => expenses[budgetId] = eMap);
-        return {budgets, expenses, categories, lastTimeSaved};
+    async getPendingSync(localLastTimeSaved: number): Promise<ExportDataSet|undefined> {
+        // If remote lastTimeSaved is bigger than local one
+        const remoteLastTimeSaved = await this.getLastTimeSaved();
+        if (remoteLastTimeSaved > localLastTimeSaved) {
+            // Get all documents with timestamps bigger than local timestamp
+            const [budgets, categories, expenses] = await Promise.all([
+                this.getBudgets(localLastTimeSaved), 
+                this.getCategories(localLastTimeSaved), 
+                // budgetId = undefined: get all expenses
+                this._getExpenses(undefined, localLastTimeSaved)
+            ]);
+
+            return {budgets, categories, expenses, lastTimeSaved: remoteLastTimeSaved};
+            // Save them locally (caller responsibility)
+        }
+    }
+
+    async cleanupPendingSync(pending: ExportDataSet) {
+        // There is no implementation in remote storage 
     }
 }
