@@ -34,20 +34,21 @@ workbox.routing.registerRoute(
     }
 );
 
-const auth = new AuthApiImpl();
-auth.getUserId().then(
-    function (userId) {
-        if (userId) {
-            const remoteSync = new DataSynchronizer (new IndexedDb(), new FirestoreApi(userId));
-            self.addEventListener('sync', event => {
-                if (event.tag === SyncDirection.LocalToRemote) {
+self.addEventListener('sync', event => {
+    if (event.tag === SyncDirection.LocalToRemote) {
+
+        const auth = new AuthApiImpl();
+        auth.getUserId().then(
+            function (userId) {
+                if (userId) {
+                    const remoteSync = new DataSynchronizer (new IndexedDb(), new FirestoreApi(userId));
                     remoteSync.sync();
                 }
-            });
-
-        }
+            }
+        )
     }
-)
+});
+
 
 /** TODO use it to retry firestore failed requests
  *
