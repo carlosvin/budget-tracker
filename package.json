@@ -79,13 +79,14 @@
         ]
     },
     "jest": {
-        "roots": ["src"],
+        "roots": [
+            "src"
+        ],
         "collectCoverageFrom": [
             "src/**/*.{js,jsx,ts,tsx}",
             "!<rootDir>/node_modules/"
         ],
         "preset": "ts-jest",
         "testEnvironment": "jsdom"
-
     }
 }
