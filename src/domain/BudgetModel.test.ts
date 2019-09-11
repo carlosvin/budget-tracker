@@ -737,11 +737,11 @@ describe('Budget model statistics', () => {
             expenses[expense2.identifier] = expense2;
 
             const category: Category = {
-                id: expense1.categoryId, 
+                identifier: expense1.categoryId, 
                 name: expense1.categoryId, 
                 icon: expense1.categoryId};
-            const categories = {[category.id]: category};
-            const exportedData = model.export({[category.id]: category});
+            const categories = {[category.identifier]: category};
+            const exportedData = model.export({[category.identifier]: category});
             // ignore this timestamp
             delete exportedData['lastTimeSaved'];
 

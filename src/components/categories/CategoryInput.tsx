@@ -40,7 +40,7 @@ export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
     }
 
     const handleDelete = () => {
-        props.onDelete && props.onDelete(props.category.id);
+        props.onDelete && props.onDelete(props.category.identifier);
     }
 
     return (

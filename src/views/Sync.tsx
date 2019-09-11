@@ -54,7 +54,7 @@ export function Sync(props: HeaderNotifierProps&RouterProps) {
             console.error(error);
         }
         if (uid) {
-            await btApp.cleanupStores();
+            await btApp.cleanupStorage();
         }
         setIsLoggedIn(!!uid);
     }
@@ -74,7 +74,7 @@ export function Sync(props: HeaderNotifierProps&RouterProps) {
             setError('There were some problems signing out');
             console.error(error);
         }
-        await btApp.cleanupStores();
+        await btApp.cleanupStorage();
         setIsLoggedIn(!!uid);
     }
 

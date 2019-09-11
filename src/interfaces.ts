@@ -38,7 +38,7 @@ export interface CurrencyRates {
 }
 
 export interface Category {
-    id: string;
+    identifier: string;
     name: string;
     icon: string;
 }

@@ -178,7 +178,7 @@ export class BudgetModel {
 
     get days () {
         if (!this._days) {
-            this._days = dateDiff(this._info.from, new Date().getTime()) + 1;
+            this._days = dateDiff(this._info.from, new Date().getTime());
         }
         return this._days;
     }

@@ -24,17 +24,12 @@ export default class CategoriesStoreImpl implements CategoriesStore {
 
     async setCategory(category: Category) {
         const categories = await this.getCategories();
-        categories[category.id] = {
+        categories[category.identifier] = {
             icon: category.icon,
             name: category.name,
-            id: category.id
+            identifier: category.identifier
         };
-        return this._storage.saveCategory(categories[category.id]);
-    }
-
-    async setCategories(categories: Categories) {
-        this._categories = categories;
-        return this._storage.saveCategories(categories);
+        return this._storage.saveCategory(categories[category.identifier]);
     }
 
     async getCategory(categoryId: string) { 
@@ -42,11 +37,11 @@ export default class CategoriesStoreImpl implements CategoriesStore {
         return categories[categoryId];
     }
 
-    async delete(categoryId: string) {
+    async deleteCategory(categoryId: string) {
         const categories = await this.getCategories();
         if (categoryId in categories) {
+            this._storage.deleteCategory(categoryId);
             delete categories[categoryId];
-            this._storage.saveCategories(categories);
             return true;
         }
         return false;
