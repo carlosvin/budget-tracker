@@ -201,14 +201,14 @@ export class IndexedDb implements SubStorageApi {
         for (const budgetId in data.budgets) {
             tx.objectStore(EntityNames.Budgets).put(
                 { ...dbProps, ...data.budgets[budgetId] });
-            for (const expenseId in data.expenses[budgetId]) {
-                tx.objectStore(EntityNames.Expenses)
-                    .put({ ...dbProps, budgetId, ...data.expenses[expenseId] });
-            }
+        }
+        for (const expenseId in data.expenses) {
+            tx.objectStore(EntityNames.Expenses)
+                .put({ ...dbProps, ...data.expenses[expenseId] });
         }
         for (const categoryId in data.categories) {
             tx.objectStore(EntityNames.Categories).put(
-                { ...dbProps, ...data.categories[categoryId], identifier: categoryId });
+                { ...dbProps, ...data.categories[categoryId] });
         }
         await tx.done;
         return this.setLastTimeSaved(data.lastTimeSaved);
