@@ -71,18 +71,17 @@ export class FirestoreApi implements SubStorageApi {
         return this.categoriesCol.doc(categoryId);
     }
 
-    async saveBudget(budget: Budget, timestamp = new Date().getTime()) {
+    async saveBudget(budget: BudgetDb, timestamp: number) {
         this.removeUndefined(budget);
         await this.getBudgetDoc(budget.identifier).set({...budget, timestamp});
         return this.setLastTimeSaved(timestamp);
     }
 
-    async deleteBudget(budgetId: string, timestamp?: number) {
-        await this.getBudgetDoc(budgetId).delete();
-        return this.setLastTimeSaved(timestamp);
+    async deleteBudget(budgetId: string, timestamp: number) {
+        return this.deleteEntity(this.getBudgetDoc(budgetId), timestamp);
     }
 
-    async setBudgets(budgets: BudgetsMap, timestamp?: number) {
+    async setBudgets(budgets: BudgetsMap, timestamp: number) {
         const batch = this.db.batch();
         Object
             .entries(budgets)
@@ -142,7 +141,7 @@ export class FirestoreApi implements SubStorageApi {
         return expenses;
     }
 
-    async saveExpenses(expenses: ExpenseDb[], timestamp = new Date().getTime()) {
+    async saveExpenses(expenses: ExpenseDb[], timestamp: number) {
         const batch = this.db.batch();
         Object
             .values(expenses)
@@ -153,12 +152,22 @@ export class FirestoreApi implements SubStorageApi {
         return batch.commit();
     }
 
-    async deleteExpense(expenseId: string, timestamp = new Date().getTime()) {
-        const expense = await this.getExpense(expenseId);
-        if (expense) {
-            await this.saveExpenses([{...expense, deleted: 1, timestamp}]);
-            return this.setLastTimeSaved(timestamp);    
-        }
+    async deleteEntity (documentRef: firebase.firestore.DocumentReference, timestamp: number) {
+            const deleted = await this.db.runTransaction(async function (transaction) {
+                const entity = (await transaction.get(documentRef)).data() as DbItem;
+                if (entity) {
+                    await transaction.set(documentRef, {...entity, deleted: 1, timestamp});
+                    return true;
+                }
+                return false;
+            });
+            if (deleted) {
+                return this.setLastTimeSaved(timestamp);    
+            }
+    }
+
+    async deleteExpense(expenseId: string, timestamp: number) {
+        return this.deleteEntity(this.getExpenseDoc(expenseId), timestamp);
     }
 
     async getCategory(identifier: string) {
@@ -178,13 +187,13 @@ export class FirestoreApi implements SubStorageApi {
         return categories;    
     }
 
-    async saveCategory(category: CategoryDb, timestamp = new Date().getTime()){
+    async saveCategory(category: CategoryDb, timestamp: number){
         await this.getCategoryDoc(category.identifier)
             .set(this.removeUndefined({...category, timestamp}));
         return this.setLastTimeSaved(timestamp);
     }
 
-    async saveCategories(categories: Categories, timestamp = new Date().getTime()){
+    async saveCategories(categories: Categories, timestamp: number){
         const batch = this.db.batch();
         Object
             .entries(categories)
@@ -195,12 +204,8 @@ export class FirestoreApi implements SubStorageApi {
         return this.setLastTimeSaved(timestamp);
     }
 
-    async deleteCategory(categoryId: string, timestamp = new Date().getTime()){
-        const category = await this.getCategory(categoryId);
-        if (category) {
-            await this.saveCategory({...category, deleted: 1, timestamp});
-            return this.setLastTimeSaved(timestamp);    
-        }
+    async deleteCategory(categoryId: string, timestamp: number){
+        return this.deleteEntity(this.getCategoryDoc(categoryId), timestamp);
     }
 
     async getLastTimeSaved () {
