@@ -1,3 +1,7 @@
+2.1.0 Improve data synchronization
+----------------------------------
+- Read/Write only changed remote data, so Budget Tracker saves network data and Firestore quota. 
+
 2.0.0 Replace LocalStore by IndexedDB
 --------------------------------------
 - BC: Export data to file, so later it could be imported to IndexedDB.
