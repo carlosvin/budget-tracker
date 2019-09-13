@@ -37,6 +37,10 @@ export class AppStorageManager implements StorageApi {
         console.debug('Sync done');
     }
 
+    async getBudget(budgetId: string) {
+        return this._local.getBudget(budgetId);
+    }
+
     async getBudgets() {
         return this._local.getBudgets();
     }
@@ -60,21 +64,29 @@ export class AppStorageManager implements StorageApi {
         }
         return localPromise;
     }
+
+    async getExpense(expenseId: string) {
+        return this._local.getExpense(expenseId);
+    }
     
-    async saveExpenses(budgetId: string, expenses: Expense[], timestamp = new Date().getTime()) {
-        const localPromise = this._local.saveExpenses(budgetId, expenses, timestamp);
+    async saveExpenses(expenses: Expense[], timestamp = new Date().getTime()) {
+        const localPromise = this._local.saveExpenses(expenses, timestamp);
         if (this._remote) {
-            this._remote.saveExpenses(budgetId, expenses, timestamp);
+            this._remote.saveExpenses(expenses, timestamp);
         }
         return localPromise;
     }
 
-    async deleteExpense(budgetId: string, expenseId: string, timestamp = new Date().getTime()) {
-        const localPromise = this._local.deleteExpense(budgetId, expenseId, timestamp);
+    async deleteExpense(expenseId: string, timestamp = new Date().getTime()) {
+        const localPromise = this._local.deleteExpense(expenseId, timestamp);
         if (this._remote) {
-            this._remote.deleteExpense(budgetId, expenseId, timestamp);
+            this._remote.deleteExpense(expenseId, timestamp);
         }
         return localPromise;
+    }
+
+    async getCategory(categoryId: string) {
+        return this._local.getCategory(categoryId);
     }
 
     async getCategories() {

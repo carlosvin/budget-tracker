@@ -1,4 +1,13 @@
-import { ExpensesMap, BudgetsMap, Budget, Expense, Categories, Category, ExportDataSet, EntityNames } from "../../interfaces";
+import { 
+    ExpensesMap, 
+    BudgetsMap, 
+    Budget, 
+    Expense, 
+    Categories, 
+    Category, 
+    ExportDataSet, 
+    EntityNames 
+} from "../../interfaces";
 
 export interface SyncItem {
     identifier: string;
@@ -44,3 +53,9 @@ export interface SubStorageApi extends StorageApi {
     getPendingSync(timestamp: number): Promise<ExportDataSet|undefined>;
     cleanupPendingSync(data: ExportDataSet): Promise<void>;
 }
+
+
+export interface AppStorageApi extends StorageApi {
+    initRemote (remotePromise?: Promise<StorageApi|undefined>): Promise<StorageApi|undefined>;
+}
+

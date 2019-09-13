@@ -61,7 +61,7 @@ export default class BudgetsStoreImpl implements BudgetsStore {
         for (const expense of expenses) {
             model.setExpense(expense);
         }
-        this._budgetsIndex.saveExpenses(budgetId, expenses);
+        this._budgetsIndex.saveExpenses(expenses);
     }
 
     async getExpense(budgetId: string, expenseId: string){
@@ -78,6 +78,6 @@ export default class BudgetsStoreImpl implements BudgetsStore {
     async deleteExpense(budgetId: string, expenseId: string) {
         const model = await this.getBudgetModel(budgetId);
         model.deleteExpense(expenseId);
-        return this._budgetsIndex.deleteExpense(budgetId, expenseId);
+        return this._budgetsIndex.deleteExpense(expenseId);
     }
 }

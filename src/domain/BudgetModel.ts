@@ -313,13 +313,9 @@ export class BudgetModel {
     }
 
     export(categories: Categories): ExportDataSet {
-        const expenses: {[budgetId: string]: ExpensesMap} = {[this.identifier]: {}};
-        Object
-            .keys(this.expenses)
-            .forEach(k => (expenses[this.identifier][k] = this.expenses[k].info));
         return {
             budgets: {[this.identifier]: this.info},
-            expenses,
+            expenses: this.expenses,
             categories,
             lastTimeSaved: new Date().getTime()
         };

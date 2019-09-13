@@ -21,6 +21,7 @@ export interface Expense {
     identifier: string;
     /** Timestamp when the expense applies */
     when: number;
+    budgetId: string;
 }
 
 export interface ExpensesMap {
@@ -77,6 +78,17 @@ export interface User {
 export interface ExportDataSet {
     budgets: BudgetsMap;
     categories: Categories;
-    expenses: {[budgetId: string]: ExpensesMap };
+    expenses: ExpensesMap;
     lastTimeSaved: number;
+}
+
+export enum SyncDirection {
+    RemoteToLocal = 'RemoteToLocal', LocalToRemote = 'LocalToRemote'
+}
+
+
+export enum EntityNames {
+    Budgets = 'budgets',
+    Expenses = 'expenses',
+    Categories = 'categories',
 }
