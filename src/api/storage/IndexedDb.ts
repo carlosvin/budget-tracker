@@ -6,7 +6,7 @@ interface ExpenseDb extends Expense, DbItem { }
 interface BudgetDb extends Budget, DbItem { }
 interface CategoryDb extends Category, DbItem { }
 
-const keyPath = {keyPath: 'identifier'};
+const keyPath = { keyPath: 'identifier' };
 
 interface Schema extends DBSchema {
     [EntityNames.Budgets]: {
@@ -43,7 +43,7 @@ export class IndexedDb implements SubStorageApi {
 
                 const categoriesStore = db.createObjectStore(EntityNames.Categories, keyPath);
                 categoriesStore.createIndex('deleted, name', ['deleted', 'name']);
-                
+
                 const expensesStore = db.createObjectStore(EntityNames.Expenses, keyPath);
                 expensesStore.createIndex('deleted, budgetId, when', ['deleted', 'budgetId', 'when']);
 
@@ -68,34 +68,36 @@ export class IndexedDb implements SubStorageApi {
         return budgets;
     }
 
-    async getBudget(identifier: string){
+    async getBudget(identifier: string) {
         const db = await this.getDb();
         return db.get(EntityNames.Budgets, identifier);
     }
 
-    async saveBudget(budget: Budget, timestamp = new Date().getTime()) {
+    async saveBudget(budget: Budget, timestamp: number) {
         const db = await this.getDb();
         await db.put(
-            EntityNames.Budgets, 
+            EntityNames.Budgets,
             {
-                deleted: 0, 
-                timestamp, 
+                deleted: 0,
+                timestamp,
                 ...budget
             });
+        return this.setLastTimeSaved(timestamp);
     }
 
-    async deleteBudget(budgetId: string, timestamp=new Date().getTime()) {
+    async deleteBudget(budgetId: string, timestamp = new Date().getTime()) {
         const db = await this.getDb();
         const tx = db.transaction(EntityNames.Budgets, 'readwrite');
         const budget = await tx.store.get(budgetId);
         if (budget) {
-            tx.store.put({ 
-                ...budget, 
-                deleted: 1, 
+            tx.store.put({
+                ...budget,
+                deleted: 1,
                 timestamp,
             });
         }
-        return tx.done;
+        await tx.done;
+        this.setLastTimeSaved(timestamp);
     }
 
     async getExpenses(budgetId: string): Promise<ExpensesMap> {
@@ -106,7 +108,7 @@ export class IndexedDb implements SubStorageApi {
                 [0, budgetId, budget.from],
                 [0, budgetId, budget.to]);
             const expensesResult = await db.getAllFromIndex(
-                EntityNames.Expenses, 
+                EntityNames.Expenses,
                 'deleted, budgetId, when',
                 bound
             );
@@ -117,7 +119,7 @@ export class IndexedDb implements SubStorageApi {
         throw new Error('There is no budget with id ' + budgetId);
     }
 
-    private async getAllExpenses (): Promise<ExpensesMap> {
+    private async getAllExpenses(): Promise<ExpensesMap> {
         const db = await this.getDb();
         const expenses = await db.getAll(EntityNames.Expenses);
         const expensesMap: ExpensesMap = {};
@@ -130,34 +132,37 @@ export class IndexedDb implements SubStorageApi {
         return db.get(EntityNames.Expenses, expenseId);
     }
 
-    async saveExpenses(expenses: Expense[], timestamp = new Date().getTime()) {
+    async saveExpenses(expenses: Expense[], timestamp: number) {
         const db = await this.getDb();
         const tx = db.transaction(EntityNames.Expenses, 'readwrite');
         for (const expense of expenses) {
             tx.store.put({
-                ...expense, 
-                timestamp, 
-                deleted: 0});
+                ...expense,
+                timestamp,
+                deleted: 0
+            });
         }
-        return tx.done;
+        await tx.done;
+        return this.setLastTimeSaved(timestamp);
     }
 
-    async deleteExpense(expenseId: string, timestamp = new Date().getTime()) {
+    async deleteExpense(expenseId: string, timestamp: number) {
         const db = await this.getDb();
         const tx = db.transaction(EntityNames.Expenses, 'readwrite');
         const expense = await tx.store.get(expenseId);
         if (expense) {
             tx.store.put({ ...expense, deleted: 1, timestamp });
         }
-        return tx.done;
+        await tx.done;
+        return this.setLastTimeSaved(timestamp);
     }
 
     async getCategories(): Promise<Categories> {
         const db = await this.getDb();
-        const bound = IDBKeyRange.upperBound([1, ], true);
+        const bound = IDBKeyRange.upperBound([1,], true);
         const categoriesResult = await db.getAllFromIndex(
-            EntityNames.Categories, 
-            'deleted, name', 
+            EntityNames.Categories,
+            'deleted, name',
             bound);
         const categories: Categories = {};
         if (categoriesResult) {
@@ -171,51 +176,63 @@ export class IndexedDb implements SubStorageApi {
         return db.get(EntityNames.Categories, identifier);
     }
 
-    async saveCategory(category: Category, timestamp = new Date().getTime()) {
+    async saveCategory(category: Category, timestamp: number) {
         const db = await this.getDb();
-        await db.put(
-            EntityNames.Categories, 
-            { ...category, timestamp, deleted: 0});
-    }
-
-    async deleteCategory(identifier: string, timestamp = new Date().getTime()) {
-        const db = await this.getDb();
-        const tx = db.transaction(EntityNames.Categories, 'readwrite');
-        const category = await tx.store.get(identifier);
+        const tx = db.transaction([EntityNames.Categories, 'Pending'], 'readwrite');
         if (category) {
-            tx.store.put({...category, timestamp, deleted: 1});
+            tx.objectStore(EntityNames.Categories).put({ timestamp, deleted: 0, ...category });
+            tx.objectStore('Pending').put({
+                identifier: category.identifier, 
+                type: EntityNames.Categories});
         }
-        return tx.done;    
+        await tx.done;
+        return this.setLastTimeSaved(timestamp);
     }
 
+    async deleteCategory(identifier: string, timestamp: number) {
+        const db = await this.getDb();
+        const tx = db.transaction([EntityNames.Categories, 'Pending'], 'readwrite');
+        const category = await tx.objectStore(EntityNames.Categories).get(identifier);
+        if (category) {
+            tx.objectStore(EntityNames.Categories).put({ ...category, timestamp, deleted: 1 });
+            tx.objectStore('Pending').put({
+                identifier: category.identifier, 
+                type: EntityNames.Categories});
+        }
+        await tx.done;
+        return this.setLastTimeSaved(timestamp);
+    }
+    
     async import(data: ExportDataSet) {
         const db = await this.getDb();
         const tx = db.transaction(
-            [EntityNames.Budgets, EntityNames.Categories, EntityNames.Expenses], 
+            [EntityNames.Budgets, EntityNames.Categories, EntityNames.Expenses],
             'readwrite');
 
-        const dbProps: DbItem = { 
-            deleted: 0, 
-            timestamp: data.lastTimeSaved };
+        const dbProps: DbItem = {
+            deleted: 0,
+            timestamp: data.lastTimeSaved
+        };
 
         for (const budgetId in data.budgets) {
             tx.objectStore(EntityNames.Budgets).put(
-                {...dbProps, ...data.budgets[budgetId]});
+                { ...dbProps, ...data.budgets[budgetId] });
             for (const expenseId in data.expenses[budgetId]) {
                 tx.objectStore(EntityNames.Expenses)
-                    .put({...dbProps, budgetId, ...data.expenses[expenseId]});
+                    .put({ ...dbProps, budgetId, ...data.expenses[expenseId] });
             }
         }
         for (const categoryId in data.categories) {
             tx.objectStore(EntityNames.Categories).put(
-                {...dbProps, ...data.categories[categoryId], identifier: categoryId});
+                { ...dbProps, ...data.categories[categoryId], identifier: categoryId });
         }
-        return tx.done;
+        await tx.done;
+        return this.setLastTimeSaved(data.lastTimeSaved);
     }
 
     async export(): Promise<ExportDataSet> {
         const [budgets, categories, expenses, lastTimeSaved] = await Promise.all([
-            this.getBudgets(), 
+            this.getBudgets(),
             this.getCategories(),
             this.getAllExpenses(),
             this.getLastTimeSaved()
