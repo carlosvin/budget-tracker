@@ -85,6 +85,9 @@ export class ExpenseModel implements Expense {
 
     validate () {
         const fieldErrors = [];
+        if (this.budgetId === undefined) {
+            fieldErrors.push('budget identifier');
+        }
         if (this.amountBaseCurrency === undefined) {
             fieldErrors.push('amount in base currency');
         }
