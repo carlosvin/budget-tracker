@@ -1,5 +1,6 @@
 import { StorageApi, SubStorageApi } from "./StorageApi";
 import { Budget, Expense, Category, ExportDataSet } from "../../interfaces";
+import { DataSync } from "./DataSync";
 
 export class AppStorageManager implements StorageApi {
     private _local: SubStorageApi;
@@ -13,7 +14,7 @@ export class AppStorageManager implements StorageApi {
         if (remotePromise) {
             this._remote = await remotePromise;
             if (this._remote) {
-                await AppStorageManager.sync(this._local, this._remote);
+                await this.sync();
                 return this._remote;
             }
         } else {
@@ -21,20 +22,22 @@ export class AppStorageManager implements StorageApi {
         }
     }
 
-    private static async sync(local: SubStorageApi, remote: SubStorageApi) {
-        const [remoteTime, localTime] = await Promise.all([
-            remote.getLastTimeSaved(), 
-            local.getLastTimeSaved()]);
-        if (remoteTime > localTime) {
-            console.debug('Remote > Local');
-            return local.import(await remote.export());
-        } else if (remoteTime < localTime) {
-            console.debug('Local > Remote');
-            return remote.import(await local.export());
-        } else {
-            console.debug('Nothing to sync');
+    async sync () {
+        if (this._remote) {
+            const [remoteTime, localTime] = await Promise.all([
+                this._remote.getLastTimeSaved(), 
+                this._local.getLastTimeSaved()]);
+                if (remoteTime > localTime) {
+                    console.debug('Remote > Local');
+                    return new DataSync(this._remote, this._local).sync();
+                } else if (remoteTime < localTime) {
+                    console.debug('Local > Remote');
+                    return new DataSync(this._local, this._remote).sync();
+                } else {
+                    console.debug('Nothing to sync');
+                }
+                console.debug('Sync done');    
         }
-        console.debug('Sync done');
     }
 
     async getBudget(budgetId: string) {

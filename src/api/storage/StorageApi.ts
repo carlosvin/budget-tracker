@@ -54,8 +54,6 @@ export interface SubStorageApi extends StorageApi {
     cleanupPendingSync(data: ExportDataSet): Promise<void>;
 }
 
-
 export interface AppStorageApi extends StorageApi {
     initRemote (remotePromise?: Promise<StorageApi|undefined>): Promise<StorageApi|undefined>;
 }
-
