@@ -48,7 +48,7 @@ export default class CountriesStoreImpl implements CountriesStore {
     private setCurrentCountry (countryCode: string) {
         this.currentCountry = { 
             code: countryCode.toUpperCase(),
-            timestamp: new Date().getTime()
+            timestamp: Date.now()
         }
         localStorage.setItem(
             this.LAST_COUNTRY_KEY, 
@@ -62,7 +62,7 @@ export default class CountriesStoreImpl implements CountriesStore {
     async getCurrentCountry () {
         if (this.currentCountry.code && 
             this.currentCountry.timestamp &&
-            new Date().getTime() - this.currentCountry.timestamp < 3600000) {
+            Date.now() - this.currentCountry.timestamp < 3600000) {
             return this.currentCountry.code;
         }
         return this.fetchCurrentCountry();

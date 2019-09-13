@@ -28,7 +28,7 @@ export class StatsStore {
     }
 
     static getDays (budget: Budget) {
-        return dateDiff(budget.from, new Date().getTime()) + 1;
+        return dateDiff(budget.from, Date.now()) + 1;
     }
 
     static getDaysTotal (budget: Budget) {

@@ -33,7 +33,7 @@ function authedApp(auth) {
 function createBudget (currency, total, days = 30) {
   const from = new Date('2019/1/1');
   const to = from + (3600 * 24 * days);
-  const identifier = new Date().getTime().toString();
+  const identifier = Date.now().toString();
   return { 
       currency,
       from,

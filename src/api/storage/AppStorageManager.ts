@@ -52,7 +52,7 @@ export class AppStorageManager implements StorageApi {
         return this._local.getExpenses(budgetId);
     }
     
-    async saveBudget(budget: Budget, timestamp = new Date().getTime()) {
+    async saveBudget(budget: Budget, timestamp = Date.now()) {
         const localPromise = this._local.saveBudget(budget, timestamp);
         if (this._remote) {
             this._remote.saveBudget(budget, timestamp);
@@ -60,7 +60,7 @@ export class AppStorageManager implements StorageApi {
         return localPromise;
     }
     
-    async deleteBudget(budgetId: string, timestamp = new Date().getTime()) {
+    async deleteBudget(budgetId: string, timestamp = Date.now()) {
         const localPromise = this._local.deleteBudget(budgetId, timestamp);
         if (this._remote) {
             this._remote.deleteBudget(budgetId, timestamp);
@@ -72,7 +72,7 @@ export class AppStorageManager implements StorageApi {
         return this._local.getExpense(expenseId);
     }
     
-    async saveExpenses(expenses: Expense[], timestamp = new Date().getTime()) {
+    async saveExpenses(expenses: Expense[], timestamp = Date.now()) {
         const localPromise = this._local.saveExpenses(expenses, timestamp);
         if (this._remote) {
             this._remote.saveExpenses(expenses, timestamp);
@@ -80,7 +80,7 @@ export class AppStorageManager implements StorageApi {
         return localPromise;
     }
 
-    async deleteExpense(expenseId: string, timestamp = new Date().getTime()) {
+    async deleteExpense(expenseId: string, timestamp = Date.now()) {
         const localPromise = this._local.deleteExpense(expenseId, timestamp);
         if (this._remote) {
             this._remote.deleteExpense(expenseId, timestamp);
@@ -96,7 +96,7 @@ export class AppStorageManager implements StorageApi {
         return this._local.getCategories();
     }
 
-    async saveCategory(category: Category, timestamp = new Date().getTime()) {
+    async saveCategory(category: Category, timestamp = Date.now()) {
         const localPromise = this._local.saveCategory(category, timestamp);
         if (this._remote) {
             this._remote.saveCategory(category, timestamp);
@@ -104,7 +104,7 @@ export class AppStorageManager implements StorageApi {
         return localPromise;
     }
 
-    async deleteCategory(identifier: string, timestamp = new Date().getTime()) {
+    async deleteCategory(identifier: string, timestamp = Date.now()) {
         const localPromise = this._local.deleteCategory(identifier, timestamp);
         if (this._remote) {
             this._remote.deleteCategory(identifier, timestamp);

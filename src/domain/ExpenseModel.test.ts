@@ -2,7 +2,7 @@ import { ExpenseModel } from "./ExpenseModel";
 import { uuid } from "./utils/uuid";
 import { Expense } from "../interfaces";
 
-function createExpense (id: string,  when = new Date('2019/1/1').getTime()): Expense {
+function createExpense (id: string,  when = new Date(2019, 0, 1).getTime()): Expense {
     return {
         amount: 100,
         amountBaseCurrency: 10,
@@ -87,11 +87,22 @@ describe('Expense Model', () => {
 
         it('splits in 3 days', () => {
             expect(expense.split(3, () => 'randomID')).toStrictEqual([
-                new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330}),
-                new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330, 
-                    identifier: 'randomID', when: new Date('2019/1/2').getTime()}),
-                    new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330, 
-                    identifier: 'randomID', when: new Date('2019/1/3').getTime()}),
+                new ExpenseModel({...expense, 
+                    amount: 33,
+                    amountBaseCurrency: 330,
+                    when: new Date(2019, 0, 1).getTime()}),
+                new ExpenseModel({
+                    ...expense, 
+                    amount: 33,
+                    amountBaseCurrency: 330, 
+                    identifier: 'randomID', 
+                    when: new Date(2019, 0, 2).getTime()}),
+                new ExpenseModel({
+                    ...expense, 
+                    amount: 33, 
+                    amountBaseCurrency: 330, 
+                    identifier: 'randomID', 
+                    when: new Date(2019, 0, 3).getTime()}),
             ]);
         });
         

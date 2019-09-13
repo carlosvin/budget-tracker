@@ -198,7 +198,7 @@ export class FirestoreApi implements SubStorageApi {
         }
     }
 
-    async setLastTimeSaved (timestamp=new Date().getTime() , batch?: firebase.firestore.WriteBatch) {
+    async setLastTimeSaved (timestamp=Date.now() , batch?: firebase.firestore.WriteBatch) {
         if (batch) {
             batch.set(this.userDoc, {timestamp});
         } else {

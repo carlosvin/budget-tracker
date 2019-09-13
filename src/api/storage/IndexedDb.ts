@@ -79,7 +79,7 @@ export class IndexedDb implements SubStorageApi {
         return this.setLastTimeSaved(timestamp);
     }
 
-    async deleteBudget(budgetId: string, timestamp = new Date().getTime()) {
+    async deleteBudget(budgetId: string, timestamp = Date.now()) {
         const db = await this.getDb();
         const tx = db.transaction(EntityNames.Budgets, 'readwrite');
         const budget = await tx.store.get(budgetId);

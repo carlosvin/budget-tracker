@@ -170,7 +170,7 @@ export class BudgetModel {
 
     get days () {
         if (!this._days) {
-            this._days = dateDiff(this._info.from, new Date().getTime());
+            this._days = dateDiff(this._info.from, Date.now());
         }
         return this._days;
     }
@@ -321,14 +321,14 @@ export class BudgetModel {
             budgets: {[this.identifier]: this.info},
             expenses,
             categories,
-            lastTimeSaved: new Date().getTime()
+            lastTimeSaved: Date.now()
         };
     }
 
     get totalDaysByCountry () {
         const groups = this.expenseGroups; 
         const daysByCountry: {[country: string]: number} = {};
-        const todayMs = new Date().getTime();
+        const todayMs = Date.now();
         let from = DateDay.fromTimeMs(this.info.from);
         do {
             const {year, month, day} = from;

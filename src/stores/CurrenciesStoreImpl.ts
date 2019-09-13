@@ -87,7 +87,7 @@ export default class CurrenciesStoreImpl implements CurrenciesStore {
         return baseCurrency in this._timestamps && 
             dateDiff(
                 this._timestamps[baseCurrency], 
-                new Date().getTime()
+                Date.now()
             ) <= CurrenciesStoreImpl.MAX_DAYS;
     }
 
@@ -120,7 +120,7 @@ export default class CurrenciesStoreImpl implements CurrenciesStore {
             expectedCurrencyMatch);
         if (Object.keys(rates.rates).length > 0) {
             this._rates[baseCurrency] = rates;
-            this._timestamps[baseCurrency] = new Date().getTime()
+            this._timestamps[baseCurrency] = Date.now()
             this.saveTimestampsToDisk();
             this.saveRatesToDisk();
         }

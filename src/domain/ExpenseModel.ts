@@ -117,7 +117,8 @@ export class ExpenseModel implements Expense {
             for (let i=1; i<days; i++) {
                 expenses.push(new ExpenseModel({
                     ...this,
-                    amount, amountBaseCurrency,
+                    amount, 
+                    amountBaseCurrency,
                     when: DateDay.fromTimeMs(this.when).addDays(i).timeMs,
                     identifier: idGen()
                 }));
