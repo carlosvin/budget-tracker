@@ -51,7 +51,6 @@ export interface SubStorageApi extends StorageApi {
     getLastTimeSaved(): Promise<number>;
     setLastTimeSaved(timestamp: number): Promise<void>;
     getPendingSync(timestamp: number): Promise<ExportDataSet|undefined>;
-    cleanupPendingSync(data: ExportDataSet): Promise<void>;
 }
 
 export interface AppStorageApi extends StorageApi {

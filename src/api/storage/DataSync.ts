@@ -16,8 +16,7 @@ export class DataSync {
     async sync() {
         const pending = await this.from.getPendingSync(await this.to.getLastTimeSaved());
         if (pending) {
-            await this.to.import(pending);
-            return this.from.cleanupPendingSync(pending);    
+            return this.to.import(pending);
         }
         console.info('Nothing to sync');
     }
