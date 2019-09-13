@@ -27,7 +27,8 @@ class BudgetTracker {
         if (!this._storage) {
             const storage  = await import('./api/storage/AppStorageManager');
             this._storage = new storage.AppStorageManager(await this.getLocalStorage());
-            this._storage.initRemote(this.getFirestore());
+            this._storage.initRemote(this.getFirestore())
+                .then(store => store && this.refreshStores());
         }
         if (this._storage) {
             return this._storage;

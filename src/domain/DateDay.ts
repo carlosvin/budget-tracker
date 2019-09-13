@@ -4,7 +4,10 @@ export class DateDay implements YMD {
     private readonly _date: Date;
 
     constructor(date = new Date()) {
-        this._date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        this._date = new Date(
+            date.getFullYear(), 
+            date.getMonth(), 
+            date.getDate());
     }
 
     clone() {
@@ -51,7 +54,9 @@ export class DateDay implements YMD {
     }
 
     get shortString () {
-        const dt = new Intl.DateTimeFormat(undefined, {day: 'numeric', month: 'long', year: 'numeric'});
+        const dt = new Intl.DateTimeFormat(
+            undefined, 
+            {day: 'numeric', month: 'long', year: 'numeric'});
         return dt.format(this._date);
     }
 }

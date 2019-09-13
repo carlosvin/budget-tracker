@@ -17,7 +17,7 @@ function createBudget (currency: string, days: number, total: number) {
     };
 }
 
-function createExpense (id: string, budget: Budget) {
+function createExpense (id: string, budget: Budget): Expense {
     return {
         amount: 100,
         amountBaseCurrency: 98,
@@ -26,7 +26,8 @@ function createExpense (id: string, budget: Budget) {
         currency: 'USD',
         description: 'whatever description',
         identifier: id,
-        when: budget.from + 1000
+        when: budget.from + 1000,
+        budgetId: budget.identifier
     };
 }
 
@@ -67,14 +68,10 @@ describe('Budget Model Creation', () => {
         const expenseDate1 = new Date(budget.from);
         const expenseDate2 = new Date(budget.to);
         const expense1: Expense = {
-            amount: 100,
+            ...createExpense('1', budget), 
+            amount: 100, 
             amountBaseCurrency: 100,
-            categoryId: 'Category',
-            countryCode: 'ES',
-            currency: 'USD',
-            description: 'whatever description',
-            identifier: '1',
-            when: expenseDate1.getTime(),
+            when: expenseDate1.getTime()
         };
         const expense2 = {...expense1,
             currency: 'EUR',
@@ -748,13 +745,10 @@ describe('Budget model statistics', () => {
             expect(exportedData).toStrictEqual(
                 {
                     budgets: {[budgetInfo.identifier]: budgetInfo},
-                    expenses: {[budgetInfo.identifier]: expenses},
+                    expenses,
                     categories 
                 }
             );
-            
-
         }); 
     });
-
 });

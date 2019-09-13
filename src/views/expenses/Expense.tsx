@@ -154,7 +154,8 @@ export const ExpenseView: React.FC<ExpenseViewProps> = (props) => {
                 countryCode,
                 categoryId,
                 description,
-                when: date.getTime()
+                when: date.getTime(),
+                budgetId
             });
             const store = await btApp.getBudgetsStore();
             const expenses = expenseModel.split(max).map(em => (em.info));

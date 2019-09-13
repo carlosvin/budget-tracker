@@ -1,5 +1,6 @@
 import { StorageApi, SubStorageApi } from "./StorageApi";
 import { Budget, Expense, Category, ExportDataSet } from "../../interfaces";
+import { DataSync } from "./DataSync";
 
 export class AppStorageManager implements StorageApi {
     private _local: SubStorageApi;
@@ -13,7 +14,7 @@ export class AppStorageManager implements StorageApi {
         if (remotePromise) {
             this._remote = await remotePromise;
             if (this._remote) {
-                await AppStorageManager.sync(this._local, this._remote);
+                await this.sync();
                 return this._remote;
             }
         } else {
@@ -21,20 +22,26 @@ export class AppStorageManager implements StorageApi {
         }
     }
 
-    private static async sync(local: SubStorageApi, remote: SubStorageApi) {
-        const [remoteTime, localTime] = await Promise.all([
-            remote.getLastTimeSaved(), 
-            local.getLastTimeSaved()]);
-        if (remoteTime > localTime) {
-            console.debug('Remote > Local');
-            return local.import(await remote.export());
-        } else if (remoteTime < localTime) {
-            console.debug('Local > Remote');
-            return remote.import(await local.export());
-        } else {
-            console.debug('Nothing to sync');
+    async sync () {
+        if (this._remote) {
+            const [remoteTime, localTime] = await Promise.all([
+                this._remote.getLastTimeSaved(), 
+                this._local.getLastTimeSaved()]);
+                if (remoteTime > localTime) {
+                    console.debug('Remote > Local');
+                    await new DataSync(this._remote, this._local).sync();
+                } else if (remoteTime < localTime) {
+                    console.debug('Local > Remote');
+                    await new DataSync(this._local, this._remote).sync();
+                } else {
+                    console.debug('Nothing to sync');
+                }
+                console.debug('Sync done');    
         }
-        console.debug('Sync done');
+    }
+
+    async getBudget(budgetId: string) {
+        return this._local.getBudget(budgetId);
     }
 
     async getBudgets() {
@@ -45,7 +52,7 @@ export class AppStorageManager implements StorageApi {
         return this._local.getExpenses(budgetId);
     }
     
-    async saveBudget(budget: Budget, timestamp = new Date().getTime()) {
+    async saveBudget(budget: Budget, timestamp = Date.now()) {
         const localPromise = this._local.saveBudget(budget, timestamp);
         if (this._remote) {
             this._remote.saveBudget(budget, timestamp);
@@ -53,35 +60,43 @@ export class AppStorageManager implements StorageApi {
         return localPromise;
     }
     
-    async deleteBudget(budgetId: string, timestamp = new Date().getTime()) {
+    async deleteBudget(budgetId: string, timestamp = Date.now()) {
         const localPromise = this._local.deleteBudget(budgetId, timestamp);
         if (this._remote) {
             this._remote.deleteBudget(budgetId, timestamp);
         }
         return localPromise;
     }
+
+    async getExpense(expenseId: string) {
+        return this._local.getExpense(expenseId);
+    }
     
-    async saveExpenses(budgetId: string, expenses: Expense[], timestamp = new Date().getTime()) {
-        const localPromise = this._local.saveExpenses(budgetId, expenses, timestamp);
+    async saveExpenses(expenses: Expense[], timestamp = Date.now()) {
+        const localPromise = this._local.saveExpenses(expenses, timestamp);
         if (this._remote) {
-            this._remote.saveExpenses(budgetId, expenses, timestamp);
+            this._remote.saveExpenses(expenses, timestamp);
         }
         return localPromise;
     }
 
-    async deleteExpense(budgetId: string, expenseId: string, timestamp = new Date().getTime()) {
-        const localPromise = this._local.deleteExpense(budgetId, expenseId, timestamp);
+    async deleteExpense(expenseId: string, timestamp = Date.now()) {
+        const localPromise = this._local.deleteExpense(expenseId, timestamp);
         if (this._remote) {
-            this._remote.deleteExpense(budgetId, expenseId, timestamp);
+            this._remote.deleteExpense(expenseId, timestamp);
         }
         return localPromise;
+    }
+
+    async getCategory(categoryId: string) {
+        return this._local.getCategory(categoryId);
     }
 
     async getCategories() {
         return this._local.getCategories();
     }
 
-    async saveCategory(category: Category, timestamp = new Date().getTime()) {
+    async saveCategory(category: Category, timestamp = Date.now()) {
         const localPromise = this._local.saveCategory(category, timestamp);
         if (this._remote) {
             this._remote.saveCategory(category, timestamp);
@@ -89,7 +104,7 @@ export class AppStorageManager implements StorageApi {
         return localPromise;
     }
 
-    async deleteCategory(identifier: string, timestamp = new Date().getTime()) {
+    async deleteCategory(identifier: string, timestamp = Date.now()) {
         const localPromise = this._local.deleteCategory(identifier, timestamp);
         if (this._remote) {
             this._remote.deleteCategory(identifier, timestamp);

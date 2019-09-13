@@ -170,7 +170,7 @@ export class BudgetModel {
 
     get days () {
         if (!this._days) {
-            this._days = dateDiff(this._info.from, new Date().getTime()) + 1;
+            this._days = dateDiff(this._info.from, Date.now());
         }
         return this._days;
     }
@@ -313,22 +313,22 @@ export class BudgetModel {
     }
 
     export(categories: Categories): ExportDataSet {
-        const expenses: {[budgetId: string]: ExpensesMap} = {[this.identifier]: {}};
-        Object
-            .keys(this.expenses)
-            .forEach(k => (expenses[this.identifier][k] = this.expenses[k].info));
+        const expenses: ExpensesMap = {};
+        for (const id in this.expenses) {
+            expenses[id] = this.expenses[id].info;
+        }
         return {
             budgets: {[this.identifier]: this.info},
             expenses,
             categories,
-            lastTimeSaved: new Date().getTime()
+            lastTimeSaved: Date.now()
         };
     }
 
     get totalDaysByCountry () {
         const groups = this.expenseGroups; 
         const daysByCountry: {[country: string]: number} = {};
-        const todayMs = new Date().getTime();
+        const todayMs = Date.now();
         let from = DateDay.fromTimeMs(this.info.from);
         do {
             const {year, month, day} = from;

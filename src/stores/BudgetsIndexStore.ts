@@ -51,12 +51,12 @@ export class BudgetsIndexStore {
         return this._storage.getExpenses(budgetId);
     }
 
-    async saveExpenses(budgetId: string, expenses: Expense[]) {
-        return this._storage.saveExpenses(budgetId, expenses);
+    async saveExpenses(expenses: Expense[]) {
+        return this._storage.saveExpenses(expenses);
     }
 
-    async deleteExpense(budgetId: string, expenseId: string) {
-        return this._storage.deleteExpense(budgetId, expenseId);
+    async deleteExpense(expenseId: string) {
+        return this._storage.deleteExpense(expenseId);
     }
 
 }

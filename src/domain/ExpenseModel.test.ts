@@ -1,6 +1,8 @@
 import { ExpenseModel } from "./ExpenseModel";
+import { uuid } from "./utils/uuid";
+import { Expense } from "../interfaces";
 
-function createExpense (id: string,  when = new Date('2019/1/1').getTime()) {
+function createExpense (id: string,  when = new Date(2019, 0, 1).getTime()): Expense {
     return {
         amount: 100,
         amountBaseCurrency: 10,
@@ -9,7 +11,8 @@ function createExpense (id: string,  when = new Date('2019/1/1').getTime()) {
         currency: 'USD',
         description: 'whatever description',
         identifier: id,
-        when
+        when,
+        budgetId: uuid()
     };
 }
 
@@ -24,7 +27,8 @@ describe('Expense Model', () => {
             currency: '',
             description: '',
             identifier: '123', 
-            when: 0
+            when: 0,
+            budgetId: '1'
         };
 
         expect(() => new ExpenseModel(invalid))
@@ -67,13 +71,9 @@ describe('Expense Model', () => {
     describe('Split', () => {
 
         const expense: ExpenseModel = new ExpenseModel({
-            amount: 99,
-            amountBaseCurrency: 990,
-            categoryId: 'General',
-            countryCode: 'ES',
-            currency: 'EUR',
-            identifier: 'original id',
-            when: new Date('2019/1/1').getTime()
+            ...createExpense('1'),
+            amount: 99, 
+            amountBaseCurrency: 990
         });
 
         it('splits in 0 days', () => {
@@ -87,11 +87,22 @@ describe('Expense Model', () => {
 
         it('splits in 3 days', () => {
             expect(expense.split(3, () => 'randomID')).toStrictEqual([
-                new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330}),
-                new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330, 
-                    identifier: 'randomID', when: new Date('2019/1/2').getTime()}),
-                    new ExpenseModel({...expense, amount: 33, amountBaseCurrency: 330, 
-                    identifier: 'randomID', when: new Date('2019/1/3').getTime()}),
+                new ExpenseModel({...expense, 
+                    amount: 33,
+                    amountBaseCurrency: 330,
+                    when: new Date(2019, 0, 1).getTime()}),
+                new ExpenseModel({
+                    ...expense, 
+                    amount: 33,
+                    amountBaseCurrency: 330, 
+                    identifier: 'randomID', 
+                    when: new Date(2019, 0, 2).getTime()}),
+                new ExpenseModel({
+                    ...expense, 
+                    amount: 33, 
+                    amountBaseCurrency: 330, 
+                    identifier: 'randomID', 
+                    when: new Date(2019, 0, 3).getTime()}),
             ]);
         });
         
