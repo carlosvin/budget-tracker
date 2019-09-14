@@ -1,15 +1,38 @@
 import { SubStorageApi, AppStorageApi } from "./StorageApi";
 import { Budget, Expense, Category } from "../../interfaces";
 import { DataSync } from "./DataSync";
+import { uuid } from "../../domain/utils/uuid";
 
 export class AppStorageManager implements AppStorageApi {
     private _local: SubStorageApi;
     private _remote?: SubStorageApi;
+    private _deviceId?: string;
 
     constructor (local: SubStorageApi) {
         this._local = local;
     }
+
+    // TODO device ID logic is not required on app startup, it might be lazy loaded
+    get deviceId () {
+        if (!this._deviceId) {
+            this._deviceId = this.loadDeviceId();
+        }
+        return this._deviceId;
+    }
     
+    private loadDeviceId () {
+        const key = 'deviceId';
+        const deviceId = localStorage.getItem(key);
+        if (deviceId) {
+            return deviceId;
+        } else {
+            console.debug('First time app starts, generating device ID');
+            const deviceId = uuid();
+            localStorage.setItem(key, deviceId)
+            return deviceId;
+        }
+    }
+
     subscribe(onStorageUpdated: () => void): () => void {
         throw Error('not implemented');
     }

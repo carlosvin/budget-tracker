@@ -56,4 +56,5 @@ export interface SubStorageApi extends StorageApi, Importer, Exporter {
 export interface AppStorageApi extends StorageApi {
     subscribe(onStorageUpdated: () => void): () => void;
     setRemote(remote?: SubStorageApi): Promise<void>;
+    readonly deviceId: string;
 }
