@@ -168,10 +168,15 @@ export class FirestoreApi implements SubStorageApi {
         return categories;    
     }
 
-    async setCategory(category: CategoryDb, timestamp: number){
-        await this.getCategoryDoc(category.identifier)
-            .set(this.removeUndefined({deleted: 0, ...category, timestamp}));
-        return this.setLastTimeSaved(timestamp);
+    async setCategories(categories: CategoryDb[], timestamp: number){
+        const batch = this.db.batch();
+        Object
+            .values(categories)
+            .forEach(category => batch.set(
+                this.getCategoryDoc(category.identifier), 
+                this.removeUndefined({deleted: 0, ...category, timestamp})));
+        this.setLastTimeSaved(timestamp, batch);
+        return batch.commit();
     }
 
     async saveCategories(categories: Categories, timestamp: number){

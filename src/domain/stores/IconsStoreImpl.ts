@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { stringToColorCss } from '../domain/utils/stringToColor';
+import { stringToColorCss } from '../utils/stringToColor';
 import { LazyIcon, IconsStore } from './interfaces';
 
 interface IconsMap {[k: string]: LazyIcon};

@@ -1,6 +1,6 @@
-import { Budget, Expense } from "../interfaces";
-import { dateDiff } from "../domain/date";
-import { btApp } from "../BudgetTracker";
+import { Budget, Expense } from "../../interfaces";
+import { dateDiff } from "../date";
+import { btApp } from "../../BudgetTracker";
 
 export class StatsStore {
 

@@ -1,32 +1,37 @@
-import { StorageApi, SubStorageApi } from "./StorageApi";
-import { Budget, Expense, Category, ExportDataSet } from "../../interfaces";
+import { SubStorageApi, AppStorageApi } from "./StorageApi";
+import { Budget, Expense, Category } from "../../interfaces";
 import { DataSync } from "./DataSync";
 
-export class AppStorageManager implements StorageApi {
+export class AppStorageManager implements AppStorageApi {
     private _local: SubStorageApi;
     private _remote?: SubStorageApi;
 
     constructor (local: SubStorageApi) {
         this._local = local;
     }
+    
+    subscribe(onStorageUpdated: () => void): () => void {
+        throw Error('not implemented');
+    }
 
-    async initRemote (remotePromise ?: Promise<SubStorageApi|undefined>) {
-        if (remotePromise) {
-            this._remote = await remotePromise;
+    async setRemote (remote?: SubStorageApi) {
+        if (this._remote !== remote) {
+            this._remote = remote;
             if (this._remote) {
-                await this.sync();
-                return this._remote;
+                return this.sync();
             }
-        } else {
-            this._remote = undefined;
         }
     }
 
     async sync () {
         if (this._remote) {
-            const [remoteTime, localTime] = await Promise.all([
+            const [
+                remoteTime, 
+                localTime
+            ] = await Promise.all([
                 this._remote.getLastTimeSaved(), 
-                this._local.getLastTimeSaved()]);
+                this._local.getLastTimeSaved()
+            ]);
                 if (remoteTime > localTime) {
                     console.debug('Remote > Local');
                     await new DataSync(this._remote, this._local).sync();
@@ -96,10 +101,10 @@ export class AppStorageManager implements StorageApi {
         return this._local.getCategories();
     }
 
-    async setCategory(category: Category, timestamp = Date.now()) {
-        const localPromise = this._local.setCategory(category, timestamp);
+    async setCategories(categories: Category[], timestamp = Date.now()) {
+        const localPromise = this._local.setCategories(categories, timestamp);
         if (this._remote) {
-            this._remote.setCategory(category, timestamp);
+            this._remote.setCategories(categories, timestamp);
         }
         return localPromise;
     }
@@ -108,18 +113,6 @@ export class AppStorageManager implements StorageApi {
         const localPromise = this._local.deleteCategory(identifier, timestamp);
         if (this._remote) {
             this._remote.deleteCategory(identifier, timestamp);
-        }
-        return localPromise;
-    }
-
-    async export () {
-        return this._local.export();
-    }
-
-    async import (data: ExportDataSet) {
-        const localPromise = this._local.import(data);
-        if (this._remote) {
-            this._remote.import(data);
         }
         return localPromise;
     }

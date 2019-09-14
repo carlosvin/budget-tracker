@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { btApp } from '../BudgetTracker';
-import { ColoredLazyIcon } from '../stores/interfaces';
+import { ColoredLazyIcon } from '../domain/stores/interfaces';
 
 export function useIcon(name: string) {
     const [icon, setIcon] = useState<ColoredLazyIcon>();

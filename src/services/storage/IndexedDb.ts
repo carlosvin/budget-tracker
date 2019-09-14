@@ -165,15 +165,23 @@ export class IndexedDb implements SubStorageApi {
         return categories;
     }
 
+    async setCategories(categories: Category[], timestamp: number) {
+        const db = await this.getDb();
+        const tx = db.transaction(EntityNames.Categories, 'readwrite');
+        for (const category of categories) {
+            tx.store.put({
+                ...category,
+                timestamp,
+                deleted: 0
+            });
+        }
+        await tx.done;
+        return this.setLastTimeSaved(timestamp);
+    }
+
     async getCategory(identifier: string) {
         const db = await this.getDb();
         return db.get(EntityNames.Categories, identifier);
-    }
-
-    async setCategory(category: Category, timestamp: number) {
-        const db = await this.getDb();
-        await db.put(EntityNames.Categories, { timestamp, deleted: 0, ...category });
-        return this.setLastTimeSaved(timestamp);
     }
 
     async deleteCategory(identifier: string, timestamp: number) {

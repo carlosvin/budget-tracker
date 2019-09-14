@@ -1,5 +1,5 @@
-import { GeoApi } from '../api/GeoApi';
-import { CountryEntry } from '../interfaces';
+import { GeoApi } from '../../services/GeoApi';
+import { CountryEntry } from '../../interfaces';
 import { CountriesStore } from './interfaces';
 
 interface CachedCountry {
@@ -9,14 +9,14 @@ interface CachedCountry {
 
 export default class CountriesStoreImpl implements CountriesStore {
 
-    private _countries: CountryEntry[];
     private readonly geoApi: GeoApi;
     private readonly DEFAULT_CODE = 'ES';
     private currentCountry: CachedCountry;
     private readonly LAST_COUNTRY_KEY = 'lastCountry';
+    readonly countries: CountryEntry[];
 
-    constructor() {
-        this._countries = [];
+    constructor(countries: CountryEntry[]) {
+        this.countries = Object.values(countries);
         this.geoApi = new GeoApi();
         this.currentCountry = this.getCachedCurrentCountry();
     }
@@ -34,15 +34,6 @@ export default class CountriesStoreImpl implements CountriesStore {
             }
         }
         return { code: this.DEFAULT_CODE };
-    }
-
-    async getCountries() {
-        if (this._countries.length === 0) {
-            const cs = await import('./countries.json');
-
-            this._countries = cs.default;
-        }
-        return this._countries;
     }
 
     private setCurrentCountry (countryCode: string) {

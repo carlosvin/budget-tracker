@@ -51,17 +51,14 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
     }
 
     async function login(){
-        let uid = undefined;
         try {
-            uid = await (await btApp.getAuth()).startAuth();
+            const uid = await (await btApp.getAuth()).startAuth();
+            setIsLoggedIn(!!uid);
         } catch (error) {
             setError('Error synchronizing account, please try again later.');
+            setIsLoggedIn(false);
             console.error(error);
         }
-        if (uid) {
-            await btApp.cleanupStorage();
-        }
-        setIsLoggedIn(!!uid);
     }
 
     function handleLogout() {
@@ -71,16 +68,13 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
 
     async function logout () {
         const auth = await btApp.getAuth();
-        let uid = undefined;
         try {
             await auth.logout();
-            uid = await auth.getUserId();
+            setIsLoggedIn(false);
         } catch (error) {
             setError('There were some problems signing out');
             console.error(error);
         }
-        await btApp.cleanupStorage();
-        setIsLoggedIn(!!uid);
     }
 
     function title () {

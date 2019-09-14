@@ -56,7 +56,7 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
         setAddCategoryOpen(false);
         if (category) {
             const store = await btApp.getCategoriesStore();
-            await store.setCategory(category);
+            await store.setCategories([category]);
             setCategories({...categories, category});
             props.onCategoryChange(category.identifier);
         }

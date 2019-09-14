@@ -53,4 +53,10 @@ export class AuthApiImpl implements AuthApi {
             );
         });
     }
+
+    subscribe(onAuth: (uid?: string) => void) {
+        return this.auth.onAuthStateChanged(function (user) {
+            user ? onAuth(user.uid) : onAuth(undefined);
+        });
+    }
 }

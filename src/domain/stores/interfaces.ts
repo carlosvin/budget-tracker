@@ -1,29 +1,29 @@
-import { Categories, Category, Budget, Expense, ExpensesMap, CurrencyRates, CountryEntry } from "../interfaces";
-import { BudgetModel } from '../domain/BudgetModel';
+import { Categories, Category, Budget, Expense, ExpensesMap, CurrencyRates, CountryEntry, Importer, Exporter } from "../../interfaces";
+import { BudgetModel } from '../BudgetModel';
 import { SvgIconProps } from "@material-ui/core/SvgIcon";
 import { LazyExoticComponent, ReactElement } from "react";
 
 export interface CategoriesStore {
     getCategories(): Promise<Categories>;
-    setCategory(category: Category): Promise<void>;
+    setCategories(categories: Category[]): Promise<void>;
     getCategory(categoryId: string): Promise<Category>;
     deleteCategory(categoryId: string): Promise<boolean>;
 }
 
-export interface BudgetsStore {
+export interface BudgetsStore extends Importer, Exporter {
 
     getBudgetModel(budgetId: string): Promise<BudgetModel>;
     setBudget(budget: Budget): Promise<void>;
 
     getExpensesByDay(budgetId: string, y: number, m: number, d: number): Promise<ExpensesMap>;
 
-    saveExpenses(budgetId: string, expense: Expense[]): Promise<void>;
+    setExpenses(budgetId: string, expense: Expense[]): Promise<void>;
     getExpense(budgetId: string, expenseId: string): Promise<Expense>;
     deleteBudget(budgetId: string): Promise<void>;
     deleteExpense(budgetId: string, expenseId: string): Promise<void>;
 }
 
-export declare type LazyIcon =LazyExoticComponent<(props: SvgIconProps) => ReactElement>;
+export declare type LazyIcon = LazyExoticComponent<(props: SvgIconProps) => ReactElement>;
 
 export interface ColoredLazyIcon { 
     Icon: LazyIcon;
@@ -38,7 +38,8 @@ export interface IconsStore {
 }
 
 export interface CurrenciesStore {
-    getCurrencies(): Promise<{ [currency: string]: string }>;
+
+    readonly currencies: { [currency: string]: string };
 
     /** 
      * @returns Currency exchange rate
@@ -69,7 +70,7 @@ export interface CurrenciesStore {
 
 export interface CountriesStore {
 
-    getCountries(): Promise<CountryEntry[]>;
+    readonly countries: CountryEntry[];
 
     readonly currentCountryCode: string;
 

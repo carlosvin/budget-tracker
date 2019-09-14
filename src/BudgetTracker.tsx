@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { BudgetsIndexStore } from './stores/BudgetsIndexStore';
-import { SubStorageApi, AppStorageApi } from './api/storage/StorageApi';
+import { BudgetsIndexStore } from './domain/stores/BudgetsIndexStore';
+import { SubStorageApi, AppStorageApi } from './services/storage/StorageApi';
 import { 
     CategoriesStore, BudgetsStore, 
     IconsStore, CurrenciesStore, 
-    CountriesStore } from './stores/interfaces';
-import { AuthApi } from './api/AuthApi';
+    CountriesStore } from './domain/stores/interfaces';
+import { AuthApi } from './services/AuthApi';
 
 class BudgetTracker {
 
@@ -23,12 +23,10 @@ class BudgetTracker {
     private _countriesStore?: CountriesStore;
     private _budgetsIndex?: BudgetsIndexStore;
 
-    async getStorage () {
+    private async getStorage () {
         if (!this._storage) {
-            const storage  = await import('./api/storage/AppStorageManager');
+            const storage  = await import('./services/storage/AppStorageManager');
             this._storage = new storage.AppStorageManager(await this.getLocalStorage());
-            this._storage.initRemote(this.getFirestore())
-                .then(store => store && this.refreshStores());
         }
         if (this._storage) {
             return this._storage;
@@ -36,37 +34,36 @@ class BudgetTracker {
         throw Error('Error Loading Storage');
     }
 
-    async cleanupStorage () {
-        this._firestore = undefined;
-        await (await this.getStorage()).initRemote(this.getFirestore());
-        this.refreshStores();
-    }
-
-    refreshStores() {
-        this._budgetsIndex = this._budgetsStore = this._categoriesStore = undefined;
-    }
-
-    private async getFirestore () {
-        if (!this._firestore) {
-            try {
-                const userId = await (await this.getAuth()).getUserId();
-                if (userId) {
-                    const storage  = await import('./api/storage/FirestoreApi');
-                    this._firestore = new storage.FirestoreApi(userId);
-                }    
-            } catch (error) {
-                console.warn('Cannot get user ID: ', error);
+    private async initFirestore (uid?: string) {
+        if (uid) {
+            if (!this._firestore) {
+                try {
+                    if (uid) {
+                        const storage  = await import('./services/storage/FirestoreApi');
+                        this._firestore = new storage.FirestoreApi(uid);
+                    }    
+                } catch (error) {
+                    console.warn('Cannot get user ID: ', error);
+                }
             }
+        } else {
+            this._firestore = undefined;
         }
         return this._firestore;
+
     }
 
     private async getLocalStorage () {
         if (!this._localStorage) {
-            const storage  = await import('./api/storage/IndexedDb');
+            const storage  = await import('./services/storage/IndexedDb');
             this._localStorage = new storage.IndexedDb();
         }
         return this._localStorage;
+    }
+
+    private onAuth = async (uid?: string) => {
+        const storage  = await this.getStorage();
+        storage.setRemote(await this.initFirestore(uid));
     }
 
     async getAuth () {
@@ -78,29 +75,27 @@ class BudgetTracker {
         }
         this._authPromise = this.getAuthPromise();
         this._auth = await this._authPromise;
+        this._auth.subscribe(this.onAuth);
         this._authPromise = undefined;
         return this._auth;
     }
 
     private async getAuthPromise () {
-        const auth  = await import('./api/AuthApiImpl');
+        const auth  = await import('./services/AuthApiImpl');
         return new auth.AuthApiImpl();
     }
 
     async getBudgetsStore () {
         if (!this._budgetsStore) {
-            const BudgetsStoreImpl  = (await import('./stores/BudgetsStoreImpl')).default;
-
-            this._budgetsStore = new BudgetsStoreImpl(
-                await this.getBudgetsIndex(), 
-                await this.getCurrenciesStore());
+            const BudgetsStoreImpl  = (await import('./domain/stores/BudgetsStoreImpl')).default;
+            this._budgetsStore = new BudgetsStoreImpl(await this.getBudgetsIndex());
         }
         return this._budgetsStore;
     }
 
     async getCategoriesStore () {
         if (!this._categoriesStore) {
-            const CategoriesStoreImpl  = (await import('./stores/CategoriesStoreImpl')).default;
+            const CategoriesStoreImpl  = (await import('./domain/stores/CategoriesStoreImpl')).default;
             this._categoriesStore = new CategoriesStoreImpl(await this.getStorage());
         }
         return this._categoriesStore;
@@ -115,7 +110,7 @@ class BudgetTracker {
 
     async getIconsStore () {
         if (!this._iconsStore) {
-            const IconsStoreImpl  = (await import('./stores/IconsStoreImpl')).default;
+            const IconsStoreImpl  = (await import('./domain/stores/IconsStoreImpl')).default;
             this._iconsStore = new IconsStoreImpl();
         }
         return this._iconsStore;
@@ -123,16 +118,19 @@ class BudgetTracker {
 
     async getCurrenciesStore () {
         if (!this._currenciesStore) {
-            const CurrenciesStoreImpl  = (await import('./stores/CurrenciesStoreImpl')).default;
-            this._currenciesStore = new CurrenciesStoreImpl();
+            const [currencies, CurrenciesStoreImpl] = await Promise.all([
+                import('./constants/currency.json'),
+                import('./domain/stores/CurrenciesStoreImpl')
+            ]);
+            this._currenciesStore = new CurrenciesStoreImpl.default(currencies);
         }
         return this._currenciesStore;
     }
 
     async getCountriesStore () {
         if (!this._countriesStore) {
-            const CountriesStoreImpl  = (await import('./stores/CountriesStoreImpl')).default;
-            this._countriesStore = new CountriesStoreImpl();
+            const CountriesStoreImpl  = (await import('./domain/stores/CountriesStoreImpl')).default;
+            this._countriesStore = new CountriesStoreImpl(await import('./constants/countries.json'));
         }
         return this._countriesStore;
     }

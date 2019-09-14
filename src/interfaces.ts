@@ -24,6 +24,11 @@ export interface Expense {
     budgetId: string;
 }
 
+// TODO review app to switch to JS Map
+export interface ObjectMap<T> {
+    [currency: string]: T   
+}
+
 export interface ExpensesMap {
     [identifier: string]: Expense;
 }
@@ -91,4 +96,12 @@ export enum EntityNames {
     Budgets = 'budgets',
     Expenses = 'expenses',
     Categories = 'categories',
+}
+
+export interface Exporter {
+    export(): Promise<ExportDataSet>;
+}
+
+export interface Importer {
+    import(data: ExportDataSet): Promise<void>;
 }

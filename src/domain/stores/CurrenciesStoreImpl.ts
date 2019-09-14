@@ -1,8 +1,17 @@
-import { CurrencyRates } from "../interfaces";
-import { currenciesApi } from "../api/CurrenciesApi";
-import { dateDiff } from "../domain/date";
+import { CurrencyRates, ObjectMap } from "../../interfaces";
+import { currenciesApi } from "../../services/CurrenciesApi";
+import { dateDiff } from "../date";
 import { CurrenciesStore } from "./interfaces";
-import applyRate from "../domain/utils/applyRate";
+import applyRate from "../utils/applyRate";
+
+interface ImportedCurrencyInfo {
+    "AlphabeticCode": string|null,
+    "Currency": string,
+    "Entity": string,
+    "MinorUnit": string|null,
+    "NumericCode": number|null,
+    "WithdrawalDate": null|string
+}
 
 export default class CurrenciesStoreImpl implements CurrenciesStore {
     static readonly KEY = 'currencyRates';
@@ -11,25 +20,31 @@ export default class CurrenciesStoreImpl implements CurrenciesStore {
     // TODO make this configurable
     static readonly MAX_DAYS = 2;
     
-    private _currencies: { [currency: string]: string };
-    private _areCurrenciesInitialized: boolean;
+    readonly currencies: ObjectMap<string>;
     private _rates: { [currency: string]: CurrencyRates };
     private _timestamps: { [currency: string]: number };
     private _countriesCurrencyMap?: {[country: string]: string};
     private _lastCurrencyUsed?: string;
 
-    constructor() {
-        this._areCurrenciesInitialized = false;
-        this._currencies = {};
+    constructor(importedCurrencies: ImportedCurrencyInfo[]) {
+        this.currencies = CurrenciesStoreImpl.filterOutInvalid(importedCurrencies);
+            
         this._timestamps = this.getTimestampsFromDisk();
         this._rates = this.getRatesFromDisk();
     }
 
-    async getCurrencies() {
-        if (this._areCurrenciesInitialized === false) {
-            await this.importCurrencies();
-        }
-        return this._currencies;
+    private static filterOutInvalid (importedCurrencies: ImportedCurrencyInfo[]) {
+        const currencyMap: ObjectMap<string> = {};
+        Object.values(importedCurrencies)
+            .filter( c => 
+                c.AlphabeticCode && 
+                (!c.AlphabeticCode.startsWith('X')) && 
+                c.AlphabeticCode.length === 3 && 
+                c.WithdrawalDate === null && 
+                c.Currency && 
+                c.Currency.length > 2)
+            .forEach( c => c.AlphabeticCode && (currencyMap[c.AlphabeticCode] = c.Currency));
+        return currencyMap;
     }
 
     /** 
@@ -91,21 +106,6 @@ export default class CurrenciesStoreImpl implements CurrenciesStore {
             ) <= CurrenciesStoreImpl.MAX_DAYS;
     }
 
-    private async importCurrencies () {
-        const importedCurrencies = await import('./currency.json');
-        importedCurrencies
-            .default
-            .filter( c => 
-                c.AlphabeticCode && 
-                (!c.AlphabeticCode.startsWith('X')) && 
-                c.AlphabeticCode.length === 3 && 
-                c.WithdrawalDate === null && 
-                c.Currency && 
-                c.Currency.length > 2)
-            .forEach( c => this._currencies[c.AlphabeticCode || 'null'] = c.Currency);
-        this._areCurrenciesInitialized = true;
-    }
-
     /** 
      * @throws Error when it returns invalid response after fetching currencies  
      */
@@ -113,10 +113,9 @@ export default class CurrenciesStoreImpl implements CurrenciesStore {
         if (this._rates === undefined) {
             this._rates = {};
         }
-        const currencies = await this.getCurrencies();
         const rates = await currenciesApi.getRates(
             baseCurrency, 
-            Object.keys(currencies),
+            Object.keys(this.currencies),
             expectedCurrencyMatch);
         if (Object.keys(rates.rates).length > 0) {
             this._rates[baseCurrency] = rates;
@@ -164,7 +163,7 @@ export default class CurrenciesStoreImpl implements CurrenciesStore {
 
     async getFromCountry (countryCode: string) {
         if (!this._countriesCurrencyMap) {
-            const cs = await import('./countryCurrency.json');
+            const cs = await import('../../constants/countryCurrency.json');
             this._countriesCurrencyMap = cs.default;    
         }
         const currency = this._countriesCurrencyMap[countryCode];

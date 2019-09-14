@@ -1,12 +1,11 @@
 import * as React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { FilesApi } from '../api/FileApi';
+import { FilesApi } from '../services/FileApi';
 import {  ExportDataSet } from '../interfaces';
 import { SnackbarError } from './snackbars';
 import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
-import { useStorage } from '../hooks/useStorage';
-import { btApp } from '../BudgetTracker';
+import { useBudgetsStore } from '../hooks/useBudgetsStore';
 
 interface ImportFormProps {
     onImportedData: (data: Partial<ExportDataSet>) => void;
@@ -17,7 +16,8 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
     const [selectedFile, setFile] = React.useState();
     const [isProcessing, setProcessing] = React.useState(false);
     const [error, setError] = React.useState();
-    const storage = useStorage();
+
+    const budgetsStore = useBudgetsStore();
 
     React.useEffect(() => setError(undefined), [selectedFile]);
 
@@ -29,16 +29,12 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
     async function handleSubmit (e: React.FormEvent) {
         e.stopPropagation(); 
         e.preventDefault();
-        if (!storage) {
-            throw Error('Storage is not loaded');
-        }
-        if (selectedFile) {
+        if (selectedFile && budgetsStore) {
             setProcessing(true);
             try {
                 const serialized = await FilesApi.getFileContent(selectedFile);
                 const data = JSON.parse(serialized) as ExportDataSet;
-                await storage.import(data);
-                btApp.refreshStores();
+                await budgetsStore.import(data);
                 props.onImportedData(data);
                 setFile(undefined);
             } catch (error) {

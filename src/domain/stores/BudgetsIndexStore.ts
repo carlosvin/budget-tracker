@@ -1,5 +1,5 @@
-import { Budget, BudgetsMap, Expense } from "../interfaces";
-import { StorageApi } from "../api/storage/StorageApi";
+import { Budget, BudgetsMap, Expense } from "../../interfaces";
+import { StorageApi } from "../../services/storage/StorageApi";
 
 export class BudgetsIndexStore {
 

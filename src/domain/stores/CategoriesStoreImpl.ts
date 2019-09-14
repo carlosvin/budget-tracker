@@ -1,5 +1,5 @@
-import { Categories, Category } from "../interfaces";
-import { StorageApi } from "../api/storage/StorageApi";
+import { Categories, Category } from "../../interfaces";
+import { StorageApi } from "../../services/storage/StorageApi";
 import { CategoriesStore } from './interfaces';
 
 export default class CategoriesStoreImpl implements CategoriesStore {
@@ -22,14 +22,10 @@ export default class CategoriesStoreImpl implements CategoriesStore {
         return this._categories;
     }
 
-    async setCategory(category: Category) {
-        const categories = await this.getCategories();
-        categories[category.identifier] = {
-            icon: category.icon,
-            name: category.name,
-            identifier: category.identifier
-        };
-        return this._storage.setCategory(categories[category.identifier]);
+    async setCategories(categories: Category[]){
+        const cs = await this.getCategories();
+        categories.forEach(c => cs[c.identifier] = c)
+        return this._storage.setCategories(categories);
     }
 
     async getCategory(categoryId: string) { 
