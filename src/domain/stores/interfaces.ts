@@ -1,4 +1,4 @@
-import { Categories, Category, Budget, Expense, ExpensesMap, CurrencyRates, CountryEntry, Importer, Exporter } from "../../interfaces";
+import { Categories, Category, Budget, Expense, ExpensesMap, CurrencyRates, CountryEntry, Importer, Exporter, BudgetsMap } from "../../interfaces";
 import { BudgetModel } from '../BudgetModel';
 import { SvgIconProps } from "@material-ui/core/SvgIcon";
 import { LazyExoticComponent, ReactElement } from "react";
@@ -12,6 +12,8 @@ export interface CategoriesStore {
 
 export interface BudgetsStore extends Importer, Exporter {
 
+    getBudgetInfo(budgetId: string): Promise<Budget|undefined>;
+    getBudgetsIndex(): Promise<BudgetsMap>;
     getBudgetModel(budgetId: string): Promise<BudgetModel>;
     setBudget(budget: Budget): Promise<void>;
 

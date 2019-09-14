@@ -8,6 +8,7 @@ import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { DateDay } from "../../domain/DateDay";
 import { uuid } from "../../domain/utils/uuid";
 import { CloseButton } from "../../components/buttons/CloseButton";
+import { useBudgetModel } from "../../hooks/useBudgetModel";
 
 interface BudgetEditProps extends 
     RouteComponentProps<{ budgetId: string }>, 
@@ -17,7 +18,10 @@ interface BudgetEditProps extends
 const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
     const budgetId = props.match.params.budgetId;
     
-    const [budgetInfo, setBudgetInfo] = React.useState<Budget>(); 
+    const [budgetInfo, setBudgetInfo] = React.useState<Budget>();
+
+    // TODO create useBudgetInfo to speed up loading by skipping expenses calculations
+    const budget = useBudgetModel(budgetId);
 
     function newEmptyBudget () {
         const fromDate = new DateDay();
@@ -33,13 +37,16 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
 
     React.useEffect(
         () => {
-            async function fetchBudget(budgetId: string) {
-                setBudgetInfo(await (await btApp.getBudgetsIndex()).getBudgetInfo(budgetId));
+            if (budget) {
+                setBudgetInfo(budget.info);
             }
+        }, [budget]
+    );
 
+    React.useEffect(
+        () => {
             if (budgetId) {
                 props.onTitleChange(`Edit budget`);
-                fetchBudget(budgetId);
             } else {
                 props.onTitleChange('New budget');
                 setBudgetInfo(newEmptyBudget());

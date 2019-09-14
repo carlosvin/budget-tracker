@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { BudgetsIndexStore } from './domain/stores/BudgetsIndexStore';
 import { SubStorageApi, AppStorageApi } from './services/storage/StorageApi';
 import { 
     CategoriesStore, BudgetsStore, 
@@ -21,7 +20,6 @@ class BudgetTracker {
     private _iconsStore?: IconsStore;
     private _currenciesStore?: CurrenciesStore;
     private _countriesStore?: CountriesStore;
-    private _budgetsIndex?: BudgetsIndexStore;
 
     constructor () {
         // background initialization for auth
@@ -98,8 +96,7 @@ class BudgetTracker {
     async getBudgetsStore () {
         if (!this._budgetsStore) {
             const bs = await import('./domain/stores/BudgetsStoreImpl');
-            this._budgetsStore = new bs.BudgetsStoreImpl(
-                await this.getBudgetsIndex(), await this.getStorage());
+            this._budgetsStore = new bs.BudgetsStoreImpl(await this.getStorage());
         }
         return this._budgetsStore;
     }
@@ -110,13 +107,6 @@ class BudgetTracker {
             this._categoriesStore = new imported.CategoriesStoreImpl(await this.getStorage());
         }
         return this._categoriesStore;
-    }
-
-    async getBudgetsIndex () {
-        if (!this._budgetsIndex) {
-            this._budgetsIndex = new BudgetsIndexStore(await this.getStorage());
-        }
-        return this._budgetsIndex;
     }
 
     async getIconsStore () {

@@ -1,51 +1,63 @@
 import { Budget, Expense, ExportDataSet } from "../../interfaces";
 import { BudgetModel } from "../BudgetModel";
-import { BudgetsIndexStore } from "./BudgetsIndexStore";
 import { BudgetsStore } from "./interfaces";
 import { btApp } from "../../BudgetTracker";
 import { AppStorageApi, StorageObserver } from "../../services/storage/StorageApi";
 
 export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
 
-    private readonly _budgetsIndex: BudgetsIndexStore;
     private _budgetModels: {[identifier: string]: BudgetModel};
+    private readonly _storage: AppStorageApi;
 
-    constructor (budgetsIndex: BudgetsIndexStore, storage: AppStorageApi) {
-        this._budgetsIndex = budgetsIndex;
+    constructor (storage: AppStorageApi) {
+        this._storage = storage;
+        this._storage.addObserver(this);
         this._budgetModels = {};
-        storage.addObserver(this);
     }
 
     onStorageDataChanged () {
         this._budgetModels = {};
     }
 
+    async getBudgetInfo (budgetId: string) {
+        return this._storage.getBudget(budgetId);
+    }
+
+    async getBudgetsIndex(){
+        return this._storage.getBudgets();
+    }
+
     async getBudgetModel(budgetId: string) {
         if (!(budgetId in this._budgetModels)) {
             const [budget, expenses] = await Promise.all([
-                this._budgetsIndex.getBudgetInfo(budgetId),
-                this._budgetsIndex.getExpenses(budgetId)
+                this._storage.getBudget(budgetId),
+                this._storage.getExpenses(budgetId)
             ]);
-            this._budgetModels[budgetId] = new BudgetModel(
-                budget,
-                expenses
-            );
+            if (budget) {
+                this._budgetModels[budgetId] = new BudgetModel(
+                    budget,
+                    expenses
+                );
+            } else {
+                throw new Error('Budget not found: ' + budgetId);
+            }
+            
         }
         return this._budgetModels[budgetId];
     }
 
     async setBudget(budget: Budget) {
         if (budget.identifier in this._budgetModels) {
-            const budgetInfo = await this._budgetsIndex.getBudgetInfo(budget.identifier);
+            const budgetModel = this._budgetModels[budget.identifier];
             let rates = undefined;
-            if (budgetInfo.currency !== budget.currency) {
+            if (budgetModel.info.currency !== budget.currency) {
                 rates = await (await btApp.getCurrenciesStore()).getRates(budget.currency);
             }
-            this._budgetModels[budget.identifier].setBudget(budget, rates);
+            await budgetModel.setBudget(budget, rates);
         } else {
             this._budgetModels[budget.identifier] = new BudgetModel(budget, {});
         }
-        return this._budgetsIndex.setBudgetInfo(budget); 
+        return this._storage.setBudget(budget); 
     }
 
     async getExpenses(budgetId: string) {
@@ -66,7 +78,7 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         for (const expense of expenses) {
             model.setExpense(expense);
         }
-        this._budgetsIndex.saveExpenses(expenses);
+        this._storage.setExpenses(expenses);
     }
 
     async getExpense(budgetId: string, expenseId: string){
@@ -77,13 +89,13 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         if (budgetId in this._budgetModels) {
             delete this._budgetModels[budgetId];
         }
-        return this._budgetsIndex.deleteBudget(budgetId);
+        return this._storage.deleteBudget(budgetId);
     }
 
     async deleteExpense(budgetId: string, expenseId: string) {
         const model = await this.getBudgetModel(budgetId);
         model.deleteExpense(expenseId);
-        return this._budgetsIndex.deleteExpense(expenseId);
+        return this._storage.deleteExpense(expenseId);
     }
 
     private async setBudgets(budgets: Budget[]) {
@@ -98,7 +110,7 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         const model = await this.getBudgetModel(expense.budgetId);
         model.setExpense(expense);
         // TODO change save to set, and add setExpense method
-        this._budgetsIndex.saveExpenses([expense]);
+        return this._storage.setExpenses([expense]);
     }
 
     async import(data: ExportDataSet) {

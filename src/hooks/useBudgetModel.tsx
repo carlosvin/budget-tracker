@@ -11,14 +11,15 @@ export function useBudgetModel(budgetId: string) {
             const store = await btApp.getBudgetsStore();
             setBudgetModel(await store.getBudgetModel(budgetId));
         }
+        if (budgetId) {
+            let isSubscribed = true;
 
-        let isSubscribed = true;
-
-        if (isSubscribed) {
-            fetchBudget();
+            if (isSubscribed) {
+                fetchBudget();
+            }
+    
+            return () => {isSubscribed = false};
         }
-
-        return () => {isSubscribed = false};
         
     }, [budgetId]);
 
