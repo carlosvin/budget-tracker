@@ -37,7 +37,7 @@ export class BudgetsIndexStore {
         if (this._budgetsIndex) {
             this._budgetsIndex[budget.identifier] = budget;
         }
-        return this._storage.saveBudget(budget);
+        return this._storage.setBudget(budget);
     }
 
     async deleteBudget(budgetId: string) {
@@ -52,7 +52,7 @@ export class BudgetsIndexStore {
     }
 
     async saveExpenses(expenses: Expense[]) {
-        return this._storage.saveExpenses(expenses);
+        return this._storage.setExpenses(expenses);
     }
 
     async deleteExpense(expenseId: string) {
