@@ -7,7 +7,7 @@ interface CachedCountry {
     timestamp?: number;
 }
 
-export default class CountriesStoreImpl implements CountriesStore {
+export class CountriesStoreImpl implements CountriesStore {
 
     private readonly geoApi: GeoApi;
     private readonly DEFAULT_CODE = 'ES';

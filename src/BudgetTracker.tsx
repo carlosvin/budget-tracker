@@ -139,8 +139,9 @@ class BudgetTracker {
 
     async getCountriesStore () {
         if (!this._countriesStore) {
-            const CountriesStoreImpl  = (await import('./domain/stores/CountriesStoreImpl')).default;
-            this._countriesStore = new CountriesStoreImpl(await import('./constants/countries.json'));
+            const imported  = await import('./domain/stores/CountriesStoreImpl');
+            this._countriesStore = new imported.CountriesStoreImpl(
+                await import('./constants/countries.json'));
         }
         return this._countriesStore;
     }
