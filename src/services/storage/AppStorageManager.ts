@@ -1,4 +1,4 @@
-import { SubStorageApi, AppStorageApi } from "./StorageApi";
+import { SubStorageApi, AppStorageApi, StorageObserver } from "./StorageApi";
 import { Budget, Expense, Category } from "../../interfaces";
 import { DataSync } from "./DataSync";
 import { uuid } from "../../domain/utils/uuid";
@@ -7,9 +7,11 @@ export class AppStorageManager implements AppStorageApi {
     private _local: SubStorageApi;
     private _remote?: SubStorageApi;
     private _deviceId?: string;
+    private _observers: Set<StorageObserver>;
 
     constructor (local: SubStorageApi) {
         this._local = local;
+        this._observers = new Set();
     }
 
     // TODO device ID logic is not required on app startup, it might be lazy loaded
@@ -18,6 +20,18 @@ export class AppStorageManager implements AppStorageApi {
             this._deviceId = this.loadDeviceId();
         }
         return this._deviceId;
+    }
+
+    addObserver(observer: StorageObserver) {
+        this._observers.add(observer);
+    }
+
+    deleteObserver(observer: StorageObserver) {
+        this._observers.delete(observer);
+    }
+
+    private notifyObservers () {
+        this._observers.forEach(o=>o.onStorageDataChanged());
     }
     
     private loadDeviceId () {
@@ -31,10 +45,6 @@ export class AppStorageManager implements AppStorageApi {
             localStorage.setItem(key, deviceId)
             return deviceId;
         }
-    }
-
-    subscribe(onStorageUpdated: () => void): () => void {
-        throw Error('not implemented');
     }
 
     async setRemote (remote?: SubStorageApi) {
@@ -55,14 +65,17 @@ export class AppStorageManager implements AppStorageApi {
                 this._remote.getLastTimeSaved(), 
                 this._local.getLastTimeSaved()
             ]);
-                if (remoteTime > localTime) {
-                    await new DataSync(this._remote, this._local).sync();
-                } else if (remoteTime < localTime) {
-                    await new DataSync(this._local, this._remote).sync();
-                } else {
-                    console.debug('Nothing to sync');
-                }
-                console.debug('Sync done');    
+            
+            if (remoteTime > localTime) {
+                await new DataSync(this._remote, this._local).sync();
+            } else if (remoteTime < localTime) {
+                await new DataSync(this._local, this._remote).sync();
+            } else {
+                console.debug('Nothing to sync');
+                return;
+            }
+            this.notifyObservers();
+            console.debug('Sync done');
         }
     }
 

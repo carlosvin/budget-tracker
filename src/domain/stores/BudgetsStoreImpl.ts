@@ -3,14 +3,20 @@ import { BudgetModel } from "../BudgetModel";
 import { BudgetsIndexStore } from "./BudgetsIndexStore";
 import { BudgetsStore } from "./interfaces";
 import { btApp } from "../../BudgetTracker";
+import { AppStorageApi, StorageObserver } from "../../services/storage/StorageApi";
 
-export class BudgetsStoreImpl implements BudgetsStore {
+export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
 
     private readonly _budgetsIndex: BudgetsIndexStore;
     private _budgetModels: {[identifier: string]: BudgetModel};
 
-    constructor (budgetsIndex: BudgetsIndexStore) {
+    constructor (budgetsIndex: BudgetsIndexStore, storage: AppStorageApi) {
         this._budgetsIndex = budgetsIndex;
+        this._budgetModels = {};
+        storage.addObserver(this);
+    }
+
+    onStorageDataChanged () {
         this._budgetModels = {};
     }
 

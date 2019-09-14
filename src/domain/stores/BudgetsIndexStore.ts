@@ -1,13 +1,18 @@
 import { Budget, BudgetsMap, Expense } from "../../interfaces";
-import { StorageApi } from "../../services/storage/StorageApi";
+import { StorageObserver, AppStorageApi } from "../../services/storage/StorageApi";
 
-export class BudgetsIndexStore {
+export class BudgetsIndexStore implements StorageObserver {
 
     private _budgetsIndex?: {[identifier: string]: Budget};
-    private readonly _storage: StorageApi;
+    private readonly _storage: AppStorageApi;
 
-    constructor (storage: StorageApi) {
+    constructor (storage: AppStorageApi) {
         this._storage = storage;
+        this._storage.addObserver(this);
+    }
+
+    onStorageDataChanged() {
+        this._budgetsIndex = undefined;
     }
 
     async getBudgetsIndex (): Promise<BudgetsMap> {

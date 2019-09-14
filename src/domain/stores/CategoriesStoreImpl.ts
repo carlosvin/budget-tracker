@@ -1,15 +1,20 @@
 import { Categories, Category } from "../../interfaces";
-import { StorageApi } from "../../services/storage/StorageApi";
+import { AppStorageApi, StorageObserver } from "../../services/storage/StorageApi";
 import { CategoriesStore } from './interfaces';
 
-export class CategoriesStoreImpl implements CategoriesStore {
+export class CategoriesStoreImpl implements CategoriesStore, StorageObserver {
 
     private _categories?: Categories;
-    private readonly _storage: StorageApi;
+    private readonly _storage: AppStorageApi;
     private _loading?: Promise<Categories>;
 
-    constructor(storage: StorageApi) {
+    constructor(storage: AppStorageApi) {
         this._storage = storage;
+        this._storage.addObserver(this);
+    }
+
+    onStorageDataChanged(){
+        this._categories = undefined;
     }
 
     async getCategories() {

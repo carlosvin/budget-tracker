@@ -98,7 +98,8 @@ class BudgetTracker {
     async getBudgetsStore () {
         if (!this._budgetsStore) {
             const bs = await import('./domain/stores/BudgetsStoreImpl');
-            this._budgetsStore = new bs.BudgetsStoreImpl(await this.getBudgetsIndex());
+            this._budgetsStore = new bs.BudgetsStoreImpl(
+                await this.getBudgetsIndex(), await this.getStorage());
         }
         return this._budgetsStore;
     }

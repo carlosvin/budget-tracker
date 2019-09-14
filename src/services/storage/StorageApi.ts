@@ -52,8 +52,14 @@ export interface SubStorageApi extends StorageApi, Importer, Exporter {
     setLastTimeSaved(timestamp: number): Promise<void>;
 }
 
+export interface StorageObserver {
+    onStorageDataChanged(): void;
+}
+
 export interface AppStorageApi extends StorageApi {
-    subscribe(onStorageUpdated: () => void): () => void;
     setRemote(remote?: SubStorageApi): Promise<void>;
     readonly deviceId: string;
+
+    addObserver(observer: StorageObserver): void;
+    deleteObserver(observer: StorageObserver): void;
 }
