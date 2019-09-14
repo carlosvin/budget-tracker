@@ -164,7 +164,6 @@ export class FirestoreApi implements SubStorageApi {
         querySnapshot.forEach((doc) => {
             categories[doc.id] = doc.data() as Category;
         });
-        console.debug('Fetched from firestore: ', categories);
         return categories;    
     }
 
@@ -256,26 +255,5 @@ export class FirestoreApi implements SubStorageApi {
                 this.getLastTimeSaved()]);
 
         return {budgets, expenses, categories, lastTimeSaved};
-    }
-
-    async getPendingSync(localLastTimeSaved: number): Promise<ExportDataSet|undefined> {
-        // If remote lastTimeSaved is bigger than local one
-        const remoteLastTimeSaved = await this.getLastTimeSaved();
-        if (remoteLastTimeSaved > localLastTimeSaved) {
-            // Get all documents with timestamps bigger than local timestamp
-            const [budgets, categories, expenses] = await Promise.all([
-                this.getBudgets(localLastTimeSaved), 
-                this.getCategories(localLastTimeSaved), 
-                // budgetId = undefined: get all expenses
-                this._getExpenses(undefined, localLastTimeSaved)
-            ]);
-
-            return {budgets, categories, expenses, lastTimeSaved: remoteLastTimeSaved};
-            // Save them locally (caller responsibility)
-        }
-    }
-
-    async cleanupPendingSync(pending: ExportDataSet) {
-        // There is no implementation in remote storage 
     }
 }

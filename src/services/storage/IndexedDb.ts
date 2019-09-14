@@ -243,9 +243,4 @@ export class IndexedDb implements SubStorageApi {
     async setLastTimeSaved(timestamp: number): Promise<void> {
         localStorage.setItem('timestamp', timestamp.toString());
     }
-
-    async getPendingSync(timestamp = 0) {
-        // TODO it could be improved if filter by timestamp
-        return this.export();
-    }
 }

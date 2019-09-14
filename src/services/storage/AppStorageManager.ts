@@ -56,10 +56,8 @@ export class AppStorageManager implements AppStorageApi {
                 this._local.getLastTimeSaved()
             ]);
                 if (remoteTime > localTime) {
-                    console.debug('Remote > Local');
                     await new DataSync(this._remote, this._local).sync();
                 } else if (remoteTime < localTime) {
-                    console.debug('Local > Remote');
                     await new DataSync(this._local, this._remote).sync();
                 } else {
                     console.debug('Nothing to sync');

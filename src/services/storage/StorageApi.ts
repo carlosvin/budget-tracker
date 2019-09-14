@@ -50,7 +50,6 @@ export interface StorageApi extends WriteStorageApi, ReadStorageApi {}
 export interface SubStorageApi extends StorageApi, Importer, Exporter {
     getLastTimeSaved(): Promise<number>;
     setLastTimeSaved(timestamp: number): Promise<void>;
-    getPendingSync(timestamp: number): Promise<ExportDataSet|undefined>;
 }
 
 export interface AppStorageApi extends StorageApi {
