@@ -23,6 +23,16 @@ class BudgetTracker {
     private _countriesStore?: CountriesStore;
     private _budgetsIndex?: BudgetsIndexStore;
 
+    constructor () {
+        // background initialization for auth
+        this.initBgAuth();
+    }
+
+    private async initBgAuth () {
+        console.log('Fetching auth info...');
+        console.log('Auth: ', await (await this.getAuth()).getUserId());
+    }
+
     private async getStorage () {
         if (!this._storage) {
             const storage  = await import('./services/storage/AppStorageManager');
