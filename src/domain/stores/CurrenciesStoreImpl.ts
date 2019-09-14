@@ -13,7 +13,7 @@ interface ImportedCurrencyInfo {
     "WithdrawalDate": null|string
 }
 
-export default class CurrenciesStoreImpl implements CurrenciesStore {
+export class CurrenciesStoreImpl implements CurrenciesStore {
     static readonly KEY = 'currencyRates';
     static readonly KEY_TS = 'currencyTimestamps';
     static readonly KEY_LAST = 'lastCurrency';

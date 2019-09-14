@@ -4,7 +4,7 @@ import { BudgetsIndexStore } from "./BudgetsIndexStore";
 import { BudgetsStore } from "./interfaces";
 import { btApp } from "../../BudgetTracker";
 
-export default class BudgetsStoreImpl implements BudgetsStore {
+export class BudgetsStoreImpl implements BudgetsStore {
 
     private readonly _budgetsIndex: BudgetsIndexStore;
     private _budgetModels: {[identifier: string]: BudgetModel};

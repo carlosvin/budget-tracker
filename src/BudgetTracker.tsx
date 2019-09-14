@@ -29,8 +29,8 @@ class BudgetTracker {
     }
 
     private async initBgAuth () {
-        console.log('Fetching auth info...');
-        console.log('Auth: ', await (await this.getAuth()).getUserId());
+        console.debug('Fetching auth info...');
+        console.debug('Auth: ', await (await this.getAuth()).getUserId());
     }
 
     private async getStorage () {
@@ -97,16 +97,16 @@ class BudgetTracker {
 
     async getBudgetsStore () {
         if (!this._budgetsStore) {
-            const BudgetsStoreImpl  = (await import('./domain/stores/BudgetsStoreImpl')).default;
-            this._budgetsStore = new BudgetsStoreImpl(await this.getBudgetsIndex());
+            const bs = await import('./domain/stores/BudgetsStoreImpl');
+            this._budgetsStore = new bs.BudgetsStoreImpl(await this.getBudgetsIndex());
         }
         return this._budgetsStore;
     }
 
     async getCategoriesStore () {
         if (!this._categoriesStore) {
-            const CategoriesStoreImpl  = (await import('./domain/stores/CategoriesStoreImpl')).default;
-            this._categoriesStore = new CategoriesStoreImpl(await this.getStorage());
+            const imported = await import('./domain/stores/CategoriesStoreImpl');
+            this._categoriesStore = new imported.CategoriesStoreImpl(await this.getStorage());
         }
         return this._categoriesStore;
     }
@@ -120,19 +120,19 @@ class BudgetTracker {
 
     async getIconsStore () {
         if (!this._iconsStore) {
-            const IconsStoreImpl  = (await import('./domain/stores/IconsStoreImpl')).default;
-            this._iconsStore = new IconsStoreImpl();
+            const imported  = await import('./domain/stores/IconsStoreImpl');
+            this._iconsStore = new imported.IconsStoreImpl();
         }
         return this._iconsStore;
     }
 
     async getCurrenciesStore () {
         if (!this._currenciesStore) {
-            const [currencies, CurrenciesStoreImpl] = await Promise.all([
+            const [currencies, imported] = await Promise.all([
                 import('./constants/currency.json'),
                 import('./domain/stores/CurrenciesStoreImpl')
             ]);
-            this._currenciesStore = new CurrenciesStoreImpl.default(currencies);
+            this._currenciesStore = new imported.CurrenciesStoreImpl(currencies);
         }
         return this._currenciesStore;
     }

@@ -4,7 +4,7 @@ import { LazyIcon, IconsStore } from './interfaces';
 
 interface IconsMap {[k: string]: LazyIcon};
 
-export default class IconsStoreImpl implements IconsStore {
+export class IconsStoreImpl implements IconsStore {
 
     private _icons: IconsMap = {
         Beach: React.lazy(() => import('@material-ui/icons/BeachAccess')),
