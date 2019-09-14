@@ -52,10 +52,10 @@ export class AppStorageManager implements StorageApi {
         return this._local.getExpenses(budgetId);
     }
     
-    async saveBudget(budget: Budget, timestamp = Date.now()) {
-        const localPromise = this._local.saveBudget(budget, timestamp);
+    async setBudget(budget: Budget, timestamp = Date.now()) {
+        const localPromise = this._local.setBudget(budget, timestamp);
         if (this._remote) {
-            this._remote.saveBudget(budget, timestamp);
+            this._remote.setBudget(budget, timestamp);
         }
         return localPromise;
     }
@@ -72,10 +72,10 @@ export class AppStorageManager implements StorageApi {
         return this._local.getExpense(expenseId);
     }
     
-    async saveExpenses(expenses: Expense[], timestamp = Date.now()) {
-        const localPromise = this._local.saveExpenses(expenses, timestamp);
+    async setExpenses(expenses: Expense[], timestamp = Date.now()) {
+        const localPromise = this._local.setExpenses(expenses, timestamp);
         if (this._remote) {
-            this._remote.saveExpenses(expenses, timestamp);
+            this._remote.setExpenses(expenses, timestamp);
         }
         return localPromise;
     }
@@ -96,10 +96,10 @@ export class AppStorageManager implements StorageApi {
         return this._local.getCategories();
     }
 
-    async saveCategory(category: Category, timestamp = Date.now()) {
-        const localPromise = this._local.saveCategory(category, timestamp);
+    async setCategory(category: Category, timestamp = Date.now()) {
+        const localPromise = this._local.setCategory(category, timestamp);
         if (this._remote) {
-            this._remote.saveCategory(category, timestamp);
+            this._remote.setCategory(category, timestamp);
         }
         return localPromise;
     }

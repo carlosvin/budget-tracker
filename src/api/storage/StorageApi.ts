@@ -11,7 +11,7 @@ import {
 
 export interface SyncItem {
     identifier: string;
-    type: EntityNames
+    type: EntityNames;
 }
 
 export interface DbItem {
@@ -20,13 +20,13 @@ export interface DbItem {
 }
 
 export interface WriteStorageApi {
-    saveBudget(budget: Budget, timestamp?: number): Promise<void>;
+    setBudget(budget: Budget, timestamp?: number): Promise<void>;
     deleteBudget(budgetId: string, timestamp?: number): Promise<void>;
     
-    saveExpenses(expenses: Expense[], timestamp?: number): Promise<void>;
+    setExpenses(expenses: Expense[], timestamp?: number): Promise<void>;
     deleteExpense(expenseId: string, timestamp?: number): Promise<void>;
 
-    saveCategory(category: Category, timestamp?: number): Promise<void>;
+    setCategory(category: Category, timestamp?: number): Promise<void>;
     deleteCategory(identifier: string, timestamp?: number): Promise<void>;
 
     import(data: ExportDataSet): Promise<void>;

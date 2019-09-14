@@ -71,7 +71,7 @@ export class FirestoreApi implements SubStorageApi {
         return this.categoriesCol.doc(categoryId);
     }
 
-    async saveBudget(budget: Budget, timestamp: number) {
+    async setBudget(budget: Budget, timestamp: number) {
         return this._saveBudget({deleted: 0, ...budget, timestamp});
     }
 
@@ -134,7 +134,7 @@ export class FirestoreApi implements SubStorageApi {
         return expenses;
     }
 
-    async saveExpenses(expenses: Expense[], timestamp: number) {
+    async setExpenses(expenses: Expense[], timestamp: number) {
         const batch = this.db.batch();
         Object
             .values(expenses)
@@ -168,7 +168,7 @@ export class FirestoreApi implements SubStorageApi {
         return categories;    
     }
 
-    async saveCategory(category: CategoryDb, timestamp: number){
+    async setCategory(category: CategoryDb, timestamp: number){
         await this.getCategoryDoc(category.identifier)
             .set(this.removeUndefined({deleted: 0, ...category, timestamp}));
         return this.setLastTimeSaved(timestamp);
