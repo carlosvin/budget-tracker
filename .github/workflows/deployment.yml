@@ -23,6 +23,7 @@ jobs:
       run: yarn build
       env:
         REACT_APP_CURRENCY_API_KEY: ${{ secrets.CURRENCY_PUBLIC_API_KEY }}
+        REACT_APP_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
     - name: Deploy to gh-pages
       if: success()
       uses: crazy-max/ghaction-github-pages@master
