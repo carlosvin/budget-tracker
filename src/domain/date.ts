@@ -5,7 +5,7 @@
  * @param to - Ending period timestamp
  */
 export function dateDiff(from: number, to: number) {
-    return Math.round((to - from)/(1000*60*60*24));
+    return Math.round((to - from)/(1000*60*60*24)) + 1;
 }
 
 /** 
