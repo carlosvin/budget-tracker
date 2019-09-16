@@ -4,34 +4,26 @@ import { DataSync } from "./DataSync";
 import { uuid } from "../../domain/utils/uuid";
 
 export class AppStorageManager implements AppStorageApi {
-    private _local: SubStorageApi;
-    private _remote?: SubStorageApi;
-    private _deviceId?: string;
-    private _observers: Set<StorageObserver>;
+    private local: SubStorageApi;
+    private remote?: SubStorageApi;
+    private observers: Set<StorageObserver>;
 
     constructor (local: SubStorageApi) {
-        this._local = local;
-        this._observers = new Set();
-    }
-
-    // TODO device ID logic is not required on app startup, it might be lazy loaded
-    get deviceId () {
-        if (!this._deviceId) {
-            this._deviceId = this.loadDeviceId();
-        }
-        return this._deviceId;
+        console.log('Instantiated', this);
+        this.local = local;
+        this.observers = new Set();
     }
 
     addObserver(observer: StorageObserver) {
-        this._observers.add(observer);
+        this.observers.add(observer);
     }
 
     deleteObserver(observer: StorageObserver) {
-        this._observers.delete(observer);
+        this.observers.delete(observer);
     }
 
     private notifyObservers () {
-        this._observers.forEach(o=>o.onStorageDataChanged());
+        this.observers.forEach(o=>o.onStorageDataChanged());
     }
     
     private loadDeviceId () {
@@ -48,28 +40,28 @@ export class AppStorageManager implements AppStorageApi {
     }
 
     async setRemote (remote?: SubStorageApi) {
-        if (this._remote !== remote) {
-            this._remote = remote;
-            if (this._remote) {
+        if (this.remote !== remote) {
+            this.remote = remote;
+            if (this.remote) {
                 return this.sync();
             }
         }
     }
 
     async sync () {
-        if (this._remote) {
+        if (this.remote) {
             const [
                 remoteTime, 
                 localTime
             ] = await Promise.all([
-                this._remote.getLastTimeSaved(), 
-                this._local.getLastTimeSaved()
+                this.remote.getLastTimeSaved(), 
+                this.local.getLastTimeSaved()
             ]);
             
             if (remoteTime > localTime) {
-                await new DataSync(this._remote, this._local).sync();
+                await new DataSync(this.remote, this.local).sync();
             } else if (remoteTime < localTime) {
-                await new DataSync(this._local, this._remote).sync();
+                await new DataSync(this.local, this.remote).sync();
             } else {
                 console.debug('Nothing to sync');
                 return;
@@ -80,73 +72,73 @@ export class AppStorageManager implements AppStorageApi {
     }
 
     async getBudget(budgetId: string) {
-        return this._local.getBudget(budgetId);
+        return this.local.getBudget(budgetId);
     }
 
     async getBudgets() {
-        return this._local.getBudgets();
+        return this.local.getBudgets();
     }
 
     async getExpenses(budgetId: string) {
-        return this._local.getExpenses(budgetId);
+        return this.local.getExpenses(budgetId);
     }
     
     async setBudget(budget: Budget, timestamp = Date.now()) {
-        const localPromise = this._local.setBudget(budget, timestamp);
-        if (this._remote) {
-            this._remote.setBudget(budget, timestamp);
+        const localPromise = this.local.setBudget(budget, timestamp);
+        if (this.remote) {
+            this.remote.setBudget(budget, timestamp);
         }
         return localPromise;
     }
     
     async deleteBudget(budgetId: string, timestamp = Date.now()) {
-        const localPromise = this._local.deleteBudget(budgetId, timestamp);
-        if (this._remote) {
-            this._remote.deleteBudget(budgetId, timestamp);
+        const localPromise = this.local.deleteBudget(budgetId, timestamp);
+        if (this.remote) {
+            this.remote.deleteBudget(budgetId, timestamp);
         }
         return localPromise;
     }
 
     async getExpense(expenseId: string) {
-        return this._local.getExpense(expenseId);
+        return this.local.getExpense(expenseId);
     }
     
     async setExpenses(expenses: Expense[], timestamp = Date.now()) {
-        const localPromise = this._local.setExpenses(expenses, timestamp);
-        if (this._remote) {
-            this._remote.setExpenses(expenses, timestamp);
+        const localPromise = this.local.setExpenses(expenses, timestamp);
+        if (this.remote) {
+            this.remote.setExpenses(expenses, timestamp);
         }
         return localPromise;
     }
 
     async deleteExpense(expenseId: string, timestamp = Date.now()) {
-        const localPromise = this._local.deleteExpense(expenseId, timestamp);
-        if (this._remote) {
-            this._remote.deleteExpense(expenseId, timestamp);
+        const localPromise = this.local.deleteExpense(expenseId, timestamp);
+        if (this.remote) {
+            this.remote.deleteExpense(expenseId, timestamp);
         }
         return localPromise;
     }
 
     async getCategory(categoryId: string) {
-        return this._local.getCategory(categoryId);
+        return this.local.getCategory(categoryId);
     }
 
     async getCategories() {
-        return this._local.getCategories();
+        return this.local.getCategories();
     }
 
     async setCategories(categories: Category[], timestamp = Date.now()) {
-        const localPromise = this._local.setCategories(categories, timestamp);
-        if (this._remote) {
-            this._remote.setCategories(categories, timestamp);
+        const localPromise = this.local.setCategories(categories, timestamp);
+        if (this.remote) {
+            this.remote.setCategories(categories, timestamp);
         }
         return localPromise;
     }
 
     async deleteCategory(identifier: string, timestamp = Date.now()) {
-        const localPromise = this._local.deleteCategory(identifier, timestamp);
-        if (this._remote) {
-            this._remote.deleteCategory(identifier, timestamp);
+        const localPromise = this.local.deleteCategory(identifier, timestamp);
+        if (this.remote) {
+            this.remote.deleteCategory(identifier, timestamp);
         }
         return localPromise;
     }

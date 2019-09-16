@@ -7,12 +7,13 @@ import {
     IconsStore, CurrenciesStore, 
     CountriesStore } from './domain/stores/interfaces';
 import { AuthApi } from './services/AuthApi';
+import { AppStorageManager } from './services/storage/AppStorageManager';
+import { IndexedDb } from './services/storage/IndexedDb';
 
 class BudgetTracker {
 
-    private _storage?: AppStorageApi;
+    storage: AppStorageApi;
     private _firestore?: SubStorageApi;
-    private _localStorage?: SubStorageApi;
     private _auth?: AuthApi;
     private _authPromise?: Promise<AuthApi>;
     private _budgetsStore?: BudgetsStore;
@@ -23,6 +24,7 @@ class BudgetTracker {
 
     constructor () {
         // background initialization for auth
+        this.storage = new AppStorageManager(new IndexedDb());
         this.initBgAuth();
     }
 
@@ -31,16 +33,6 @@ class BudgetTracker {
         console.debug('Auth: ', await (await this.getAuth()).getUserId());
     }
 
-    private async getStorage () {
-        if (!this._storage) {
-            const storage  = await import('./services/storage/AppStorageManager');
-            this._storage = new storage.AppStorageManager(await this.getLocalStorage());
-        }
-        if (this._storage) {
-            return this._storage;
-        }
-        throw Error('Error Loading Storage');
-    }
 
     private async initFirestore (uid?: string) {
         if (uid) {
@@ -61,17 +53,8 @@ class BudgetTracker {
 
     }
 
-    private async getLocalStorage () {
-        if (!this._localStorage) {
-            const storage  = await import('./services/storage/IndexedDb');
-            this._localStorage = new storage.IndexedDb();
-        }
-        return this._localStorage;
-    }
-
     private onAuth = async (uid?: string) => {
-        const storage  = await this.getStorage();
-        storage.setRemote(await this.initFirestore(uid));
+        this.storage.setRemote(await this.initFirestore(uid));
     }
 
     async getAuth () {
@@ -96,7 +79,7 @@ class BudgetTracker {
     async getBudgetsStore () {
         if (!this._budgetsStore) {
             const bs = await import('./domain/stores/BudgetsStoreImpl');
-            this._budgetsStore = new bs.BudgetsStoreImpl(await this.getStorage());
+            this._budgetsStore = new bs.BudgetsStoreImpl(this.storage);
         }
         return this._budgetsStore;
     }
@@ -104,7 +87,7 @@ class BudgetTracker {
     async getCategoriesStore () {
         if (!this._categoriesStore) {
             const imported = await import('./domain/stores/CategoriesStoreImpl');
-            this._categoriesStore = new imported.CategoriesStoreImpl(await this.getStorage());
+            this._categoriesStore = new imported.CategoriesStoreImpl(this.storage);
         }
         return this._categoriesStore;
     }

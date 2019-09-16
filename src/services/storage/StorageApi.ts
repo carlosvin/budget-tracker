@@ -57,7 +57,6 @@ export interface StorageObserver {
 
 export interface AppStorageApi extends StorageApi {
     setRemote(remote?: SubStorageApi): Promise<void>;
-    readonly deviceId: string;
 
     addObserver(observer: StorageObserver): void;
     deleteObserver(observer: StorageObserver): void;

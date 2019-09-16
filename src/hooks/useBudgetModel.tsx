@@ -1,27 +1,30 @@
 import { useState, useEffect } from 'react';
-import { btApp } from '../BudgetTracker';
 import { BudgetModel } from '../domain/BudgetModel';
+import { useBudgetsStore } from './useBudgetsStore';
+import { BudgetsStore } from '../domain/stores/interfaces';
 
 export function useBudgetModel(budgetId: string) {
-    // TODO add useBudgetsStore
+    const store = useBudgetsStore();
     const [budgetModel, setBudgetModel] = useState<BudgetModel>();
 
     useEffect(() => {
-        async function fetchBudget () {
-            const store = await btApp.getBudgetsStore();
+        async function fetchBudget (store: BudgetsStore) {
             setBudgetModel(await store.getBudgetModel(budgetId));
         }
         if (budgetId) {
             let isSubscribed = true;
 
             if (isSubscribed) {
-                fetchBudget();
+                if (store) {
+                    fetchBudget(store);
+                } else {
+                    setBudgetModel(undefined);
+                }
             }
-    
             return () => {isSubscribed = false};
         }
         
-    }, [budgetId]);
+    }, [budgetId, store]);
 
     return budgetModel;
 }
