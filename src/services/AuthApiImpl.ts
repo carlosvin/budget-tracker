@@ -13,7 +13,7 @@ import { AuthApi } from './AuthApi';
 
 // Configure Firebase.
 const config = {
-    apiKey: "AIzaSyDYiJ453cQ7Gw2rJoc2aUT8-eIR-3o_--c",
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
     authDomain: "budget-tracker-e611b.firebaseapp.com",
     databaseURL: "https://budget-tracker-e611b.firebaseio.com",
     projectId: "budget-tracker-e611b",
