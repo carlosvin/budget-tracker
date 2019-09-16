@@ -9,15 +9,17 @@ import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import { ExportCard } from '../components/ExportCard';
 import { CloseButton } from '../components/buttons/CloseButton';
-import { useStorage } from '../hooks/useStorage';
 import { ExportDataInfo } from '../components/ExportDataInfo';
+import { useBudgetsStore } from '../hooks/useBudgetsStore';
+import { BudgetsStore } from '../domain/stores/interfaces';
 
 const ImportExport = (props: HeaderNotifierProps&RouterProps) => {
 
     const [importData, setImportData] = React.useState<Partial<ExportDataSet>>();
     const [exportData, setExportData] = React.useState<ExportDataSet>();
     const {history, onActions, onTitleChange} = props;
-    const storage = useStorage();
+
+    const budgetsStore = useBudgetsStore();
 
     React.useLayoutEffect(() => {
         onTitleChange('Import & Export');
@@ -30,19 +32,21 @@ const ImportExport = (props: HeaderNotifierProps&RouterProps) => {
     }, []);
 
     React.useEffect(() => {
-        async function exportData () {
-            if (storage) {
-                try {
-                    setExportData(await storage.export());
-                } catch (error) {
-                    console.warn('There is no data to export: ', error);
-                    setExportData(undefined);
-                }
+        async function exportData (store: BudgetsStore) {
+            try {
+                setExportData(await store.export());
+            } catch (error) {
+                console.warn('There is no data to export: ', error);
+                setExportData(undefined);
             }
         }
-        exportData();
-    }, [storage]);
+        if (budgetsStore) {
+            exportData(budgetsStore);
+        }
+        
+    }, [budgetsStore]);
     
+    // TODO create ImportCard as we did with ExportCard
     return (
         <React.Fragment>
         <Card style={{marginBottom: '1rem'}}>

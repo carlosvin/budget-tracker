@@ -67,7 +67,7 @@ export class IndexedDb implements SubStorageApi {
         return db.get(EntityNames.Budgets, identifier);
     }
 
-    async saveBudget(budget: Budget, timestamp: number) {
+    async setBudget(budget: Budget, timestamp: number) {
         const db = await this.getDb();
         await db.put(
             EntityNames.Budgets,
@@ -126,7 +126,7 @@ export class IndexedDb implements SubStorageApi {
         return db.get(EntityNames.Expenses, expenseId);
     }
 
-    async saveExpenses(expenses: Expense[], timestamp: number) {
+    async setExpenses(expenses: Expense[], timestamp: number) {
         const db = await this.getDb();
         const tx = db.transaction(EntityNames.Expenses, 'readwrite');
         for (const expense of expenses) {
@@ -165,15 +165,23 @@ export class IndexedDb implements SubStorageApi {
         return categories;
     }
 
+    async setCategories(categories: Category[], timestamp: number) {
+        const db = await this.getDb();
+        const tx = db.transaction(EntityNames.Categories, 'readwrite');
+        for (const category of categories) {
+            tx.store.put({
+                ...category,
+                timestamp,
+                deleted: 0
+            });
+        }
+        await tx.done;
+        return this.setLastTimeSaved(timestamp);
+    }
+
     async getCategory(identifier: string) {
         const db = await this.getDb();
         return db.get(EntityNames.Categories, identifier);
-    }
-
-    async saveCategory(category: Category, timestamp: number) {
-        const db = await this.getDb();
-        await db.put(EntityNames.Categories, { timestamp, deleted: 0, ...category });
-        return this.setLastTimeSaved(timestamp);
     }
 
     async deleteCategory(identifier: string, timestamp: number) {
@@ -234,10 +242,5 @@ export class IndexedDb implements SubStorageApi {
     }
     async setLastTimeSaved(timestamp: number): Promise<void> {
         localStorage.setItem('timestamp', timestamp.toString());
-    }
-
-    async getPendingSync(timestamp = 0) {
-        // TODO it could be improved if filter by timestamp
-        return this.export();
     }
 }

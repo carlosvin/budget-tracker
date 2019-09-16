@@ -13,7 +13,7 @@ export class FirestoreApi implements SubStorageApi {
     private readonly db: firebase.firestore.Firestore;
     private readonly userId: string;
 
-    constructor(userId: string, enablePersistence=false) {
+    constructor(userId: string, enablePersistence: boolean) {
         if (userId) {
             this.userId = userId;
             this.db = firebase.firestore();
@@ -71,7 +71,7 @@ export class FirestoreApi implements SubStorageApi {
         return this.categoriesCol.doc(categoryId);
     }
 
-    async saveBudget(budget: Budget, timestamp: number) {
+    async setBudget(budget: Budget, timestamp: number) {
         return this._saveBudget({deleted: 0, ...budget, timestamp});
     }
 
@@ -134,7 +134,7 @@ export class FirestoreApi implements SubStorageApi {
         return expenses;
     }
 
-    async saveExpenses(expenses: Expense[], timestamp: number) {
+    async setExpenses(expenses: Expense[], timestamp: number) {
         const batch = this.db.batch();
         Object
             .values(expenses)
@@ -164,14 +164,18 @@ export class FirestoreApi implements SubStorageApi {
         querySnapshot.forEach((doc) => {
             categories[doc.id] = doc.data() as Category;
         });
-        console.debug('Fetched from firestore: ', categories);
         return categories;    
     }
 
-    async saveCategory(category: CategoryDb, timestamp: number){
-        await this.getCategoryDoc(category.identifier)
-            .set(this.removeUndefined({deleted: 0, ...category, timestamp}));
-        return this.setLastTimeSaved(timestamp);
+    async setCategories(categories: CategoryDb[], timestamp: number){
+        const batch = this.db.batch();
+        Object
+            .values(categories)
+            .forEach(category => batch.set(
+                this.getCategoryDoc(category.identifier), 
+                this.removeUndefined({deleted: 0, ...category, timestamp})));
+        this.setLastTimeSaved(timestamp, batch);
+        return batch.commit();
     }
 
     async saveCategories(categories: Categories, timestamp: number){
@@ -251,26 +255,5 @@ export class FirestoreApi implements SubStorageApi {
                 this.getLastTimeSaved()]);
 
         return {budgets, expenses, categories, lastTimeSaved};
-    }
-
-    async getPendingSync(localLastTimeSaved: number): Promise<ExportDataSet|undefined> {
-        // If remote lastTimeSaved is bigger than local one
-        const remoteLastTimeSaved = await this.getLastTimeSaved();
-        if (remoteLastTimeSaved > localLastTimeSaved) {
-            // Get all documents with timestamps bigger than local timestamp
-            const [budgets, categories, expenses] = await Promise.all([
-                this.getBudgets(localLastTimeSaved), 
-                this.getCategories(localLastTimeSaved), 
-                // budgetId = undefined: get all expenses
-                this._getExpenses(undefined, localLastTimeSaved)
-            ]);
-
-            return {budgets, categories, expenses, lastTimeSaved: remoteLastTimeSaved};
-            // Save them locally (caller responsibility)
-        }
-    }
-
-    async cleanupPendingSync(pending: ExportDataSet) {
-        // There is no implementation in remote storage 
     }
 }

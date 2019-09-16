@@ -168,7 +168,7 @@ export class BudgetModel {
         return this._expenses[expenseId];
     }
 
-    get days () {
+    get daysUntilToday () {
         if (!this._days) {
             this._days = dateDiff(this._info.from, Date.now());
         }
@@ -183,8 +183,8 @@ export class BudgetModel {
     }
 
     get average () {
-        if (this.days > 0 && this.totalExpenses > 0) {
-            return Math.round(this.totalExpenses / this.days);
+        if (this.daysUntilToday > 0 && this.totalExpenses > 0) {
+            return Math.round(this.totalExpenses / this.daysUntilToday);
         } else {
             return 0;
         }

@@ -26,7 +26,7 @@ export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) =>
     }
 
     async function handleSave (category: Category) {
-        await (await btApp.getCategoriesStore()).setCategory(category);
+        await (await btApp.getCategoriesStore()).setCategories([category]);
         close();
     }
     

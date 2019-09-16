@@ -5,13 +5,14 @@ import {
     Expense, 
     Categories, 
     Category, 
-    ExportDataSet, 
-    EntityNames 
+    EntityNames, 
+    Exporter,
+    Importer
 } from "../../interfaces";
 
 export interface SyncItem {
     identifier: string;
-    type: EntityNames
+    type: EntityNames;
 }
 
 export interface DbItem {
@@ -20,16 +21,15 @@ export interface DbItem {
 }
 
 export interface WriteStorageApi {
-    saveBudget(budget: Budget, timestamp?: number): Promise<void>;
+    setBudget(budget: Budget, timestamp?: number): Promise<void>;
     deleteBudget(budgetId: string, timestamp?: number): Promise<void>;
     
-    saveExpenses(expenses: Expense[], timestamp?: number): Promise<void>;
+    setExpenses(expenses: Expense[], timestamp?: number): Promise<void>;
     deleteExpense(expenseId: string, timestamp?: number): Promise<void>;
 
-    saveCategory(category: Category, timestamp?: number): Promise<void>;
+    setCategories(category: Category[], timestamp?: number): Promise<void>;
     deleteCategory(identifier: string, timestamp?: number): Promise<void>;
 
-    import(data: ExportDataSet): Promise<void>;
 }
 
 export interface ReadStorageApi {
@@ -42,17 +42,22 @@ export interface ReadStorageApi {
     getCategory(identifier: string): Promise<Category|undefined>;
     getCategories(): Promise<Categories>;
 
-    export(): Promise<ExportDataSet>;
 }
 
 export interface StorageApi extends WriteStorageApi, ReadStorageApi {}
 
-export interface SubStorageApi extends StorageApi {
+export interface SubStorageApi extends StorageApi, Importer, Exporter {
     getLastTimeSaved(): Promise<number>;
     setLastTimeSaved(timestamp: number): Promise<void>;
-    getPendingSync(timestamp: number): Promise<ExportDataSet|undefined>;
+}
+
+export interface StorageObserver {
+    onStorageDataChanged(): void;
 }
 
 export interface AppStorageApi extends StorageApi {
-    initRemote (remotePromise?: Promise<StorageApi|undefined>): Promise<StorageApi|undefined>;
+    setRemote(remote?: SubStorageApi): Promise<void>;
+
+    addObserver(observer: StorageObserver): void;
+    deleteObserver(observer: StorageObserver): void;
 }

@@ -1,15 +1,20 @@
-import { Categories, Category } from "../interfaces";
-import { StorageApi } from "../api/storage/StorageApi";
+import { Categories, Category } from "../../interfaces";
+import { AppStorageApi, StorageObserver } from "../../services/storage/StorageApi";
 import { CategoriesStore } from './interfaces';
 
-export default class CategoriesStoreImpl implements CategoriesStore {
+export class CategoriesStoreImpl implements CategoriesStore, StorageObserver {
 
     private _categories?: Categories;
-    private readonly _storage: StorageApi;
+    private readonly _storage: AppStorageApi;
     private _loading?: Promise<Categories>;
 
-    constructor(storage: StorageApi) {
+    constructor(storage: AppStorageApi) {
         this._storage = storage;
+        this._storage.addObserver(this);
+    }
+
+    onStorageDataChanged(){
+        this._categories = undefined;
     }
 
     async getCategories() {
@@ -22,14 +27,10 @@ export default class CategoriesStoreImpl implements CategoriesStore {
         return this._categories;
     }
 
-    async setCategory(category: Category) {
-        const categories = await this.getCategories();
-        categories[category.identifier] = {
-            icon: category.icon,
-            name: category.name,
-            identifier: category.identifier
-        };
-        return this._storage.saveCategory(categories[category.identifier]);
+    async setCategories(categories: Category[]){
+        const cs = await this.getCategories();
+        categories.forEach(c => cs[c.identifier] = c)
+        return this._storage.setCategories(categories);
     }
 
     async getCategory(categoryId: string) { 

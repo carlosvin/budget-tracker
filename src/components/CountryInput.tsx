@@ -14,8 +14,7 @@ export const CountryInput: React.FC<CountryInputProps> = (props) => {
 
     React.useEffect(() => {
         const initCountries = async () => {
-            const countries = await (await btApp.getCountriesStore()).getCountries();
-            setCountries(countries);
+            setCountries((await btApp.getCountriesStore()).countries);
         }
         initCountries();
     }, []);

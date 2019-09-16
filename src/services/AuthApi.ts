@@ -5,6 +5,5 @@ export interface AuthApi {
     logout(): Promise<void>;
 
     getUserId(): Promise<string|undefined>;
-    //readonly isAuth: boolean;
-
+    subscribe(onAuth: (uid?: string) => void): () => void;
 }

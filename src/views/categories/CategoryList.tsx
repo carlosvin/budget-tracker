@@ -81,8 +81,9 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
     const handleSave = async (e: React.SyntheticEvent) => {
         e.preventDefault();
         const store = await btApp.getCategoriesStore();
-        const promises: Promise<void|boolean>[] = [];
-        updatedCategories.forEach(id => promises.push(store.setCategory(viewCategories[id])));
+        const categories: Category[] = [];
+        updatedCategories.forEach(id => categories.push(viewCategories[id]));
+        const promises: Promise<void|boolean>[] = [store.setCategories(categories)];
         deleteCategories.forEach(id => promises.push(store.deleteCategory(id)));
         await Promise.all(promises);
         setChanged(false);
