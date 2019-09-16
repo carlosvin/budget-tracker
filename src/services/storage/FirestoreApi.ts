@@ -13,7 +13,7 @@ export class FirestoreApi implements SubStorageApi {
     private readonly db: firebase.firestore.Firestore;
     private readonly userId: string;
 
-    constructor(userId: string, enablePersistence=false) {
+    constructor(userId: string, enablePersistence: boolean) {
         if (userId) {
             this.userId = userId;
             this.db = firebase.firestore();
