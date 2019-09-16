@@ -1,3 +1,7 @@
+2.2.0 Update views after data sync
+----------------------------------
+- After storage is synchronized, views show up to date information.s 
+
 2.1.0 Improve data synchronization
 ----------------------------------
 - Read/Write only changed remote data, so Budget Tracker saves network data and Firestore quota. 
