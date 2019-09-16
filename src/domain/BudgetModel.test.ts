@@ -6,12 +6,12 @@ import { DateDay } from "./DateDay";
 
 function createBudget (budget: Partial<Budget> = {}, days = 30): Budget {
     const {from, to, identifier, total, currency, name} = budget;
-    const today =  days % 2 === 0 ? 1 : 0;
-    const halfDays = Math.round(days/2);
+    const today = days % 2 === 0 ? 1 : 0;
+    const halfDays = Math.floor(days/2);
     return { 
         currency: currency || 'EUR',
-        from: from || new DateDay().addDays(-halfDays + today).timeMs,
-        to: to || new DateDay().addDays(halfDays).timeMs,
+        from: from || new DateDay().addDays(-halfDays).timeMs,
+        to: to || new DateDay().addDays(halfDays - today).timeMs,
         identifier: identifier || uuid(),
         name: name || 'Test',
         total: total || 1000
@@ -52,14 +52,14 @@ describe('Budget Model Creation', () => {
     it('Budget model creation without expenses', async () => {
         const bm = new BudgetModel(createBudget());
         expect(bm.totalExpenses).toBe(0);
+        expect(bm.daysUntilToday).toBe(16);
+        expect(bm.totalDays).toBe(30);
         expect(bm.expectedDailyExpensesAverage).toBe(33);
         expect(bm.expenseGroups).toStrictEqual({});
         expect(await bm.average).toBe(0);
         expect(bm.getExpense('whatever')).toBe(undefined);
         expect(await bm.totalExpenses).toBe(0);
         expect(bm.numberOfExpenses).toBe(0);
-        expect(bm.daysUntilToday).toBe(16);
-        expect(bm.totalDays).toBe(30);
     });
 
     it('Budget model creation, no expenses, add them later', async () => {
@@ -94,8 +94,8 @@ describe('Budget Model Creation', () => {
         expect(bm.totalExpenses).toBe(200);
         expect(bm.expectedDailyExpensesAverage).toBe(Math.round(bm.info.total / bm.totalDays));
 
-        expect(bm.totalDays).toBe(days);
         expect(bm.daysUntilToday).toBe(31);
+        expect(bm.totalDays).toBe(days);
         expect(bm.average).toBe(Math.round(200/bm.daysUntilToday));
         expect(bm.getExpense(expense1.identifier).info).toStrictEqual(expense1);
         expect(bm.getExpense(expense2.identifier).info).toStrictEqual(expense2);
@@ -278,6 +278,8 @@ describe('Expense groups in budget model', () => {
         expect(bm.expenseGroups).toStrictEqual(expenseGroups);
     
         expect(bm.totalExpenses).toBe(98);
+        expect(bm.daysUntilToday).toBe(16);
+        expect(bm.totalDays).toBe(30);
         expect(bm.expectedDailyExpensesAverage).toBe(33);
     
         expect(bm.average).toBe(Math.round(100/bm.daysUntilToday));
@@ -285,8 +287,6 @@ describe('Expense groups in budget model', () => {
         expect(bm.getExpense(expense2.identifier).info).toStrictEqual(expense2);
         expect(bm.totalExpenses).toBe(98);
         expect(bm.numberOfExpenses).toBe(2);
-        expect(bm.daysUntilToday).toBe(16);
-        expect(bm.totalDays).toBe(30);
     
     }); 
 });

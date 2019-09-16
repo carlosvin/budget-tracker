@@ -1,11 +1,13 @@
 
+const DAY_MS = 1000*60*60*24;
+
 /**
- * Get difference between 2 dates in days
+ * Get difference between 2 dates in days, including from and to dates.
  * @param from - Starting period timestamp
  * @param to - Ending period timestamp
  */
 export function dateDiff(from: number, to: number) {
-    return Math.round((to - from)/(1000*60*60*24)) + 1;
+    return Math.floor((to - from)/DAY_MS) + 1;
 }
 
 /** 
