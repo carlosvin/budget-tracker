@@ -1,12 +1,10 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
 import { RouteComponentProps } from "react-router";
-import { Budget } from "../../interfaces";
 import { BudgetListItem } from "../../components/budgets/BudgetListItem";
 import { HeaderNotifierProps } from "../../routes";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import { btApp } from "../../BudgetTracker";
 import { AddButton } from "../../components/buttons/AddButton";
 import { ImportExportButton } from "../../components/buttons/ImportExportButton";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
@@ -19,13 +17,14 @@ import Link from "@material-ui/core/Link";
 import { Link as RouterLink } from "react-router-dom";
 import AddIcon from '@material-ui/icons/Add';
 import SyncIcon from '@material-ui/icons/Sync';
+import { useBudgetsIndex } from "../../hooks/useBudgetsIndex";
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
 
 export const BudgetList: React.FC<BudgetListProps> = (props) => {
 
-    const [budgets, setBudgets] = React.useState<Budget[]>();
-
+    const budgets = useBudgetsIndex();
+    
     React.useEffect(() => {
         props.onTitleChange('Budget list');
         props.onActions(
@@ -34,11 +33,6 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
                 <ImportExportButton to={AppPaths.ImportExport}/>
             </React.Fragment>
         );
-        async function fetchBudgets() {
-            const index = await (await btApp.getBudgetsStore()).getBudgetsIndex();
-            setBudgets(Object.values(index));
-        }
-        fetchBudgets();
     // eslint-disable-next-line
     }, []);
 
