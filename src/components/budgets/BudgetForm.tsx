@@ -15,15 +15,21 @@ interface BudgetFormProps {
 
 export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
     const [budget, setBudget] = React.useState<Budget>(props.budget);
-
     const [error, setError] = React.useState();
+    const [saveDisabled, setSaveDisabled] = React.useState(true);
+    const {disabled} = props;
 
-    const handleSubmit = (e: React.SyntheticEvent) => {
+    function onChange () {
+        setError(undefined);
+        setSaveDisabled(false);
+    }
+
+    function handleSubmit(e: React.SyntheticEvent) {
         e.preventDefault();
         const err = validate();
         if (err) {
             setError(validate());
-        } else {
+        } else if (!saveDisabled) {
             props.onSubmit(budget);
         }
     }
@@ -31,29 +37,29 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         setBudget({...budget, name: e.target.value});
-        setError(undefined);
+        onChange();
     };
 
     const handleToChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         setBudget({...budget, to: new Date(e.target.value).getTime()});
-        setError(undefined);
+        onChange();
     };
 
     const handleFromChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         setBudget({...budget, from: new Date(e.target.value).getTime()});
-        setError(undefined);
+        onChange();
     };
 
     const handleAmountChange = (total: number) => {
         setBudget({...budget, total});
-        setError(undefined);
+        onChange();
     };
 
     const handleCurrencyChange = (currency: string) => {
         setBudget({...budget, currency});
-        setError(undefined);
+        onChange();
     };
 
     function validate () {
@@ -65,21 +71,21 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
 
     return (
         <form onSubmit={handleSubmit} >
-            <TextInput label='Name' value={budget.name} onChange={handleNameChange} required disabled={props.disabled}/>
-            <TextInput label='Start' value={getISODateString(new Date(budget.from))} type='date' onChange={handleFromChange} error={error} required  disabled={props.disabled}/>
-            <TextInput label='End' value={getISODateString(new Date(budget.to))} type='date' error={error} onChange={handleToChange} disabled={props.disabled}/>
+            <TextInput label='Name' value={budget.name} onChange={handleNameChange} required disabled={disabled}/>
+            <TextInput label='Start' value={getISODateString(new Date(budget.from))} type='date' onChange={handleFromChange} error={error} required  disabled={disabled}/>
+            <TextInput label='End' value={getISODateString(new Date(budget.to))} type='date' error={error} onChange={handleToChange} disabled={disabled}/>
             <AmountInput 
-                disabled={props.disabled}
+                disabled={disabled}
                 onAmountChange={handleAmountChange}
                 label='Total'
                 amountInput={budget.total}
             />
             <CurrencyInput 
-                disabled={props.disabled}
+                disabled={disabled}
                 onCurrencyChange={handleCurrencyChange}
                 selectedCurrency={budget.currency}
             />
-            <SaveButtonFab disabled={props.disabled} color='primary' type='submit'/>
+            <SaveButtonFab disabled={disabled || saveDisabled} color='primary' type='submit'/>
         </form>
     );
 }

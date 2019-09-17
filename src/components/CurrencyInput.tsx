@@ -26,15 +26,12 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
         initCurrencies();
     }, []);
 
-    React.useEffect(() => {
-        if (onCurrencyChange && selected) {
-            onCurrencyChange(selected);
-        }
-        // eslint-disable-next-line
-    }, [selected]);
-
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelected(event.target.value);
+        const selectedValue = event.target.value;
+        setSelected(selectedValue);
+        if (onCurrencyChange && selectedValue) {
+            onCurrencyChange(selectedValue);
+        }
     }
 
     return (
