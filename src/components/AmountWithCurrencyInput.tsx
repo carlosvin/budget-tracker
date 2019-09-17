@@ -60,17 +60,14 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         return () => {isSubscribed = false};
     }, [base, rates, amount, currency]);
 
-    React.useEffect(() => {
-        if (onError) {
-            onError(error);
-        }
-    }, [error, onError]);
+    React.useEffect(() => (onError && onError(error)), [error, onError]);
 
     React.useEffect(() => {
-        if (amount !== undefined && amountInBaseCurrency !== undefined) {
+        if (amount && amountInBaseCurrency) {
             onChange(amount, currency, amountInBaseCurrency);
         }
-    }, [amount, currency, amountInBaseCurrency, onChange]);
+    // eslint-disable-next-line
+    }, [amount, currency, amountInBaseCurrency]);
 
     const baseAmountString = () => {
         if (base !== currency && amountInBaseCurrency) {
@@ -78,7 +75,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         }
         return undefined;
     }
-
+    
     return (
         <Grid container direction='row' alignItems='baseline'>
             <Grid item>
