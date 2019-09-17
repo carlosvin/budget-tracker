@@ -88,10 +88,11 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
         setModified(true);
     }
 
-    function handleAmountChange(amount: number, currency: string, amountBaseCurrency?:number) {
-        setCurrency(currency);
-        setAmount(amount);
-        setAmountBaseCurrency(amountBaseCurrency || 0);
+    function handleAmountChange(amountI: number, currencyI: string, amountBaseCurrencyI?:number) {
+        console.log('Received vs current', {currencyI, amountI, amountBaseCurrencyI}, {currency, amount, amountBaseCurrency});
+        setCurrency(currencyI);
+        setAmount(amountI);
+        setAmountBaseCurrency(amountBaseCurrencyI || 0);
         setModified(true);
     }
 
