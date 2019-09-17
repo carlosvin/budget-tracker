@@ -16,18 +16,17 @@ export class GeoApi {
     async getCountry(lat: number, lon: number){
         const params = {
             format: 'json',
-            lon: lon,
-            lat: lat,
+            lon: lon.toString(),
+            lat: lat.toString(),
         };
-        return this.api.client.get<{address: {country_code: string}}>(
-            '/reverse.php',
-            { params: params }
+        return this.api.get<{address: {country_code: string}}>(
+            'reverse.php', params
         );
     }
 
     async getCurrentCountry () {
         const pos = await this.getCurrentLocation();
         const resp = await this.getCountry(pos.coords.latitude, pos.coords.longitude);
-        return resp.data.address.country_code;
+        return resp.address.country_code;
     }
 }
