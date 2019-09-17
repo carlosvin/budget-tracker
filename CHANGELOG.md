@@ -1,6 +1,11 @@
+2.3.0 Disable save buttons
+--------------------------
+- Save buttons in forms are disabled while there are no changes in the form.
+- Replace axios library by fetch API.
+
 2.2.0 Update views after data sync
 ----------------------------------
-- After storage is synchronized, views show up to date information.s 
+- After storage is synchronized, views show up to date information.
 
 2.1.0 Improve data synchronization
 ----------------------------------

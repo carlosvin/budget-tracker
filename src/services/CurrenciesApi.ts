@@ -19,18 +19,15 @@ class CurrenciesApi {
     }
 
     private async getRatesBackup (baseCurrency: string) {
-        return this.backup.client.get<CurrencyRates>(
-            `/latest?base=${baseCurrency}`);
+        return this.backup.get<CurrencyRates>('latest', {base: baseCurrency});
     }
 
     private async getRatesPrimary (baseCurrency: string, targetCurrencies: string[]) {
-        return this.primary.client.get<CurrencyRates>(`/currency`, 
+        return this.primary.get<CurrencyRates>('currency', 
             {
-                params: {
-                    base: baseCurrency,
-                    target: targetCurrencies.join(','),
-                    apikey: process.env.REACT_APP_CURRENCY_API_KEY
-                }
+                base: baseCurrency,
+                target: targetCurrencies.join(','),
+                apikey: process.env.REACT_APP_CURRENCY_API_KEY || ''
             });
     }
     
@@ -45,13 +42,13 @@ class CurrenciesApi {
             if (!resp) {
                 throw new Error(`There is no response for ${baseCurrency}`);
             }
-            if (expectedCurrencyMatch && resp && !(expectedCurrencyMatch in resp.data.rates)) {
+            if (expectedCurrencyMatch && resp && !(expectedCurrencyMatch in resp.rates)) {
                 throw new Error(`There is no match for ${baseCurrency} => ${expectedCurrencyMatch}`);
             }
-            if (Object.keys(resp.data.rates).length <= 0) {
+            if (Object.keys(resp.rates).length <= 0) {
                 throw new Error(`Empty response for ${baseCurrency}`);
             }
-            return resp.data;
+            return resp;
         }
     }
 }
