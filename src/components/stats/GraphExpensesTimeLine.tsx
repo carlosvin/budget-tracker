@@ -11,7 +11,7 @@ export const GraphExpensesTimeLine: React.FC<GraphExpensesTimeLineProps> = (prop
     const {budget} = props;
 
     function getData () {
-        const {from, to} = budget.info;
+        const {from, to} = budget;
         const today = Date.now();
         const fromDate = new Date(from);
         const data = [];

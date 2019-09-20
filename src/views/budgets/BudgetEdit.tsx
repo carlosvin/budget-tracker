@@ -7,7 +7,7 @@ import { btApp } from "../../BudgetTracker";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { DateDay } from "../../domain/DateDay";
 import { uuid } from "../../domain/utils/uuid";
-import { CloseButton } from "../../components/buttons/CloseButton";
+import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
 
 interface BudgetEditProps extends 
@@ -51,7 +51,7 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
                 props.onTitleChange('New budget');
                 setBudgetInfo(newEmptyBudget());
             }
-            props.onActions(<CloseButton history={props.history}/>);
+            props.onActions(<CloseButtonHistory history={props.history}/>);
             return function () {
                 props.onActions(undefined);
             }

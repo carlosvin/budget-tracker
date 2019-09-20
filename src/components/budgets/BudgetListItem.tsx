@@ -7,17 +7,28 @@ import { Budget } from "../../interfaces";
 import { Link } from 'react-router-dom';
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { dateDiff } from "../../domain/date";
+import { ListItemSecondaryAction, Checkbox } from "@material-ui/core";
 
-export const BudgetListItem: React.FC<Budget> = (props) => {
+interface BudgetListItemProps extends Budget {
+    onChanged: (identifier: string, checked: boolean) => void;
+    checked?: boolean;
+}
+
+export const BudgetListItem: React.FC<BudgetListItemProps> = (props) => {
     const days = dateDiff(props.from, props.to);
+
+    function handleToggle () {
+        props.onChanged(props.identifier, !props.checked);
+    }
 
     return (
         <ListItem
-        button
-        divider
-        component={Link}
-        to={new BudgetPath(props.identifier).path}>
+            button
+            divider
+            component={Link}
+            to={new BudgetPath(props.identifier).path}>
             <ListItemText
+                id={props.identifier}
                 primary={props.name}
                 secondary={
                     <Grid
@@ -36,6 +47,15 @@ export const BudgetListItem: React.FC<Budget> = (props) => {
                     </Grid>
                 }
             />
+            <ListItemSecondaryAction>
+              <Checkbox
+                edge="end"
+                onChange={handleToggle}
+                checked={props.checked}
+                inputProps={{ 'aria-labelledby': props.identifier }}
+              />
+            </ListItemSecondaryAction>
+
         </ListItem>
     );
 }

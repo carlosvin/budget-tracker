@@ -8,7 +8,7 @@ import { GraphDaysPerCountry } from "../../components/stats/GraphDaysPerCountry"
 import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { useCategories } from "../../hooks/useCategories";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
-import { CloseButton } from "../../components/buttons/CloseButton";
+import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 
 interface BudgetStatsProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -23,7 +23,7 @@ export const BudgetStats: React.FC<BudgetStatsProps> = (props) => {
 
     React.useEffect(
         () => {
-            onActions(<CloseButton history={history} to={budgetPath.path}/>);
+            onActions(<CloseButtonHistory history={history} to={budgetPath.path}/>);
             return function () { onActions([]); }
         // eslint-disable-next-line 
         }, []);

@@ -18,23 +18,56 @@ import { Link as RouterLink } from "react-router-dom";
 import AddIcon from '@material-ui/icons/Add';
 import SyncIcon from '@material-ui/icons/Sync';
 import { useBudgetsIndex } from "../../hooks/useBudgetsIndex";
+import { CloseButton } from "../../components/buttons/CloseButton";
+import MergeIcon from '@material-ui/icons/MergeType';
+import { IconButton } from "@material-ui/core";
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
-
+// TODO allow to select budgets with checkbox https://material-ui.com/components/lists/
 export const BudgetList: React.FC<BudgetListProps> = (props) => {
 
     const budgets = useBudgetsIndex();
+    const [selectedBudgets, setSelectedBudgets] = React.useState(new Set<string>());
     
     React.useEffect(() => {
         props.onTitleChange('Budget list');
-        props.onActions(
-            <React.Fragment>
-                <AddButton to={BudgetPath.add}/>
-                <ImportExportButton to={AppPaths.ImportExport}/>
-            </React.Fragment>
-        );
+        
     // eslint-disable-next-line
     }, []);
+
+    React.useEffect(() => {
+        function handleUnselectAll () {
+            setSelectedBudgets(new Set());
+        }
+
+        if (selectedBudgets.size === 0) {
+            props.onTitleChange('Budget list');
+            props.onActions([ 
+                <AddButton to={BudgetPath.add}/>, 
+                <ImportExportButton to={AppPaths.ImportExport}/>
+            ]);
+        } else {
+            props.onTitleChange('Selecting budgets');
+            props.onActions([
+                <IconButton 
+                    component={RouterLink}
+                    to={BudgetPath.pathCombinedWithQuery(selectedBudgets)}
+                    disabled={selectedBudgets.size < 2}
+                    color='inherit' >
+                    <MergeIcon/>
+                </IconButton>,
+                <CloseButton onClick={handleUnselectAll}/>]);
+        }
+    }, [selectedBudgets]);
+
+    function handleChanged (identifier: string, checked: boolean) {
+        if (checked) {
+            selectedBudgets.add(identifier);
+        } else {
+            selectedBudgets.delete(identifier);
+        }
+        setSelectedBudgets(new Set(selectedBudgets));
+    }
 
     if (budgets === undefined) {
         return null;
@@ -43,7 +76,10 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
         return (
             <List>{
                 budgets
-                    .map(budget => <BudgetListItem key={budget.identifier} {...budget} />)
+                    .map(budget => <BudgetListItem 
+                        key={`list-item-${budget.identifier}`} {...budget} 
+                        onChanged={handleChanged} 
+                        checked={selectedBudgets.has(budget.identifier)}/>)
             }
             </List>);
     } else {

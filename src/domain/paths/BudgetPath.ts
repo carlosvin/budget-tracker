@@ -44,4 +44,16 @@ export class BudgetPath {
         const {year, month, day} = date;
         return `${this.pathExpenses}?year=${year}&month=${month}&day=${day}`
     }
+
+    static pathCombinedWithQuery(identifiers: Iterable<string>) {
+        const usp = new URLSearchParams();
+        for (const id of identifiers) {
+            usp.append('identifiers[]', id);
+        }
+        return `${this.combined}?${usp.toString()}`;
+    }
+
+    static get combined() {
+        return `${this.base}/combined`;
+    }
 }

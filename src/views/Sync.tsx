@@ -15,7 +15,7 @@ import { HeaderNotifierProps } from '../routes';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { Link } from 'react-router-dom';
 import { AppPaths } from '../domain/paths';
-import { CloseButton } from '../components/buttons/CloseButton';
+import { CloseButtonHistory } from '../components/buttons/CloseButton';
 import { RouterProps } from 'react-router';
 
 export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
@@ -38,7 +38,7 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
             }
             initUserId();
             onTitleChange('Account sync');
-            onActions(<CloseButton history={history}/>);
+            onActions(<CloseButtonHistory history={history}/>);
             return function () { onActions(undefined); }
         // eslint-disable-next-line
         }, []);

@@ -3,6 +3,8 @@ import { BudgetModel } from "../BudgetModel";
 import { BudgetsStore } from "./interfaces";
 import { btApp } from "../../BudgetTracker";
 import { AppStorageApi, StorageObserver } from "../../services/storage/StorageApi";
+import { BudgetModelImpl } from "../BudgetModelImpl";
+import { BudgetModelCombined } from "../BudgetModelCombined";
 
 export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
 
@@ -34,7 +36,7 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
                 this._storage.getExpenses(budgetId)
             ]);
             if (budget) {
-                this._budgetModels[budgetId] = new BudgetModel(
+                this._budgetModels[budgetId] = new BudgetModelImpl(
                     budget,
                     expenses
                 );
@@ -50,14 +52,18 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         if (budget.identifier in this._budgetModels) {
             const budgetModel = this._budgetModels[budget.identifier];
             let rates = undefined;
-            if (budgetModel.info.currency !== budget.currency) {
+            if (budgetModel.currency !== budget.currency) {
                 rates = await (await btApp.getCurrenciesStore()).getRates(budget.currency);
             }
             await budgetModel.setBudget(budget, rates);
         } else {
-            this._budgetModels[budget.identifier] = new BudgetModel(budget, {});
+            this._budgetModels[budget.identifier] = new BudgetModelImpl(budget, {});
         }
         return this._storage.setBudget(budget); 
+    }
+
+    setBudgetModelCombined(budget: BudgetModelCombined) {
+        this._budgetModels[budget.identifier] = budget;
     }
 
     async getExpenses(budgetId: string) {
