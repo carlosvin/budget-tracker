@@ -4,7 +4,7 @@ import { GraphByCountry } from "./GraphByCountry";
 import { GraphExpensesTimeLine } from "./GraphExpensesTimeLine";
 import { GraphDaysPerCountry } from "./GraphDaysPerCountry";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { Grid } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
 
 interface BudgetStatsProps {
     budget: BudgetModel;
