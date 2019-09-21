@@ -14,7 +14,7 @@ interface BudgetStatsProps extends RouteComponentProps<{ budgetId: string }>, He
 
 export const BudgetStats: React.FC<BudgetStatsProps> = (props) => {
     
-    const {match, history, onActions} = props;
+    const {match, history, onActions, onTitleChange} = props;
     const {budgetId} = match.params;
     const budgetPath = new BudgetPath(budgetId);
     
@@ -23,10 +23,11 @@ export const BudgetStats: React.FC<BudgetStatsProps> = (props) => {
 
     React.useEffect(
         () => {
+            onTitleChange(`Statistics: ${budget && budget.name}`);
             onActions(<CloseButtonHistory history={history} to={budgetPath.path}/>);
             return function () { onActions([]); }
         // eslint-disable-next-line 
-        }, []);
+        }, [budget]);
 
     if (budget === undefined) {
         return <p>Loading budget...</p>;

@@ -23,22 +23,24 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
     React.useEffect(() => {
         props.onTitleChange('Combined budgets');
         props.onActions([]);
+    // eslint-disable-next-line
     }, []);
     
     React.useEffect(() => {
         async function fetchModels (store: BudgetsStore) {
-            const bms: BudgetModel[] = [];
-            for (const [_, v] of params) {
-                bms.push(await store.getBudgetModel(v));
+            const budgetModels: BudgetModel[] = [];
+            for (const v of params.values()) {
+                budgetModels.push(await store.getBudgetModel(v));
             }
-            const bm = new BudgetModelCombined(bms);
-            setBudgetModel(new BudgetModelCombined(bms));
+            const bm = new BudgetModelCombined(budgetModels);
+            setBudgetModel(bm);
             store.setBudgetModelCombined(bm);
         }
 
         if (store) {
             fetchModels(store);
         }
+    // eslint-disable-next-line
     }, [store]);
 
     if (budgetModel) {

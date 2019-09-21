@@ -58,6 +58,10 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
                 </IconButton>,
                 <CloseButton onClick={handleUnselectAll}/>]);
         }
+        return function () {
+            props.onActions([]);
+        };
+    // eslint-disable-next-line
     }, [selectedBudgets]);
 
     function handleChanged (identifier: string, checked: boolean) {
