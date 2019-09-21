@@ -20,10 +20,10 @@ import SyncIcon from '@material-ui/icons/Sync';
 import { useBudgetsIndex } from "../../hooks/useBudgetsIndex";
 import { CloseButton } from "../../components/buttons/CloseButton";
 import MergeIcon from '@material-ui/icons/MergeType';
-import { IconButton } from "@material-ui/core";
+import { ButtonFab } from "../../components/buttons/buttons";
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
-// TODO allow to select budgets with checkbox https://material-ui.com/components/lists/
+
 export const BudgetList: React.FC<BudgetListProps> = (props) => {
 
     const budgets = useBudgetsIndex();
@@ -31,7 +31,6 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
     
     React.useEffect(() => {
         props.onTitleChange('Budget list');
-        
     // eslint-disable-next-line
     }, []);
 
@@ -49,13 +48,11 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
         } else {
             props.onTitleChange('Selecting budgets');
             props.onActions([
-                <IconButton 
-                    component={RouterLink}
+                <ButtonFab 
                     to={BudgetPath.pathCombinedWithQuery(selectedBudgets)}
-                    disabled={selectedBudgets.size < 2}
-                    color='inherit' >
+                    disabled={selectedBudgets.size < 2} >
                     <MergeIcon/>
-                </IconButton>,
+                </ButtonFab>,
                 <CloseButton onClick={handleUnselectAll}/>]);
         }
         return function () {
