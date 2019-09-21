@@ -2,6 +2,10 @@
 ## Added
 - Allow to combine budgets and show combined statistics
 
+## Fixed
+- Create expense when offline
+- Import data in old category format
+
 ## Changed
 - Updated changelog file format.
 
