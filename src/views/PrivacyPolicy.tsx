@@ -1,13 +1,13 @@
 import * as React from "react";
 import { HeaderNotifierProps } from "../routes";
 import { RouterProps } from "react-router";
-import { CloseButton } from "../components/buttons/CloseButton";
+import { CloseButtonHistory } from "../components/buttons/CloseButton";
 
 export const PrivacyPolicy: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
     // TODO try to reuse this hook
     React.useEffect(() => {
         props.onTitleChange('Privacy Policy');
-        props.onActions(<CloseButton history={props.history}/>)
+        props.onActions(<CloseButtonHistory history={props.history}/>)
         return function () {
             props.onActions(undefined)
         }

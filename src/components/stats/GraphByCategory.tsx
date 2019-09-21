@@ -1,16 +1,17 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { Categories } from "../../interfaces";
 import { GraphPie } from "./Graph";
 import { round } from "../../domain/utils/round";
+import { useCategories } from "../../hooks/useCategories";
 
 interface GraphByCategoryProps {
     budget: BudgetModel, 
-    categoriesMap: Categories;
 }
 
 export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
-    const {budget, categoriesMap} = props;
+    const {budget} = props;
+
+    const categoriesMap = useCategories();
 
     // It might happen that an expense has a category that was already deleted
     function getCategoryName (index: string) {

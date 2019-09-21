@@ -9,7 +9,7 @@ import { DateDay } from "../../domain/DateDay";
 import { uuid } from "../../domain/utils/uuid";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { useCurrentCountry } from "../../hooks/useCurrentCountry";
-import { CloseButton } from "../../components/buttons/CloseButton";
+import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 import { ExpenseForm } from "../../components/expenses/ExpenseForm";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
@@ -25,18 +25,24 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
     const currentCountry = useCurrentCountry();
     const [currency, setCurrency] = React.useState();
 
-    // these should be called only once
+    // TODO these should be called only once
     const identifier = uuid();
     const now = Date.now();
     
     React.useEffect(() => {
         async function initCurrency () {
             const store = await btApp.getCurrenciesStore();
-            let currencyFromCountry = store.lastCurrencyUsed;
-            if (currentCountry) {
-                currencyFromCountry = await store.getFromCountry(currentCountry);
+            const lastCurrency = store.lastCurrencyUsed;
+            if (lastCurrency) {
+                setCurrency(lastCurrency);
             }
-            setCurrency(currencyFromCountry);
+            if (currentCountry) {
+                const currencyFromCountry = await store.getFromCountry(currentCountry);
+                if (currencyFromCountry && lastCurrency !== currencyFromCountry) {
+                    setCurrency(currencyFromCountry);
+                }
+            }
+   
         }
         initCurrency();
     }, [currentCountry]);
@@ -49,7 +55,7 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
 
     React.useEffect(()=> {
         onTitleChange('Add expense');
-        onActions([<CloseButton history={history} key='close-button'/>]);
+        onActions([<CloseButtonHistory history={history} key='close-button'/>]);
         return function () {
             onActions(null); 
         }

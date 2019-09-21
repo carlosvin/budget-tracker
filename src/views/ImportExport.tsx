@@ -8,7 +8,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';
 import { ExportCard } from '../components/ExportCard';
-import { CloseButton } from '../components/buttons/CloseButton';
+import { CloseButtonHistory } from '../components/buttons/CloseButton';
 import { ExportDataInfo } from '../components/ExportDataInfo';
 import { useBudgetsStore } from '../hooks/useBudgetsStore';
 import { BudgetsStore } from '../domain/stores/interfaces';
@@ -23,7 +23,7 @@ const ImportExport = (props: HeaderNotifierProps&RouterProps) => {
 
     React.useLayoutEffect(() => {
         onTitleChange('Import & Export');
-        onActions(<CloseButton history={history}/>);
+        onActions(<CloseButtonHistory history={history}/>);
         return function () {
             onTitleChange('');
             onActions(undefined);

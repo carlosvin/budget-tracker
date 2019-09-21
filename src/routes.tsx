@@ -8,6 +8,7 @@ import { AppPaths } from "./domain/paths";
 const routes = {
     BudgetView: React.lazy(() => import('./views/budgets/Budget')),
     BudgetList: React.lazy(() => import('./views/budgets/BudgetList')),
+    BudgetCombined: React.lazy(() => import('./views/budgets/BudgetCombined')),
     BudgetEdit: React.lazy(() => import('./views/budgets/BudgetEdit')),
     BudgetStats: React.lazy(() => import('./views/budgets/Stats')),
     BudgetExport: React.lazy(() => import('./views/budgets/Export')),
@@ -41,6 +42,7 @@ export const Routes: React.FC<HeaderNotifierProps> = (props) => (
     <Switch>
         <Route exact path={BudgetPath.base} render={_render(routes.BudgetList, props)} />
         <Route exact path={BudgetPath.add} render={_render(routes.BudgetEdit, props)} />
+        <Route exact path={BudgetPath.combined} render={_render(routes.BudgetCombined, props)} />
         <Route exact path={budgetUrl.pathEdit} render={_render(routes.BudgetEdit, props)} />
         <Route exact path={budgetUrl.pathStats} render={_render(routes.BudgetStats, props)} />
         <Route exact path={budgetUrl.pathExport} render={_render(routes.BudgetExport, props)} />

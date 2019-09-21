@@ -14,8 +14,9 @@ interface BudgetQuickStatsProps {
     passedDays: number,
     expectedDailyAverage: number,
     dailyAverage?: number,
-    urlStats: string;
+    urlStats?: string;
 }
+
 const spacing = '0.5rem';
 
 export const BudgetQuickStats: React.FC<BudgetQuickStatsProps> = (props) => (
@@ -37,7 +38,7 @@ export const BudgetQuickStats: React.FC<BudgetQuickStatsProps> = (props) => (
                         spent={props.dailyAverage}
                         title='Daily Average' /></Box>}
         </CardContent>
-        <CardActions>
+        { props.urlStats && <CardActions>
             <Button 
                 size='small' 
                 component={Link} 
@@ -45,7 +46,7 @@ export const BudgetQuickStats: React.FC<BudgetQuickStatsProps> = (props) => (
                 to={props.urlStats}>
                 More Stats
             </Button>
-        </CardActions>
+        </CardActions> }
     </Card>
 
 );

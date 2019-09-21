@@ -1,8 +1,8 @@
-import { BudgetModel } from "./BudgetModel";
 import { Expense, CurrencyRates, Budget, Category, ExpensesMap, ExpensesYearMap } from "../interfaces";
 import { ExpenseModel } from "./ExpenseModel";
 import { uuid } from "./utils/uuid";
 import { DateDay } from "./DateDay";
+import { BudgetModelImpl } from "./BudgetModelImpl";
 
 function createBudget (budget: Partial<Budget> = {}, days = 30): Budget {
     const {from, to, identifier, total, currency, name} = budget;
@@ -50,7 +50,7 @@ function addExpenseToGroups (groups: ExpensesYearMap, expense: ExpenseModel) {
 describe('Budget Model Creation', () => {
 
     it('Budget model creation without expenses', async () => {
-        const bm = new BudgetModel(createBudget());
+        const bm = new BudgetModelImpl(createBudget());
         expect(bm.totalExpenses).toBe(0);
         expect(bm.daysUntilToday).toBe(16);
         expect(bm.totalDays).toBe(30);
@@ -65,7 +65,7 @@ describe('Budget Model Creation', () => {
     it('Budget model creation, no expenses, add them later', async () => {
         const days = 60;
         const budget = createBudget({}, days);
-        const bm = new BudgetModel(budget, {});
+        const bm = new BudgetModelImpl(budget, {});
         const expenseDate1 = new Date(budget.from);
         const expenseDate2 = new Date(budget.to);
         const expense1: Expense = {
@@ -126,7 +126,7 @@ describe('Expense operations', () => {
         const expense2 = {...expense1, identifier: '2'};
         const expense3 = {...expense1, identifier: '3', when: DateDay.fromTimeMs(budget.to).addDays(3).timeMs};
         const expense4 = {...expense1, identifier: '4', amountBaseCurrency: 55};
-        const bm = new BudgetModel(budget,
+        const bm = new BudgetModelImpl(budget,
             {
                 '1': expense1,
                 '2': expense2,
@@ -154,7 +154,7 @@ describe('Expense operations', () => {
     it('Removes expense when it was manually removed from groups', () => {
         const budget = createBudget();
         const expense1 = createExpense('1', budget);
-        const bm = new BudgetModel(budget, {'1': expense1,});
+        const bm = new BudgetModelImpl(budget, {'1': expense1,});
         const {year, month, day} = new ExpenseModel(expense1);
         delete bm.expenseGroups[year][month][day];
         expect(bm.deleteExpense('1')).toBe(true);
@@ -164,7 +164,7 @@ describe('Expense operations', () => {
         const budget = createBudget();
         const expense1 = createExpense('1', budget);
         const expense2 = {...expense1, identifier: '2'};
-        const bm = new BudgetModel(
+        const bm = new BudgetModelImpl(
             budget, 
             {
                 '1': expense1,
@@ -217,7 +217,7 @@ describe('Expense operations', () => {
             '1': expense1,
         }
 
-        const bm = new BudgetModel(info, {});
+        const bm = new BudgetModelImpl(info, {});
         try {
             bm.setExpense(expense1);
             fail('Error should have happened');
@@ -226,7 +226,7 @@ describe('Expense operations', () => {
         }
 
         try {
-            new BudgetModel(info, expenses);
+            new BudgetModelImpl(info, expenses);
             fail('Error should have happened');
         } catch (error) {
             expect(error).toBeTruthy();
@@ -242,7 +242,7 @@ describe('Expense operations', () => {
             ...createExpense('2', info), 
             when: DateDay.fromTimeMs(info.to).addDays(1).timeMs};
 
-        const bm = new BudgetModel(info, {'1': expense1 });
+        const bm = new BudgetModelImpl(info, {'1': expense1 });
         bm.setExpense(expense2);
 
         expect(bm.totalExpenses).toBe(0);
@@ -263,7 +263,7 @@ describe('Expense groups in budget model', () => {
             when: DateDay.fromTimeMs(budget.to).addDays(2).timeMs,
             identifier: '2',
         };
-        const bm = new BudgetModel(
+        const bm = new BudgetModelImpl(
             budget, 
             {
                 [expense1.identifier]: expense1, 
@@ -312,7 +312,7 @@ describe('Budget attributes modifications', () => {
             currency: 'EUR', 
             amount: 1, 
             amountBaseCurrency: 1};
-        const bm = new BudgetModel(
+        const bm = new BudgetModelImpl(
             info, 
             {
                 '1': expense1,
@@ -350,7 +350,7 @@ describe('Budget attributes modifications', () => {
             currency: 'EUR', 
             amount: 1, 
             amountBaseCurrency: 1};
-        const bm = new BudgetModel(
+        const bm = new BudgetModelImpl(
             info, 
             {
                 '1': expense1,
@@ -381,7 +381,7 @@ describe('Budget attributes modifications', () => {
             '2': expense2,
             '3': expense3
         };
-        const bm = new BudgetModel(info, expenses);
+        const bm = new BudgetModelImpl(info, expenses);
 
         expect(bm.info).toStrictEqual(info);
         expect(Object.values(bm.expenses).map(e => e.info))
@@ -420,7 +420,7 @@ describe('Budget model statistics', () => {
             identifier: '3',
             categoryId: 'Category 3'
         };
-        const bm = new BudgetModel(
+        const bm = new BudgetModelImpl(
             info, 
             {
                 '1': expense1,
@@ -481,7 +481,7 @@ describe('Budget model statistics', () => {
             identifier: '3',
             countryCode: 'AA'
         };
-        const bm = new BudgetModel(
+        const bm = new BudgetModelImpl(
             info, 
             {
                 '1': expense1,
@@ -546,7 +546,7 @@ describe('Budget model statistics', () => {
                 identifier: '2', 
                 countryCode: 'FR'
             };
-            const bm = new BudgetModel(
+            const bm = new BudgetModelImpl(
                 info, 
                 {
                     '1': expense1,
@@ -582,7 +582,7 @@ describe('Budget model statistics', () => {
                 when: expense2Date.clone().addDays(2).timeMs,
                 countryCode: 'LU'
             };
-            const bm = new BudgetModel(
+            const bm = new BudgetModelImpl(
                 info, 
                 {
                     '1': expense1,
@@ -623,7 +623,7 @@ describe('Budget model statistics', () => {
                 when: new DateDay().addDays(2).timeMs,
                 countryCode: 'LU'
             };
-            const bm = new BudgetModel(
+            const bm = new BudgetModelImpl(
                 info, 
                 {
                     '1': expense1,
@@ -647,7 +647,7 @@ describe('Budget model statistics', () => {
                     when: new Date(fromDate.year + 3, fromDate.month, fromDate.day).getTime()},
                 '2': createExpense('2', info)
             };
-            const model = new BudgetModel(info, expenses);
+            const model = new BudgetModelImpl(info, expenses);
 
             expect(model.years).toStrictEqual([fromDate.year + 3, fromDate.year]);
         });
@@ -666,7 +666,7 @@ describe('Budget model statistics', () => {
                     when: day2.timeMs
                 }
             };
-            const model = new BudgetModel(info, expenses);
+            const model = new BudgetModelImpl(info, expenses);
 
             if (day1.month === day2.month) {
                 expect(
@@ -684,7 +684,7 @@ describe('Budget model statistics', () => {
 
         it( 'Totals by dates', () => {
             const info = createBudget({total: 1000, currency: 'USD'}, 10);
-            const bm = new BudgetModel(info);
+            const bm = new BudgetModelImpl(info);
             const expense1 = createExpense('1', bm.info);
             const date1 = DateDay.fromTimeMs(expense1.when);
             expect(bm.getTotalExpensesByDay(date1.year, date1.month, date1.day)).toBe(0);
@@ -725,7 +725,7 @@ describe('Budget model statistics', () => {
             const expense2 = createExpense('2', budgetInfo);
             
             const expenses: ExpensesMap = {'1': expense1, 'OtherId': expenseOtherId};
-            const model = new BudgetModel(budgetInfo, expenses);
+            const model = new BudgetModelImpl(budgetInfo, expenses);
             model.setExpense(expense2);
             expenses[expense2.identifier] = expense2;
 

@@ -91,7 +91,6 @@ export enum SyncDirection {
     RemoteToLocal = 'RemoteToLocal', LocalToRemote = 'LocalToRemote'
 }
 
-
 export enum EntityNames {
     Budgets = 'budgets',
     Expenses = 'expenses',
