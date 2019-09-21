@@ -42,15 +42,15 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
         if (selectedBudgets.size === 0) {
             props.onTitleChange('Budget list');
             props.onActions([ 
-                <AddButton to={BudgetPath.add}/>, 
-                <ImportExportButton to={AppPaths.ImportExport}/>
+                <AddButton to={BudgetPath.add} key='add-budget'/>, 
+                <ImportExportButton to={AppPaths.ImportExport} key='import-export-data'/>
             ]);
         } else {
             props.onTitleChange('Selecting budgets');
             props.onActions([
                 <ButtonFab 
                     to={BudgetPath.pathCombinedWithQuery(selectedBudgets)}
-                    disabled={selectedBudgets.size < 2} >
+                    disabled={selectedBudgets.size < 2} key='combine-budgets-button' >
                     <MergeIcon/>
                 </ButtonFab>,
                 <CloseButton onClick={handleUnselectAll}/>]);
