@@ -4,7 +4,6 @@ import { BudgetsStore } from "./interfaces";
 import { btApp } from "../../BudgetTracker";
 import { AppStorageApi, StorageObserver } from "../../services/storage/StorageApi";
 import { BudgetModelImpl } from "../BudgetModelImpl";
-import { BudgetModelCombined } from "../BudgetModelCombined";
 
 export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
 
@@ -60,10 +59,6 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
             this._budgetModels[budget.identifier] = new BudgetModelImpl(budget, {});
         }
         return this._storage.setBudget(budget); 
-    }
-
-    setBudgetModelCombined(budget: BudgetModelCombined) {
-        this._budgetModels[budget.identifier] = budget;
     }
 
     async getExpenses(budgetId: string) {

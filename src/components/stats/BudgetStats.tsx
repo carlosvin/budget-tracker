@@ -13,10 +13,10 @@ interface BudgetStatsProps {
 export const BudgetStats: React.FC<BudgetStatsProps> = (props) => {
     const {budget} = props; 
 
-    return <Grid>
-        {budget && <GraphByCategory budget={budget} />}
-        {budget && <GraphByCountry budget={budget}/>}
-        {budget && <GraphDaysPerCountry budget={budget}/>}
-        {budget && <GraphExpensesTimeLine budget={budget}/>}
+    return <Grid container spacing={3}>
+        {budget && <Grid item xs={12} sm={6}><GraphByCategory budget={budget} /></Grid>}
+        {budget && <Grid item xs={12} sm={6}><GraphByCountry budget={budget}/></Grid>}
+        {budget && <Grid item xs={12} sm={6}><GraphDaysPerCountry budget={budget}/></Grid>}
+        {budget && <Grid item xs={12} sm={6}><GraphExpensesTimeLine budget={budget}/></Grid>}
     </Grid>;
 }

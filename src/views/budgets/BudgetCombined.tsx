@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router";
 import { HeaderNotifierProps } from "../../routes";
 import { useBudgetsStore } from "../../hooks/useBudgetsStore";
@@ -6,7 +6,8 @@ import { BudgetsStore } from "../../domain/stores/interfaces";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { BudgetModelCombined } from "../../domain/BudgetModelCombined";
 import { BudgetQuickStats } from "../../components/budgets/BudgetQuickStats";
-import { BudgetPath } from "../../domain/paths/BudgetPath";
+import { BudgetStats } from "../../components/stats/BudgetStats";
+import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 
 interface BudgetCombinedViewProps extends
     HeaderNotifierProps,
@@ -22,7 +23,8 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
 
     React.useEffect(() => {
         props.onTitleChange('Combined budgets');
-        props.onActions([]);
+        props.onActions([<CloseButtonHistory history={props.history}/>]);
+        return function () {}
     // eslint-disable-next-line
     }, []);
     
@@ -34,7 +36,6 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
             }
             const bm = new BudgetModelCombined(budgetModels);
             setBudgetModel(bm);
-            store.setBudgetModelCombined(bm);
         }
 
         if (store) {
@@ -45,6 +46,7 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
 
     if (budgetModel) {
         return (
+        <React.Fragment>
             <BudgetQuickStats 
                 dailyAverage={budgetModel.average}
                 expectedDailyAverage={budgetModel.expectedDailyExpensesAverage}
@@ -52,10 +54,11 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
                 totalDays={budgetModel.totalDays}
                 totalBudget={budgetModel.total}
                 totalSpent={budgetModel.totalExpenses}
-                urlStats={new BudgetPath(budgetModel.identifier).pathStats }
-        />);
+            />
+            <BudgetStats budget={budgetModel}/>
+        </React.Fragment>);
     } else {
-        return <p>Loading {params}</p>;
+        return <p>Loading...</p>;
     }
     
 }

@@ -2,7 +2,6 @@ import { Categories, Category, Budget, Expense, ExpensesMap, CurrencyRates, Coun
 import { BudgetModel } from '../BudgetModel';
 import { SvgIconProps } from "@material-ui/core/SvgIcon";
 import { LazyExoticComponent, ReactElement } from "react";
-import { BudgetModelCombined } from "../BudgetModelCombined";
 
 export interface CategoriesStore {
     getCategories(): Promise<Categories>;
@@ -17,7 +16,6 @@ export interface BudgetsStore extends Importer, Exporter {
     getBudgetsIndex(): Promise<BudgetsMap>;
     getBudgetModel(budgetId: string): Promise<BudgetModel>;
     setBudget(budget: Budget): Promise<void>;
-    setBudgetModelCombined(budget: BudgetModelCombined): void;
 
     getExpensesByDay(budgetId: string, y: number, m: number, d: number): Promise<ExpensesMap>;
 
