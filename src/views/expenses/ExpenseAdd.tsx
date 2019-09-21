@@ -25,18 +25,24 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
     const currentCountry = useCurrentCountry();
     const [currency, setCurrency] = React.useState();
 
-    // these should be called only once
+    // TODO these should be called only once
     const identifier = uuid();
     const now = Date.now();
     
     React.useEffect(() => {
         async function initCurrency () {
             const store = await btApp.getCurrenciesStore();
-            let currencyFromCountry = store.lastCurrencyUsed;
-            if (currentCountry) {
-                currencyFromCountry = await store.getFromCountry(currentCountry);
+            const lastCurrency = store.lastCurrencyUsed;
+            if (lastCurrency) {
+                setCurrency(lastCurrency);
             }
-            setCurrency(currencyFromCountry);
+            if (currentCountry) {
+                const currencyFromCountry = await store.getFromCountry(currentCountry);
+                if (currencyFromCountry && lastCurrency !== currencyFromCountry) {
+                    setCurrency(currencyFromCountry);
+                }
+            }
+   
         }
         initCurrency();
     }, [currentCountry]);
