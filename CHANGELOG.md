@@ -1,3 +1,7 @@
+# [2.4.1] - 2019-09-22
+## Changed
+- Application services instantiation. 
+
 # [2.4.0] - 2019-09-21
 ## Added
 - Allow to combine budgets and show combined statistics
