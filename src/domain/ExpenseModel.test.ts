@@ -89,8 +89,7 @@ describe('Expense Model', () => {
             expect(expense.split(3, () => 'randomID')).toStrictEqual([
                 new ExpenseModel({...expense, 
                     amount: 33,
-                    amountBaseCurrency: 330,
-                    when: new Date(2019, 0, 1).getTime()}),
+                    amountBaseCurrency: 330}),
                 new ExpenseModel({
                     ...expense, 
                     amount: 33,

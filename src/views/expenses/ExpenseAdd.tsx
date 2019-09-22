@@ -2,7 +2,6 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { HeaderNotifierProps } from "../../routes";
 import { Expense } from "../../interfaces";
-import { btApp } from "../../BudgetTracker";
 import { goBack } from "../../domain/utils/goBack";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { DateDay } from "../../domain/DateDay";
@@ -12,11 +11,14 @@ import { useCurrentCountry } from "../../hooks/useCurrentCountry";
 import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 import { ExpenseForm } from "../../components/expenses/ExpenseForm";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { useAppContext } from "../../contexts/AppContext";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string }> { }
 
 export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
+    
+    const btApp = useAppContext();
 
     const {budgetId} = props.match.params;
     const {onActions, onTitleChange, history} = props;
@@ -45,7 +47,7 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
    
         }
         initCurrency();
-    }, [currentCountry]);
+    }, [currentCountry, btApp]);
 
     React.useEffect(() => {
         if (budgetModel && currency === undefined) {

@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React from 'react';
 import { TextInput } from './TextInput';
-import { btApp } from '../BudgetTracker';
+import { useAppContext } from '../contexts/AppContext';
 
 // TODO var formatter = new Intl.NumberFormat('de-DE', { 
   //style: 'currency', 
@@ -18,13 +18,14 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
     const [currencies, setCurrencies] = React.useState();
     const [selected, setSelected] = React.useState(props.selectedCurrency);
     const {onCurrencyChange} = props;
+    const btApp = useAppContext();
 
     React.useEffect(() => {
         async function initCurrencies () {
             setCurrencies((await btApp.getCurrenciesStore()).currencies);
         }
         initCurrencies();
-    }, []);
+    }, [btApp]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedValue = event.target.value;

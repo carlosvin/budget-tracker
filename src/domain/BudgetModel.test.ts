@@ -1,36 +1,10 @@
-import { Expense, CurrencyRates, Budget, Category, ExpensesMap, ExpensesYearMap } from "../interfaces";
+import { Expense, CurrencyRates, Category, ExpensesMap, ExpensesYearMap } from "../interfaces";
 import { ExpenseModel } from "./ExpenseModel";
-import { uuid } from "./utils/uuid";
 import { DateDay } from "./DateDay";
 import { BudgetModelImpl } from "./BudgetModelImpl";
+import { createBudget } from "../__mocks__/createBudget";
+import { createExpense } from "../__mocks__/createExpense";
 
-function createBudget (budget: Partial<Budget> = {}, days = 30): Budget {
-    const {from, to, identifier, total, currency, name} = budget;
-    const today = days % 2 === 0 ? 1 : 0;
-    const halfDays = Math.floor(days/2);
-    return { 
-        currency: currency || 'EUR',
-        from: from || new DateDay().addDays(-halfDays).timeMs,
-        to: to || new DateDay().addDays(halfDays - today).timeMs,
-        identifier: identifier || uuid(),
-        name: name || 'Test',
-        total: total || 1000
-    };
-}
-
-function createExpense (id: string, budget: Budget): Expense {
-    return {
-        amount: 100,
-        amountBaseCurrency: 98,
-        categoryId: 'Category',
-        countryCode: 'ES',
-        currency: 'USD',
-        description: 'whatever description',
-        identifier: id,
-        when: budget.from + 1000,
-        budgetId: budget.identifier
-    };
-}
 
 function addExpenseToGroups (groups: ExpensesYearMap, expense: ExpenseModel) {
     const {year, month, day} = expense;
@@ -406,7 +380,12 @@ describe('Budget attributes modifications', () => {
     });
 });
 
-
+// TODO write test for
+// 1. Create budget
+// 2. Add expenses split by 3
+// 3. Export data
+// 4. Import
+// Expected: data is the same
 describe('Budget model statistics', () => {
 
     it('Totals by category', () => {

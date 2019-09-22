@@ -1,9 +1,13 @@
 
 import * as serviceWorker from './serviceWorker';
-import { btApp } from './BudgetTracker';
+import ReactDOM from 'react-dom';
+import React from 'react';
+import App from './App';
+import { BudgetTrackerImpl } from './BudgetTrackerImpl';
 
-btApp.render();
+const btApp = new BudgetTrackerImpl();
 
+ReactDOM.render(<App btApp={btApp}/>, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

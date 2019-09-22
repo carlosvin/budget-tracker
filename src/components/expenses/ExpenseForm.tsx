@@ -5,12 +5,12 @@ import { TextInput } from "../../components/TextInput";
 import CountryInput from "../../components/CountryInput";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
 import { Expense } from "../../interfaces";
-import { btApp } from "../../BudgetTracker";
 import CategoriesSelect from "../../components/categories/CategoriesSelect";
 import { SaveButtonFab } from "../../components/buttons/SaveButton";
 import { round } from "../../domain/utils/round";
 import { ExpenseModel } from "../../domain/ExpenseModel";
 import { useRates } from "../../hooks/useRates";
+import { useAppContext } from "../../contexts/AppContext";
 
 interface ExpenseFormProps extends Expense {
     baseCurrency: string;
@@ -31,6 +31,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
     const [splitInDays, setSplitInDays] = React.useState<number|undefined>();
 
     const [modified, setModified] = React.useState(false);
+    const btApp = useAppContext();
+
 
     // For now only currency and country code might be updated from parent component
     React.useEffect(() => {

@@ -2,8 +2,8 @@ import * as React from 'react';
 import { TextInput } from '../TextInput';
 import MuiLink from '@material-ui/core/Link';
 import { Categories, Category } from '../../interfaces';
-import { btApp } from '../../BudgetTracker';
 import { CategoryFormDialog } from './CategoryFormDialog';
+import { useAppContext } from '../../contexts/AppContext';
 
 interface CategoriesSelectProps {
     onCategoryChange: (categoryId: string) => void;
@@ -29,6 +29,8 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
 
     const [categories, setCategories] = React.useState<Categories>();
     const [addCategoryOpen, setAddCategoryOpen] = React.useState(false);
+
+    const btApp = useAppContext();
 
     React.useEffect(() => {
         async function initCategories () {

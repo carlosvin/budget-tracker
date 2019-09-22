@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-import { btApp } from '../BudgetTracker';
 import { Categories } from '../interfaces';
+import { useCategoriesStore } from './useCategoriesStore';
 
 export function useCategories() {
     const [categories, setCategories] = useState<Categories>({});
+    const store = useCategoriesStore();
 
     useEffect(() => {
         async function fetchCategories () {
-            const store = await btApp.getCategoriesStore();
-            setCategories(await store.getCategories());
+            if (store) {
+                setCategories(await store.getCategories());
+            }
         }
 
         let isSubscribed = true;
@@ -16,7 +18,7 @@ export function useCategories() {
             fetchCategories();
         }
         return () => {isSubscribed = false};
-    }, []);
+    }, [store]);
 
     return categories;
 }

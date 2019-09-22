@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
-import { CountriesStore } from '../domain/stores/interfaces';
+import { CategoriesStore } from '../domain/stores/interfaces';
 import { useAppContext } from '../contexts/AppContext';
 
-export function useCountriesStore() {
+export function useCategoriesStore () {
     const btApp = useAppContext();
-    const [store, setStore] = useState<CountriesStore>();
+    const [store, setStore] = useState<CategoriesStore>();
 
     useEffect(() => {
         async function fetchStore () {
-            setStore(await btApp.getCountriesStore());
+            setStore(await btApp.getCategoriesStore());
         }
 
         let isSubscribed = true;
