@@ -3,6 +3,7 @@ import { BudgetModelImpl } from "../BudgetModelImpl";
 import { createBudget } from "../../__mocks__/createBudget";
 import { createBudgetTrackerMock } from "../../__mocks__/budgetTracker";
 import { createExpense } from "../../__mocks__/createExpense";
+import { Categories } from "../../interfaces";
 
 
 describe('Budget Model Creation', () => {
@@ -29,7 +30,10 @@ describe('Budget Model Creation', () => {
 
         const budgetInfo = createBudget();
         btApp.storage.getBudget.mockReturnValue(budgetInfo);
-        btApp.getCategoriesStore.mockReturnValue({ getCategories: () => ([])});
+        btApp.getCategoriesStore.mockReturnValue({ 
+            getCategories: () => ([]),
+            setCategories: (categories: Categories) => {}
+        });
 
         await store.setBudget(budgetInfo);
 
@@ -57,6 +61,13 @@ describe('Budget Model Creation', () => {
         const exported = await store.export();
         expect(Object.values(exported.expenses).map(e => e.when)).toStrictEqual(expectedDates.map(d=>d.timeMs));
 
+        await Promise.all(Object.keys(observedExpenses).map(id => store.deleteExpense(budgetInfo.identifier, id )));
+
+        await store.import(exported);
+        
+        const exportedObserved = await store.export();
+        expect(exportedObserved.budgets).toStrictEqual(exported.budgets);
+        expect(exportedObserved.expenses).toStrictEqual(exported.expenses);
     });
 
 });
