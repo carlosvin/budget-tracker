@@ -29,6 +29,7 @@ describe('Budget Model Creation', () => {
 
         const budgetInfo = createBudget();
         btApp.storage.getBudget.mockReturnValue(budgetInfo);
+        btApp.getCategoriesStore.mockReturnValue({ getCategories: () => ([])});
 
         await store.setBudget(budgetInfo);
 
@@ -48,7 +49,14 @@ describe('Budget Model Creation', () => {
         await store.setExpenses(bm.identifier, expensesSplit);
         const observedExpenses = await store.getExpenses(bm.identifier);
 
-        expect(Object.values(observedExpenses).map(e => e.when)).toStrictEqual(expectedDates.map(d=>d.timeMs));
+        expect(Object
+            .values(observedExpenses)
+            .map(e => e.when))
+            .toStrictEqual(expectedDates.map(d=>d.timeMs));
+
+        const exported = await store.export();
+        expect(Object.values(exported.expenses).map(e => e.when)).toStrictEqual(expectedDates.map(d=>d.timeMs));
+
     });
 
 });
