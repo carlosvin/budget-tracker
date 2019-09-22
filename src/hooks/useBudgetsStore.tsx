@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { btApp } from '../BudgetTracker';
 import { BudgetsStore } from '../domain/stores/interfaces';
 import { StorageObserver } from '../services/storage/StorageApi';
+import { useAppContext } from '../contexts/AppContext';
 
 export function useBudgetsStore() {
     const [store, setStore] = useState<BudgetsStore>();
+    const btApp = useAppContext();
 
     useEffect(() => {
         async function fetchStore () {
@@ -18,7 +19,7 @@ export function useBudgetsStore() {
 
         return () => { isSubscribed = false };
         
-    }, [store]);
+    }, [store, btApp]);
 
     useEffect(() => {
         let isSubscribed = true;
@@ -34,7 +35,7 @@ export function useBudgetsStore() {
             isSubscribed = false;
             btApp.storage.deleteObserver(observer);
         };
-    }, []);
+    }, [btApp]);
 
     return store;
 }

@@ -1,3 +1,6 @@
+import { AppStorageApi } from './services/storage/StorageApi';
+import { AuthApi } from './services/AuthApi';
+import { BudgetsStore, CategoriesStore, IconsStore, CurrenciesStore, CountriesStore } from './domain/stores/interfaces';
 
 
 export interface Budget {
@@ -103,4 +106,15 @@ export interface Exporter {
 
 export interface Importer {
     import(data: ExportDataSet): Promise<void>;
+}
+
+export interface BudgetTracker {
+
+    readonly storage: AppStorageApi;
+    getAuth (): Promise<AuthApi>;
+    getBudgetsStore(): Promise<BudgetsStore>;
+    getCategoriesStore(): Promise<CategoriesStore>
+    getIconsStore(): Promise<IconsStore>;
+    getCurrenciesStore(): Promise<CurrenciesStore>;
+    getCountriesStore (): Promise<CountriesStore>;
 }

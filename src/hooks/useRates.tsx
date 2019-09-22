@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { btApp } from '../BudgetTracker';
 import { CurrencyRates } from '../interfaces';
+import { useAppContext } from '../contexts/AppContext';
 
 export function useRates(baseCurrency: string) {
     const [rates, setRates] = useState<CurrencyRates>();
+    const btApp = useAppContext();
 
     useEffect(() => {
         async function fetch () {
@@ -16,7 +17,7 @@ export function useRates(baseCurrency: string) {
             fetch();
         }
         return () => {isSubscribed = false};
-    }, [baseCurrency]);
+    }, [baseCurrency, btApp]);
 
     return rates;
 }

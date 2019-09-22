@@ -1,5 +1,4 @@
 import React from 'react';
-import { btApp } from '../BudgetTracker';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
@@ -17,8 +16,11 @@ import { Link } from 'react-router-dom';
 import { AppPaths } from '../domain/paths';
 import { CloseButtonHistory } from '../components/buttons/CloseButton';
 import { RouterProps } from 'react-router';
+import { useAppContext } from '../contexts/AppContext';
 
 export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
+
+    const btApp = useAppContext();
 
     const [isLoggedIn, setIsLoggedIn] = React.useState<boolean|undefined>();
     const [error, setError] = React.useState();

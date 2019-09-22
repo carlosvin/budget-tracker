@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TextInput } from './TextInput';
-import { btApp } from '../BudgetTracker';
 import { CountryEntry } from '../interfaces';
+import { useCountriesStore } from '../hooks/useCountriesStore';
 
 interface CountryInputProps {
     onCountryChange: (countryCode: string) => void;
@@ -11,13 +11,13 @@ interface CountryInputProps {
 export const CountryInput: React.FC<CountryInputProps> = (props) => {
 
     const [countries, setCountries] = React.useState<CountryEntry[]>([]);
+    const countriesStore = useCountriesStore();
 
     React.useEffect(() => {
-        const initCountries = async () => {
-            setCountries((await btApp.getCountriesStore()).countries);
+        if (countriesStore) {
+            setCountries(countriesStore.countries);
         }
-        initCountries();
-    }, []);
+    }, [countriesStore]);
 
     const handleCountryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         props.onCountryChange(e.target.value);

@@ -2,11 +2,12 @@ import * as React from 'react';
 import { RouterProps } from 'react-router';
 import { Category, Categories } from '../../interfaces';
 import CategoryInput from '../../components/categories/CategoryInput';
-import { HeaderNotifierProps } from '../../routes';
 import { SaveButtonFab } from '../../components/buttons/SaveButton';
 import { AddButton } from '../../components/buttons/AddButton';
-import { btApp } from '../../BudgetTracker';
 import { CategoryPaths } from '../../domain/paths/CategoryPaths';
+import { useAppContext } from '../../contexts/AppContext';
+import { HeaderNotifierProps } from '../../routes';
+import { useCategoriesStore } from '../../hooks/useCategoriesStore';
 
 interface CategoriesMapProps {
     onDelete: (id: string) => void;
@@ -33,18 +34,22 @@ const CategoriesMap: React.FC<CategoriesMapProps> = (props) => {
 }
 
 export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
-    
+    const btApp = useAppContext();
+
     const [categories, setCategories] = React.useState<Categories>({});
     const [viewCategories, setViewCategories] = React.useState<Categories>({});
     const [deleteCategories, setDeleteCategories] = React.useState<Set<string>>(new Set<string>());
     const [updatedCategories, setUpdatedCategories] = React.useState<Set<string>>(new Set<string>());
+    const store = useCategoriesStore();
 
     React.useEffect(() => {
         async function init() {
-            setCategories(await (await btApp.getCategoriesStore()).getCategories());
+            if (store) {
+                setCategories(await store.getCategories());
+            }
         }
         init();
-    }, []);
+    }, [store]);
 
     React.useEffect(() => {
         setViewCategories({...categories});

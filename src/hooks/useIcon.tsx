@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { btApp } from '../BudgetTracker';
 import { ColoredLazyIcon } from '../domain/stores/interfaces';
+import { useAppContext } from '../contexts/AppContext';
 
 export function useIcon(name: string) {
     const [icon, setIcon] = useState<ColoredLazyIcon>();
+    const btApp = useAppContext();
 
     useEffect(() => {
         async function fetchIcon () {
@@ -17,7 +18,7 @@ export function useIcon(name: string) {
         }
         
         return () => {isSubscribed = false};
-    }, [name]);
+    }, [name, btApp]);
 
     return icon;
 }

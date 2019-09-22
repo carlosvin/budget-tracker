@@ -1,6 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
 import { SubStorageApi, AppStorageApi } from './services/storage/StorageApi';
 import { 
     CategoriesStore, BudgetsStore, 
@@ -9,8 +6,9 @@ import {
 import { AuthApi } from './services/AuthApi';
 import { AppStorageManager } from './services/storage/AppStorageManager';
 import { IndexedDb } from './services/storage/IndexedDb';
+import { BudgetTracker } from './interfaces';
 
-class BudgetTracker {
+export class BudgetTrackerImpl implements BudgetTracker {
 
     storage: AppStorageApi;
     private _firestore?: SubStorageApi;
@@ -73,10 +71,10 @@ class BudgetTracker {
         return new auth.AuthApiImpl();
     }
 
-    async getBudgetsStore () {
+    async getBudgetsStore (): Promise<BudgetsStore> {
         if (!this._budgetsStore) {
             const bs = await import('./domain/stores/BudgetsStoreImpl');
-            this._budgetsStore = new bs.BudgetsStoreImpl(this.storage);
+            this._budgetsStore = new bs.BudgetsStoreImpl(this);
         }
         return this._budgetsStore;
     }
@@ -116,10 +114,4 @@ class BudgetTracker {
         }
         return this._countriesStore;
     }
-
-    render () {
-        ReactDOM.render(<App />, document.getElementById('root'));
-    }
 }
-
-export const btApp = new BudgetTracker();

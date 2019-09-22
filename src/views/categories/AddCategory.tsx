@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { RouterProps } from 'react-router';
 import { Category } from '../../interfaces';
-import { HeaderNotifierProps } from '../../routes';
 import { CategoryForm } from '../../components/categories/CategoryForm';
-import { btApp } from '../../BudgetTracker';
 import { goBack } from '../../domain/utils/goBack';
 import { CategoryPaths } from '../../domain/paths/CategoryPaths';
 import { CloseButtonHistory } from '../../components/buttons/CloseButton';
+import { HeaderNotifierProps } from '../../routes';
+import { useAppContext } from '../../contexts/AppContext';
 
 export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
     
+    const btApp = useAppContext();
+
     React.useEffect(() => {
         
         props.onTitleChange('Add category');

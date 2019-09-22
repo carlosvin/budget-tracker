@@ -2,11 +2,9 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { AppButton } from "../../components/buttons/buttons";
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { HeaderNotifierProps } from "../../routes";
 import Typography from "@material-ui/core/Typography";
 import { BudgetQuickStats } from "../../components/budgets/BudgetQuickStats";
 import { YesNoDialog } from "../../components/YesNoDialog";
-import { btApp } from "../../BudgetTracker";
 import { ExpensesCalendar } from "../../components/expenses/ExpensesCalendar";
 import { YMD } from "../../interfaces";
 import EditIcon from '@material-ui/icons/Edit';
@@ -15,8 +13,10 @@ import { AddButton } from "../../components/buttons/AddButton";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { ImportExportButton } from "../../components/buttons/ImportExportButton";
+import { HeaderNotifierProps } from "../../routes";
+import { useAppContext } from "../../contexts/AppContext";
 
-interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
+interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps {}
 
 export const BudgetView: React.FC<BudgetViewProps> = (props) => {
 
@@ -28,6 +28,8 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
     const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
 
     const budgetModel = useBudgetModel(budgetId);
+    
+    const btApp = useAppContext();
 
     React.useEffect(() => {
         if (budgetModel) {

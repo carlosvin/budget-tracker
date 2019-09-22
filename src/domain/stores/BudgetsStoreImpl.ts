@@ -1,19 +1,20 @@
-import { Budget, Expense, ExportDataSet } from "../../interfaces";
+import { Budget, Expense, ExportDataSet, BudgetTracker } from "../../interfaces";
 import { BudgetModel } from "../BudgetModel";
 import { BudgetsStore } from "./interfaces";
-import { btApp } from "../../BudgetTracker";
 import { AppStorageApi, StorageObserver } from "../../services/storage/StorageApi";
 import { BudgetModelImpl } from "../BudgetModelImpl";
 
 export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
 
     private _budgetModels: {[identifier: string]: BudgetModel};
+    private readonly _app: BudgetTracker;
     private readonly _storage: AppStorageApi;
 
-    constructor (storage: AppStorageApi) {
-        this._storage = storage;
-        this._storage.addObserver(this);
+    constructor (app: BudgetTracker) {
         this._budgetModels = {};
+        this._app = app;
+        this._storage = app.storage;
+        this._storage.addObserver(this);
     }
 
     onStorageDataChanged () {
@@ -52,7 +53,7 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
             const budgetModel = this._budgetModels[budget.identifier];
             let rates = undefined;
             if (budgetModel.currency !== budget.currency) {
-                rates = await (await btApp.getCurrenciesStore()).getRates(budget.currency);
+                rates = await (await this._app.getCurrenciesStore()).getRates(budget.currency);
             }
             await budgetModel.setBudget(budget, rates);
         } else {
@@ -123,7 +124,7 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         await Promise.all([
             this.setBudgets(Object.values(budgets)), 
             this.setExpensesList(Object.values(expenses)), 
-            (await btApp.getCategoriesStore()).setCategories(fixedCategories)
+            (await this._app.getCategoriesStore()).setCategories(fixedCategories)
         ]);
     }
 
@@ -131,7 +132,7 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         const data: ExportDataSet = {
             budgets: {},
             expenses: {},
-            categories: await (await btApp.getCategoriesStore()).getCategories(),
+            categories: await (await this._app.getCategoriesStore()).getCategories(),
             lastTimeSaved: Date.now()
         };
         for (const bm of Object.values(this._budgetModels)) {
