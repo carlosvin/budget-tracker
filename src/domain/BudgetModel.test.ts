@@ -1,23 +1,10 @@
-import { Expense, CurrencyRates, Budget, Category, ExpensesMap, ExpensesYearMap } from "../interfaces";
+import { Expense, CurrencyRates, Category, ExpensesMap, ExpensesYearMap } from "../interfaces";
 import { ExpenseModel } from "./ExpenseModel";
 import { DateDay } from "./DateDay";
 import { BudgetModelImpl } from "./BudgetModelImpl";
 import { createBudget } from "../__mocks__/createBudget";
+import { createExpense } from "../__mocks__/createExpense";
 
-
-function createExpense (id: string, budget: Budget): Expense {
-    return {
-        amount: 100,
-        amountBaseCurrency: 98,
-        categoryId: 'Category',
-        countryCode: 'ES',
-        currency: 'USD',
-        description: 'whatever description',
-        identifier: id,
-        when: budget.from + 1000,
-        budgetId: budget.identifier
-    };
-}
 
 function addExpenseToGroups (groups: ExpensesYearMap, expense: ExpenseModel) {
     const {year, month, day} = expense;
