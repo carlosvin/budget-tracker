@@ -2,7 +2,7 @@ import { Expense, CurrencyRates, Budget, Category, ExpensesMap, ExpensesYearMap 
 import { ExpenseModel } from "./ExpenseModel";
 import { DateDay } from "./DateDay";
 import { BudgetModelImpl } from "./BudgetModelImpl";
-import { createBudget } from "../__tests__/createBudget";
+import { createBudget } from "../__mocks__/createBudget";
 
 
 function createExpense (id: string, budget: Budget): Expense {
