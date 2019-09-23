@@ -1,3 +1,7 @@
+# [2.4.2] - 2019-09-23
+## Fixed
+- Export data directly from import/export view, without accessing first to budget model. 
+
 # [2.4.1] - 2019-09-22
 ## Changed
 - Application services instantiation. 

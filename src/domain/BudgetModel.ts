@@ -1,4 +1,4 @@
-import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMap, ExportDataSet } from "../interfaces";
+import { Budget, Expense, Categories, CurrencyRates, ExpensesYearMap, ExportDataSet, ObjectMap } from "../interfaces";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
 
@@ -6,7 +6,7 @@ export interface BudgetModel extends Budget {
 
     readonly identifier: string;
     readonly numberOfExpenses: number;
-    readonly expenses: ExpensesMap;
+    readonly expenses: ObjectMap<ExpenseModel>;
     readonly totalExpenses: number;
     readonly nestedTotalExpenses: NestedTotal;
     readonly totalsByCountry: NestedTotal;
