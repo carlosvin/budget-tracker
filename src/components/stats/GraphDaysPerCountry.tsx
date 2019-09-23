@@ -15,7 +15,6 @@ export const GraphDaysPerCountry: React.FC<GraphDaysPerCountryProps> = (props) =
             .entries(daysByCountry)
             .map(([country, total]) => ({x: country, y: total}));
     }
-    // TODO show number of days in graph
     
     return <GraphPie title='Days in a country' data={getData()} />;
 }
