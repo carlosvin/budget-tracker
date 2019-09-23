@@ -13,7 +13,7 @@ export const GraphDaysPerCountry: React.FC<GraphDaysPerCountryProps> = (props) =
         const daysByCountry = budget.totalDaysByCountry;
         return Object
             .entries(daysByCountry)
-            .map(([country, total]) => ({x: `${country}: ${total}`, y: total}));
+            .map(([country, total]) => ({x: country, y: total}));
     }
     // TODO show number of days in graph
     

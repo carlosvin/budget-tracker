@@ -3,7 +3,7 @@ import { Categories } from '../interfaces';
 import { useCategoriesStore } from './useCategoriesStore';
 
 export function useCategories() {
-    const [categories, setCategories] = useState<Categories>({});
+    const [categories, setCategories] = useState<Categories>();
     const store = useCategoriesStore();
 
     useEffect(() => {
