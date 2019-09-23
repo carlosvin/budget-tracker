@@ -34,6 +34,8 @@ describe('Budget Model Creation', () => {
             getCategories: () => ([]),
             setCategories: (categories: Categories) => {}
         });
+        btApp.storage.getBudgets.mockReturnValue({[budgetInfo.identifier]: budgetInfo});
+
 
         await store.setBudget(budgetInfo);
 
@@ -68,6 +70,29 @@ describe('Budget Model Creation', () => {
         const exportedObserved = await store.export();
         expect(exportedObserved.budgets).toStrictEqual(exported.budgets);
         expect(exportedObserved.expenses).toStrictEqual(exported.expenses);
+    });
+
+    it('Export data directly loaded from local storage', async () => {
+        // TODO move 2 next lines to before each execution
+        const btApp = createBudgetTrackerMock();
+        const store = new BudgetsStoreImpl(btApp);
+        btApp.getCategoriesStore.mockReturnValue({ 
+            getCategories: () => ([]),
+            setCategories: (categories: Categories) => {}
+        });
+        const budgetInfo = createBudget();
+        const budgets = {[budgetInfo.identifier]: budgetInfo};
+        const expenses = {
+            '1': createExpense('1', budgetInfo), 
+            '2': createExpense('2', budgetInfo)
+        };
+        btApp.storage.getBudgets.mockReturnValue(budgets);
+        btApp.storage.getBudget.mockReturnValue(budgetInfo);
+        btApp.storage.getExpenses.mockReturnValue(expenses);
+
+        const exported = await store.export();
+        expect(exported.budgets).toStrictEqual(budgets);
+        expect(exported.expenses).toStrictEqual(expenses);
     });
 
 });

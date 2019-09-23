@@ -128,17 +128,18 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         ]);
     }
 
-    async export(){
+    async export() {
         const data: ExportDataSet = {
             budgets: {},
             expenses: {},
             categories: await (await this._app.getCategoriesStore()).getCategories(),
             lastTimeSaved: Date.now()
         };
-        for (const bm of Object.values(this._budgetModels)) {
+        const budgets = await Promise.all(Object.keys(await this.getBudgetsIndex()).map(id => this.getBudgetModel(id)));
+        for (const bm of budgets) {
             data.budgets[bm.identifier] = bm.info;
             for (const e of Object.values(bm.expenses)) {
-                data.expenses[e.identifier] = e;
+                data.expenses[e.identifier] = e.info;
             }
         }
         return data;
