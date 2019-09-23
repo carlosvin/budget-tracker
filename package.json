@@ -13,8 +13,8 @@
         "nanoid": "^2.0.4",
         "react": "^16",
         "react-dom": "^16",
-        "react-router-dom": "^5",
-        "victory": "^32"
+        "react-frappe-charts": "^2.0.0",
+        "react-router-dom": "^5"
     },
     "devDependencies": {
         "@firebase/testing": "^0.12.2",

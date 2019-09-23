@@ -33,6 +33,7 @@ exports[`AmountInput value is 11 1`] = `
       className="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
       disabled={false}
       id="input-field-Amount"
+      onAnimationStart={[Function]}
       onBlur={[Function]}
       onChange={[Function]}
       onFocus={[Function]}
