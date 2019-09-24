@@ -46,8 +46,19 @@ export class IndexedDb implements SubStorageApi {
         });
     }
 
+    private async enablePersistentStorage(){
+        const {storage} = navigator;
+        const persistent = storage && storage.persist && await storage.persist();
+        if (persistent) {
+            console.info("Storage will not be cleared except by explicit user action");
+        } else {
+            console.warn("Storage may be cleared by the UA under storage pressure.")
+        }
+    }
+
     async getDb() {
         if (this._db === undefined) {
+            await this.enablePersistentStorage();
             this._db = await this.createDb();
         }
         return this._db;
