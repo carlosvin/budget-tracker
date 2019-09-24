@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { GraphPie } from "./Graph";
-import { TotalDaysByCountry } from "../../domain/BudgetStats";
+import { getTotalDaysByCountry } from "../../domain/stats/getTotalDaysByCountry";
 
 interface GraphDaysPerCountryProps {
     budget: BudgetModel
@@ -11,7 +11,7 @@ export const GraphDaysPerCountry: React.FC<GraphDaysPerCountryProps> = (props) =
     const {budget} = props;
 
     const data = React.useMemo(() => {
-        const {daysByCountry} = new TotalDaysByCountry(budget);
+        const daysByCountry = getTotalDaysByCountry(budget);
         return Object
             .entries(daysByCountry)
             .map(([country, total]) => ({x: country, y: total}));

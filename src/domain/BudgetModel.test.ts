@@ -380,350 +380,115 @@ describe('Budget attributes modifications', () => {
     });
 });
 
-// TODO write test for
-// 1. Create budget
-// 2. Add expenses split by 3
-// 3. Export data
-// 4. Import
-// Expected: data is the same
-describe('Budget model statistics', () => {
+describe('Number of days in a country', () => { 
 
-    it('Totals by category', () => {
-        const info = createBudget({currency: 'USD', total: 12000}, 60);
-        const expense1 = createExpense('1', info);
-        const expense2 = {
-            ...expense1, 
-            identifier: '2'};
-        const expense3 = {
-            ...expense2,
-            identifier: '3',
-            categoryId: 'Category 3'
+    it ('List of years with expenses', () => {
+        const info = createBudget({total: 10000}, 365 * 4);
+        const fromDate = new DateDay(new Date(info.from));
+        const expenses: ExpensesMap = {
+            '1': {
+                ...createExpense('1', info), 
+                when: new Date(fromDate.year + 3, fromDate.month, fromDate.day).getTime()},
+            '2': createExpense('2', info)
         };
-        const bm = new BudgetModelImpl(
-            info, 
-            {
-                '1': expense1,
-                '2': expense2,
-                '3': expense3
-            });
+        const model = new BudgetModelImpl(info, expenses);
 
-        expect(bm.totalsByCategory.getSubtotal(['Category', ]))
-            .toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);
-        expect(bm.totalsByCategory.getSubtotal([expense3.categoryId, ]))
-            .toBe(expense3.amountBaseCurrency);
-        
-        const expense4 = {
-            ...expense3,
-            identifier: '4',
-        };
-        bm.setExpense(expense4);
-        expect(bm.totalsByCategory.getSubtotal([expense3.categoryId, ]))
-            .toBe(expense3.amountBaseCurrency + expense4.amountBaseCurrency);
-
-        expense1.categoryId = expense1.categoryId + ' new';
-        bm.setExpense(expense1);
-        expect(bm.totalsByCategory.getSubtotal([expense1.categoryId, ]))
-            .toBe(expense1.amountBaseCurrency);
-        expect(bm.totalsByCategory.getSubtotal([expense2.categoryId, ]))
-            .toBe(expense2.amountBaseCurrency);
-        expect(bm.totalsByCategory.getSubtotal([expense3.categoryId, ]))
-            .toBe(expense3.amountBaseCurrency + expense4.amountBaseCurrency);
-
-        expense1.categoryId = expense2.categoryId = expense3.categoryId = expense4.categoryId;
-        bm.setExpense(expense1);
-        bm.setExpense(expense2);
-        bm.setExpense(expense3);
-        bm.setExpense(expense4);
-        expect(bm.totalsByCategory.getSubtotal([expense1.categoryId, ]))
-            .toBe(
-                expense1.amountBaseCurrency + 
-                expense2.amountBaseCurrency + 
-                expense3.amountBaseCurrency + 
-                expense4.amountBaseCurrency);
-
-        bm.deleteExpense(expense1.identifier);
-        bm.deleteExpense(expense4.identifier);
-        expect(bm.totalsByCategory.getSubtotal([expense2.categoryId, ]))
-            .toBe(
-                expense2.amountBaseCurrency + 
-                expense3.amountBaseCurrency);
+        expect(model.years).toStrictEqual([fromDate.year + 3, fromDate.year]);
     });
 
-    it('Totals by country', () => {
-        const info = createBudget({currency: 'USD', total: 12000}, 60);
-        const expense1 = createExpense('1', info);
-        const expense2 = {
-            ...expense1, 
-            identifier: '2'};
-        const expense3 = {
-            ...expense2,
-            identifier: '3',
-            countryCode: 'AA'
-        };
-        const bm = new BudgetModelImpl(
-            info, 
-            {
-                '1': expense1,
-                '2': expense2,
-                '3': expense3
-            });
+    it ('List of days with expenses in a year/month', () => {
+        const info = createBudget({total: 10000}, 365 * 4);
+        const day1 = DateDay.fromTimeMs(info.from);
+        const day2 = day1.clone().addDays(2);
 
-        expect(bm.totalsByCountry.getSubtotal([expense1.countryCode, ]))
-            .toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);
-        expect(bm.totalsByCountry.getSubtotal([expense3.countryCode, ]))
-            .toBe(expense3.amountBaseCurrency);
-        
-        const expense4 = {
-            ...expense3,
-            identifier: '4',
-        };
-        bm.setExpense(expense4);
-        expect(bm.totalsByCountry.getSubtotal([expense3.countryCode, ]))
-            .toBe(expense3.amountBaseCurrency + expense4.amountBaseCurrency);
-
-        expense1.countryCode = 'OO';
-        bm.setExpense(expense1);
-        expect(bm.totalsByCountry.getSubtotal([expense1.countryCode, ]))
-            .toBe(expense1.amountBaseCurrency);
-        expect(bm.totalsByCountry.getSubtotal([expense2.countryCode, ]))
-            .toBe(expense2.amountBaseCurrency);
-        expect(bm.totalsByCountry.getSubtotal([expense3.countryCode, ]))
-            .toBe(expense3.amountBaseCurrency + expense4.amountBaseCurrency);
-
-        expense1.countryCode = expense2.countryCode = expense3.countryCode = expense4.countryCode;
-        bm.setExpense(expense1);
-        bm.setExpense(expense2);
-        bm.setExpense(expense3);
-        bm.setExpense(expense4);
-        expect(bm.totalsByCountry.getSubtotal([expense1.countryCode, ]))
-            .toBe(
-                expense1.amountBaseCurrency + 
-                expense2.amountBaseCurrency + 
-                expense3.amountBaseCurrency + 
-                expense4.amountBaseCurrency);
-
-        bm.deleteExpense(expense1.identifier);
-        bm.deleteExpense(expense4.identifier);
-        expect(bm.totalsByCountry.getSubtotal([expense2.countryCode, ]))
-            .toBe(
-                expense2.amountBaseCurrency + 
-                expense3.amountBaseCurrency);
-
-        bm.setExpense({...expense1, identifier: '5', when: new DateDay().addDays(1).timeMs});
-        expect(bm.totalsByCountry.getSubtotal([expense2.countryCode, ]))
-        .toBe(
-            expense2.amountBaseCurrency + 
-            expense3.amountBaseCurrency);
-    });
-
-    describe('Number of days in a country', () => { 
-        it('2 countries in same day', () => {
-            const info = createBudget({currency: 'USD', total: 12000}, 60);
-            const expense1 = createExpense('1', info);
-            const expense2 = {
-                ...expense1, 
-                identifier: '2', 
-                countryCode: 'FR'
-            };
-            const bm = new BudgetModelImpl(
-                info, 
-                {
-                    '1': expense1,
-                    '2': expense2,
-                });
-    
-            expect(bm.totalDaysByCountry).toStrictEqual({'ES': 1, 'FR': 1});
-        });
-    
-        it('ES in 3 days, LU in 2 days', () => {
-            const info = createBudget({currency: 'USD', total: 12000}, 60);
-            const expense1 = createExpense('1', info);
-            const expense2Date = DateDay.fromTimeMs(expense1.when).addDays(1);
-            const expense2 = {
-                ...expense1, 
-                identifier: '2',
-                when: expense2Date.timeMs
-            };
-            const expense3 = {
-                ...expense2, 
-                identifier: '3',
-                when: expense2Date.clone().addDays(1).timeMs
-            };
-            const expense4 = {
-                ...expense3, 
-                identifier: '4',
-                when: expense3.when,
-                countryCode: 'LU'
-            };
-            const expense5 = {
-                ...expense3, 
-                identifier: '5',
-                when: expense2Date.clone().addDays(2).timeMs,
-                countryCode: 'LU'
-            };
-            const bm = new BudgetModelImpl(
-                info, 
-                {
-                    '1': expense1,
-                    '2': expense2,
-                    '3': expense3,
-                    '4': expense4,
-                    '5': expense5,
-                });
-    
-            expect(bm.totalDaysByCountry).toStrictEqual(
-                {'ES': 3, 'LU': 2}
-            );
-        });
-
-        it('Ignores expenses in future', () => {
-            const info = createBudget({currency: 'USD', total: 12000}, 60);
-            const expense1 = createExpense('1', info);
-            const expense2 = {
-                ...expense1, 
-                identifier: '2',
-                when: DateDay.fromTimeMs(expense1.when).addDays(1).timeMs
-            };
-            // in future
-            const expense3 = {
-                ...expense2, 
-                identifier: '3',
-                when: new DateDay().addDays(1).timeMs
-            };
-            const expense4 = {
-                ...expense3, 
-                identifier: '4',
-                when: expense1.when,
-                countryCode: 'LU'
-            };
-            const expense5 = {
-                ...expense3, 
-                identifier: '5',
-                when: new DateDay().addDays(2).timeMs,
-                countryCode: 'LU'
-            };
-            const bm = new BudgetModelImpl(
-                info, 
-                {
-                    '1': expense1,
-                    '2': expense2,
-                    '3': expense3,
-                    '4': expense4,
-                    '5': expense5,
-                });
-    
-            expect(bm.totalDaysByCountry).toStrictEqual(
-                {'ES': 2, 'LU': 1}
-            );
-        });
-
-        it ('List of years with expenses', () => {
-            const info = createBudget({total: 10000}, 365 * 4);
-            const fromDate = new DateDay(new Date(info.from));
-            const expenses: ExpensesMap = {
-                '1': {
-                    ...createExpense('1', info), 
-                    when: new Date(fromDate.year + 3, fromDate.month, fromDate.day).getTime()},
-                '2': createExpense('2', info)
-            };
-            const model = new BudgetModelImpl(info, expenses);
-
-            expect(model.years).toStrictEqual([fromDate.year + 3, fromDate.year]);
-        });
-
-        it ('List of days with expenses in a year/month', () => {
-            const info = createBudget({total: 10000}, 365 * 4);
-            const day1 = DateDay.fromTimeMs(info.from);
-            const day2 = day1.clone().addDays(2);
-
-            const expenses: ExpensesMap = {
-                '1': {
-                    ...createExpense('1', info), 
-                    when: day1.timeMs},
-                '2': {
-                    ...createExpense('2', info), 
-                    when: day2.timeMs
-                }
-            };
-            const model = new BudgetModelImpl(info, expenses);
-
-            if (day1.month === day2.month) {
-                expect(
-                    model.getDays(day1.year, day1.month)
-                ).toStrictEqual([day2.day, day1.day]);    
-            } else {
-                expect(
-                    model.getDays(day1.year, day1.month)
-                ).toStrictEqual([day1.day]);    
-                expect(
-                    model.getDays(day2.year, day2.month)
-                ).toStrictEqual([day2.day]);    
+        const expenses: ExpensesMap = {
+            '1': {
+                ...createExpense('1', info), 
+                when: day1.timeMs},
+            '2': {
+                ...createExpense('2', info), 
+                when: day2.timeMs
             }
-        });
+        };
+        const model = new BudgetModelImpl(info, expenses);
 
-        it( 'Totals by dates', () => {
-            const info = createBudget({total: 1000, currency: 'USD'}, 10);
-            const bm = new BudgetModelImpl(info);
-            const expense1 = createExpense('1', bm.info);
-            const date1 = DateDay.fromTimeMs(expense1.when);
-            expect(bm.getTotalExpensesByDay(date1.year, date1.month, date1.day)).toBe(0);
-            expect(bm.getTotalExpensesByMonth(date1.year, date1.month)).toBe(0);
-            expect(bm.getTotalExpensesByYear(date1.year)).toBe(0);
-
-            bm.setExpense(expense1);
+        if (day1.month === day2.month) {
             expect(
-                bm.getTotalExpensesByDay(date1.year, date1.month, date1.day)
-            ).toBe(expense1.amountBaseCurrency);
+                model.getDays(day1.year, day1.month)
+            ).toStrictEqual([day2.day, day1.day]);    
+        } else {
             expect(
-                bm.getTotalExpensesByMonth(date1.year, date1.month)
-            ).toBe(expense1.amountBaseCurrency);
+                model.getDays(day1.year, day1.month)
+            ).toStrictEqual([day1.day]);    
             expect(
-                bm.getTotalExpensesByYear(date1.year)
-            ).toBe(expense1.amountBaseCurrency);
-
-            const expense2 = {...expense1, identifier: '2'};
-            bm.setExpense(expense2);
-            expect(
-                bm.getTotalExpensesByDay(date1.year, date1.month, date1.day)
-            ).toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);
-            expect(
-                bm.getTotalExpensesByMonth(date1.year, date1.month)
-            ).toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);
-            expect(
-                bm.getTotalExpensesByYear(date1.year)
-            ).toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);            
-        });
-
+                model.getDays(day2.year, day2.month)
+            ).toStrictEqual([day2.day]);    
+        }
     });
 
-    describe('Serialization', () => {
-        it ('JSON', () => {
-            const budgetInfo = createBudget({total: 5000}, 66);
-            const expense1 = createExpense('1', budgetInfo);
-            const expenseOtherId = createExpense('OtherId', budgetInfo);
-            const expense2 = createExpense('2', budgetInfo);
-            
-            const expenses: ExpensesMap = {'1': expense1, 'OtherId': expenseOtherId};
-            const model = new BudgetModelImpl(budgetInfo, expenses);
-            model.setExpense(expense2);
-            expenses[expense2.identifier] = expense2;
+    it( 'Totals by dates', () => {
+        const info = createBudget({total: 1000, currency: 'USD'}, 10);
+        const bm = new BudgetModelImpl(info);
+        const expense1 = createExpense('1', bm.info);
+        const date1 = DateDay.fromTimeMs(expense1.when);
+        expect(bm.getTotalExpensesByDay(date1.year, date1.month, date1.day)).toBe(0);
+        expect(bm.getTotalExpensesByMonth(date1.year, date1.month)).toBe(0);
+        expect(bm.getTotalExpensesByYear(date1.year)).toBe(0);
 
-            const category: Category = {
-                identifier: expense1.categoryId, 
-                name: expense1.categoryId, 
-                icon: expense1.categoryId};
-            const categories = {[category.identifier]: category};
-            const exportedData = model.export({[category.identifier]: category});
-            // ignore this timestamp
-            delete exportedData['lastTimeSaved'];
+        bm.setExpense(expense1);
+        expect(
+            bm.getTotalExpensesByDay(date1.year, date1.month, date1.day)
+        ).toBe(expense1.amountBaseCurrency);
+        expect(
+            bm.getTotalExpensesByMonth(date1.year, date1.month)
+        ).toBe(expense1.amountBaseCurrency);
+        expect(
+            bm.getTotalExpensesByYear(date1.year)
+        ).toBe(expense1.amountBaseCurrency);
 
-            expect(exportedData).toStrictEqual(
-                {
-                    budgets: {[budgetInfo.identifier]: budgetInfo},
-                    expenses,
-                    categories 
-                }
-            );
-        }); 
+        const expense2 = {...expense1, identifier: '2'};
+        bm.setExpense(expense2);
+        expect(
+            bm.getTotalExpensesByDay(date1.year, date1.month, date1.day)
+        ).toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);
+        expect(
+            bm.getTotalExpensesByMonth(date1.year, date1.month)
+        ).toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);
+        expect(
+            bm.getTotalExpensesByYear(date1.year)
+        ).toBe(expense1.amountBaseCurrency + expense2.amountBaseCurrency);            
     });
+
 });
+
+describe('Serialization', () => {
+    it ('JSON', () => {
+        const budgetInfo = createBudget({total: 5000}, 66);
+        const expense1 = createExpense('1', budgetInfo);
+        const expenseOtherId = createExpense('OtherId', budgetInfo);
+        const expense2 = createExpense('2', budgetInfo);
+        
+        const expenses: ExpensesMap = {'1': expense1, 'OtherId': expenseOtherId};
+        const model = new BudgetModelImpl(budgetInfo, expenses);
+        model.setExpense(expense2);
+        expenses[expense2.identifier] = expense2;
+
+        const category: Category = {
+            identifier: expense1.categoryId, 
+            name: expense1.categoryId, 
+            icon: expense1.categoryId};
+        const categories = {[category.identifier]: category};
+        const exportedData = model.export({[category.identifier]: category});
+        // ignore this timestamp
+        delete exportedData['lastTimeSaved'];
+
+        expect(exportedData).toStrictEqual(
+            {
+                budgets: {[budgetInfo.identifier]: budgetInfo},
+                expenses,
+                categories 
+            }
+        );
+    }); 
+});
+
