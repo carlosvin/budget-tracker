@@ -1,3 +1,8 @@
+# [2.5.0] - 2019-09-23
+## Changed
+- Request permission to use persistent storage, so user data stored in Indexed DB won't get lost.
+- Change statistics view to use [frappe-charts](https://frappe.io/charts).
+
 # [2.4.2] - 2019-09-23
 ## Fixed
 - Export data directly from import/export view, without accessing first to budget model. 
