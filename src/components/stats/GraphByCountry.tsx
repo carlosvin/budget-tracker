@@ -1,8 +1,7 @@
 import * as React from "react";
-import { GraphPie } from "./Graph";
-import { round } from "../../domain/utils/round";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { getTotalsByCountry } from "../../domain/stats/getTotalsByCountry";
+import { PieChart } from "./charts/Pie";
 
 interface GraphByCountryProps {
     budget: BudgetModel
@@ -14,13 +13,14 @@ export const GraphByCountry: React.FC<GraphByCountryProps> = (props) => {
     const data = React.useMemo(() => {
         const totals = getTotalsByCountry(budget);
         const indexes = totals.indexes;
-        const ignoreThreshold = totals.total * 0.05;
-        return indexes
-            .map(k => ({x: k, y: totals.getSubtotal([k,])}))
-            .filter(({y}) => y > ignoreThreshold)
-            .map(({x, y}) => ({x, y: round(y, 0)})
-        );
+        const labels: string[] = [];
+        const values: number[] = [];
+        indexes.forEach(k => {
+            labels.push(k);
+            values.push(Math.round(totals.getSubtotal([k,])));
+        });
+        return {labels, values};
     }, [budget]);
 
-    return <GraphPie title='By country' data={data} />;
+    return <PieChart title='By country' {...data} />;
 }

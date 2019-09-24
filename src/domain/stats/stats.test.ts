@@ -5,7 +5,6 @@ import { getTotalsByCategory } from "./getTotalsByCategory";
 import { getTotalsByCountry } from "./getTotalsByCountry";
 import { DateDay } from "../DateDay";
 import { getTotalDaysByCountry } from "./getTotalDaysByCountry";
-import { ExpensesMap } from "../../interfaces";
 
 describe('Budget model statistics', () => {
 
