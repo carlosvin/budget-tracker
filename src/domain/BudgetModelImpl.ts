@@ -2,7 +2,6 @@ import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMa
 import { dateDiff } from "./date";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
-import { DateDay } from "./DateDay";
 import applyRate from "./utils/applyRate";
 import { desc } from "./utils/sorting";
 import { BudgetModel } from "./BudgetModel";
@@ -14,8 +13,6 @@ export class BudgetModelImpl implements BudgetModel {
     private _expenseGroups?: ExpensesYearMap;
 
     private _nestedTotalExpenses?: NestedTotal;
-    private _totalsByCategories?: NestedTotal;
-    private _totalsByCountry?: NestedTotal;
     
     private _days?: number;
     private _totalDays?: number;
@@ -76,59 +73,9 @@ export class BudgetModelImpl implements BudgetModel {
     get nestedTotalExpenses () {
         if (this._nestedTotalExpenses === undefined) {
             this._nestedTotalExpenses = new NestedTotal();
-            Object.values(this.expenses).forEach(e => this._addToTotal(e, false));
+            Object.values(this.expenses).forEach(e => this._addToTotal(e));
         }
         return this._nestedTotalExpenses;
-    }
-
-    get totalsByCountry () {
-        if (this._totalsByCountry === undefined) {
-            this._totalsByCountry = new NestedTotal();
-            const toMs = Math.min(new DateDay().timeMs, this.info.to);
-            Object
-                .values(this.expenses)
-                .filter(e => e.inDates(this.info.from, toMs))
-                .forEach((e) => this._addTotalsByCountry(e));
-        }
-        return this._totalsByCountry;
-    }
-
-    private _addTotalsByCountry (expense: ExpenseModel) {
-        const toMs = Math.min(new DateDay().timeMs, this.info.to);
-        if (this._totalsByCountry && expense.inDates(this.info.from, toMs)) {
-            this._totalsByCountry.add(
-                expense.amountBaseCurrency, [expense.countryCode,]);
-        }
-    }
-    
-    private _subtractTotalsByCountry (expense: ExpenseModel) {
-        const toMs = Math.min(new DateDay().timeMs, this.info.to);
-        if (this._totalsByCountry && expense.inDates(this.info.from, toMs)) {
-            this._totalsByCountry.subtract(
-                expense.amountBaseCurrency, [expense.countryCode,]);
-        }
-    }
-
-    get totalsByCategory () {
-        if (this._totalsByCategories === undefined) {
-            this._totalsByCategories = new NestedTotal();
-            Object.values(this.expenses).forEach((e) => this._addTotalsByCategory(e));
-        }
-        return this._totalsByCategories;
-    }
-
-    private _addTotalsByCategory (expense: Expense) {
-        if (this._totalsByCategories) {
-            this._totalsByCategories.add(
-                expense.amountBaseCurrency, [expense.categoryId,]);
-        }
-    }
-    
-    private _subtractTotalsByCategory (expense: Expense) {
-        if (this._totalsByCategories) {
-            this._totalsByCategories.subtract(
-                expense.amountBaseCurrency, [expense.categoryId,]);
-        }
     }
 
     getTotalExpensesByDay(year: number, month: number, day: number) {
@@ -286,21 +233,15 @@ export class BudgetModelImpl implements BudgetModel {
         this._nestedTotalExpenses = newTotals;
     }
 
-    private _addToTotal(expense: ExpenseModel, updateExtraTotals = true) {
+    private _addToTotal(expense: ExpenseModel) {
         if (expense.inBudgetDates(this._info)) {
             expense.addToTotals(this.nestedTotalExpenses);
-            if (updateExtraTotals) {
-                this._addTotalsByCategory(expense);
-                this._addTotalsByCountry(expense);    
-            }
         }
     }
 
     private _subtractTotal(expense: ExpenseModel) {
         if (expense.inBudgetDates(this._info)) {
             expense.subtractTotal(this.nestedTotalExpenses);
-            this._subtractTotalsByCategory(expense);
-            this._subtractTotalsByCountry(expense);
         }
     }
 
@@ -344,35 +285,5 @@ export class BudgetModelImpl implements BudgetModel {
             categories,
             lastTimeSaved: Date.now()
         };
-    }
-
-    get totalDaysByCountry () {
-        const groups = this.expenseGroups; 
-        const daysByCountry: {[country: string]: number} = {};
-        const todayMs = Date.now();
-        let from = DateDay.fromTimeMs(this.info.from);
-        do {
-            const {year, month, day} = from;
-            if (year in groups && 
-                month in groups[year] && 
-                day in groups[year][month]) {
-                const countriesInADay = new Set<string>();
-                for (const id in groups[year][month][day]) {
-                    const expense = groups[year][month][day][id];
-                    countriesInADay.add(expense.countryCode);
-                }
-                countriesInADay.forEach(c=> {
-                    if (c in daysByCountry) {
-                        daysByCountry[c] += 1;
-                    } else {
-                        daysByCountry[c] = 1;
-                    }
-                });
-            }
-            
-            from.addDays(1);
-        } while (from.timeMs <= todayMs);
-
-        return daysByCountry;
     }
 }

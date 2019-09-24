@@ -9,15 +9,12 @@ export interface BudgetModel extends Budget {
     readonly expenses: ObjectMap<ExpenseModel>;
     readonly totalExpenses: number;
     readonly nestedTotalExpenses: NestedTotal;
-    readonly totalsByCountry: NestedTotal;
-    readonly totalsByCategory: NestedTotal;
     readonly years: number[];
     readonly daysUntilToday: number;
     readonly totalDays: number;
     readonly average: number;
     readonly expectedDailyExpensesAverage: number;
     readonly expenseGroups: ExpensesYearMap;
-    readonly totalDaysByCountry: {[country: string]: number};
     readonly info: Budget;
 
     getTotalExpensesByDay(year: number, month: number, day: number): number;

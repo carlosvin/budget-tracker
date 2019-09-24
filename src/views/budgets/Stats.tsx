@@ -4,7 +4,7 @@ import { HeaderNotifierProps } from "../../routes";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { CloseButtonHistory } from "../../components/buttons/CloseButton";
-import { BudgetStats } from "../../components/stats/BudgetStats";
+import { BudgetStatsComponents } from "../../components/stats/BudgetStats";
 
 interface BudgetStatsViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -27,7 +27,7 @@ export const BudgetStatsView: React.FC<BudgetStatsViewProps> = (props) => {
     if (budget === undefined) {
         return <p>Loading budget...</p>;
     } else {
-        return <BudgetStats budget={budget}/>;
+        return <BudgetStatsComponents budget={budget}/>;
     }
 }
 

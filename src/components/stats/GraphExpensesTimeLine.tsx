@@ -10,22 +10,23 @@ interface GraphExpensesTimeLineProps {
 export const GraphExpensesTimeLine: React.FC<GraphExpensesTimeLineProps> = (props) => {
     const {budget} = props;
 
-    function getData () {
+    
+    const data = React.useMemo(() => {
         const {from, to} = budget;
         const today = Date.now();
         const fromDate = new Date(from);
-        const data = [];
+        const points = [];
         for (let date=fromDate; date.getTime() <= to && date.getTime() <= today; date.setDate(date.getDate() + 1)) {
             const {year, month, day} = new DateDay(date);
             const total = budget.nestedTotalExpenses.getSubtotal([year, month, day]);
-            data.push({x: new Date(date), y: total});
+            points.push({x: new Date(date), y: total});
         }
-        return data;
-    }
+        return points;
+    }, [budget]);
 
     return <GraphTimeLine 
         title='By date' 
-        data={getData()} 
+        data={data} 
         avg={budget.average}
         expectedAvg={budget.expectedDailyExpensesAverage}
          />;

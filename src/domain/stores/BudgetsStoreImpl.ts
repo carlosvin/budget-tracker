@@ -31,10 +31,8 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
 
     async getBudgetModel(budgetId: string) {
         if (!(budgetId in this._budgetModels)) {
-            const [budget, expenses] = await Promise.all([
-                this._storage.getBudget(budgetId),
-                this._storage.getExpenses(budgetId)
-            ]);
+            const budget = await this._storage.getBudget(budgetId);
+            const expenses = await this._storage.getExpenses(budgetId);
             if (budget) {
                 this._budgetModels[budgetId] = new BudgetModelImpl(
                     budget,
