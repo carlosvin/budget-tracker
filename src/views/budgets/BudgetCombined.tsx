@@ -6,7 +6,7 @@ import { BudgetsStore } from "../../domain/stores/interfaces";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { BudgetModelCombined } from "../../domain/BudgetModelCombined";
 import { BudgetQuickStats } from "../../components/budgets/BudgetQuickStats";
-import { BudgetStats } from "../../components/stats/BudgetStats";
+import { BudgetStatsComponents } from "../../components/stats/BudgetStats";
 import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 
 interface BudgetCombinedViewProps extends
@@ -23,7 +23,7 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
 
     React.useEffect(() => {
         props.onTitleChange('Combined budgets');
-        props.onActions([<CloseButtonHistory history={props.history}/>]);
+        props.onActions([<CloseButtonHistory history={props.history} key='close-button-history'/>]);
         return function () {}
     // eslint-disable-next-line
     }, []);
@@ -55,7 +55,7 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
                 totalBudget={budgetModel.total}
                 totalSpent={budgetModel.totalExpenses}
             />
-            <BudgetStats budget={budgetModel}/>
+            <BudgetStatsComponents budget={budgetModel}/>
         </React.Fragment>);
     } else {
         return <p>Loading...</p>;

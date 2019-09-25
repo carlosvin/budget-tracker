@@ -53,7 +53,7 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
                     disabled={selectedBudgets.size < 2} key='combine-budgets-button' >
                     <MergeIcon/>
                 </ButtonFab>,
-                <CloseButton onClick={handleUnselectAll}/>]);
+                <CloseButton onClick={handleUnselectAll} key='close-button'/>]);
         }
         return function () {
             props.onActions([]);

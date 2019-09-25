@@ -1,3 +1,10 @@
+# [2.6.0] - 2019-09-25
+## Add
+- New statistics chart showing daily expenses average per country.
+
+## Fix
+- Cleanup React warnings.
+
 # [2.5.0] - 2019-09-23
 ## Changed
 - Request permission to use persistent storage, so user data stored in Indexed DB won't get lost.

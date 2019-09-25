@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { GraphTimeLine } from "./Graph";
 import { DateDay } from "../../domain/DateDay";
+import { TimeLineChart } from "./charts/TimeLine";
 
 interface GraphExpensesTimeLineProps {
     budget: BudgetModel;
@@ -10,22 +10,25 @@ interface GraphExpensesTimeLineProps {
 export const GraphExpensesTimeLine: React.FC<GraphExpensesTimeLineProps> = (props) => {
     const {budget} = props;
 
-    function getData () {
+    
+    const data = React.useMemo(() => {
         const {from, to} = budget;
         const today = Date.now();
         const fromDate = new Date(from);
-        const data = [];
+        const labels = [];
+        const values = [];
         for (let date=fromDate; date.getTime() <= to && date.getTime() <= today; date.setDate(date.getDate() + 1)) {
             const {year, month, day} = new DateDay(date);
             const total = budget.nestedTotalExpenses.getSubtotal([year, month, day]);
-            data.push({x: new Date(date), y: total});
+            labels.push(new DateDay(date));
+            values.push(Math.round(total));
         }
-        return data;
-    }
+        return {labels, values};
+    }, [budget]);
 
-    return <GraphTimeLine 
+    return <TimeLineChart 
         title='By date' 
-        data={getData()} 
+        {...data}
         avg={budget.average}
         expectedAvg={budget.expectedDailyExpensesAverage}
          />;

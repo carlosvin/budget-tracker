@@ -1,10 +1,10 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { GraphPie } from "./Graph";
-import { round } from "../../domain/utils/round";
 import { useCategories } from "../../hooks/useCategories";
 import { Categories } from "../../interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { getTotalsByCategory } from "../../domain/stats/getTotalsByCategory";
+import { PieChart } from "./charts/Pie";
 
 interface GraphByCategoryProps {
     budget: BudgetModel, 
@@ -20,19 +20,22 @@ export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
 
     const categoriesMap = useCategories();
 
-    function getData (categories: Categories) {
-        const totals = budget.totalsByCategory;
-        const indexes = totals.indexes;
-        const ignoreThreshold = totals.total * 0.03;
-        return indexes
-            .map(k => ({x: getCategoryName(k, categories), y: totals.getSubtotal([k,])}))
-            .filter(({y}) => y > ignoreThreshold)
-            .map(({x, y}) => ({x, y: round(y, 0)})
-        );
-    }
+    const data = React.useMemo(() => {
+        if (categoriesMap && Object.keys(categoriesMap).length > 0) {
+            const labels: string[] = [];
+            const values: number[] = [];
+            const totals = getTotalsByCategory(budget);
+            const indexes = totals.indexes;
+            indexes.forEach((k) => {
+                labels.push(getCategoryName(k, categoriesMap));
+                values.push(Math.round(totals.getSubtotal([k,])));
+            });
+            return {labels, values};
+        }
+    }, [budget, categoriesMap]);
 
-    if (categoriesMap) {
-        return <GraphPie title='By Category' data={getData(categoriesMap)} />;
+    if (data) {
+        return <PieChart title='By Category' {...data} />;
     } else {
         return <CircularProgress/>;
     }
