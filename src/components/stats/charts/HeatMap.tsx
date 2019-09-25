@@ -13,10 +13,7 @@ export const HeatMapChart: React.FC<HeatMapChartProps> = (props) => (
         title={props.title}
         type='heatmap'
         data={{
-            // TODO when react-frappe-charts library supports data points, use them
-            labels: [],
-            datasets: [],
-            // dataPoints: props.dataPoints,
+            dataPoints: props.dataPoints,
             start: props.start,
             end: new Date()
         }}
