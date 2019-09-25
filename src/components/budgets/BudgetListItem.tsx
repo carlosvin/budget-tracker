@@ -35,7 +35,7 @@ export const BudgetListItem: React.FC<BudgetListItemProps> = (props) => {
             />
             <ListItemText
                 id={`li-info-${props.identifier}`}
-                style={{ textAlign: 'right' }}
+                style={{ textAlign: 'right', marginRight: '1rem' }}
                 primary={props.total}
                 secondary={props.currency}
             />
