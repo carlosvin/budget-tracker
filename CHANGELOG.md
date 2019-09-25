@@ -1,3 +1,7 @@
+# [2.7.0] - 2019-09-25
+## Add
+- Expenses heat map chart.
+
 # [2.6.0] - 2019-09-25
 ## Add
 - New statistics chart showing daily expenses average per country.
