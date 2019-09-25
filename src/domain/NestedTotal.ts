@@ -43,6 +43,10 @@ export class NestedTotal {
         return this._total;
     }
 
+    get avg() {
+        return this._total / Object.keys(this._subTotals).length;
+    }
+
     getSubtotal(indexes: IndexType[]): number {
         const index = indexes.shift();
         if (index !== undefined) {
@@ -53,6 +57,18 @@ export class NestedTotal {
             }
         }
         return this.total;
+    }
+
+    getAverage(indexes: IndexType[]): number {
+        const index = indexes.shift();
+        if (index !== undefined) {
+            if (index in this._subTotals) {
+                return this._subTotals[index].getAverage(indexes);
+            } else {
+                return 0;
+            }
+        }
+        return this.avg;
     }
 
     get indexes () {

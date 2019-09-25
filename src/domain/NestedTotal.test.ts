@@ -45,3 +45,17 @@ it('Nested total with 3 levels: Year/Month/Day', () => {
 
 });
 
+it('Average calculation', () => {
+    const nestedTotal = new NestedTotal();
+
+    expect(nestedTotal.add(1, ['ES', '2019-5-1']));
+    expect(nestedTotal.add(1, ['ES', '2019-5-2']));
+    expect(nestedTotal.add(1, ['LU', '2019-5-2']));
+    expect(nestedTotal.add(1, ['TH', '2019-5-3']));
+    expect(nestedTotal.add(2, ['TH', '2019-5-4']));
+
+    expect(nestedTotal.avg).toBe(2);
+    expect(nestedTotal.getAverage(['ES'])).toBe(1);
+    expect(nestedTotal.getAverage(['LU'])).toBe(1);
+    expect(nestedTotal.getAverage(['TH'])).toBe(1.5);
+});
