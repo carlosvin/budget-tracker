@@ -172,4 +172,107 @@ describe('Budget model statistics', () => {
         });
     });
 
+    describe('Number of days in a country', () => { 
+        it('2 countries in same day', () => {
+            const info = createBudget({currency: 'USD', total: 12000}, 60);
+            const expense1 = createExpense('1', info);
+            const expense2 = {
+                ...expense1, 
+                identifier: '2', 
+                countryCode: 'FR'
+            };
+            const bm = new BudgetModelImpl(
+                info, 
+                {
+                    '1': expense1,
+                    '2': expense2,
+                });
+            const totalDaysByCountry = getTotalDaysByCountry(bm);
+            expect(totalDaysByCountry).toStrictEqual({'ES': 1, 'FR': 1});
+        });
+    
+        it('ES in 3 days, LU in 2 days', () => {
+            const info = createBudget({currency: 'USD', total: 12000}, 60);
+            const expense1 = createExpense('1', info);
+            const expense2Date = DateDay.fromTimeMs(expense1.when).addDays(1);
+            const expense2 = {
+                ...expense1, 
+                identifier: '2',
+                when: expense2Date.timeMs
+            };
+            const expense3 = {
+                ...expense2, 
+                identifier: '3',
+                when: expense2Date.clone().addDays(1).timeMs
+            };
+            const expense4 = {
+                ...expense3, 
+                identifier: '4',
+                when: expense3.when,
+                countryCode: 'LU'
+            };
+            const expense5 = {
+                ...expense3, 
+                identifier: '5',
+                when: expense2Date.clone().addDays(2).timeMs,
+                countryCode: 'LU'
+            };
+            const bm = new BudgetModelImpl(
+                info, 
+                {
+                    '1': expense1,
+                    '2': expense2,
+                    '3': expense3,
+                    '4': expense4,
+                    '5': expense5,
+                });
+            const totalDaysByCountry = getTotalDaysByCountry(bm);
+            expect(totalDaysByCountry).toStrictEqual(
+                {'ES': 3, 'LU': 2}
+            );
+        });
+
+        it('Ignores expenses in future', () => {
+            const info = createBudget({currency: 'USD', total: 12000}, 60);
+            const expense1 = createExpense('1', info);
+            const expense2 = {
+                ...expense1, 
+                identifier: '2',
+                when: DateDay.fromTimeMs(expense1.when).addDays(1).timeMs
+            };
+            // in future
+            const expense3 = {
+                ...expense2, 
+                identifier: '3',
+                when: new DateDay().addDays(1).timeMs
+            };
+            const expense4 = {
+                ...expense3, 
+                identifier: '4',
+                when: expense1.when,
+                countryCode: 'LU'
+            };
+            const expense5 = {
+                ...expense3, 
+                identifier: '5',
+                when: new DateDay().addDays(2).timeMs,
+                countryCode: 'LU'
+            };
+            const bm = new BudgetModelImpl(
+                info, 
+                {
+                    '1': expense1,
+                    '2': expense2,
+                    '3': expense3,
+                    '4': expense4,
+                    '5': expense5,
+                });
+
+            const totalDaysByCountry = getTotalDaysByCountry(bm);
+            expect(totalDaysByCountry).toStrictEqual(
+                {'ES': 2, 'LU': 1}
+            );
+        });
+    });
 });
+
