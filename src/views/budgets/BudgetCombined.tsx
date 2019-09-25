@@ -23,7 +23,7 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
 
     React.useEffect(() => {
         props.onTitleChange('Combined budgets');
-        props.onActions([<CloseButtonHistory history={props.history}/>]);
+        props.onActions([<CloseButtonHistory history={props.history} key='close-button-history'/>]);
         return function () {}
     // eslint-disable-next-line
     }, []);
