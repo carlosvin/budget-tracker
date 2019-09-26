@@ -9,6 +9,7 @@ import { ExpensePath } from "../../domain/paths/ExpensePath";
 import { useCategory } from "../../hooks/useCategory";
 import CategoryIcon from "../categories/CategoryIcon";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
+import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
 
 interface ExpenseListItemProps {
     budget: Budget;
@@ -29,7 +30,7 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
     }
 
     function amount () {
-        return `${round(expense.amount)} ${expense.currency}`;
+        return getCurrencyWithSymbol(round(expense.amount), expense.currency);
     }
 
     function isBaseCurrency () {
