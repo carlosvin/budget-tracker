@@ -33,7 +33,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
 
     React.useEffect(() => {
         if (budgetModel) {
-            onTitleChange(`${budgetModel.info.name} ${budgetModel.info.currency}`);
+            onTitleChange(budgetModel.name);
         }
     },
     // eslint-disable-next-line
