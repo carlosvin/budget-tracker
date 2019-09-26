@@ -3,7 +3,6 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { SubStorageApi, DbItem } from './StorageApi';
 
-
 interface ExpenseDb extends Expense, DbItem { }
 interface BudgetDb extends Budget, DbItem { }
 interface CategoryDb extends Category, DbItem { }
@@ -237,13 +236,33 @@ export class FirestoreApi implements SubStorageApi {
             .forEach(budget => batch.set(
                 this.getBudgetDoc(budget.identifier), 
                 this.removeUndefined({timestamp: lastTimeSaved, ...budget})));
-                
-        Object.values(expenses).forEach(expense => batch.set(
-            this.getExpenseDoc(expense.identifier), 
-            this.removeUndefined({timestamp: lastTimeSaved, ...expense})));
-
         batch.set(this.userDoc, {timestamp: lastTimeSaved});
-        return batch.commit();
+                
+        const promises = [
+            batch, 
+            ...this.importExpenses(Object.values(expenses), lastTimeSaved)
+        ].map(b => b.commit());
+        
+        await Promise.all(promises);
+    }
+
+    private importExpenses (expenses: Expense[], timestamp: number) {
+        let batch = this.db.batch();
+        let writes = 0;
+        const batches: firebase.firestore.WriteBatch[] = [batch,];
+        for (const expense of expenses) {
+            // split in chunks due to firestore limitation of 500 writes per request
+            if (writes === 499) {
+                batch = this.db.batch();
+                batches.push(batch);
+                writes = 0;
+            }
+            batch.set(
+                this.getExpenseDoc(expense.identifier), 
+                this.removeUndefined({timestamp, ...expense}));
+            writes ++;
+        }
+        return batches;
     }
 
     async export(): Promise<ExportDataSet> {

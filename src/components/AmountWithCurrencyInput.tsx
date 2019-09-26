@@ -7,6 +7,7 @@ import { AmountInput } from "./AmountInput";
 import { CurrencyRates } from "../interfaces";
 import { round } from "../domain/utils/round";
 import applyRate from "../domain/utils/applyRate";
+import { getCurrencyWithSymbol } from "../domain/utils/getCurrencyWithSymbol";
 
 interface AmountCurrencyInputProps  {
     selectedCurrency: string;
@@ -71,7 +72,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
 
     const baseAmountString = () => {
         if (base !== currency && amountInBaseCurrency) {
-            return `${round(amountInBaseCurrency)} ${base}`;
+            return getCurrencyWithSymbol(round(amountInBaseCurrency), base);
         }
         return undefined;
     }

@@ -1,3 +1,10 @@
+# [2.8.0] - 2019-09-26
+## Fix
+- Firestore error when while importing. Firestore is limited by 500 write requests per batch. 
+
+## Add
+- Currency internationalization formatting.
+
 # [2.7.0] - 2019-09-25
 ## Add
 - Expenses heat map chart.
