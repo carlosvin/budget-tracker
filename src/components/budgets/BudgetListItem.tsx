@@ -11,14 +11,16 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 interface BudgetListItemProps extends Budget {
     onChanged: (identifier: string, checked: boolean) => void;
     checked?: boolean;
+    showCheckbox?: boolean;
 }
 
 export const BudgetListItem: React.FC<BudgetListItemProps> = (props) => {
-    const days = dateDiff(props.from, props.to);
-    const idName = `li-name-${props.identifier}`;
+    const { from, to, identifier, showCheckbox, onChanged, name, total, checked, currency } = props;
+    const days = dateDiff(from, to);
+    const idName = `li-name-${identifier}`;
 
     function handleToggle() {
-        props.onChanged(props.identifier, !props.checked);
+        onChanged(identifier, !checked);
     }
 
     return (
@@ -26,28 +28,28 @@ export const BudgetListItem: React.FC<BudgetListItemProps> = (props) => {
             button
             divider
             component={Link}
-            to={new BudgetPath(props.identifier).path}>
+            to={new BudgetPath(identifier).path}>
 
             <ListItemText
                 id={idName}
-                primary={props.name}
+                primary={name}
                 secondary={`${days} days`}
             />
             <ListItemText
-                id={`li-info-${props.identifier}`}
-                style={{ textAlign: 'right', marginRight: '1rem' }}
-                primary={props.total}
-                secondary={props.currency}
+                id={`li-info-${identifier}`}
+                style={{ textAlign: 'right', marginRight: showCheckbox ? '1rem' : undefined }}
+                primary={total}
+                secondary={currency}
             />
-            <ListItemSecondaryAction>
+            {showCheckbox && <ListItemSecondaryAction>
                 <Checkbox
                     edge='end'
                     onChange={handleToggle}
-                    checked={props.checked}
+                    checked={checked}
                     inputProps={{ 'aria-labelledby': idName }}
                     size='small'
                 />
-            </ListItemSecondaryAction>
+            </ListItemSecondaryAction>}
 
         </ListItem>
     );
