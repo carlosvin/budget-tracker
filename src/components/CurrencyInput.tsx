@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput } from './TextInput';
-import { useAppContext } from '../contexts/AppContext';
+import { useCurrenciesStore } from '../hooks/useCurrenciesStore';
 
 export interface CurrencyInputProps  {
     onCurrencyChange: (selected: string) => void;
@@ -11,24 +11,17 @@ export interface CurrencyInputProps  {
 export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
 
     const [currencies, setCurrencies] = React.useState();
-    const [selected, setSelected] = React.useState(props.selectedCurrency);
     const {onCurrencyChange} = props;
-    const btApp = useAppContext();
+    const store = useCurrenciesStore();
 
     React.useEffect(() => {
-        async function initCurrencies () {
-            setCurrencies((await btApp.getCurrenciesStore()).currencies);
+        if (store) {
+            setCurrencies(store.currencies);
         }
-        initCurrencies();
-    }, [btApp]);
-
-    React.useEffect(() => {
-        setSelected(props.selectedCurrency);
-    }, [props.selectedCurrency]);
+    }, [store]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedValue = event.target.value;
-        setSelected(selectedValue);
         if (onCurrencyChange && selectedValue) {
             onCurrencyChange(selectedValue);
         }
@@ -40,7 +33,7 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
             select
             SelectProps={{ native: true }}
             onChange={handleChange}
-            value={selected}
+            value={props.selectedCurrency}
             required
             disabled={props.disabled || currencies === undefined}
         >
