@@ -22,7 +22,7 @@ const App: React.FC<{btApp: BudgetTracker}> = (props) => {
                 <Header title={title} actions={actions} />
                 <main>
                     <Container maxWidth='lg'>
-                        <Box mt={2}>
+                        <Box mt={2} marginBottom={8}>
                             <ErrorBoundary>
                                 <Routes onTitleChange={setTitle} onActions={setActions}/>
                             </ErrorBoundary>
