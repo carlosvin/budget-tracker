@@ -74,7 +74,7 @@ export interface CountriesStore {
 
     readonly countries: CountryEntry[];
 
-    readonly currentCountryCode: string;
+    readonly currentCountryCode?: string;
 
-    getCurrentCountry (): Promise<string>;
+    getCurrentCountry (): Promise<string|undefined>;
 }

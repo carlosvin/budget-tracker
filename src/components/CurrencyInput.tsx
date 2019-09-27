@@ -22,6 +22,10 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
         initCurrencies();
     }, [btApp]);
 
+    React.useEffect(() => {
+        setSelected(props.selectedCurrency);
+    }, [props.selectedCurrency]);
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedValue = event.target.value;
         setSelected(selectedValue);

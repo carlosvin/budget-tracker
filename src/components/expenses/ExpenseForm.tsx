@@ -33,7 +33,6 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
     const [modified, setModified] = React.useState(false);
     const btApp = useAppContext();
 
-
     // For now only currency and country code might be updated from parent component
     React.useEffect(() => {
         setCurrency(props.currency);

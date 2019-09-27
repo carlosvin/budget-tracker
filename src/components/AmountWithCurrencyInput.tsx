@@ -35,6 +35,12 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     const {onChange, onError} = props;
     const {rates, base} = props.rates;
 
+    React.useEffect(() => {
+        if (props.selectedCurrency !== currency) {
+            setCurrency(props.selectedCurrency);
+        }
+    }, [props.selectedCurrency, currency]);
+
     // calculate amount in base currency
     React.useEffect(() => {
         function calculateAmountInBaseCurrency(inputAmount: number) {
