@@ -22,75 +22,71 @@ interface AmountCurrencyInputProps  {
 
 export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (props) => {
 
-    const [
-        amountInBaseCurrency, 
-        setAmountInBaseCurrency
-    ] = React.useState<number|undefined>(props.amountInBaseCurrency);
-
-    const [currency, setCurrency] = React.useState<string>(props.selectedCurrency);
-    const [amount, setAmount] = React.useState<number|undefined>(props.amountInput);
-
     const [error, setError] = React.useState<string|undefined>(); 
     
     const {onChange, onError} = props;
     const {rates, base} = props.rates;
 
-    // calculate amount in base currency
-    React.useEffect(() => {
-        function calculateAmountInBaseCurrency(inputAmount: number) {
-            const rate = rates[currency];
-            if (rate) {
-                const calculatedAmount = applyRate(inputAmount, rate);
-                setAmountInBaseCurrency(round(calculatedAmount));
-                setError(undefined);
+    function handleChange(amount: number, currency: string) {
+        if (base && props.selectedCurrency && amount) {
+            if (base === props.selectedCurrency) {
+                onChange(amount, currency, round(amount));
             } else {
-                setError('Cannot get currency exchange rate');
+                try {
+                    onChange(amount, currency, calculateAmountInBaseCurrency(amount, currency));    
+                    setError(undefined);
+                } catch (error) {
+                    setError(error);
+                }
             }
         }
+    }
 
-        let isSubscribed = true;
-        if (isSubscribed &&
-            base &&
-            currency && amount) {
-            if (base === currency) {
-                setAmountInBaseCurrency(round(amount));
-            } else {
-                calculateAmountInBaseCurrency(amount);    
-            }
+    function calculateAmountInBaseCurrency(inputAmount: number, inputCurrency: string) {
+        const rate = rates[inputCurrency];
+        if (rate) {
+            const calculatedAmount = applyRate(inputAmount, rate);
+            return round(calculatedAmount);
+        } else {
+            throw new Error('Cannot get currency exchange rate');
         }
-        return () => {isSubscribed = false};
-    }, [base, rates, amount, currency]);
+    }
 
     React.useEffect(() => (onError && onError(error)), [error, onError]);
 
-    React.useEffect(() => {
-        if (amount && amountInBaseCurrency) {
-            onChange(amount, currency, amountInBaseCurrency);
-        }
-    // eslint-disable-next-line
-    }, [amount, currency, amountInBaseCurrency]);
-
     const baseAmountString = () => {
-        if (base !== currency && amountInBaseCurrency) {
-            return getCurrencyWithSymbol(round(amountInBaseCurrency), base);
+        if (base !== props.selectedCurrency && props.amountInBaseCurrency) {
+            return getCurrencyWithSymbol(round(props.amountInBaseCurrency), base);
         }
         return undefined;
+    }
+
+    function handleCurrencyChange (currency: string) {
+        if (props.amountInput) {
+            handleChange(props.amountInput, currency);
+        }
+    }
+
+    function handleAmountChange (amount: number) {
+        if (props.selectedCurrency) {
+            handleChange(amount, props.selectedCurrency);
+        }
     }
     
     return (
         <Grid container direction='row' alignItems='baseline'>
             <Grid item>
                 <AmountInput
-                    amountInput={amount}
+                    amountInput={props.amountInput}
                     label={props.label}
-                    onAmountChange={setAmount}
+                    onAmountChange={handleAmountChange}
                     helperText={baseAmountString()} 
                     disabled={props.disabled}/>
             </Grid>
             <Grid item >
                 <CurrencyInput 
-                    selectedCurrency={currency}
-                    onCurrencyChange={setCurrency} 
+                    selectedCurrency={props.selectedCurrency}
+                    onCurrencyChange={handleCurrencyChange} 
                     disabled={props.disabled}/>
             </Grid>
             { error !== undefined && // TODO show error view

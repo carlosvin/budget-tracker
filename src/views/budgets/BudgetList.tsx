@@ -74,10 +74,12 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
         return null;
     }
     if (budgets.length > 0) {
+        const showCheckbox = budgets.length > 1;
         return (
             <List>{
                 budgets
                     .map(budget => <BudgetListItem 
+                        showCheckbox={showCheckbox}
                         key={`list-item-${budget.identifier}`} {...budget} 
                         onChanged={handleChanged} 
                         checked={selectedBudgets.has(budget.identifier)}/>)

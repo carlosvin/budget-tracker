@@ -10,8 +10,7 @@ interface CachedCountry {
 export class CountriesStoreImpl implements CountriesStore {
 
     private readonly geoApi: GeoApi;
-    private readonly DEFAULT_CODE = 'ES';
-    private currentCountry: CachedCountry;
+    private currentCountry?: CachedCountry;
     private readonly LAST_COUNTRY_KEY = 'lastCountry';
     readonly countries: CountryEntry[];
 
@@ -21,7 +20,7 @@ export class CountriesStoreImpl implements CountriesStore {
         this.currentCountry = this.getCachedCurrentCountry();
     }
 
-    private getCachedCurrentCountry () {
+    private getCachedCurrentCountry (): CachedCountry|undefined {
         const cachedString = localStorage.getItem(this.LAST_COUNTRY_KEY);
         if (cachedString) {
             try {
@@ -33,7 +32,7 @@ export class CountriesStoreImpl implements CountriesStore {
                 console.warn(error);
             }
         }
-        return { code: this.DEFAULT_CODE };
+        return undefined;
     }
 
     private setCurrentCountry (countryCode: string) {
@@ -47,11 +46,12 @@ export class CountriesStoreImpl implements CountriesStore {
     }
 
     get currentCountryCode () {
-        return this.currentCountry.code;
+        return this.currentCountry && this.currentCountry.code;
     }
 
     async getCurrentCountry () {
-        if (this.currentCountry.code && 
+        if (this.currentCountry && 
+            this.currentCountry.code && 
             this.currentCountry.timestamp &&
             Date.now() - this.currentCountry.timestamp < 3600000) {
             return this.currentCountry.code;
@@ -69,6 +69,6 @@ export class CountriesStoreImpl implements CountriesStore {
         } catch (error) {
             console.warn('Fetching current country error: ', error);
         }
-        return this.currentCountry.code || this.DEFAULT_CODE;
+        return this.currentCountry && this.currentCountry.code;
     }
 }

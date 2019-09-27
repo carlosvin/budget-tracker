@@ -1,6 +1,4 @@
-App to track the expenses during a period of time. 
-
-    It is quite useful for keeping track of travel budgets. 
+App to track the expenses during a period of time. It is quite useful for keeping track of travel budgets. 
 
 [![Budget Tracker logo](./public/favicon-16x16.png "Budget Tracker Logo")
 **Budget Tracker**](https://carlosvin.github.io/budget-tracker) is a [PWA](https://en.wikipedia.org/wiki/Progressive_web_applications), so you can easily use it from any device by just opening following url: https://carlosvin.github.io/budget-tracker.
