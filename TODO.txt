@@ -1,2 +1,0 @@
-TODO 
- - if timestamps are different get current local data and based on differences between local and remote, perform actions, do not export all data and import all data
