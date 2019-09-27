@@ -1,3 +1,12 @@
+# [2.8.1] - 2019-09-27
+## Change
+- Improve amount input with currency removing unnecessary state
+- Show checkbox only when there is more than one budget to select
+
+## Fix
+- Fix delayed currency loading when it is detected from current country- 
+- Use margin bottom so Fab buttons don't hide relevant content.
+
 # [2.8.0] - 2019-09-26
 ## Fix
 - Firestore error when while importing. Firestore is limited by 500 write requests per batch. 
