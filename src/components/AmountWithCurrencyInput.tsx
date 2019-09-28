@@ -30,23 +30,24 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     function handleChange(amount: number, currency: string) {
         if (base && props.selectedCurrency && amount) {
             if (base === props.selectedCurrency) {
-                onChange(amount, currency, round(amount));
+                onChange(amount, currency, amount);
             } else {
                 try {
-                    onChange(amount, currency, calculateAmountInBaseCurrency(amount, currency));    
+                    onChange(amount, currency, calculateAmountInBaseCurrency(amount, currency));
                     setError(undefined);
                 } catch (error) {
                     setError(error);
                 }
             }
+        } else {
+            onChange(amount, currency, amount);
         }
     }
 
     function calculateAmountInBaseCurrency(inputAmount: number, inputCurrency: string) {
         const rate = rates[inputCurrency];
         if (rate) {
-            const calculatedAmount = applyRate(inputAmount, rate);
-            return round(calculatedAmount);
+            return applyRate(inputAmount, rate);
         } else {
             throw new Error('Cannot get currency exchange rate');
         }
@@ -62,7 +63,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     }
 
     function handleCurrencyChange (currency: string) {
-        if (props.amountInput) {
+        if (props.amountInput !== undefined) {
             handleChange(props.amountInput, currency);
         }
     }

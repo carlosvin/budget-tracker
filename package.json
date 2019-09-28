@@ -1,6 +1,6 @@
 {
     "name": "budget-tracker",
-    "version": "2.8.1",
+    "version": "2.8.2",
     "private": true,
     "homepage": "https://carlosvin.github.io/budget-tracker",
     "dependencies": {

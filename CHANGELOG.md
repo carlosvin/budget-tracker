@@ -1,3 +1,7 @@
+# [2.8.2] - 2019-09-28
+## Fix
+- Amount input didn't allow field cleanpu.
+
 # [2.8.1] - 2019-09-27
 ## Change
 - Improve amount input with currency removing unnecessary state
