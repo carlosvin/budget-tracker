@@ -4,21 +4,12 @@ import { dateDiff } from "../date";
 import { CurrenciesStore } from "./interfaces";
 import applyRate from "../utils/applyRate";
 
-interface ImportedCurrencyInfo {
-    "AlphabeticCode": string|null,
-    "Currency": string,
-    "Entity": string,
-    "MinorUnit": string|null,
-    "NumericCode": number|null,
-    "WithdrawalDate": null|string
-}
-
 export class CurrenciesStoreImpl implements CurrenciesStore {
     static readonly KEY = 'currencyRates';
     static readonly KEY_TS = 'currencyTimestamps';
     static readonly KEY_LAST = 'lastCurrency';
     // TODO make this configurable
-    static readonly MAX_DAYS = 2;
+    static readonly MAX_DAYS = 0.5;
     
     readonly currencies: ObjectMap<string>;
     private _rates: { [currency: string]: CurrencyRates };
