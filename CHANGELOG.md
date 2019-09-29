@@ -1,6 +1,15 @@
+# [2.9.0] - 2019-09-29
+## Change
+- Refresh currency exchange rates twice per day.
+- Apply local number formatting for amounts and currencies.
+- Update currencies data map.
+
+## Fix
+- Fix expense split field warnings.
+
 # [2.8.2] - 2019-09-28
 ## Fix
-- Amount input didn't allow field cleanpu.
+- Amount input didn't allow field cleanup.
 
 # [2.8.1] - 2019-09-27
 ## Change

@@ -4,7 +4,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { Budget, Expense } from "../../interfaces";
 import { Redirect } from 'react-router-dom';
-import { round } from "../../domain/utils/round";
 import { ExpensePath } from "../../domain/paths/ExpensePath";
 import { useCategory } from "../../hooks/useCategory";
 import CategoryIcon from "../categories/CategoryIcon";
@@ -26,11 +25,11 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
     const [redirect, setRedirect] = React.useState();
 
     function amountBase () {
-        return round(expense.amountBaseCurrency);
+        return expense.amountBaseCurrency.toLocaleString();
     }
 
     function amount () {
-        return getCurrencyWithSymbol(round(expense.amount), expense.currency);
+        return getCurrencyWithSymbol(expense.amount, expense.currency);
     }
 
     function isBaseCurrency () {

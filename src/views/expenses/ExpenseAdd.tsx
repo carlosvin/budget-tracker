@@ -74,10 +74,10 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
         // eslint-disable-next-line
     }, []);
 
-    async function handleSubmit (expenses: Expense[]) {
+    async function handleSubmit (expense: Expense) {
         goBack(
             props.history, 
-            budgetUrl.pathExpensesByDay(DateDay.fromTimeMs(expenses[0].when)));
+            budgetUrl.pathExpensesByDay(DateDay.fromTimeMs(expense.when)));
         
     }
 
@@ -93,6 +93,7 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
                 countryCode={currentCountry || 'ES'}
                 currency={currency}
                 when={now}
+                splitInDays={0}
                 onSubmit={handleSubmit}
                 />
         );

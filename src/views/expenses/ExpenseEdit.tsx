@@ -46,10 +46,10 @@ export const ExpenseEdit: React.FC<ExpenseEditProps> = (props) => {
         // eslint-disable-next-line
     }, [budgetModel, expenseId]);
 
-    async function handleSubmit(expenses: Expense[]) {
+    async function handleSubmit(expense: Expense) {
         goBack(
             props.history, 
-            budgetUrl.pathExpensesByDay(DateDay.fromTimeMs(expenses[0].when)));
+            budgetUrl.pathExpensesByDay(DateDay.fromTimeMs(expense.when)));
         
     }
 

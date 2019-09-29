@@ -1,25 +1,11 @@
-import { Expense, CurrencyRates, Category, ExpensesMap, ExpensesYearMap } from "../interfaces";
+import { Expense, CurrencyRates, Category, ExpensesMap } from "../interfaces";
 import { ExpenseModel } from "./ExpenseModel";
 import { DateDay } from "./DateDay";
 import { BudgetModelImpl } from "./BudgetModelImpl";
 import { createBudget } from "../__mocks__/createBudget";
 import { createExpense } from "../__mocks__/createExpense";
-
-
-function addExpenseToGroups (groups: ExpensesYearMap, expense: ExpenseModel) {
-    const {year, month, day} = expense;
-    if (!(year in groups)) {
-        groups[year] = {};
-    }
-    if (!(month in groups[year])) {
-        groups[year][month] = {};
-    }
-    if (!(day in groups[year][month])) {
-        groups[year][month][day] = {};
-    }
-    groups[year][month][day][expense.identifier] = expense;
-
-}
+import { addExpenseToGroups } from "../__mocks__/addExpenseToGroups";
+import { dateDiff } from "./date";
 
 describe('Budget Model Creation', () => {
 
@@ -48,10 +34,10 @@ describe('Budget Model Creation', () => {
             amountBaseCurrency: 100,
             when: expenseDate1.getTime()
         };
-        const expense2 = {...expense1,
+        const expense2: Expense = {...expense1,
             currency: 'EUR',
             when: expenseDate2.getTime(),
-            identifier: '2',
+            identifier: '2'
         };
 
         bm.setExpense(expense1);
@@ -222,6 +208,33 @@ describe('Expense operations', () => {
         expect(bm.totalExpenses).toBe(0);
         expect(bm.average).toBe(0);        
 
+    });
+
+    it('Set expense split in dates with correct totals', () => {
+        const info = createBudget({
+            currency: 'USD', 
+            total: 56000, 
+            from: Date.now(), 
+            to: new DateDay().addDays(5).timeMs});
+        const expense1 = {
+            ...createExpense('1', info), 
+            splitInDays: 2};
+        const expense2 = createExpense('2', info);
+        const expense3 = {
+            ...createExpense('3', info), splitInDays: 3};
+
+        const bm = new BudgetModelImpl(info, {'1': expense1, '2': expense2});
+        bm.setExpense(expense3);
+
+        expect(bm.totalExpenses).toBe(expense1.amountBaseCurrency * 3);
+        expect(bm.average).toBe(
+            (expense1.amountBaseCurrency * 3)/ dateDiff(info.from, Date.now()));
+            
+        const expense4 = createExpense('4', info);
+        delete expense4['splitInDays'];
+        bm.setExpense(expense4);
+        expect(bm.average).toBe(
+            (expense1.amountBaseCurrency * 4)/ dateDiff(info.from, Date.now()));
     });
     
 });

@@ -7,14 +7,14 @@ import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
 import { Expense } from "../../interfaces";
 import CategoriesSelect from "../../components/categories/CategoriesSelect";
 import { SaveButtonFab } from "../../components/buttons/SaveButton";
-import { round } from "../../domain/utils/round";
 import { ExpenseModel } from "../../domain/ExpenseModel";
 import { useRates } from "../../hooks/useRates";
 import { useAppContext } from "../../contexts/AppContext";
+import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
 
 interface ExpenseFormProps extends Expense {
     baseCurrency: string;
-    onSubmit: (expenses: Expense[]) => void;
+    onSubmit: (expense: Expense) => void;
 }
 
 export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
@@ -28,7 +28,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
     const [categoryId, setCategoryId] = React.useState(props.categoryId);
     const [amountBaseCurrency, setAmountBaseCurrency] = React.useState(props.amountBaseCurrency);
     const [description, setDescription] = React.useState(props.description);
-    const [splitInDays, setSplitInDays] = React.useState<number|undefined>();
+    const [splitInDays, setSplitInDays] = React.useState<number|undefined>(props.splitInDays);
 
     const [modified, setModified] = React.useState(false);
     const btApp = useAppContext();
@@ -54,12 +54,12 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
             categoryId,
             description,
             when: date.getTime(),
-            budgetId: props.budgetId
+            budgetId: props.budgetId,
+            splitInDays: max
         });
         const store = await btApp.getBudgetsStore();
-        const expenses = expenseModel.split(max).map(em => (em.info));
-        await store.setExpenses(props.budgetId, expenses);
-        props.onSubmit(expenses);
+        await store.setExpenses(props.budgetId, [expenseModel]);
+        props.onSubmit(expenseModel);
     }
     
     function handleWhen (e: React.ChangeEvent<HTMLInputElement>) {
@@ -104,7 +104,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
 
     function amountPerDay () {
         if (amountBaseCurrency && splitInDays && splitInDays > 1) {
-            return `${round(amountBaseCurrency / splitInDays) } ${props.baseCurrency} per day`;
+            return `${getCurrencyWithSymbol(amountBaseCurrency / splitInDays, props.baseCurrency)} per day`;
         }
         return undefined;
     }
@@ -147,7 +147,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                     <TextInput 
                         type='number'
                         label={'Split in days'}
-                        value={ splitInDays }
+                        value={ splitInDays || '' }
                         helperText={ amountPerDay() }
                         onChange={ handleSplitInDays }
                         inputProps={ { min: 1 } }

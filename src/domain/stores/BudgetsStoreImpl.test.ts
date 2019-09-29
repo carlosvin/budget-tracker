@@ -4,6 +4,8 @@ import { createBudget } from "../../__mocks__/createBudget";
 import { createBudgetTrackerMock } from "../../__mocks__/budgetTracker";
 import { createExpense } from "../../__mocks__/createExpense";
 import { Categories } from "../../interfaces";
+import { addExpenseToGroups } from "../../__mocks__/addExpenseToGroups";
+import { ExpenseModel } from "../ExpenseModel";
 
 
 describe('Budget Model Creation', () => {
@@ -39,37 +41,32 @@ describe('Budget Model Creation', () => {
 
         await store.setBudget(budgetInfo);
 
-        const expense = {...createExpense('1', budgetInfo), amount: 40, amountBaseCurrency: 4};
+        const expense = {
+            ...createExpense('1', budgetInfo), 
+            amount: 40, 
+            amountBaseCurrency: 4, 
+            splitInDays: 4};
         await store.setExpenses(budgetInfo.identifier, [expense]);
-        const bm = await store.getBudgetModel(budgetInfo.identifier);
-        const em = await bm.getExpense(expense.identifier);
-        const expectedDates = [em.date, 
+
+        const splitExpense = {...expense, amountBaseCurrency: 1, amount: 10, splitExpense: 1};
+        const em = new ExpenseModel({...splitExpense});
+        const expectedDates = [
+            em.date.clone(),
             em.date.clone().addDays(1),
             em.date.clone().addDays(2),
             em.date.clone().addDays(3),
         ];
+        const expectedGroups = {};
+        expectedDates.forEach(
+            dateDay => addExpenseToGroups(
+                expectedGroups, 
+                new ExpenseModel({...splitExpense, when: dateDay.timeMs})));
 
-        const expensesSplit = em.split(4);
-        expect(expensesSplit.map(em => em.date)).toStrictEqual(expectedDates);
+        const bm = await store.getBudgetModel(budgetInfo.identifier);
+        expect(expectedGroups).toStrictEqual(bm.expenseGroups);
 
-        await store.setExpenses(bm.identifier, expensesSplit);
-        const observedExpenses = await store.getExpenses(bm.identifier);
-
-        expect(Object
-            .values(observedExpenses)
-            .map(e => e.when))
-            .toStrictEqual(expectedDates.map(d=>d.timeMs));
-
-        const exported = await store.export();
-        expect(Object.values(exported.expenses).map(e => e.when)).toStrictEqual(expectedDates.map(d=>d.timeMs));
-
-        await Promise.all(Object.keys(observedExpenses).map(id => store.deleteExpense(budgetInfo.identifier, id )));
-
-        await store.import(exported);
-        
-        const exportedObserved = await store.export();
-        expect(exportedObserved.budgets).toStrictEqual(exported.budgets);
-        expect(exportedObserved.expenses).toStrictEqual(exported.expenses);
+        const observedByDay = expectedDates.map(d => bm.getTotalExpensesByDay(d.year, d.month, d.day));
+        expect(observedByDay).toStrictEqual([1,1,1,1]);
     });
 
     it('Export data directly loaded from local storage', async () => {

@@ -25,6 +25,7 @@ export interface Expense {
     /** Timestamp when the expense applies */
     when: number;
     budgetId: string;
+    splitInDays: number;
 }
 
 // TODO review app to switch to JS Map

@@ -12,7 +12,8 @@ function createExpense (id: string,  when = new Date(2019, 0, 1).getTime()): Exp
         description: 'whatever description',
         identifier: id,
         when,
-        budgetId: uuid()
+        budgetId: uuid(),
+        splitInDays: 1
     };
 }
 
@@ -28,7 +29,8 @@ describe('Expense Model', () => {
             description: '',
             identifier: '123', 
             when: 0,
-            budgetId: '1'
+            budgetId: '1',
+            splitInDays: 1
         };
 
         expect(() => new ExpenseModel(invalid))
@@ -61,7 +63,7 @@ describe('Expense Model', () => {
         const baseExpense = createExpense('1');
         const expenses = values.map(
             v => ({
-                ...baseExpense, 
+                ...baseExpense,
                 identifier: `${v}`, 
                 amountBaseCurrency: v, 
                 amount: v * 10}));
@@ -70,23 +72,26 @@ describe('Expense Model', () => {
 
     describe('Split', () => {
 
-        const expense: ExpenseModel = new ExpenseModel({
+        const info = {
             ...createExpense('1'),
             amount: 99, 
             amountBaseCurrency: 990
-        });
+        };
 
-        it('splits in 0 days', () => {
-            expect(() => (expense.split(0)))
-                .toThrow('You cannot split an expense in less than one piece');
+        it('splits in 0 days should be fixed to 1 day', () => {
+            const em = new ExpenseModel({...info, splitInDays: 0});
+            expect(em.splitInDays).toBe(1);
         });
 
         it('splits in 1 day', () => {
-            expect(expense.split(1)).toStrictEqual([expense]);
+            const expense = new ExpenseModel({...info, splitInDays: 1});
+            expect(expense.split()).toStrictEqual([expense]);
         });
 
         it('splits in 3 days', () => {
-            expect(expense.split(3, () => 'randomID')).toStrictEqual([
+            const expense = new ExpenseModel({...info, splitInDays: 3});
+
+            expect(expense.split()).toStrictEqual([
                 new ExpenseModel({...expense, 
                     amount: 33,
                     amountBaseCurrency: 330}),
@@ -94,13 +99,11 @@ describe('Expense Model', () => {
                     ...expense, 
                     amount: 33,
                     amountBaseCurrency: 330, 
-                    identifier: 'randomID', 
                     when: new Date(2019, 0, 2).getTime()}),
                 new ExpenseModel({
                     ...expense, 
                     amount: 33, 
                     amountBaseCurrency: 330, 
-                    identifier: 'randomID', 
                     when: new Date(2019, 0, 3).getTime()}),
             ]);
         });

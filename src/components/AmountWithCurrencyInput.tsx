@@ -5,7 +5,6 @@ import CardContent from "@material-ui/core/CardContent";
 import { CurrencyInput } from "./CurrencyInput";
 import { AmountInput } from "./AmountInput";
 import { CurrencyRates } from "../interfaces";
-import { round } from "../domain/utils/round";
 import applyRate from "../domain/utils/applyRate";
 import { getCurrencyWithSymbol } from "../domain/utils/getCurrencyWithSymbol";
 
@@ -57,7 +56,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
 
     const baseAmountString = () => {
         if (base !== props.selectedCurrency && props.amountInBaseCurrency) {
-            return getCurrencyWithSymbol(round(props.amountInBaseCurrency), base);
+            return getCurrencyWithSymbol(props.amountInBaseCurrency, base);
         }
         return undefined;
     }
