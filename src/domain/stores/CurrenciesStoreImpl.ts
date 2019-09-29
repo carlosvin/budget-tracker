@@ -4,21 +4,12 @@ import { dateDiff } from "../date";
 import { CurrenciesStore } from "./interfaces";
 import applyRate from "../utils/applyRate";
 
-interface ImportedCurrencyInfo {
-    "AlphabeticCode": string|null,
-    "Currency": string,
-    "Entity": string,
-    "MinorUnit": string|null,
-    "NumericCode": number|null,
-    "WithdrawalDate": null|string
-}
-
 export class CurrenciesStoreImpl implements CurrenciesStore {
     static readonly KEY = 'currencyRates';
     static readonly KEY_TS = 'currencyTimestamps';
     static readonly KEY_LAST = 'lastCurrency';
     // TODO make this configurable
-    static readonly MAX_DAYS = 2;
+    static readonly MAX_DAYS = 0.5;
     
     readonly currencies: ObjectMap<string>;
     private _rates: { [currency: string]: CurrencyRates };
@@ -26,25 +17,11 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
     private _countriesCurrencyMap?: {[country: string]: string};
     private _lastCurrencyUsed?: string;
 
-    constructor(importedCurrencies: ImportedCurrencyInfo[]) {
-        this.currencies = CurrenciesStoreImpl.filterOutInvalid(importedCurrencies);
+    constructor(importedCurrencies: ObjectMap<string>) {
+        this.currencies = importedCurrencies;
             
         this._timestamps = this.getTimestampsFromDisk();
         this._rates = this.getRatesFromDisk();
-    }
-
-    private static filterOutInvalid (importedCurrencies: ImportedCurrencyInfo[]) {
-        const currencyMap: ObjectMap<string> = {};
-        Object.values(importedCurrencies)
-            .filter( c => 
-                c.AlphabeticCode && 
-                (!c.AlphabeticCode.startsWith('X')) && 
-                c.AlphabeticCode.length === 3 && 
-                c.WithdrawalDate === null && 
-                c.Currency && 
-                c.Currency.length > 2)
-            .forEach( c => c.AlphabeticCode && (currencyMap[c.AlphabeticCode] = c.Currency));
-        return currencyMap;
     }
 
     /** 

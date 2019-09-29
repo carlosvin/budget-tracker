@@ -7,10 +7,10 @@ import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
 import { Expense } from "../../interfaces";
 import CategoriesSelect from "../../components/categories/CategoriesSelect";
 import { SaveButtonFab } from "../../components/buttons/SaveButton";
-import { round } from "../../domain/utils/round";
 import { ExpenseModel } from "../../domain/ExpenseModel";
 import { useRates } from "../../hooks/useRates";
 import { useAppContext } from "../../contexts/AppContext";
+import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
 
 interface ExpenseFormProps extends Expense {
     baseCurrency: string;
@@ -104,7 +104,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
 
     function amountPerDay () {
         if (amountBaseCurrency && splitInDays && splitInDays > 1) {
-            return `${round(amountBaseCurrency / splitInDays) } ${props.baseCurrency} per day`;
+            return `${getCurrencyWithSymbol(amountBaseCurrency / splitInDays, props.baseCurrency)} per day`;
         }
         return undefined;
     }
@@ -147,7 +147,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                     <TextInput 
                         type='number'
                         label={'Split in days'}
-                        value={ splitInDays }
+                        value={ splitInDays || '' }
                         helperText={ amountPerDay() }
                         onChange={ handleSplitInDays }
                         inputProps={ { min: 1 } }
