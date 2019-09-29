@@ -147,7 +147,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                     <TextInput 
                         type='number'
                         label={'Split in days'}
-                        value={ splitInDays }
+                        value={ splitInDays || '' }
                         helperText={ amountPerDay() }
                         onChange={ handleSplitInDays }
                         inputProps={ { min: 1 } }
