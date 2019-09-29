@@ -26,25 +26,11 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
     private _countriesCurrencyMap?: {[country: string]: string};
     private _lastCurrencyUsed?: string;
 
-    constructor(importedCurrencies: ImportedCurrencyInfo[]) {
-        this.currencies = CurrenciesStoreImpl.filterOutInvalid(importedCurrencies);
+    constructor(importedCurrencies: ObjectMap<string>) {
+        this.currencies = importedCurrencies;
             
         this._timestamps = this.getTimestampsFromDisk();
         this._rates = this.getRatesFromDisk();
-    }
-
-    private static filterOutInvalid (importedCurrencies: ImportedCurrencyInfo[]) {
-        const currencyMap: ObjectMap<string> = {};
-        Object.values(importedCurrencies)
-            .filter( c => 
-                c.AlphabeticCode && 
-                (!c.AlphabeticCode.startsWith('X')) && 
-                c.AlphabeticCode.length === 3 && 
-                c.WithdrawalDate === null && 
-                c.Currency && 
-                c.Currency.length > 2)
-            .forEach( c => c.AlphabeticCode && (currencyMap[c.AlphabeticCode] = c.Currency));
-        return currencyMap;
     }
 
     /** 
