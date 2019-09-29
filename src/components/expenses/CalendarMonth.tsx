@@ -7,7 +7,6 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import Card from "@material-ui/core/Card";
 import { CalendarDay } from "./CalendarDay";
-import { round } from "../../domain/utils/round";
 
 interface CalendarMonthProps {
     days: number[];
@@ -19,13 +18,17 @@ interface CalendarMonthProps {
 
 export const CalendarMonth: React.FC<CalendarMonthProps> = (props) => {
     const { year, month, budgetModel, days } = props;
+    const total = React.useMemo(() => {
+        const totalByMonth = budgetModel.getTotalExpensesByMonth(year, month);
+        return Math.round(totalByMonth).toLocaleString();
+    }, [budgetModel, year, month]);
 
     return (
         <Card key={`expenses-month-${year}-${month}`} style={{ marginBottom: '1rem' }}>
             <CardHeader
                 title={<SubHeader
                     leftText={monthToString(props.month)}
-                    rightText={round(budgetModel.getTotalExpensesByMonth(year, month), 0)}
+                    rightText={total}
                     variant='h6' />} />
             <CardContent>
                 {

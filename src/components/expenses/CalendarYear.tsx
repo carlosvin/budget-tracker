@@ -3,7 +3,7 @@ import { YMD } from "../../interfaces";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { SubHeader } from "./SubHeader";
 import { CalendarMonth } from "./CalendarMonth";
-import { round } from "../../domain/utils/round";
+import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
 
 interface CalendarYearProps {
     year: number;
@@ -28,6 +28,8 @@ export const CalendarYear: React.FC<CalendarYearProps> = (props) => {
         <SubHeader 
             variant='h5' 
             leftText={year} 
-            rightText={round(budgetModel.getTotalExpensesByYear(year), 0)}/>
+            rightText={getCurrencyWithSymbol(
+                budgetModel.getTotalExpensesByYear(year), 
+                budgetModel.currency)}/>
     </React.Fragment>);
 }

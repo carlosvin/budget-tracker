@@ -4,7 +4,6 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import { DateDay } from "../../domain/DateDay";
-import { round } from "../../domain/utils/round";
 
 interface CalendarDayProps {
     total: number; 
@@ -39,7 +38,7 @@ export const CalendarDay: React.FC<CalendarDayProps> = (props) => {
             >
             <Box p={1}>
                 <Typography color='textPrimary'>{props.date.day}</Typography>
-                <Typography variant='caption' color={props.total > props.expected ? 'error' : 'textSecondary'}>{round(props.total, 0)}</Typography>
+                <Typography variant='caption' color={props.total > props.expected ? 'error' : 'textSecondary'}>{props.total.toFixed()}</Typography>
             </Box>
         </Button>);
 }
