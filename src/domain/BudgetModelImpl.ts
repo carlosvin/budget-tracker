@@ -27,7 +27,9 @@ export class BudgetModelImpl implements BudgetModel {
 
     private _setExpense(expense: ExpenseModel){
         this._expenses[expense.identifier] = expense;
-        this._addToGroup(expense);
+        for (const e of expense.split()) {
+            this._addToGroup(e);
+        }
     }
 
     get numberOfExpenses () {
@@ -123,12 +125,17 @@ export class BudgetModelImpl implements BudgetModel {
         const newExpense = new ExpenseModel(expense);
         if (expense.identifier in this._expenses) {
             const oldExpense = this._expenses[expense.identifier];
-            this._removeFromGroup(oldExpense);
+            const oldExpenses = oldExpense.split();
+            for (const oe of oldExpenses) {
+                this._removeFromGroup(oe);
+            }
             this._updateTotalExpenses(newExpense, oldExpense);
         } else {
             this._updateTotalExpenses(newExpense);
         }
-        this._addToGroup(newExpense);
+        for (const ne of newExpense.split()) {
+            this._addToGroup(ne);
+        }
         this._expenses[expense.identifier] = newExpense;
     }
 
@@ -175,7 +182,9 @@ export class BudgetModelImpl implements BudgetModel {
 
     get expenseGroups () {
         if (!this._expenseGroups) {
-            Object.values(this.expenses).forEach(e => this._addToGroup(e));
+            Object.values(this.expenses)
+                .flatMap(e => e.split())
+                .forEach(e => this._addToGroup(e));
             if (!this._expenseGroups) {
                 this._expenseGroups = {};
             }
@@ -183,7 +192,7 @@ export class BudgetModelImpl implements BudgetModel {
         return this._expenseGroups;
     }
 
-    private _addToGroup (expense: ExpenseModel) {
+    private _addToGroup (expense: ExpenseModel) {        
         if (this._expenseGroups === undefined) {
             this._expenseGroups = {};
         }

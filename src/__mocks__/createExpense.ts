@@ -10,6 +10,7 @@ export function createExpense (id: string, budget: Budget): Expense {
         description: 'whatever description',
         identifier: id,
         when: budget.from,
-        budgetId: budget.identifier
+        budgetId: budget.identifier,
+        splitInDays: 1
     };
 }

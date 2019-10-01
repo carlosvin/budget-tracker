@@ -1,7 +1,6 @@
 import { Budget, Expense } from "../interfaces";
 import { NestedTotal } from "./NestedTotal";
 import { DateDay } from "./DateDay";
-import { uuid } from "./utils/uuid";
 
 export class ExpenseModel implements Expense {
 
@@ -15,6 +14,7 @@ export class ExpenseModel implements Expense {
     readonly identifier: string;
     readonly when: number;
     readonly budgetId: string;
+    readonly splitInDays: number;
 
     constructor (info: Expense) {
         this.identifier = info.identifier;
@@ -26,12 +26,13 @@ export class ExpenseModel implements Expense {
         this.description = info.description;
         this.when = info.when;
         this.budgetId = info.budgetId;
+        this.splitInDays = info.splitInDays > 0 ? info.splitInDays : 1;
         this.validate();
     }
 
     get info (): Expense {
-        const { amount, amountBaseCurrency, categoryId, countryCode, currency, description, identifier, when, budgetId} = this;
-        return { amount, amountBaseCurrency, categoryId, description, identifier, when, countryCode, currency, budgetId };
+        const { amount, amountBaseCurrency, categoryId, countryCode, currency, description, identifier, when, budgetId, splitInDays} = this;
+        return { amount, amountBaseCurrency, categoryId, description, identifier, when, countryCode, currency, budgetId, splitInDays};
     }
 
     get json (): string {
@@ -76,11 +77,15 @@ export class ExpenseModel implements Expense {
     }
 
     addToTotals(totals: NestedTotal) {
-        totals.add(this.amountBaseCurrency, this.dateParts);
+        for (const em of this.split()) {
+            totals.add(em.amountBaseCurrency, em.dateParts);
+        }
     }
 
     subtractTotal(totals: NestedTotal) {
-        totals.subtract(this.amountBaseCurrency, this.dateParts);
+        for (const em of this.split()) {
+            totals.subtract(em.amountBaseCurrency, em.dateParts);
+        }
     }
 
     validate () {
@@ -105,22 +110,21 @@ export class ExpenseModel implements Expense {
     /** 
      * @returns List of split expenses, first element will be current split expense
      */
-    split(days: number, idGen = uuid): ExpenseModel[] {
-        if (days < 1) {
+    split(): ExpenseModel[] {
+        if (this.splitInDays < 1) {
             throw Error('You cannot split an expense in less than one piece');
-        } else if (days === 1) {
+        } else if (this.splitInDays === 1) {
             return [this];
         } else {
-            const amountBaseCurrency =  this.amountBaseCurrency / days;
-            const amount = this.amount / days;
+            const amountBaseCurrency =  this.amountBaseCurrency / this.splitInDays;
+            const amount = this.amount / this.splitInDays;
             const expenses = [new ExpenseModel({...this, amount, amountBaseCurrency})];
-            for (let i=1; i<days; i++) {
+            for (let i=1; i<this.splitInDays; i++) {
                 expenses.push(new ExpenseModel({
                     ...this,
                     amount, 
                     amountBaseCurrency,
                     when: DateDay.fromTimeMs(this.when).addDays(i).timeMs,
-                    identifier: idGen()
                 }));
             }
             return expenses;
