@@ -1,6 +1,5 @@
 import { CurrencyRates, ObjectMap } from "../../interfaces";
 import { currenciesApi } from "../../services/CurrenciesApi";
-import { dateDiff } from "../date";
 import { CurrenciesStore } from "./interfaces";
 import applyRate from "../utils/applyRate";
 
@@ -9,7 +8,7 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
     static readonly KEY_TS = 'currencyTimestamps';
     static readonly KEY_LAST = 'lastCurrency';
     // TODO make this configurable
-    static readonly MAX_DAYS = 0.5;
+    static readonly UPDATE_RATES_MS = 12 * 3600 * 1000;
     
     readonly currencies: ObjectMap<string>;
     private _rates: { [currency: string]: CurrencyRates };
@@ -76,11 +75,12 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
     }
 
     private isUpdated(baseCurrency: string) {
-        return baseCurrency in this._timestamps && 
-            dateDiff(
-                this._timestamps[baseCurrency], 
-                Date.now()
-            ) <= CurrenciesStoreImpl.MAX_DAYS;
+        return baseCurrency in this._timestamps 
+            && this.isTimestampUpdated(this._timestamps[baseCurrency]);
+    }
+
+    private isTimestampUpdated(timestamp: number) {
+        return Date.now() - timestamp <= CurrenciesStoreImpl.UPDATE_RATES_MS;
     }
 
     /** 
