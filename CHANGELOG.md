@@ -1,3 +1,7 @@
+# [2.10.0] - 2019-10-01
+## Change
+- Do not split expense in smaller expenses. Now we can modify the number of split days in any moment, not only during expense creation.
+
 # [2.9.0] - 2019-09-29
 ## Change
 - Refresh currency exchange rates twice per day.
