@@ -1,3 +1,7 @@
+# [2.10.1] - 2019-10-01
+## Fix
+- Calculation of exchange rates fetch period. Previously it was fetching rates each time expense view was loaded.
+
 # [2.10.0] - 2019-10-01
 ## Change
 - Do not split expense in smaller expenses. Now we can modify the number of split days in any moment, not only during expense creation.
