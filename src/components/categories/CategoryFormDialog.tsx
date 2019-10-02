@@ -23,7 +23,7 @@ export const CategoryFormDialog: React.FC<CategoryFormDialogProps> = (props) => 
             <DialogTitle id={titleId}>
                 Add category
             </DialogTitle>
-            <DialogContent>
+            <DialogContent style={{marginBottom: '1rem'}}>
                 <CategoryForm onSubmit={props.onClose} />
             </DialogContent>
         </Dialog>

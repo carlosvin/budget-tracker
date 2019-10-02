@@ -57,7 +57,7 @@ export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
             <Grid container direction={props.direction || 'row'} wrap='nowrap'>
                 <Grid item>
                     <TextInput 
-                        label={ props.direction === 'row' ? '' : 'Category Name' }
+                        label={ props.direction === 'row' ? '' : 'Name' }
                         value={ category.name }
                         onChange={ handleChangeName }/>
                 </Grid>
