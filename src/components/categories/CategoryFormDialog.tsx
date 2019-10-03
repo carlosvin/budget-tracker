@@ -28,5 +28,4 @@ export const CategoryFormDialog: React.FC<CategoryFormDialogProps> = (props) => 
             </DialogContent>
         </Dialog>
     );
-
 }
