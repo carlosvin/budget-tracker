@@ -1,3 +1,7 @@
+# [2.10.2] - 2019-10-03
+## Fix
+- Code cleanup. Review TODOs in code. Remove or fix them.
+
 # [2.10.1] - 2019-10-01
 ## Fix
 - Calculation of exchange rates fetch period. Previously it was fetching rates each time expense view was loaded.
