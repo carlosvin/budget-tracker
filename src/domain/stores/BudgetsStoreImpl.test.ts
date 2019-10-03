@@ -9,11 +9,15 @@ import { ExpenseModel } from "../ExpenseModel";
 
 
 describe('Budget Model Creation', () => {
+    let btApp = createBudgetTrackerMock();
+    let store = new BudgetsStoreImpl(btApp);
+
+    beforeEach(() => {
+        btApp = createBudgetTrackerMock();
+        store = new BudgetsStoreImpl(btApp);
+    });
 
     it('Set first budget', async () => {
-        // TODO move 2 next lines to before each execution
-        const btApp = createBudgetTrackerMock();
-        const store = new BudgetsStoreImpl(btApp);
 
         const budgetInfo = createBudget();
         btApp.storage.getBudget.mockReturnValue(budgetInfo);
@@ -26,9 +30,6 @@ describe('Budget Model Creation', () => {
     });
 
     it('Split expenses', async () => {
-        // TODO move 2 next lines to before each execution
-        const btApp = createBudgetTrackerMock();
-        const store = new BudgetsStoreImpl(btApp);
 
         const budgetInfo = createBudget();
         btApp.storage.getBudget.mockReturnValue(budgetInfo);
@@ -70,9 +71,7 @@ describe('Budget Model Creation', () => {
     });
 
     it('Export data directly loaded from local storage', async () => {
-        // TODO move 2 next lines to before each execution
-        const btApp = createBudgetTrackerMock();
-        const store = new BudgetsStoreImpl(btApp);
+        
         btApp.getCategoriesStore.mockReturnValue({ 
             getCategories: () => ([]),
             setCategories: (categories: Categories) => {}
@@ -91,5 +90,4 @@ describe('Budget Model Creation', () => {
         expect(exported.budgets).toStrictEqual(budgets);
         expect(exported.expenses).toStrictEqual(expenses);
     });
-
 });
