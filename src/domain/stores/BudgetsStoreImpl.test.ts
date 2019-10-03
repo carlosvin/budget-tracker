@@ -77,13 +77,18 @@ describe('Budget Model Creation', () => {
             setCategories: (categories: Categories) => {}
         });
         const budgetInfo = createBudget();
-        const budgets = {[budgetInfo.identifier]: budgetInfo};
+        const budgetInfo2 = createBudget({identifier: '2'});
+        const budgets = {
+            [budgetInfo.identifier]: budgetInfo,
+            [budgetInfo2.identifier]: budgetInfo2
+        };
         const expenses = {
             '1': createExpense('1', budgetInfo), 
-            '2': createExpense('2', budgetInfo)
+            '2': createExpense('2', budgetInfo),
+            '3': createExpense('3', budgetInfo2)
         };
         btApp.storage.getBudgets.mockReturnValue(budgets);
-        btApp.storage.getBudget.mockReturnValue(budgetInfo);
+        btApp.storage.getBudget.mockImplementation((id: string) => budgets[id]);
         btApp.storage.getExpenses.mockReturnValue(expenses);
 
         const exported = await store.export();
