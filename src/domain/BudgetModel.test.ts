@@ -428,7 +428,7 @@ describe('Number of days in a country', () => {
         if (day1.month === day2.month) {
             expect(
                 model.getDays(day1.year, day1.month)
-            ).toStrictEqual([day2.day, day1.day]);    
+            ).toStrictEqual([day1.day,day2.day]);    
         } else {
             expect(
                 model.getDays(day1.year, day1.month)

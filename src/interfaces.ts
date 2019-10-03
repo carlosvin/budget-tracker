@@ -30,7 +30,7 @@ export interface Expense {
 
 // TODO review app to switch to JS Map
 export interface ObjectMap<T> {
-    [currency: string]: T   
+    [k: string]: T   
 }
 
 export interface ExpensesMap {

@@ -33,6 +33,7 @@ export const CalendarMonth: React.FC<CalendarMonthProps> = (props) => {
             <CardContent>
                 {
                     Object.values(days)
+                        .reverse()
                         .map((day) => (
                             <CalendarDay
                                 onDaySelected={props.onDaySelected}

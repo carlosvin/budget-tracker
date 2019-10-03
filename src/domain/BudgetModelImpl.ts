@@ -3,7 +3,6 @@ import { dateDiff } from "./date";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
 import applyRate from "./utils/applyRate";
-import { desc } from "./utils/sorting";
 import { BudgetModel } from "./BudgetModel";
 
 export class BudgetModelImpl implements BudgetModel {
@@ -108,17 +107,17 @@ export class BudgetModelImpl implements BudgetModel {
     // TODO remove this sorting methods and implement a sorted insertion in expenseGroups
     getMonths(year: number): number[] {
         return Object.keys(this.expenseGroups[year])
-            .map(month => parseInt(month)).sort(desc);
+            .map(month => parseInt(month));
     }
 
     getDays(year: number, month: number): number[] {
         return Object.keys(this.expenseGroups[year][month])
-            .map(d => parseInt(d)).sort(desc);
+            .map(d => parseInt(d));
     }
 
     get years(): number[] {
         return Object.keys(this.expenseGroups)
-            .map(d => parseInt(d)).sort(desc);
+            .map(d => parseInt(d));
     }
 
     setExpense(expense: Expense) {

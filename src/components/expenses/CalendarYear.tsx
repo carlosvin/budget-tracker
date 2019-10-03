@@ -17,7 +17,7 @@ export const CalendarYear: React.FC<CalendarYearProps> = (props) => {
 
     return (
     <React.Fragment>
-        {budgetModel.getMonths(year).map((month) => (
+        {budgetModel.getMonths(year).reverse().map((month) => (
             <CalendarMonth
                 days={budgetModel.getDays(year, month)}
                 key={`calendar-month-${year}-${month}`} 
