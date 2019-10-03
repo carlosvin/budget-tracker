@@ -12,24 +12,17 @@ import { CloseButtonHistory } from '../components/buttons/CloseButton';
 import { ExportDataInfo } from '../components/ExportDataInfo';
 import { useBudgetsStore } from '../hooks/useBudgetsStore';
 import { BudgetsStore } from '../domain/stores/interfaces';
+import { useHeaderContext } from '../hooks/useHeaderContext';
 
 const ImportExport = (props: HeaderNotifierProps&RouterProps) => {
 
     const [importData, setImportData] = React.useState<Partial<ExportDataSet>>();
     const [exportData, setExportData] = React.useState<ExportDataSet>();
-    const {history, onActions, onTitleChange} = props;
+    const {history} = props;
 
     const budgetsStore = useBudgetsStore();
 
-    React.useLayoutEffect(() => {
-        onTitleChange('Import & Export');
-        onActions(<CloseButtonHistory history={history}/>);
-        return function () {
-            onTitleChange('');
-            onActions(undefined);
-        }
-    // eslint-disable-next-line
-    }, []);
+    useHeaderContext('Import & Export', <CloseButtonHistory history={history}/>, props);
 
     React.useEffect(() => {
         async function exportData (store: BudgetsStore) {

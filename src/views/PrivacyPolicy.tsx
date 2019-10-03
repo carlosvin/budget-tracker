@@ -2,17 +2,11 @@ import * as React from "react";
 import { HeaderNotifierProps } from "../routes";
 import { RouterProps } from "react-router";
 import { CloseButtonHistory } from "../components/buttons/CloseButton";
+import { useHeaderContext } from "../hooks/useHeaderContext";
 
 export const PrivacyPolicy: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
-    // TODO try to reuse this hook
-    React.useEffect(() => {
-        props.onTitleChange('Privacy Policy');
-        props.onActions(<CloseButtonHistory history={props.history}/>)
-        return function () {
-            props.onActions(undefined)
-        }
-    // eslint-disable-next-line 
-    }, []);
+
+    useHeaderContext('Privacy Policy', <CloseButtonHistory history={props.history}/>, props);
 
     return (
     <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", padding: "1em" }}>

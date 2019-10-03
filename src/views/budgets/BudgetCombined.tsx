@@ -8,6 +8,7 @@ import { BudgetModelCombined } from "../../domain/BudgetModelCombined";
 import { BudgetQuickStats } from "../../components/budgets/BudgetQuickStats";
 import { BudgetStatsComponents } from "../../components/stats/BudgetStats";
 import { CloseButtonHistory } from "../../components/buttons/CloseButton";
+import { useHeaderContext } from "../../hooks/useHeaderContext";
 
 interface BudgetCombinedViewProps extends
     HeaderNotifierProps,
@@ -21,12 +22,7 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
 
     const [budgetModel, setBudgetModel] = React.useState<BudgetModel>();
 
-    React.useEffect(() => {
-        props.onTitleChange('Combined budgets');
-        props.onActions([<CloseButtonHistory history={props.history} key='close-button-history'/>]);
-        return function () {}
-    // eslint-disable-next-line
-    }, []);
+    useHeaderContext('Combined budgets', <CloseButtonHistory history={props.history}/>, props);
     
     React.useEffect(() => {
         async function fetchModels (store: BudgetsStore) {

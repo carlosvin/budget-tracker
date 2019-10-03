@@ -10,6 +10,7 @@ import { ExpenseForm } from "../../components/expenses/ExpenseForm";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { HeaderNotifierProps } from "../../routes";
 import { useAppContext } from "../../contexts/AppContext";
+import { useHeaderContext } from "../../hooks/useHeaderContext";
 
 interface ExpenseEditProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -19,25 +20,20 @@ export const ExpenseEdit: React.FC<ExpenseEditProps> = (props) => {
     const btApp = useAppContext();
 
     const {budgetId, expenseId} = props.match.params;
-    const {onActions, onTitleChange, history} = props;
+    const {history} = props;
     const {replace} = history;
     const budgetUrl = new BudgetPath(budgetId);
     const budgetModel = useBudgetModel(budgetId);
 
     const [expense, setExpense] = React.useState<Expense>();
 
-    React.useEffect(()=> {
-        async function handleDelete () {
-            await (await btApp.getBudgetsStore()).deleteExpense(budgetId, expenseId);
-            replace(budgetUrl.path);
-        }
-        onTitleChange('Edit expense');
-        onActions(<DeleteButton onClick={handleDelete}/>);
-        return function () {
-            onActions(null); 
-        }
-        // eslint-disable-next-line
-    }, []);
+    async function handleDelete () {
+        await (await btApp.getBudgetsStore()).deleteExpense(budgetId, expenseId);
+        replace(budgetUrl.path);
+    }
+
+    useHeaderContext('Edit expense', <DeleteButton onClick={handleDelete}/>, props);
+
 
     React.useEffect(() => {
         if (budgetModel) {

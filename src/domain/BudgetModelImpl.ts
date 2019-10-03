@@ -211,6 +211,7 @@ export class BudgetModelImpl implements BudgetModel {
 
     private _removeFromGroup(expense: ExpenseModel) {
         if (this._expenseGroups !== undefined) {
+            // TODO if expense is split remove it from all the groups
             const { year, month, day, identifier } = expense;
             try {
                 delete this._expenseGroups[year][month][day][identifier];

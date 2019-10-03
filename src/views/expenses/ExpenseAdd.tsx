@@ -13,6 +13,7 @@ import { ExpenseForm } from "../../components/expenses/ExpenseForm";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useCurrenciesStore } from "../../hooks/useCurrenciesStore";
 import { CurrenciesStore } from "../../domain/stores/interfaces";
+import { useHeaderContext } from "../../hooks/useHeaderContext";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string }> { }
@@ -22,7 +23,7 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
     const currenciesStore = useCurrenciesStore();
 
     const {budgetId} = props.match.params;
-    const {onActions, onTitleChange, history} = props;
+    const {history} = props;
     const budgetUrl = new BudgetPath(budgetId);
     
     const [currency, setCurrency] = React.useState();
@@ -65,14 +66,7 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
         }
     }, [budgetModel, currency]);
 
-    React.useEffect(()=> {
-        onTitleChange('Add expense');
-        onActions([<CloseButtonHistory history={history} key='close-button'/>]);
-        return function () {
-            onActions(null); 
-        }
-        // eslint-disable-next-line
-    }, []);
+    useHeaderContext('Add expense', <CloseButtonHistory history={history}/>, props);
 
     async function handleSubmit (expense: Expense) {
         goBack(
