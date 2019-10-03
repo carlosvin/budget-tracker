@@ -23,8 +23,6 @@ describe('Budget Model Creation', () => {
         btApp.storage.getBudget.mockReturnValue(budgetInfo);
 
         await store.setBudget(budgetInfo);
-        const observedInfo = await store.getBudgetInfo(budgetInfo.identifier);
-        expect(observedInfo).toStrictEqual(budgetInfo);
         const observedModel = await store.getBudgetModel(budgetInfo.identifier);
         expect(observedModel).toStrictEqual(new BudgetModelImpl(budgetInfo));
     });

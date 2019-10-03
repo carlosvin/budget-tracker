@@ -12,7 +12,6 @@ export interface CategoriesStore {
 
 export interface BudgetsStore extends Importer, Exporter {
 
-    getBudgetInfo(budgetId: string): Promise<Budget|undefined>;
     getBudgetsIndex(): Promise<BudgetsMap>;
     getBudgetModel(budgetId: string): Promise<BudgetModel>;
     setBudget(budget: Budget): Promise<void>;

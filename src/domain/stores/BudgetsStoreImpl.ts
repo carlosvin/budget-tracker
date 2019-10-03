@@ -21,10 +21,6 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         this._budgetModels = {};
     }
 
-    async getBudgetInfo (budgetId: string) {
-        return this._storage.getBudget(budgetId);
-    }
-
     async getBudgetsIndex(){
         return this._storage.getBudgets();
     }
