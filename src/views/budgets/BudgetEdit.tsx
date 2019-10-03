@@ -22,7 +22,6 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
     const [budgetInfo, setBudgetInfo] = React.useState<Budget>();
     const btApp = useAppContext();
 
-    // TODO create useBudgetInfo to speed up loading by skipping expenses calculations
     const budget = useBudgetModel(budgetId);
 
     function newEmptyBudget () {
