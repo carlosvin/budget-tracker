@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { TextInput } from './TextInput';
-import { CountryEntry } from '../interfaces';
+import { CountryEntry } from '../api';
 import { useCountriesStore } from '../hooks/useCountriesStore';
 
 interface CountryInputProps {

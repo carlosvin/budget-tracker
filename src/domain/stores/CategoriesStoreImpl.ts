@@ -1,4 +1,4 @@
-import { Categories, Category } from "../../interfaces";
+import { Categories, Category } from "../../api";
 import { AppStorageApi, StorageObserver } from "../../services/storage/StorageApi";
 import { CategoriesStore } from './interfaces';
 

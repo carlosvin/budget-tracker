@@ -1,6 +1,5 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { ExpensesDayMap } from "../../interfaces";
 import { ExpenseList } from "../../components/expenses/ExpenseList";
 import { HeaderNotifierProps } from "../../routes";
 import { VersusInfo } from "../../components/VersusInfo";
@@ -15,6 +14,7 @@ import { AppButton } from "../../components/buttons/buttons";
 import NavigateBefore from "@material-ui/icons/NavigateBefore";
 import NavigateNext from "@material-ui/icons/NavigateNext";
 import DateRange from "@material-ui/icons/DateRange";
+import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
@@ -55,9 +55,11 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
         if (budgetModel) {
             const expenseGroups = budgetModel.expenseGroups;
             if (expenseGroups) {
-                const expensesMap = expenseGroups[year][month][day];
+                const expensesMap = expenseGroups.getExpenses({year, month, day});
                 if (expensesMap) {
-                    setExpenses({[day]: expensesMap});
+                    const dayMap = new ExpensesDayMap();
+                    dayMap.set(day, expensesMap);
+                    setExpenses(dayMap);
                     setTotalSpent(budgetModel.getTotalExpensesByDay(year, month, day));
                 } else {
                     setExpenses(undefined);

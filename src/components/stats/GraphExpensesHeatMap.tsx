@@ -2,7 +2,7 @@ import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { DateDay } from "../../domain/DateDay";
 import { HeatMapChart } from "./charts/HeatMap";
-import { ObjectMap } from "../../interfaces";
+import { ObjectMap } from "../../api";
 
 interface GraphExpensesHeatMapProps {
     budget: BudgetModel;

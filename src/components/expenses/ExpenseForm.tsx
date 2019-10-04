@@ -4,7 +4,7 @@ import { getISODateString } from "../../domain/date";
 import { TextInput } from "../../components/TextInput";
 import CountryInput from "../../components/CountryInput";
 import AmountWithCurrencyInput from "../../components/AmountWithCurrencyInput";
-import { Expense } from "../../interfaces";
+import { Expense } from "../../api";
 import CategoriesSelect from "../../components/categories/CategoriesSelect";
 import { SaveButtonFab } from "../../components/buttons/SaveButton";
 import { ExpenseModel } from "../../domain/ExpenseModel";

@@ -1,4 +1,4 @@
-import { Budget, Expense, ExportDataSet, BudgetTracker } from "../../interfaces";
+import { Budget, Expense, ExportDataSet, BudgetTracker, YMD } from "../../api";
 import { BudgetModel } from "../BudgetModel";
 import { BudgetsStore } from "./interfaces";
 import { AppStorageApi, StorageObserver } from "../../services/storage/StorageApi";
@@ -61,10 +61,13 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         return budgetModel.expenses;
     }
 
-    async getExpensesByDay(budgetId: string, y: number, m: number, d: number) {
+    async getExpensesByDay(budgetId: string, date: YMD) {
         const budgetModel = await this.getBudgetModel(budgetId);
         if (budgetModel.expenseGroups) {
-            return budgetModel.expenseGroups[y][m][d];
+            const expenses = budgetModel.expenseGroups.getExpenses(date);
+            if (expenses) {
+                return expenses;
+            }
         }
         throw new Error('No expenses found');
     }

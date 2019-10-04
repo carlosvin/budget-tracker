@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import { Budget } from '../../interfaces';
+import { Budget } from '../../api';
 import { TextInput } from '../TextInput';
 import { getISODateString } from '../../domain/date';
 import { AmountInput } from '../AmountInput';

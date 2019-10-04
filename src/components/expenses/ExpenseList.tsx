@@ -1,7 +1,8 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
-import { Budget, ExpensesDayMap, Expense, ExpensesMap } from "../../interfaces";
+import { Budget, Expense } from "../../api";
 import { ExpensesListGroup } from "./ExpenseListGroup";
+import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
 
 interface ExpenseListProps {
     budget: Budget;
@@ -16,8 +17,8 @@ export const ExpenseList: React.FC<ExpenseListProps> = (props) => (
         position: 'relative', 
         overflow: 'auto', 
         listStyleType: 'none'}}>
-        {Object.values(props.expensesByDay)
-            .map((e: ExpensesMap) => Object.values(e))
+        {[...props.expensesByDay.values()]
+            .map(e => [...e.values()])
             .filter((expenses: Expense[]) => expenses && expenses.length > 0)
             .map((expenses: Expense[]) => ({
                 expenses: Object.values(expenses), 

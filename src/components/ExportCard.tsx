@@ -1,6 +1,6 @@
 import * as React from "react";
 import FileCopy from '@material-ui/icons/FileCopy';
-import { ExportDataSet } from "../interfaces";
+import { ExportDataSet } from "../api";
 import Card from "@material-ui/core/Card";
 import Link from "@material-ui/core/Link";
 import CardContent from "@material-ui/core/CardContent";

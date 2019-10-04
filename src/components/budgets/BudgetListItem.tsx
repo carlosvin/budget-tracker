@@ -1,7 +1,7 @@
 import * as React from "react";
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
-import { Budget } from "../../interfaces";
+import { Budget } from "../../api";
 import { Link } from 'react-router-dom';
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { dateDiff } from "../../domain/date";

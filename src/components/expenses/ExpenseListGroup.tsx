@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Expense, Budget } from "../../interfaces";
+import { Expense, Budget } from "../../api";
 import { ExpenseListItem } from "./ExpenseListItem";
 
 interface ExpensesListGroupProps {

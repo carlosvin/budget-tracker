@@ -1,6 +1,6 @@
 import { DbItem, SubStorageApi } from "./StorageApi";
 import { openDB, IDBPDatabase, DBSchema } from 'idb';
-import { Budget, Category, Expense, BudgetsMap, ExpensesMap, Categories, ExportDataSet, EntityNames } from "../../interfaces";
+import { Budget, Category, Expense, BudgetsMap, ExpensesMap, Categories, ExportDataSet, EntityNames } from "../../api";
 
 interface ExpenseDb extends Expense, DbItem { }
 interface BudgetDb extends Budget, DbItem { }

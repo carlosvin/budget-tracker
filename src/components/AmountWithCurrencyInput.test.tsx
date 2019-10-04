@@ -1,7 +1,7 @@
 import React from 'react';
 import AmountWithCurrencyInput from './AmountWithCurrencyInput';
 import renderer from 'react-test-renderer';
-import { CurrencyRates } from '../interfaces';
+import { CurrencyRates } from '../api';
 
 // TODO remove skip when https://github.com/mui-org/material-ui/issues/14357 is fixed
 test.skip('Amount Input changes', () => {

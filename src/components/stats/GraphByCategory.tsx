@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { useCategories } from "../../hooks/useCategories";
-import { Categories } from "../../interfaces";
+import { Categories } from "../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getTotalsByCategory } from "../../domain/stats/getTotalsByCategory";
 import { PieChart } from "./charts/Pie";

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Box from '@material-ui/core/Box';
-import { ExportDataSet } from '../interfaces';
+import { ExportDataSet } from '../api';
 import { SubHeader } from './expenses/SubHeader';
 
 export const ExportDataInfo: React.FC<Partial<ExportDataSet>> = (props) => (

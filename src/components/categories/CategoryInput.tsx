@@ -4,7 +4,7 @@ import Grid, { GridDirection } from '@material-ui/core/Grid';
 import { TextInput } from '../TextInput';
 import CategoryIconButton from './CategoryIconButton';
 import CategoryIconDialogSelector from '../../views/categories/CategoryIconSelector';
-import { Category } from '../../interfaces';
+import { Category } from '../../api';
 import { DeleteButton } from '../buttons/DeleteButton';
 import { YesNoDialog } from '../YesNoDialog';
 

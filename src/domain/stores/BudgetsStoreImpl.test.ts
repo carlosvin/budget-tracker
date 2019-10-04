@@ -3,9 +3,9 @@ import { BudgetModelImpl } from "../BudgetModelImpl";
 import { createBudget } from "../../__mocks__/createBudget";
 import { createBudgetTrackerMock } from "../../__mocks__/budgetTracker";
 import { createExpense } from "../../__mocks__/createExpense";
-import { Categories } from "../../interfaces";
-import { addExpenseToGroups } from "../../__mocks__/addExpenseToGroups";
+import { Categories } from "../../api";
 import { ExpenseModel } from "../ExpenseModel";
+import { ExpensesYearMap } from "../ExpensesYearMap";
 
 
 describe('Budget Model Creation', () => {
@@ -55,10 +55,9 @@ describe('Budget Model Creation', () => {
             em.date.clone().addDays(2),
             em.date.clone().addDays(3),
         ];
-        const expectedGroups = {};
+        const expectedGroups = new ExpensesYearMap();
         expectedDates.forEach(
-            dateDay => addExpenseToGroups(
-                expectedGroups, 
+            dateDay => expectedGroups.addExpense( 
                 new ExpenseModel({...splitExpense, when: dateDay.timeMs})));
 
         const bm = await store.getBudgetModel(budgetInfo.identifier);

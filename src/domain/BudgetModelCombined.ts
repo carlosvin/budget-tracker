@@ -1,4 +1,4 @@
-import { Budget, ExpensesMap } from "../interfaces";
+import { Budget, ExpensesMap } from "../api";
 import { BudgetModel } from "./BudgetModel";
 import { BudgetModelImpl } from "./BudgetModelImpl";
 

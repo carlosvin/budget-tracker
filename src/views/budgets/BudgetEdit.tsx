@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Budget } from "../../interfaces";
+import { Budget } from "../../api";
 import { BudgetForm } from "../../components/budgets/BudgetForm";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { DateDay } from "../../domain/DateDay";

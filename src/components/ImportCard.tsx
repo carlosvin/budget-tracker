@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ImportForm } from './ImportForm';
-import { ExportDataSet } from '../interfaces';
+import { ExportDataSet } from '../api';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardHeader from '@material-ui/core/CardHeader';

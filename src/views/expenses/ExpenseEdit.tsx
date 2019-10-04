@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Expense } from "../../interfaces";
+import { Expense } from "../../api";
 import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { goBack } from "../../domain/utils/goBack";
 import { BudgetPath } from "../../domain/paths/BudgetPath";

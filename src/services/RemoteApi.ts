@@ -1,4 +1,4 @@
-import { ObjectMap } from "../interfaces";
+import { ObjectMap } from "../api";
 
 export class RemoteApi {
     readonly baseUrl: string;

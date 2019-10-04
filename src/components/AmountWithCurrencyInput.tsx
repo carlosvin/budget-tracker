@@ -4,7 +4,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { CurrencyInput } from "./CurrencyInput";
 import { AmountInput } from "./AmountInput";
-import { CurrencyRates } from "../interfaces";
+import { CurrencyRates } from "../api";
 import applyRate from "../domain/utils/applyRate";
 import { getCurrencyWithSymbol } from "../domain/utils/getCurrencyWithSymbol";
 

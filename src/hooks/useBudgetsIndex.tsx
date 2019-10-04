@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useBudgetsStore } from './useBudgetsStore';
 import { BudgetsStore } from '../domain/stores/interfaces';
-import { Budget } from '../interfaces';
+import { Budget } from '../api';
 
 export function useBudgetsIndex() {
     const store = useBudgetsStore();

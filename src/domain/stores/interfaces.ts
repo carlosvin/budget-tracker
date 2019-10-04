@@ -1,4 +1,4 @@
-import { Categories, Category, Budget, Expense, ExpensesMap, CurrencyRates, CountryEntry, Importer, Exporter, BudgetsMap } from "../../interfaces";
+import { Categories, Category, Budget, Expense, CurrencyRates, CountryEntry, Importer, Exporter, BudgetsMap, YMD } from "../../api";
 import { BudgetModel } from '../BudgetModel';
 import { SvgIconProps } from "@material-ui/core/SvgIcon";
 import { LazyExoticComponent, ReactElement } from "react";
@@ -16,7 +16,7 @@ export interface BudgetsStore extends Importer, Exporter {
     getBudgetModel(budgetId: string): Promise<BudgetModel>;
     setBudget(budget: Budget): Promise<void>;
 
-    getExpensesByDay(budgetId: string, y: number, m: number, d: number): Promise<ExpensesMap>;
+    getExpensesByDay(budgetId: string, date: YMD): Promise<Map<string, Expense>>;
 
     setExpenses(budgetId: string, expense: Expense[]): Promise<void>;
     getExpense(budgetId: string, expenseId: string): Promise<Expense>;
@@ -26,9 +26,9 @@ export interface BudgetsStore extends Importer, Exporter {
 
 export declare type LazyIcon = LazyExoticComponent<(props: SvgIconProps) => ReactElement>;
 
-export interface ColoredLazyIcon { 
+export interface ColoredLazyIcon {
     Icon: LazyIcon;
-    color: string; 
+    color: string;
 }
 
 export interface IconsStore {
@@ -52,19 +52,19 @@ export interface CurrenciesStore {
      * @returns Currency exchange rates for a base currency
      */
     getRates(baseCurrency: string): Promise<CurrencyRates>;
-    
+
     /** 
      * @returns amount in base currency. \ 
      * If baseCurrency == currency it returns the same input @param amount.
      * It returns undefined if cannot get currency rate.
      * @throws Error when there is no rate for that pair of currencies
      */
-    getAmountInBaseCurrency (
-        baseCurrency: string, 
-        currency: string, 
+    getAmountInBaseCurrency(
+        baseCurrency: string,
+        currency: string,
         amount: number): Promise<number>;
 
-    getFromCountry (countryCode: string): Promise<string>;
+    getFromCountry(countryCode: string): Promise<string>;
 
     readonly lastCurrencyUsed?: string;
 }
@@ -75,5 +75,5 @@ export interface CountriesStore {
 
     readonly currentCountryCode?: string;
 
-    getCurrentCountry (): Promise<string|undefined>;
+    getCurrentCountry(): Promise<string | undefined>;
 }

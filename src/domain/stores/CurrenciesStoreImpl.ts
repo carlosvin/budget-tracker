@@ -1,4 +1,4 @@
-import { CurrencyRates, ObjectMap } from "../../interfaces";
+import { CurrencyRates, ObjectMap } from "../../api";
 import { currenciesApi } from "../../services/CurrenciesApi";
 import { CurrenciesStore } from "./interfaces";
 import applyRate from "../utils/applyRate";

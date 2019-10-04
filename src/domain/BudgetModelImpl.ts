@@ -1,14 +1,15 @@
-import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExpensesYearMap, ExportDataSet } from "../interfaces";
+import { Budget, Expense, Categories, CurrencyRates, ExpensesMap, ExportDataSet, ObjectMap } from "../api";
 import { dateDiff } from "./date";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
 import applyRate from "./utils/applyRate";
 import { BudgetModel } from "./BudgetModel";
+import { ExpensesYearMap } from "./ExpensesYearMap";
 
 export class BudgetModelImpl implements BudgetModel {
 
     private readonly _info: Budget;
-    private readonly _expenses: { [id: string]: ExpenseModel };
+    private readonly _expenses: ObjectMap<ExpenseModel>;
     private _expenseGroups?: ExpensesYearMap;
 
     private _nestedTotalExpenses?: NestedTotal;
@@ -19,16 +20,14 @@ export class BudgetModelImpl implements BudgetModel {
     constructor(info: Budget, expenses: ExpensesMap = {}) {
         this._info = info;
         this._expenses = {};
-        for (const k in expenses) {
-            this._setExpense(new ExpenseModel(expenses[k]));
-        }
+        Object
+            .values(expenses)
+            .forEach((expense) => this._setExpense(new ExpenseModel(expense)));
     }
 
     private _setExpense(expense: ExpenseModel) {
         this._expenses[expense.identifier] = expense;
-        for (const e of expense.split()) {
-            this._addToGroup(e);
-        }
+        expense.split().forEach(e => this.expenseGroups.addExpense(e));
     }
 
     get numberOfExpenses() {
@@ -104,22 +103,6 @@ export class BudgetModelImpl implements BudgetModel {
         }
     }
 
-    // TODO remove this sorting methods and implement a sorted insertion in expenseGroups
-    getMonths(year: number): number[] {
-        return Object.keys(this.expenseGroups[year])
-            .map(month => parseInt(month));
-    }
-
-    getDays(year: number, month: number): number[] {
-        return Object.keys(this.expenseGroups[year][month])
-            .map(d => parseInt(d));
-    }
-
-    get years(): number[] {
-        return Object.keys(this.expenseGroups)
-            .map(d => parseInt(d));
-    }
-
     setExpense(expense: Expense) {
         const newExpense = new ExpenseModel(expense);
         if (expense.identifier in this._expenses) {
@@ -133,7 +116,7 @@ export class BudgetModelImpl implements BudgetModel {
             this._updateTotalExpenses(newExpense);
         }
         for (const ne of newExpense.split()) {
-            this._addToGroup(ne);
+            this.expenseGroups.addExpense(ne);
         }
         this._expenses[expense.identifier] = newExpense;
     }
@@ -181,43 +164,17 @@ export class BudgetModelImpl implements BudgetModel {
 
     get expenseGroups() {
         if (!this._expenseGroups) {
+            const eg = new ExpensesYearMap();
             Object.values(this.expenses)
                 .flatMap(e => e.split())
-                .forEach(e => this._addToGroup(e));
-            if (!this._expenseGroups) {
-                this._expenseGroups = {};
-            }
+                .forEach(e => eg.addExpense(e));
+            this._expenseGroups = eg;
         }
         return this._expenseGroups;
     }
 
-    private _addToGroup(expense: ExpenseModel) {
-        if (this._expenseGroups === undefined) {
-            this._expenseGroups = {};
-        }
-        const { year, month, day } = expense;
-        if (!(year in this._expenseGroups)) {
-            this._expenseGroups[year] = {};
-        }
-        if (!(month in this._expenseGroups[year])) {
-            this._expenseGroups[year][month] = {};
-        }
-        if (!(day in this._expenseGroups[year][month])) {
-            this._expenseGroups[year][month][day] = {};
-        }
-        this._expenseGroups[year][month][day][expense.identifier] = expense;
-    }
-
     private _removeFromGroup(expense: ExpenseModel) {
-        if (this._expenseGroups !== undefined) {
-            // TODO if expense is split remove it from all the groups
-            const { year, month, day, identifier } = expense;
-            try {
-                delete this._expenseGroups[year][month][day][identifier];
-            } catch (error) {
-                console.warn('Expense is not found in groups: ', expense);
-            }
-        }
+        this.expenseGroups.deleteExpense(expense);
     }
 
     private _updateExpensesBaseAmount(rates: CurrencyRates) {

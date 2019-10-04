@@ -1,5 +1,5 @@
 import { SubStorageApi, AppStorageApi, StorageObserver } from "./StorageApi";
-import { Budget, Expense, Category } from "../../interfaces";
+import { Budget, Expense, Category } from "../../api";
 import { DataSync } from "./DataSync";
 import { uuid } from "../../domain/utils/uuid";
 

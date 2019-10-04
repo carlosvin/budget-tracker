@@ -33,9 +33,7 @@ export interface ObjectMap<T> {
     [k: string]: T   
 }
 
-export interface ExpensesMap {
-    [identifier: string]: Expense;
-}
+export interface ExpensesMap extends ObjectMap<Expense> {}
 
 export interface BudgetsMap {
     [identifier: string]: Budget;
@@ -55,18 +53,6 @@ export interface Category {
 
 export interface Categories {
     [key: string]: Category;
-}
-
-export interface ExpensesYearMap {
-    [year: number]: ExpensesMonthMap
-}
-
-export interface ExpensesMonthMap {
-    [month: number]: ExpensesDayMap
-}
-
-export interface ExpensesDayMap {
-    [day: number]: ExpensesMap
 }
 
 export interface YMD {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouterProps } from 'react-router';
-import { Category, Categories } from '../../interfaces';
+import { Category, Categories } from '../../api';
 import CategoryInput from '../../components/categories/CategoryInput';
 import { SaveButtonFab } from '../../components/buttons/SaveButton';
 import { AddButton } from '../../components/buttons/AddButton';

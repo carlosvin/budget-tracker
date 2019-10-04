@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CurrencyRates } from '../interfaces';
+import { CurrencyRates } from '../api';
 import { useAppContext } from '../contexts/AppContext';
 
 export function useRates(baseCurrency: string) {

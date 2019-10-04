@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { HeaderNotifierProps } from '../routes';
 import { RouterProps } from 'react-router';
-import { ExportDataSet } from '../interfaces';
+import { ExportDataSet } from '../api';
 import { ExportCard } from '../components/ExportCard';
 import { CloseButtonHistory } from '../components/buttons/CloseButton';
 import { useBudgetsStore } from '../hooks/useBudgetsStore';

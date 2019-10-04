@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouterProps } from 'react-router';
-import { Category } from '../../interfaces';
+import { Category } from '../../api';
 import { CategoryForm } from '../../components/categories/CategoryForm';
 import { goBack } from '../../domain/utils/goBack';
 import { CategoryPaths } from '../../domain/paths/CategoryPaths';

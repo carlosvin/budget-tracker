@@ -8,7 +8,7 @@ import {
     EntityNames, 
     Exporter,
     Importer
-} from "../../interfaces";
+} from "../../api";
 
 export interface SyncItem {
     identifier: string;
