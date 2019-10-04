@@ -1,4 +1,4 @@
-import { ObjectMap } from "../../interfaces";
+import { ObjectMap } from "../../api";
 
 const formatters: ObjectMap<Intl.NumberFormat> = {};
 

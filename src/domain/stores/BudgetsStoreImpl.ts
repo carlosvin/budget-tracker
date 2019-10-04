@@ -1,4 +1,4 @@
-import { Budget, Expense, ExportDataSet, BudgetTracker } from "../../interfaces";
+import { Budget, Expense, ExportDataSet, BudgetTracker, YMD } from "../../api";
 import { BudgetModel } from "../BudgetModel";
 import { BudgetsStore } from "./interfaces";
 import { AppStorageApi, StorageObserver } from "../../services/storage/StorageApi";
@@ -19,10 +19,6 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
 
     onStorageDataChanged () {
         this._budgetModels = {};
-    }
-
-    async getBudgetInfo (budgetId: string) {
-        return this._storage.getBudget(budgetId);
     }
 
     async getBudgetsIndex(){
@@ -65,10 +61,13 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         return budgetModel.expenses;
     }
 
-    async getExpensesByDay(budgetId: string, y: number, m: number, d: number) {
+    async getExpensesByDay(budgetId: string, date: YMD) {
         const budgetModel = await this.getBudgetModel(budgetId);
         if (budgetModel.expenseGroups) {
-            return budgetModel.expenseGroups[y][m][d];
+            const expenses = budgetModel.expenseGroups.getExpenses(date);
+            if (expenses) {
+                return expenses;
+            }
         }
         throw new Error('No expenses found');
     }
@@ -109,7 +108,6 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
     private async setExpense(expense: Expense) {
         const model = await this.getBudgetModel(expense.budgetId);
         model.setExpense(expense);
-        // TODO change save to set, and add setExpense method
         return this._storage.setExpenses([expense]);
     }
 

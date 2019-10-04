@@ -4,7 +4,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { CurrencyInput } from "./CurrencyInput";
 import { AmountInput } from "./AmountInput";
-import { CurrencyRates } from "../interfaces";
+import { CurrencyRates } from "../api";
 import applyRate from "../domain/utils/applyRate";
 import { getCurrencyWithSymbol } from "../domain/utils/getCurrencyWithSymbol";
 
@@ -89,10 +89,10 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                     onCurrencyChange={handleCurrencyChange} 
                     disabled={props.disabled}/>
             </Grid>
-            { error !== undefined && // TODO show error view
+            { error !== undefined && 
             <Card>
                 <CardContent>
-                    Error calculating amount in base currency. You need to be connected to Internet to get last currency rates.
+                    Error calculating amount in base currency. Please connect to Internet to get last currency rates.
                     You can still add the amount in budget base currency.
                 </CardContent>
             </Card> }

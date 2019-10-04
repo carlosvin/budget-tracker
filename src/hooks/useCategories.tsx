@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Categories } from '../interfaces';
+import { Categories } from '../api';
 import { useCategoriesStore } from './useCategoriesStore';
 
 export function useCategories() {

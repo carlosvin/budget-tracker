@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import { BudgetQuickStats } from "../../components/budgets/BudgetQuickStats";
 import { YesNoDialog } from "../../components/YesNoDialog";
 import { ExpensesCalendar } from "../../components/expenses/ExpensesCalendar";
-import { YMD } from "../../interfaces";
+import { YMD } from "../../api";
 import EditIcon from '@material-ui/icons/Edit';
 import { DeleteButton } from "../../components/buttons/DeleteButton";
 import { AddButton } from "../../components/buttons/AddButton";

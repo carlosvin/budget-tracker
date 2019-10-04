@@ -1,5 +1,5 @@
 import * as React from "react";
-import { YMD } from "../../interfaces";
+import { YMD } from "../../api";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { SubHeader } from "./SubHeader";
 import { CalendarMonth } from "./CalendarMonth";
@@ -14,12 +14,13 @@ interface CalendarYearProps {
 export const CalendarYear: React.FC<CalendarYearProps> = (props) => {
 
     const {budgetModel, year} = props;
+    const {expenseGroups, currency} = budgetModel;
 
     return (
     <React.Fragment>
-        {budgetModel.getMonths(year).map((month) => (
+        {[...expenseGroups.getMonths(year)].reverse().map((month) => (
             <CalendarMonth
-                days={budgetModel.getDays(year, month)}
+                days={expenseGroups.getDays(year, month)}
                 key={`calendar-month-${year}-${month}`} 
                 budgetModel={budgetModel}
                 onDaySelected={props.onDaySelected}
@@ -28,8 +29,6 @@ export const CalendarYear: React.FC<CalendarYearProps> = (props) => {
         <SubHeader 
             variant='h5' 
             leftText={year} 
-            rightText={getCurrencyWithSymbol(
-                budgetModel.getTotalExpensesByYear(year), 
-                budgetModel.currency)}/>
+            rightText={getCurrencyWithSymbol(budgetModel.getTotalExpensesByYear(year), currency)}/>
     </React.Fragment>);
 }

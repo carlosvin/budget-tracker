@@ -1,4 +1,4 @@
-import { Budget, BudgetsMap, ExpensesMap, Expense, Categories, Category, User, ExportDataSet } from '../../interfaces';
+import { Budget, BudgetsMap, ExpensesMap, Expense, Categories, Category, User, ExportDataSet } from '../../api';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { SubStorageApi, DbItem } from './StorageApi';

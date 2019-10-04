@@ -1,6 +1,6 @@
 import { DbItem, SubStorageApi } from "./StorageApi";
 import { openDB, IDBPDatabase, DBSchema } from 'idb';
-import { Budget, Category, Expense, BudgetsMap, ExpensesMap, Categories, ExportDataSet, EntityNames } from "../../interfaces";
+import { Budget, Category, Expense, BudgetsMap, ExpensesMap, Categories, ExportDataSet, EntityNames } from "../../api";
 
 interface ExpenseDb extends Expense, DbItem { }
 interface BudgetDb extends Budget, DbItem { }
@@ -66,11 +66,15 @@ export class IndexedDb implements SubStorageApi {
 
     async getBudgets(): Promise<BudgetsMap> {
         const db = await this.getDb();
-        const budgetsResult = await db.getAll(EntityNames.Budgets);
-        const budgets: BudgetsMap = {};
-        // TODO apply the filtering in indexed DB instead of programmatically
-        budgetsResult.filter(b => !b.deleted).forEach(b => budgets[b.identifier] = b);
-        return budgets;
+        const bound = IDBKeyRange.upperBound([1, 0]);
+        const budgetsResult = await db.getAllFromIndex(
+            EntityNames.Budgets,
+            'deleted, to',
+            bound
+        );
+        const budgetMap: BudgetsMap = {}; 
+        budgetsResult.forEach(b => budgetMap[b.identifier] = b);
+        return budgetMap;
     }
 
     async getBudget(identifier: string) {

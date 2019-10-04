@@ -7,13 +7,10 @@ export function getTotalDaysByCountry (budgetModel: BudgetModel) {
     const todayMs = Date.now();
     const fromDay = DateDay.fromTimeMs(from);
     do {
-        const {year, month, day} = fromDay;
-        if (year in expenseGroups && 
-            month in expenseGroups[year] && 
-            day in expenseGroups[year][month]) {
+        const expenses = expenseGroups.getExpenses(fromDay);
+        if (expenses) {
             const countriesInADay = new Set<string>();
-            for (const id in expenseGroups[year][month][day]) {
-                const expense = expenseGroups[year][month][day][id];
+            for (const expense of expenses.values()) {
                 countriesInADay.add(expense.countryCode);
             }
             countriesInADay.forEach(c=> {

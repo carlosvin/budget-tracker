@@ -1,5 +1,5 @@
 import * as React from "react";
-import { YMD } from "../../interfaces";
+import { YMD } from "../../api";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { CalendarYear } from "./CalendarYear";
 
@@ -14,7 +14,7 @@ export const ExpensesCalendar: React.FC<ExpensesCalendarProps> = (props) => {
 
     return <React.Fragment>
         {
-            Object.values(budgetModel.years)
+            [...budgetModel.expenseGroups.years].reverse()
                 .map(year => (
                     <CalendarYear 
                         budgetModel={budgetModel}

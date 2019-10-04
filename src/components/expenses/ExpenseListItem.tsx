@@ -2,7 +2,7 @@ import * as React from "react";
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import { Budget, Expense } from "../../interfaces";
+import { Budget, Expense } from "../../api";
 import { Redirect } from 'react-router-dom';
 import { ExpensePath } from "../../domain/paths/ExpensePath";
 import { useCategory } from "../../hooks/useCategory";

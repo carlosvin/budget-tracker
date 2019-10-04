@@ -1,5 +1,5 @@
 import { DateDay } from "../domain/DateDay";
-import { Budget } from "../interfaces";
+import { Budget } from "../api";
 import { uuid } from "../domain/utils/uuid";
 
 export function createBudget (budget: Partial<Budget> = {}, days = 30): Budget {

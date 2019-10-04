@@ -1,5 +1,5 @@
 import * as React from "react";
-import { YMD } from "../../interfaces";
+import { YMD } from "../../api";
 import { monthToString } from "../../domain/date";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { SubHeader } from "./SubHeader";
@@ -9,7 +9,7 @@ import Card from "@material-ui/core/Card";
 import { CalendarDay } from "./CalendarDay";
 
 interface CalendarMonthProps {
-    days: number[];
+    days: Iterable<number>;
     year: number;
     month: number;
     onDaySelected: (day: YMD) => void;
@@ -32,7 +32,7 @@ export const CalendarMonth: React.FC<CalendarMonthProps> = (props) => {
                     variant='h6' />} />
             <CardContent>
                 {
-                    Object.values(days)
+                    [...days].reverse()
                         .map((day) => (
                             <CalendarDay
                                 onDaySelected={props.onDaySelected}

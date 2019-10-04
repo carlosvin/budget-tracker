@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react"
-import { BudgetTracker } from "../interfaces";
+import { BudgetTracker } from "../api";
 
 const AppContext = createContext<BudgetTracker|undefined>(undefined);
 

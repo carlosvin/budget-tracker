@@ -1,6 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Budget } from "../../interfaces";
+import { Budget } from "../../api";
 import { BudgetForm } from "../../components/budgets/BudgetForm";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { DateDay } from "../../domain/DateDay";
@@ -9,19 +9,19 @@ import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { HeaderNotifierProps } from "../../routes";
 import { useAppContext } from "../../contexts/AppContext";
+import { useHeaderContext } from "../../hooks/useHeaderContext";
 
 interface BudgetEditProps extends 
     RouteComponentProps<{ budgetId: string }>, 
     HeaderNotifierProps {
 }
 
-const BudgetEdit: React.FC<BudgetEditProps> = ({onTitleChange, onActions, match, history}) => {
-    const budgetId = match.params.budgetId;
+const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
+    const budgetId = props.match.params.budgetId;
     
     const [budgetInfo, setBudgetInfo] = React.useState<Budget>();
     const btApp = useAppContext();
 
-    // TODO create useBudgetInfo to speed up loading by skipping expenses calculations
     const budget = useBudgetModel(budgetId);
 
     function newEmptyBudget () {
@@ -44,21 +44,13 @@ const BudgetEdit: React.FC<BudgetEditProps> = ({onTitleChange, onActions, match,
         }, [budget]
     );
 
-    React.useEffect(
-        () => {
-            if (budgetId) {
-                onTitleChange(`Edit budget`);
-            } else {
-                onTitleChange('New budget');
-                setBudgetInfo(newEmptyBudget());
-            }
-            onActions(<CloseButtonHistory history={history}/>);
-            return function () {
-                onActions(undefined);
-            }
-        // eslint-disable-next-line 
-        }, []
-    );
+    useHeaderContext(budgetId ? 'Edit budget' : 'Add Budget',
+        <CloseButtonHistory history={props.history}/>, 
+        props);
+
+    React.useEffect(() => {
+        !budgetId && setBudgetInfo(newEmptyBudget()); 
+    }, [budgetId]);
 
     const [saving, setSaving] = React.useState(false);
 
@@ -66,7 +58,7 @@ const BudgetEdit: React.FC<BudgetEditProps> = ({onTitleChange, onActions, match,
         setSaving(true);
         await (await btApp.getBudgetsStore()).setBudget(budget);
         setSaving(false);
-        history.replace(new BudgetPath(budget.identifier).path);
+        props.history.replace(new BudgetPath(budget.identifier).path);
     }
 
     if (budgetInfo) {

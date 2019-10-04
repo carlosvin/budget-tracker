@@ -1,7 +1,7 @@
 import * as React from 'react';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { FilesApi } from '../services/FileApi';
-import {  ExportDataSet } from '../interfaces';
+import {  ExportDataSet } from '../api';
 import { SnackbarError } from './snackbars';
 import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';

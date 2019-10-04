@@ -1,6 +1,6 @@
 import { ExpenseModel } from "./ExpenseModel";
 import { uuid } from "./utils/uuid";
-import { Expense } from "../interfaces";
+import { Expense } from "../api";
 
 function createExpense (id: string,  when = new Date(2019, 0, 1).getTime()): Expense {
     return {

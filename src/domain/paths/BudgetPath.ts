@@ -1,4 +1,4 @@
-import { YMD } from "../../interfaces";
+import { YMD } from "../../api";
 
 export class BudgetPath {
 

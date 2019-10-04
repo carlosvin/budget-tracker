@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Category } from '../../interfaces';
+import { Category } from '../../api';
 import CategoryInput from './CategoryInput';
 import { SaveButtonFab } from '../buttons/SaveButton';
 import { uuid } from '../../domain/utils/uuid';

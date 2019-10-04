@@ -1,7 +1,7 @@
 import { BudgetModel } from "../BudgetModel";
 import { NestedTotal } from "../NestedTotal";
 import { DateDay } from "../DateDay";
-import { ObjectMap } from "../../interfaces";
+import { ObjectMap } from "../../api";
 
 export function getAverageDailyExpensesPerCountry(budget: BudgetModel) {
     const totals = new NestedTotal();

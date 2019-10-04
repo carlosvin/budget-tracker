@@ -1,4 +1,4 @@
-import { CurrencyRates } from "../interfaces";
+import { CurrencyRates } from "../api";
 import { RemoteApi } from "./RemoteApi";
 
 class CurrenciesApi {

@@ -1,4 +1,4 @@
-import { CurrencyRates, ObjectMap } from "../../interfaces";
+import { CurrencyRates, ObjectMap } from "../../api";
 import { currenciesApi } from "../../services/CurrenciesApi";
 import { CurrenciesStore } from "./interfaces";
 import applyRate from "../utils/applyRate";
@@ -7,7 +7,6 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
     static readonly KEY = 'currencyRates';
     static readonly KEY_TS = 'currencyTimestamps';
     static readonly KEY_LAST = 'lastCurrency';
-    // TODO make this configurable
     static readonly UPDATE_RATES_MS = 12 * 3600 * 1000;
     
     readonly currencies: ObjectMap<string>;

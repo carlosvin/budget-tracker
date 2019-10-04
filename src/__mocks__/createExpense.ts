@@ -1,4 +1,4 @@
-import { Budget, Expense } from "../interfaces";
+import { Budget, Expense } from "../api";
 
 export function createExpense (id: string, budget: Budget): Expense {
     return {

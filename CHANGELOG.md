@@ -1,3 +1,10 @@
+# [2.11.0] - 2019-10-04
+## Fix
+- Code cleanup. Review TODOs in code. Remove or fix them.
+
+## Delete
+- Heat map chart until Frappe Charts make this component responsive.
+
 # [2.10.1] - 2019-10-01
 ## Fix
 - Calculation of exchange rates fetch period. Previously it was fetching rates each time expense view was loaded.

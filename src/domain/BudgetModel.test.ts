@@ -1,11 +1,11 @@
-import { Expense, CurrencyRates, Category, ExpensesMap } from "../interfaces";
+import { Expense, CurrencyRates, Category, ExpensesMap } from "../api";
 import { ExpenseModel } from "./ExpenseModel";
 import { DateDay } from "./DateDay";
 import { BudgetModelImpl } from "./BudgetModelImpl";
 import { createBudget } from "../__mocks__/createBudget";
 import { createExpense } from "../__mocks__/createExpense";
-import { addExpenseToGroups } from "../__mocks__/addExpenseToGroups";
 import { dateDiff } from "./date";
+import { ExpensesYearMap } from "./ExpensesYearMap";
 
 describe('Budget Model Creation', () => {
 
@@ -15,7 +15,7 @@ describe('Budget Model Creation', () => {
         expect(bm.daysUntilToday).toBe(16);
         expect(bm.totalDays).toBe(30);
         expect(bm.expectedDailyExpensesAverage).toBe(33);
-        expect(bm.expenseGroups).toStrictEqual({});
+        expect(bm.expenseGroups).toStrictEqual(new ExpensesYearMap());
         expect(await bm.average).toBe(0);
         expect(bm.getExpense('whatever')).toBe(undefined);
         expect(await bm.totalExpenses).toBe(0);
@@ -43,11 +43,11 @@ describe('Budget Model Creation', () => {
         bm.setExpense(expense1);
         bm.setExpense(expense2);
 
-        const expectedGroups = {};
+        const expectedGroups = new ExpensesYearMap();
         const em1 = new ExpenseModel(expense1);
         const em2 = new ExpenseModel(expense2);
-        addExpenseToGroups(expectedGroups, em1);
-        addExpenseToGroups(expectedGroups, em2);
+        expectedGroups.addExpense(em1);
+        expectedGroups.addExpense(em2);
 
         expect(bm.expenseGroups).toStrictEqual(expectedGroups);
 
@@ -115,8 +115,7 @@ describe('Expense operations', () => {
         const budget = createBudget();
         const expense1 = createExpense('1', budget);
         const bm = new BudgetModelImpl(budget, {'1': expense1,});
-        const {year, month, day} = new ExpenseModel(expense1);
-        delete bm.expenseGroups[year][month][day];
+        bm.expenseGroups.deleteExpense(new ExpenseModel(expense1));
         expect(bm.deleteExpense('1')).toBe(true);
     });
     
@@ -142,9 +141,9 @@ describe('Expense operations', () => {
         expect(bm.getExpense('2').amountBaseCurrency)
             .toBe(modifiedExpense2.amountBaseCurrency);
 
-        const expenseGroups = {}; 
-        addExpenseToGroups(expenseGroups, new ExpenseModel(expense1));
-        addExpenseToGroups(expenseGroups, new ExpenseModel(modifiedExpense2));
+        const expenseGroups = new ExpensesYearMap(); 
+        expenseGroups.addExpense(new ExpenseModel(expense1));
+        expenseGroups.addExpense(new ExpenseModel(modifiedExpense2));
     
         expect(bm.expenseGroups).toStrictEqual(expenseGroups);
     
@@ -161,9 +160,9 @@ describe('Expense operations', () => {
         expect(bm.getExpense('2').amountBaseCurrency)
             .toBe(modifiedExpense2Date.amountBaseCurrency);
     
-        const expenseGroupsModified = {};
-        addExpenseToGroups(expenseGroupsModified, new ExpenseModel(expense1));
-        addExpenseToGroups(expenseGroupsModified, new ExpenseModel(modifiedExpense2Date));
+        const expenseGroupsModified = new ExpensesYearMap();
+        expenseGroupsModified.addExpense(new ExpenseModel(expense1));
+        expenseGroupsModified.addExpense(new ExpenseModel(modifiedExpense2Date));
 
         expect(bm.expenseGroups).toStrictEqual(expenseGroupsModified);
     
@@ -257,10 +256,9 @@ describe('Expense groups in budget model', () => {
                 [expense2.identifier]: expense2, 
             });
     
-        const expenseGroups = {};
-        addExpenseToGroups(expenseGroups, new ExpenseModel(expense1));
-        addExpenseToGroups(expenseGroups, new ExpenseModel(expense2));
-        
+        const expenseGroups = new ExpensesYearMap();
+        expenseGroups.addExpense(new ExpenseModel(expense1));
+        expenseGroups.addExpense(new ExpenseModel(expense2));
     
         expect(bm.expenseGroups).toStrictEqual(expenseGroups);
     
@@ -404,9 +402,10 @@ describe('Number of days in a country', () => {
                 when: new Date(fromDate.year + 3, fromDate.month, fromDate.day).getTime()},
             '2': createExpense('2', info)
         };
-        const model = new BudgetModelImpl(info, expenses);
+        const {expenseGroups} = new BudgetModelImpl(info, expenses);
 
-        expect(model.years).toStrictEqual([fromDate.year + 3, fromDate.year]);
+        expect(Array.from(expenseGroups.years))
+            .toEqual([fromDate.year + 3, fromDate.year]);
     });
 
     it ('List of days with expenses in a year/month', () => {
@@ -424,17 +423,18 @@ describe('Number of days in a country', () => {
             }
         };
         const model = new BudgetModelImpl(info, expenses);
+        const {expenseGroups} = model;
 
         if (day1.month === day2.month) {
             expect(
-                model.getDays(day1.year, day1.month)
-            ).toStrictEqual([day2.day, day1.day]);    
+                Array.from(expenseGroups.getDays(day1.year, day1.month))
+            ).toStrictEqual([day1.day, day2.day]);    
         } else {
             expect(
-                model.getDays(day1.year, day1.month)
+                expenseGroups.getDays(day1.year, day1.month)
             ).toStrictEqual([day1.day]);    
             expect(
-                model.getDays(day2.year, day2.month)
+                expenseGroups.getDays(day2.year, day2.month)
             ).toStrictEqual([day2.day]);    
         }
     });

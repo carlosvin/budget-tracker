@@ -17,6 +17,7 @@ import { AppPaths } from '../domain/paths';
 import { CloseButtonHistory } from '../components/buttons/CloseButton';
 import { RouterProps } from 'react-router';
 import { useAppContext } from '../contexts/AppContext';
+import { useHeaderContext } from '../hooks/useHeaderContext';
 
 export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
 
@@ -24,26 +25,24 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
 
     const [isLoggedIn, setIsLoggedIn] = React.useState<boolean|undefined>();
     const [error, setError] = React.useState();
-    const {history, onActions, onTitleChange} = props;
+    const {history} = props;
 
-    React.useEffect(
-        () => {
-            async function initUserId () {
-                try {
-                    const auth = await btApp.getAuth();
-                    const userId = await auth.getUserId();
-                    setIsLoggedIn(!!userId);
-                } catch (error) {
-                    setError('Error signing in.');
-                    setIsLoggedIn(false);
-                }  
-            }
-            initUserId();
-            onTitleChange('Account sync');
-            onActions(<CloseButtonHistory history={history}/>);
-            return function () { onActions(undefined); }
-        // eslint-disable-next-line
-        }, []);
+    useHeaderContext('Account sync', <CloseButtonHistory history={history}/>, props);
+
+    React.useEffect(() => {
+        async function initUserId () {
+            try {
+                const auth = await btApp.getAuth();
+                const userId = await auth.getUserId();
+                setIsLoggedIn(!!userId);
+            } catch (error) {
+                setError('Error signing in.');
+                setIsLoggedIn(false);
+            }  
+        }
+        initUserId();
+        return function () { }
+    }, [btApp]);
 
     React.useLayoutEffect(()=>{}, [isLoggedIn]);
 

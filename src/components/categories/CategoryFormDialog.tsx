@@ -3,7 +3,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import { CategoryForm } from './CategoryForm';
-import { Category } from '../../interfaces';
+import { Category } from '../../api';
 
 interface CategoryFormDialogProps {
     open: boolean;
@@ -23,10 +23,9 @@ export const CategoryFormDialog: React.FC<CategoryFormDialogProps> = (props) => 
             <DialogTitle id={titleId}>
                 Add category
             </DialogTitle>
-            <DialogContent>
+            <DialogContent style={{marginBottom: '1rem'}}>
                 <CategoryForm onSubmit={props.onClose} />
             </DialogContent>
         </Dialog>
     );
-
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TextInput } from '../TextInput';
 import MuiLink from '@material-ui/core/Link';
-import { Categories, Category } from '../../interfaces';
+import { Categories, Category } from '../../api';
 import { CategoryFormDialog } from './CategoryFormDialog';
 import { useAppContext } from '../../contexts/AppContext';
 

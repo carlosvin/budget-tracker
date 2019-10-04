@@ -6,7 +6,7 @@ import {
 import { AuthApi } from './services/AuthApi';
 import { AppStorageManager } from './services/storage/AppStorageManager';
 import { IndexedDb } from './services/storage/IndexedDb';
-import { BudgetTracker } from './interfaces';
+import { BudgetTracker } from './api';
 
 export class BudgetTrackerImpl implements BudgetTracker {
 

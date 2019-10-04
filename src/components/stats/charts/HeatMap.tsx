@@ -1,5 +1,5 @@
 import React from 'react';
-import { ObjectMap } from '../../../interfaces';
+import { ObjectMap } from '../../../api';
 import ReactFrappeChart from 'react-frappe-charts';
 
 interface HeatMapChartProps {

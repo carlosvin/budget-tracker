@@ -1,4 +1,4 @@
-import { Budget, Expense } from "../interfaces";
+import { Budget, Expense } from "../api";
 import { NestedTotal } from "./NestedTotal";
 import { DateDay } from "./DateDay";
 

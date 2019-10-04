@@ -4,7 +4,7 @@ import { HeaderNotifierProps } from "../../routes";
 import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { useCategories } from "../../hooks/useCategories";
 import { ExportCard } from "../../components/ExportCard";
-import { ExportDataSet } from "../../interfaces";
+import { ExportDataSet } from "../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
