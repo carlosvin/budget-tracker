@@ -1,6 +1,9 @@
-# [2.10.2] - 2019-10-03
+# [2.11.0] - 2019-10-04
 ## Fix
 - Code cleanup. Review TODOs in code. Remove or fix them.
+
+## Delete
+- Heat map chart until Frappe Charts make this component responsive.
 
 # [2.10.1] - 2019-10-01
 ## Fix
