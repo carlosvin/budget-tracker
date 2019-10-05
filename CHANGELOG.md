@@ -1,3 +1,8 @@
+# [2.12.0] - 2019-10-05
+## Add
+- About page with budget tracker relevant information.
+- GNU License.
+
 # [2.11.0] - 2019-10-04
 ## Fix
 - Code cleanup. Review TODOs in code. Remove or fix them.

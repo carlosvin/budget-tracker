@@ -3,6 +3,8 @@ import { HeaderNotifierProps } from "../routes";
 import { RouterProps } from "react-router";
 import { CloseButtonHistory } from "../components/buttons/CloseButton";
 import { useHeaderContext } from "../hooks/useHeaderContext";
+import { Link } from "react-router-dom";
+import { BudgetPath } from "../domain/paths/BudgetPath";
 
 export const PrivacyPolicy: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
 
@@ -11,7 +13,7 @@ export const PrivacyPolicy: React.FC<HeaderNotifierProps&RouterProps> = (props) 
     return (
     <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", padding: "1em" }}>
        <p>
-        Carlos Martin Sanchez built the Budget Tracker app as
+        Carlos Martin Sanchez built the <Link to={BudgetPath.base}>Budget Tracker app</Link> as
         an Open Source app. This SERVICE is provided by
         Carlos Martin Sanchez at no cost and is intended for
         use as is.
