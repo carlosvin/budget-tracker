@@ -12,6 +12,7 @@ const MenuItems = [
     {name: 'Categories', href: CategoryPaths.List},
     {name: 'Import & Export', href: AppPaths.ImportExport},
     {name: 'Account sync', href: AppPaths.Sync},
+    {name: 'About', href: AppPaths.About},
 ];
 
 export interface HeaderProps {
