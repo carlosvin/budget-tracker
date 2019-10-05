@@ -1,3 +1,9 @@
+# [2.12.0] - 2019-10-05
+## Add
+- About page with budget tracker relevant information.
+- GNU License.
+- Pre-render with [react-snap](https://github.com/stereobooster/react-snap).
+
 # [2.11.0] - 2019-10-04
 ## Fix
 - Code cleanup. Review TODOs in code. Remove or fix them.
