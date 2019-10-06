@@ -6,19 +6,19 @@ import { BudgetModelImpl } from "../BudgetModelImpl";
 
 export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
 
-    private _budgetModels: {[identifier: string]: BudgetModel};
+    private _budgetModels: Map<string, BudgetModel>;
     private readonly _app: BudgetTracker;
     private readonly _storage: AppStorageApi;
 
     constructor (app: BudgetTracker) {
-        this._budgetModels = {};
+        this._budgetModels = new Map();
         this._app = app;
         this._storage = app.storage;
         this._storage.addObserver(this);
     }
 
     onStorageDataChanged () {
-        this._budgetModels = {};
+        this._budgetModels.clear();
     }
 
     async getBudgetsIndex(){
@@ -26,39 +26,36 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
     }
 
     async getBudgetModel(budgetId: string) {
-        if (!(budgetId in this._budgetModels)) {
+        let bm = this._budgetModels.get(budgetId);
+        if (bm === undefined) {
             const budget = await this._storage.getBudget(budgetId);
             const expenses = await this._storage.getExpenses(budgetId);
             if (budget) {
-                this._budgetModels[budgetId] = new BudgetModelImpl(
-                    budget,
-                    expenses
-                );
+                bm = new BudgetModelImpl(budget, Object.values(expenses));
+                this._budgetModels.set(budgetId, bm);
             } else {
                 throw new Error('Budget not found: ' + budgetId);
             }
-            
         }
-        return this._budgetModels[budgetId];
+        return bm;
     }
 
     async setBudget(budget: Budget) {
-        if (budget.identifier in this._budgetModels) {
-            const budgetModel = this._budgetModels[budget.identifier];
+        const budgetModel = this._budgetModels.get(budget.identifier);
+        if (budgetModel) {
             let rates = undefined;
             if (budgetModel.currency !== budget.currency) {
                 rates = await (await this._app.getCurrenciesStore()).getRates(budget.currency);
             }
             await budgetModel.setBudget(budget, rates);
         } else {
-            this._budgetModels[budget.identifier] = new BudgetModelImpl(budget, {});
+            this._budgetModels.set(budget.identifier, new BudgetModelImpl(budget));
         }
         return this._storage.setBudget(budget); 
     }
 
     async getExpenses(budgetId: string) {
-        const budgetModel = await this.getBudgetModel(budgetId);
-        return budgetModel.expenses;
+        return (await this.getBudgetModel(budgetId)).expenses;
     }
 
     async getExpensesByDay(budgetId: string, date: YMD) {
@@ -85,9 +82,7 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
     }
 
     async deleteBudget(budgetId: string) {
-        if (budgetId in this._budgetModels) {
-            delete this._budgetModels[budgetId];
-        }
+        this._budgetModels.delete(budgetId);
         return this._storage.deleteBudget(budgetId);
     }
 
@@ -134,7 +129,7 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         const budgets = await Promise.all(Object.keys(await this.getBudgetsIndex()).map(id => this.getBudgetModel(id)));
         for (const bm of budgets) {
             data.budgets[bm.identifier] = bm.info;
-            for (const e of Object.values(bm.expenses)) {
+            for (const e of bm.expenses) {
                 data.expenses[e.identifier] = e.info;
             }
         }

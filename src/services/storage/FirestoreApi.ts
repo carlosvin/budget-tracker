@@ -1,4 +1,4 @@
-import { Budget, BudgetsMap, ExpensesMap, Expense, Categories, Category, User, ExportDataSet } from '../../api';
+import { Budget, BudgetsMap, ExpensesMap, Expense, CategoriesMap, Category, User, ExportDataSet } from '../../api';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import { SubStorageApi, DbItem } from './StorageApi';
@@ -100,7 +100,7 @@ export class FirestoreApi implements SubStorageApi {
             .orderBy('timestamp', 'desc')
             .where('timestamp', '>', timestamp)
             .get();
-        const budgets: {[k: string]: Budget} = {};
+        const budgets: BudgetsMap = {};
         querySnapshot.forEach((doc) => {
             budgets[doc.id] = doc.data() as Budget;
         });
@@ -153,13 +153,13 @@ export class FirestoreApi implements SubStorageApi {
         return category.data() as Category;
     }
 
-    async getCategories(timestamp = 0): Promise<Categories> {
+    async getCategories(timestamp = 0): Promise<CategoriesMap> {
         const querySnapshot = await this.categoriesCol
             .where('deleted', '==',  0)
             .orderBy('timestamp')
             .where('timestamp', '>', timestamp)
             .orderBy('name').get();
-        const categories: Categories = {};
+        const categories: CategoriesMap = {};
         querySnapshot.forEach((doc) => {
             categories[doc.id] = doc.data() as Category;
         });
@@ -177,7 +177,7 @@ export class FirestoreApi implements SubStorageApi {
         return batch.commit();
     }
 
-    async saveCategories(categories: Categories, timestamp: number){
+    async saveCategories(categories: CategoriesMap, timestamp: number){
         const batch = this.db.batch();
         Object
             .entries(categories)

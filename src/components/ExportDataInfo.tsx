@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Box from '@material-ui/core/Box';
-import { ExportDataSet } from '../api';
+import { ExportDataSet, ObjectMap } from '../api';
 import { SubHeader } from './expenses/SubHeader';
 
 export const ExportDataInfo: React.FC<Partial<ExportDataSet>> = (props) => (
@@ -11,7 +11,7 @@ export const ExportDataInfo: React.FC<Partial<ExportDataSet>> = (props) => (
     </Box>
 );
 
-const ImportedElementInfo: React.FC<{elements?:{[k: string]: any}, name: string}> = (props) => {
+const ImportedElementInfo: React.FC<{elements?: ObjectMap<any>, name: string}> = (props) => {
     const {elements, name} = props;
     if (elements) {
         return (

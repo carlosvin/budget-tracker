@@ -1,14 +1,10 @@
-
-
-interface TotalMap {
-    [index: string]: NestedTotal
-};
+import { ObjectMap } from "../api";
 
 declare type IndexType = number|string;
 
 export class NestedTotal {
     private _total: number;
-    private _subTotals: TotalMap;
+    private _subTotals: ObjectMap<NestedTotal>;
 
     constructor(){
         this._total = 0;

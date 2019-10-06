@@ -1,7 +1,7 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { useCategories } from "../../hooks/useCategories";
-import { Categories } from "../../api";
+import { CategoriesMap } from "../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getTotalsByCategory } from "../../domain/stats/getTotalsByCategory";
 import { PieChart } from "./charts/Pie";
@@ -11,7 +11,7 @@ interface GraphByCategoryProps {
 }
 
 // It might happen that an expense has a category that was already deleted
-function getCategoryName (index: string, categories: Categories) {
+function getCategoryName (index: string, categories: CategoriesMap) {
     return categories[index] ? categories[index].name : index;
 }
 
