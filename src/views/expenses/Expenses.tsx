@@ -38,11 +38,14 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     const year = getParamInt('year', params) || 0;
     const month = getParamInt('month', params) || 0;
     const day = getParamInt('day', params)|| 0;
+
+    // TODO add to use effect or memo
     const date = new Date(year, month, day);
     const dateDay = new DateDay(date);
     const prevDate = new DateDay(date).addDays(-1);
     const nextDate = new DateDay(date).addDays(1);
 
+    // TODO implement inside useEffect
     props.onTitleChange(dateDay.shortString);
 
     const [expenses, setExpenses] = React.useState<ExpensesDayMap>();

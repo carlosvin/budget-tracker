@@ -11,9 +11,14 @@
     "Account synched": "Account synchronized",
     "Account not synched": "Account not synchronized",
     "Privacy policy": "Privacy policy",
+    "Privacy": "Privacy",
     "Different devices": "Use different devices",
     "Different devices desc": "You can manage your budgets using your different devices",
     "No data loss": "Do not lose your data",
     "No data loss desc": "Your data is backed up remotely",
-    "Benefits": "Benefits of synchronized accounts"
+    "Benefits": "Benefits of synchronized accounts",
+    "Import & Export": "Import & Export",
+    "Track your expenses": "Track your expenses",
+    "Edit expense": "Edit expense"
+
 }

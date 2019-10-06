@@ -6,15 +6,19 @@ import { AppPaths } from "../domain/paths";
 import { HeaderNotifierProps } from "../routes";
 import { useHeaderContext } from "../hooks/useHeaderContext";
 import { BudgetPath } from "../domain/paths/BudgetPath";
+import { useLoc } from "../hooks/useLoc";
 
 const About: React.FC<HeaderNotifierProps> = (props) => {
     useHeaderContext(`Budget tracker ${version}`, [], props);
+    const loc = useLoc();
 
     return (
         <Card>
-            <CardHeader title='Track your expenses' />
+            <CardHeader title={loc('Track your expenses')} />
             <CardContent>
                 <Typography>
+                    {// TODO implement placeholders in localization service for React elements 
+                    }
                     It helps you to verify how your expenses stick to your <RouterLink to={BudgetPath.base}>budget</RouterLink>.
                 </Typography>
 
@@ -25,7 +29,7 @@ const About: React.FC<HeaderNotifierProps> = (props) => {
             <CardActions>
                 <Button component={RouterLink}
                     to={AppPaths.Privacy}
-                    variant='text'>Privacy</Button>
+                    variant='text'>{loc('Privacy')}</Button>
                 <Button component={Link}
                     href='https://github.com/carlosvin/budget-tracker/issues' >Issues</Button>
             </CardActions>

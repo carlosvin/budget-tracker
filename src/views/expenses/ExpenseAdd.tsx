@@ -31,7 +31,7 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
     const budgetModel = useBudgetModel(budgetId);
     const currentCountry = useCurrentCountry();
     
-    // TODO these should be called only once
+    // TODO these should be called only once (memo)
     const identifier = uuid();
     const now = Date.now();
 

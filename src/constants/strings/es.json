@@ -11,10 +11,14 @@
     "Account synched": "Cuenta sincronizada",
     "Account not synched": "Cuenta no sincronizada",
     "Privacy policy": "Privacidad",
+    "Privacy": "Privacidad",
     "Different devices": "Distintos dispositivos",
     "Different devices desc": "Puedes administrar tus presuspuestos y gastos desde distintos dispositivos",
     "No data loss": "No pierda sus datos",
     "No data loss desc": "Copia de seguridad remota de sus presupuestos",
-    "Benefits": "Beneficios de mantener tu cuenta sincronizada"
+    "Benefits": "Beneficios de mantener tu cuenta sincronizada",
+    "Import & Export": "Importar/Exportar",
+    "Track your expenses": "Controla tus gastos",
+    "Edit expense": "Editar gasto" 
 
 }
