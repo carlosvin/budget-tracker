@@ -189,13 +189,8 @@ export class BudgetModelImpl implements BudgetModel {
     private _updateExpensesBaseAmount(rates: CurrencyRates) {
         const newTotals = new NestedTotal();
         for (const expense of this._expenses.values()) {
-            // TODO think of making expense model amount base mutable
-            const em = new ExpenseModel({
-                ...expense.info, 
-                amountBaseCurrency: BudgetModelImpl._getBaseAmount(expense, rates)
-            });
-            this._expenses.set(em.identifier, em);
-            em.addToTotals(newTotals);
+            expense.amountBaseCurrency = BudgetModelImpl._getBaseAmount(expense, rates);
+            expense.addToTotals(newTotals);
         }
         this._nestedTotalExpenses = newTotals;
     }
