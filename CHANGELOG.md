@@ -1,3 +1,7 @@
+# [2.12.1] - 2019-10-06
+## Fix
+- Remove wrong index.html head data.
+
 # [2.12.0] - 2019-10-05
 ## Add
 - About page with budget tracker relevant information.
