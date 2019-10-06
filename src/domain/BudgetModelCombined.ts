@@ -1,4 +1,4 @@
-import { Budget, ExpensesMap } from "../api";
+import { Budget, Expense } from "../api";
 import { BudgetModel } from "./BudgetModel";
 import { BudgetModelImpl } from "./BudgetModelImpl";
 
@@ -21,7 +21,7 @@ export class BudgetModelCombined extends BudgetModelImpl {
         };
     }
 
-    private static combineExpenses(expenses: ExpensesMap[]): ExpensesMap {
+    private static combineExpenses(expenses: Iterable<Expense>[]): Iterable<Expense> {
         return expenses.reduce((a, b) => ({...a, ...b}));
     }
 

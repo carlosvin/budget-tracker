@@ -5,9 +5,10 @@ import { DateDay } from "../DateDay";
 export function getTotalsByCountry(budget: BudgetModel) {
     const totals = new NestedTotal();
     const toMs = Math.min(new DateDay().timeMs, budget.to);
-    Object
-        .values(budget.expenses)
-        .filter(e => e.inDates(budget.from, toMs))
-        .forEach((e) => totals.add(e.amountBaseCurrency, [e.countryCode,]));
+    for (const expense  of budget.expenses) {
+        if (expense.inDates(budget.from, toMs)) {
+            totals.add(expense.amountBaseCurrency, [expense.countryCode,]);
+        }
+    }
     return totals;
 }

@@ -28,20 +28,17 @@ export interface Expense {
     splitInDays: number;
 }
 
-// TODO review app to switch to JS Map
 export interface ObjectMap<T> {
     [k: string]: T   
 }
 
 export interface ExpensesMap extends ObjectMap<Expense> {}
 
-export interface BudgetsMap {
-    [identifier: string]: Budget;
-}
+export interface BudgetsMap extends ObjectMap<Budget> {}
 
 export interface CurrencyRates {
     readonly base: string;
-    readonly rates: {[name: string]: number};
+    readonly rates: ObjectMap<number>;
     readonly date: Date;
 }
 
@@ -51,9 +48,7 @@ export interface Category {
     icon: string;
 }
 
-export interface Categories {
-    [key: string]: Category;
-}
+export interface CategoriesMap extends ObjectMap<Category> {}
 
 export interface YMD {
     year: number,
@@ -72,7 +67,7 @@ export interface User {
 
 export interface ExportDataSet {
     budgets: BudgetsMap;
-    categories: Categories;
+    categories: CategoriesMap;
     expenses: ExpensesMap;
     lastTimeSaved: number;
 }

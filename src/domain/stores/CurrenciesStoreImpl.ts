@@ -10,9 +10,9 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
     static readonly UPDATE_RATES_MS = 12 * 3600 * 1000;
     
     readonly currencies: ObjectMap<string>;
-    private _rates: { [currency: string]: CurrencyRates };
-    private _timestamps: { [currency: string]: number };
-    private _countriesCurrencyMap?: {[country: string]: string};
+    private _rates: ObjectMap<CurrencyRates>;
+    private _timestamps: ObjectMap<number>;
+    private _countriesCurrencyMap?: ObjectMap<string>;
     private _lastCurrencyUsed?: string;
 
     constructor(importedCurrencies: ObjectMap<string>) {

@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Categories } from '../api';
+import { CategoriesMap } from '../api';
 import { useCategoriesStore } from './useCategoriesStore';
 
 export function useCategories() {
-    const [categories, setCategories] = useState<Categories>();
+    const [categories, setCategories] = useState<CategoriesMap>();
     const store = useCategoriesStore();
 
     useEffect(() => {
