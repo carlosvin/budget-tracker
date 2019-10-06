@@ -1,0 +1,20 @@
+{
+    "Add": "Añadir",
+    "Budgets": "Presupuestos",
+    "Account sync": "Sincronización",
+    "Error signing in": "Error al iniciar sesión",
+    "Error synchronizing account": "Error al sincronizar tu cuenta",
+    "Try later": "Por favor, inténtalo más tarde",
+    "Sign out problem": "Hubo un problema al cerrar sesión",
+    "Synchronizing": "Sincronizando",
+    "Synchronize": "Sincronizar",
+    "Account synched": "Cuenta sincronizada",
+    "Account not synched": "Cuenta no sincronizada",
+    "Privacy policy": "Privacidad",
+    "Different devices": "Distintos dispositivos",
+    "Different devices desc": "Puedes administrar tus presuspuestos y gastos desde distintos dispositivos",
+    "No data loss": "No pierda sus datos",
+    "No data loss desc": "Copia de seguridad remota de sus presupuestos",
+    "Benefits": "Beneficios de mantener tu cuenta sincronizada"
+
+}

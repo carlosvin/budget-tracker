@@ -3,7 +3,6 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
 import { SnackbarError } from '../components/snackbars';
-import ListSubheader from '@material-ui/core/ListSubheader';
 import ListItemText from '@material-ui/core/ListItemText';
 import List from '@material-ui/core/List';
 import CardContent from '@material-ui/core/CardContent';
@@ -18,6 +17,7 @@ import { CloseButtonHistory } from '../components/buttons/CloseButton';
 import { RouterProps } from 'react-router';
 import { useAppContext } from '../contexts/AppContext';
 import { useHeaderContext } from '../hooks/useHeaderContext';
+import { useLoc } from '../hooks/useLoc';
 
 export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
 
@@ -27,7 +27,11 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
     const [error, setError] = React.useState();
     const {history} = props;
 
-    useHeaderContext('Account sync', <CloseButtonHistory history={history}/>, props);
+    const loc = useLoc();
+
+    useHeaderContext(
+        loc('Account sync'), 
+        <CloseButtonHistory history={history}/>, props);
 
     React.useEffect(() => {
         async function initUserId () {
@@ -36,7 +40,7 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
                 const userId = await auth.getUserId();
                 setIsLoggedIn(!!userId);
             } catch (error) {
-                setError('Error signing in.');
+                setError(btApp.localization.get('Error signing in'));
                 setIsLoggedIn(false);
             }  
         }
@@ -56,7 +60,8 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
             const uid = await (await btApp.getAuth()).startAuth();
             setIsLoggedIn(!!uid);
         } catch (error) {
-            setError('Error synchronizing account, please try again later.');
+            setError(`${loc('Error synchronizing account')}. 
+                ${loc('Try later')}.`);
             setIsLoggedIn(false);
             console.error(error);
         }
@@ -73,18 +78,19 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
             await auth.logout();
             setIsLoggedIn(false);
         } catch (error) {
-            setError('There were some problems signing out');
+            setError(`${loc('Sign out problem')}. 
+            ${loc('Try later')}.`);
             console.error(error);
         }
     }
 
     function title () {
         if (isLoggedIn === undefined) {
-            return 'Synchronizing...';
+            return loc('Synchronizing') + '...';
         } else if (isLoggedIn) {
-            return 'Your account is synchronized';
+            return loc('Account synched');
         } else {
-            return 'Account not synchronized';
+            return loc('Account not synched');
         }
     }
 
@@ -110,28 +116,29 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
             <ActionButton
                 disabled={ isLoggedIn === undefined } 
                 onAction={ isLoggedIn ? handleLogout : handleLogin }>
-                { isLoggedIn ? 'Logout' : 'Synchronize' }
+                { isLoggedIn ? loc('Logout') : loc('Synchronize') }
             </ActionButton>
             <Button component={Link}
                 to={AppPaths.Privacy} 
-                variant='text'>Privacy policy</Button>
+                variant='text'>{loc('Privacy policy')}</Button>
         </CardActions>
     </Card>;
 }
 
-const Benefits = () => (
-    <List>
-        <ListSubheader disableGutters >
-            Benefits of synchronized accounts
-        </ListSubheader>
+const Benefits = () => {
+    const loc = useLoc();
+
+    return <List>
         <ListItemText 
-            primary='Use different devices' 
-            secondary='You can manage your budgets using your different devices'/>
+            primary={loc('Benefits')} primaryTypographyProps={{variant: 'subtitle1'}}/>
         <ListItemText 
-            primary='Do not lose your data' 
-            secondary='Your data is backed up remotely.'/>
-    </List>
-);
+            primary={loc('Different devices')} 
+            secondary={loc('Different devices desc')}/>
+        <ListItemText 
+            primary={loc('No data loss')} 
+            secondary={loc('No data loss desc')}/>
+    </List>;
+}
 
 const ActionButton: React.FC<{onAction: () => void, disabled?: boolean}> = (props) => (
     <Button onClick={props.onAction} color='primary' disabled={props.disabled}>

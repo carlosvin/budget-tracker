@@ -1,0 +1,19 @@
+{
+    "Add": "Add",
+    "Budgets": "Budgets",
+    "Account sync": "Account sync",
+    "Error signing in": "Error signing in",
+    "Error synchronizing account": "Error synchronizing account",
+    "Try later": "Please try again later",
+    "Sign out problem": "There was a problem signing out",
+    "Synchronizing": "Synchronizing",
+    "Synchronize": "Synchronize",
+    "Account synched": "Account synchronized",
+    "Account not synched": "Account not synchronized",
+    "Privacy policy": "Privacy policy",
+    "Different devices": "Use different devices",
+    "Different devices desc": "You can manage your budgets using your different devices",
+    "No data loss": "Do not lose your data",
+    "No data loss desc": "Your data is backed up remotely",
+    "Benefits": "Benefits of synchronized accounts"
+}

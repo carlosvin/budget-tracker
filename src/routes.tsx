@@ -4,6 +4,7 @@ import { BudgetPath } from "./domain/paths/BudgetPath";
 import { ExpensePath } from "./domain/paths/ExpensePath";
 import { CategoryPaths } from "./domain/paths/CategoryPaths";
 import { AppPaths } from "./domain/paths";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 const routes = {
     BudgetView: React.lazy(() => import('./views/budgets/Budget')),
@@ -30,7 +31,7 @@ export interface HeaderNotifierProps {
 
 // Function to inject properties to components rendered by router
 function _render(ComponentType: React.ComponentType<any>, parentProps: HeaderNotifierProps) {
-    return (props: RouteComponentProps<any>) => <React.Suspense fallback='loading view'>
+    return (props: RouteComponentProps<any>) => <React.Suspense fallback={<CircularProgress/>}>
             <ComponentType {...props} {...parentProps}/>
         </React.Suspense>;
 }

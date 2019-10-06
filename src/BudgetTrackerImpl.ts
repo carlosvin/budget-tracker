@@ -2,15 +2,18 @@ import { SubStorageApi, AppStorageApi } from './services/storage/StorageApi';
 import { 
     CategoriesStore, BudgetsStore, 
     IconsStore, CurrenciesStore, 
-    CountriesStore } from './domain/stores/interfaces';
+    CountriesStore} from './domain/stores/interfaces';
 import { AuthApi } from './services/AuthApi';
 import { AppStorageManager } from './services/storage/AppStorageManager';
 import { IndexedDb } from './services/storage/IndexedDb';
 import { BudgetTracker } from './api';
+import { LocalizationApi } from './services';
+import { LocalizationImpl } from './services/LocalizationStoreImpl';
 
 export class BudgetTrackerImpl implements BudgetTracker {
 
-    storage: AppStorageApi;
+    readonly storage: AppStorageApi;
+    readonly localization: LocalizationApi;
     private _firestore?: SubStorageApi;
     private _auth?: AuthApi;
     private _authPromise?: Promise<AuthApi>;
@@ -22,8 +25,9 @@ export class BudgetTrackerImpl implements BudgetTracker {
 
     constructor () {
         // background initialization for auth
-        this.storage = new AppStorageManager(new IndexedDb());
         this.initBgAuth();
+        this.storage = new AppStorageManager(new IndexedDb());
+        this.localization = new LocalizationImpl(navigator.language);
     }
 
     private async initBgAuth () {
@@ -45,7 +49,6 @@ export class BudgetTrackerImpl implements BudgetTracker {
             this._firestore = undefined;
         }
         return this._firestore;
-
     }
 
     private onAuth = async (uid?: string) => {
