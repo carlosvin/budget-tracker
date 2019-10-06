@@ -24,16 +24,18 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
 
     const {budgetId} = props.match.params;
     const {history} = props;
-    const budgetUrl = new BudgetPath(budgetId);
     
     const [currency, setCurrency] = React.useState();
     
     const budgetModel = useBudgetModel(budgetId);
     const currentCountry = useCurrentCountry();
     
-    // TODO these should be called only once
-    const identifier = uuid();
-    const now = Date.now();
+    const budgetUrl = React.useMemo(() => (new BudgetPath(budgetId)), [budgetId]);
+
+    const {identifier, now} = React.useMemo(() => ({
+        identifier: uuid(), 
+        now: Date.now()
+    }), []);
 
     React.useEffect(() => {
         async function initCurrency (country: string, store: CurrenciesStore) {

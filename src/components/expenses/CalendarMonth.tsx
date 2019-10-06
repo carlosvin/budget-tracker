@@ -23,6 +23,20 @@ export const CalendarMonth: React.FC<CalendarMonthProps> = (props) => {
         return Math.round(totalByMonth).toLocaleString();
     }, [budgetModel, year, month]);
 
+    const daysView = React.useMemo(() => (
+        [...days]
+            .reverse()
+            .map((day) => (
+                <CalendarDay
+                    onDaySelected={props.onDaySelected}
+                    expected={budgetModel.expectedDailyExpensesAverage}
+                    total={budgetModel.getTotalExpensesByDay(year, month, day)}
+                    budgetId={budgetModel.identifier}
+                    date={{ year, month, day }}
+                    key={`calendar-day-${year}-${month}-${day}`} />))
+    // eslint-disable-next-line
+    ), [days, budgetModel, year, month]);
+
     return (
         <Card key={`expenses-month-${year}-${month}`} style={{ marginBottom: '1rem' }}>
             <CardHeader
@@ -31,18 +45,7 @@ export const CalendarMonth: React.FC<CalendarMonthProps> = (props) => {
                     rightText={total}
                     variant='h6' />} />
             <CardContent>
-                {
-                    [...days].reverse()
-                        .map((day) => (
-                            <CalendarDay
-                                onDaySelected={props.onDaySelected}
-                                expected={budgetModel.expectedDailyExpensesAverage}
-                                total={budgetModel.getTotalExpensesByDay(year, month, day)}
-                                budgetId={budgetModel.identifier}
-                                date={{ year, month, day }}
-                                key={`calendar-day-${year}-${month}-${day}`} />
-                        ))
-                }
+                { daysView }
             </CardContent>
         </Card >);
 }

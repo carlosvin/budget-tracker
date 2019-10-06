@@ -3,7 +3,7 @@ import {
     BudgetsMap, 
     Budget, 
     Expense, 
-    Categories, 
+    CategoriesMap, 
     Category, 
     EntityNames, 
     Exporter,
@@ -40,7 +40,7 @@ export interface ReadStorageApi {
     getExpenses(budgetId: string): Promise<ExpensesMap>;
     
     getCategory(identifier: string): Promise<Category|undefined>;
-    getCategories(): Promise<Categories>;
+    getCategories(): Promise<CategoriesMap>;
 
 }
 

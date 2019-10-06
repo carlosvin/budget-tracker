@@ -1,10 +1,10 @@
-import { Categories, Category, Budget, Expense, CurrencyRates, CountryEntry, Importer, Exporter, BudgetsMap, YMD } from "../../api";
+import { CategoriesMap, Category, Budget, Expense, CurrencyRates, CountryEntry, Importer, Exporter, BudgetsMap, YMD, ObjectMap } from "../../api";
 import { BudgetModel } from '../BudgetModel';
 import { SvgIconProps } from "@material-ui/core/SvgIcon";
 import { LazyExoticComponent, ReactElement } from "react";
 
 export interface CategoriesStore {
-    getCategories(): Promise<Categories>;
+    getCategories(): Promise<CategoriesMap>;
     setCategories(categories: Category[]): Promise<void>;
     getCategory(categoryId: string): Promise<Category>;
     deleteCategory(categoryId: string): Promise<boolean>;
@@ -40,7 +40,7 @@ export interface IconsStore {
 
 export interface CurrenciesStore {
 
-    readonly currencies: { [currency: string]: string };
+    readonly currencies: ObjectMap<string>;
 
     /** 
      * @returns Currency exchange rate

@@ -30,6 +30,10 @@ export class DateDay implements YMD {
         return new DateDay(new Date(timestampMs));
     }
 
+    static fromYMD (date: YMD) {
+        return new DateDay(new Date(date.year, date.month, date.day));
+    }
+
     get timeMs () {
         return this._date.getTime();
     }

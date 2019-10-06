@@ -6,7 +6,7 @@ export class ExpenseModel implements Expense {
 
     private _date?: DateDay;
     readonly amount: number;
-    readonly amountBaseCurrency: number;
+    amountBaseCurrency: number;
     readonly currency: string;
     readonly categoryId: string;
     readonly countryCode: string;

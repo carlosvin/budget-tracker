@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { stringToColorCss } from '../utils/stringToColor';
 import { LazyIcon, IconsStore } from './interfaces';
-
-interface IconsMap {[k: string]: LazyIcon};
+import { ObjectMap } from '../../api';
 
 export class IconsStoreImpl implements IconsStore {
 
-    private _icons: IconsMap = {
+    private _icons: ObjectMap<LazyIcon> = {
         Beach: React.lazy(() => import('@material-ui/icons/BeachAccess')),
         Bar: React.lazy(() => import('@material-ui/icons/LocalBar')),
         Cafe: React.lazy(() => import('@material-ui/icons/LocalCafe')),
@@ -51,7 +50,7 @@ export class IconsStoreImpl implements IconsStore {
         FitnessCenter: React.lazy(() => import('@material-ui/icons/FitnessCenter')),
     };
 
-    private _colors: {[name: string]: string} = {};
+    private _colors: ObjectMap<string> = {};
     private _iconNames?: string[];
 
     get iconNames () {
