@@ -38,10 +38,12 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     const year = getParamInt('year', params) || 0;
     const month = getParamInt('month', params) || 0;
     const day = getParamInt('day', params)|| 0;
-    const date = new Date(year, month, day);
-    const dateDay = new DateDay(date);
-    const prevDate = new DateDay(date).addDays(-1);
-    const nextDate = new DateDay(date).addDays(1);
+
+    const {dateDay, prevDate, nextDate} = React.useMemo(() => ({
+        dateDay: DateDay.fromYMD({year, month, day}),
+        prevDate: DateDay.fromYMD({year, month, day}).addDays(-1),
+        nextDate: DateDay.fromYMD({year, month, day}).addDays(1),
+    }), [year, month, day]);
 
     props.onTitleChange(dateDay.shortString);
 
