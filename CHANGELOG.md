@@ -1,3 +1,7 @@
+# [2.12.2] - 2019-10-06
+## Add
+- Sitemap.xml.
+
 # [2.12.1] - 2019-10-06
 ## Fix
 - Remove wrong index.html head data.
