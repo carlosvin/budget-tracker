@@ -1,4 +1,4 @@
-import { Budget, Expense, CategoriesMap, CurrencyRates, ExportDataSet, ObjectMap } from "../api";
+import { Budget, Expense, CategoriesMap, CurrencyRates, ExportDataSet } from "../api";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
 import { ExpensesYearMap } from "./ExpensesYearMap";
