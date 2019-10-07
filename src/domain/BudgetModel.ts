@@ -1,4 +1,4 @@
-import { Budget, Expense, Categories, CurrencyRates, ExportDataSet, ObjectMap } from "../api";
+import { Budget, Expense, CategoriesMap, CurrencyRates, ExportDataSet } from "../api";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
 import { ExpensesYearMap } from "./ExpensesYearMap";
@@ -7,7 +7,7 @@ export interface BudgetModel extends Budget {
 
     readonly identifier: string;
     readonly numberOfExpenses: number;
-    readonly expenses: ObjectMap<ExpenseModel>;
+    readonly expenses: Iterable<ExpenseModel>;
     readonly totalExpenses: number;
     readonly nestedTotalExpenses: NestedTotal;
     readonly daysUntilToday: number;
@@ -24,5 +24,5 @@ export interface BudgetModel extends Budget {
     getExpense (expenseId: string): ExpenseModel;
     deleteExpense (expenseId: string): boolean;
     setBudget(info: Budget, rates?: CurrencyRates): Promise<void>;
-    export(categories: Categories): ExportDataSet;
+    export(categories: CategoriesMap): ExportDataSet;
 }

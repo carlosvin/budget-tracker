@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { TextInput } from '../TextInput';
 import MuiLink from '@material-ui/core/Link';
-import { Categories, Category } from '../../api';
+import { CategoriesMap, Category } from '../../api';
 import { CategoryFormDialog } from './CategoryFormDialog';
 import { useAppContext } from '../../contexts/AppContext';
 
@@ -10,7 +10,7 @@ interface CategoriesSelectProps {
     selectedCategory: string;
 }
 
-const CategoryOptions: React.FC<{categories: Categories}> = (props) => {
+const CategoryOptions: React.FC<{categories: CategoriesMap}> = (props) => {
 
     return <React.Fragment>
         { Object.entries(props.categories).map(
@@ -27,7 +27,7 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
 
     const {selectedCategory} = props;
 
-    const [categories, setCategories] = React.useState<Categories>();
+    const [categories, setCategories] = React.useState<CategoriesMap>();
     const [addCategoryOpen, setAddCategoryOpen] = React.useState(false);
 
     const btApp = useAppContext();

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouterProps } from 'react-router';
-import { Category, Categories } from '../../api';
+import { Category, CategoriesMap } from '../../api';
 import CategoryInput from '../../components/categories/CategoryInput';
 import { SaveButtonFab } from '../../components/buttons/SaveButton';
 import { AddButton } from '../../components/buttons/AddButton';
@@ -9,13 +9,13 @@ import { useAppContext } from '../../contexts/AppContext';
 import { HeaderNotifierProps } from '../../routes';
 import { useCategoriesStore } from '../../hooks/useCategoriesStore';
 
-interface CategoriesMapProps {
+interface CategoriesMapViewProps {
     onDelete: (id: string) => void;
     onChange: (category: Category) => void;
-    categories: Categories;
+    categories: CategoriesMap;
 }
 
-const CategoriesMap: React.FC<CategoriesMapProps> = (props) => {
+const CategoriesMapView: React.FC<CategoriesMapViewProps> = (props) => {
     const CategoriesMemo = React.useMemo(() => (
         <React.Fragment>
             {Object.values(props.categories).map(c => 
@@ -36,8 +36,8 @@ const CategoriesMap: React.FC<CategoriesMapProps> = (props) => {
 export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
     const btApp = useAppContext();
 
-    const [categories, setCategories] = React.useState<Categories>({});
-    const [viewCategories, setViewCategories] = React.useState<Categories>({});
+    const [categories, setCategories] = React.useState<CategoriesMap>({});
+    const [viewCategories, setViewCategories] = React.useState<CategoriesMap>({});
     const [deleteCategories, setDeleteCategories] = React.useState<Set<string>>(new Set<string>());
     const [updatedCategories, setUpdatedCategories] = React.useState<Set<string>>(new Set<string>());
     const store = useCategoriesStore();
@@ -96,7 +96,7 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
 
     return (
         <form onSubmit={handleSave}>
-            <CategoriesMap 
+            <CategoriesMapView 
                 onChange={handleChange}
                 onDelete={handleDelete}
                 categories={viewCategories}/>

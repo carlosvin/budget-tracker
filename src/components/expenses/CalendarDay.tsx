@@ -29,7 +29,6 @@ export const CalendarDay: React.FC<CalendarDayProps> = (props) => {
         }
     });
 
-
     return (
         <Button 
             variant={isToday ? 'outlined' : 'text'} 

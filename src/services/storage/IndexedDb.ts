@@ -1,6 +1,6 @@
 import { DbItem, SubStorageApi } from "./StorageApi";
 import { openDB, IDBPDatabase, DBSchema } from 'idb';
-import { Budget, Category, Expense, BudgetsMap, ExpensesMap, Categories, ExportDataSet, EntityNames } from "../../api";
+import { Budget, Category, Expense, BudgetsMap, ExpensesMap, CategoriesMap, ExportDataSet, EntityNames } from "../../api";
 
 interface ExpenseDb extends Expense, DbItem { }
 interface BudgetDb extends Budget, DbItem { }
@@ -166,14 +166,14 @@ export class IndexedDb implements SubStorageApi {
         return this.setLastTimeSaved(timestamp);
     }
 
-    async getCategories(): Promise<Categories> {
+    async getCategories(): Promise<CategoriesMap> {
         const db = await this.getDb();
         const bound = IDBKeyRange.upperBound([1,], true);
         const categoriesResult = await db.getAllFromIndex(
             EntityNames.Categories,
             'deleted, name',
             bound);
-        const categories: Categories = {};
+        const categories: CategoriesMap = {};
         if (categoriesResult) {
             categoriesResult.forEach(c => categories[c.identifier] = c);
         }

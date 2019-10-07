@@ -1,6 +1,12 @@
 import * as React from "react";
 import { version } from '../../package.json';
-import { Card, CardHeader, CardContent, CardActions, Link, Button, Typography } from "@material-ui/core";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
+import CardActions from "@material-ui/core/CardActions";
+import Link from "@material-ui/core/Link";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
 import { Link as RouterLink } from 'react-router-dom';
 import { AppPaths } from "../domain/paths";
 import { HeaderNotifierProps } from "../routes";

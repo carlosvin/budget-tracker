@@ -1,4 +1,7 @@
 # [2.12.2] - 2019-10-06
+## Changed
+- Performance improvements.
+
 ## Add
 - Sitemap.xml.
 

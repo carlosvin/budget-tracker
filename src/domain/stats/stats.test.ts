@@ -20,13 +20,7 @@ describe('Budget model statistics', () => {
             identifier: '3',
             categoryId: 'Category 3'
         };
-        const bm = new BudgetModelImpl(
-            info, 
-            {
-                '1': expense1,
-                '2': expense2,
-                '3': expense3
-            });
+        const bm = new BudgetModelImpl(info, [expense1, expense2, expense3]);
         
         let totalsByCategory = getTotalsByCategory(bm);
 
@@ -89,13 +83,7 @@ describe('Budget model statistics', () => {
             identifier: '3',
             countryCode: 'AA'
         };
-        const bm = new BudgetModelImpl(
-            info, 
-            {
-                '1': expense1,
-                '2': expense2,
-                '3': expense3
-            });
+        const bm = new BudgetModelImpl(info, [expense1, expense2, expense3]);
 
         let totalsByCountry = getTotalsByCountry(bm);
 
@@ -155,14 +143,14 @@ describe('Budget model statistics', () => {
         const info = createBudget({currency: 'USD', total: 12000}, 60);
         const baseExpense = createExpense('1', info);
         const today = DateDay.fromTimeMs(info.from);
-        const expenses = {
-            '1': {...baseExpense, amountBaseCurrency: 100, countryCode: 'ES'},
-            '2': {...baseExpense, identifier: '2', amountBaseCurrency: 100, countryCode: 'ES'},
-            '3': {...baseExpense, identifier: '3', amountBaseCurrency: 20, countryCode: 'ES', when: today.clone().addDays(1).timeMs},
-            '4': {...baseExpense, identifier: '4', amountBaseCurrency: 50, countryCode: 'TH', when: today.timeMs},
-            '5': {...baseExpense, identifier: '5', amountBaseCurrency: 10, countryCode: 'TH', when: today.clone().addDays(3).timeMs},
-            '6': {...baseExpense, identifier: '6', amountBaseCurrency: 20, countryCode: 'TH', when: today.clone().addDays(4).timeMs},
-        };
+        const expenses = [
+            {...baseExpense, amountBaseCurrency: 100, countryCode: 'ES'},
+            {...baseExpense, identifier: '2', amountBaseCurrency: 100, countryCode: 'ES'},
+            {...baseExpense, identifier: '3', amountBaseCurrency: 20, countryCode: 'ES', when: today.clone().addDays(1).timeMs},
+            {...baseExpense, identifier: '4', amountBaseCurrency: 50, countryCode: 'TH', when: today.timeMs},
+            {...baseExpense, identifier: '5', amountBaseCurrency: 10, countryCode: 'TH', when: today.clone().addDays(3).timeMs},
+            {...baseExpense, identifier: '6', amountBaseCurrency: 20, countryCode: 'TH', when: today.clone().addDays(4).timeMs},
+        ];
         const bm = new BudgetModelImpl(info, expenses);
         const dailyAverages = getAverageDailyExpensesPerCountry(bm);
 
@@ -181,12 +169,7 @@ describe('Budget model statistics', () => {
                 identifier: '2', 
                 countryCode: 'FR'
             };
-            const bm = new BudgetModelImpl(
-                info, 
-                {
-                    '1': expense1,
-                    '2': expense2,
-                });
+            const bm = new BudgetModelImpl(info, [expense1, expense2]);
             const totalDaysByCountry = getTotalDaysByCountry(bm);
             expect(totalDaysByCountry).toStrictEqual({'ES': 1, 'FR': 1});
         });
@@ -217,15 +200,8 @@ describe('Budget model statistics', () => {
                 when: expense2Date.clone().addDays(2).timeMs,
                 countryCode: 'LU'
             };
-            const bm = new BudgetModelImpl(
-                info, 
-                {
-                    '1': expense1,
-                    '2': expense2,
-                    '3': expense3,
-                    '4': expense4,
-                    '5': expense5,
-                });
+            const bm = new BudgetModelImpl(info, 
+                [expense1, expense2, expense3, expense4, expense5,]);
             const totalDaysByCountry = getTotalDaysByCountry(bm);
             expect(totalDaysByCountry).toStrictEqual(
                 {'ES': 3, 'LU': 2}
@@ -258,20 +234,11 @@ describe('Budget model statistics', () => {
                 when: new DateDay().addDays(2).timeMs,
                 countryCode: 'LU'
             };
-            const bm = new BudgetModelImpl(
-                info, 
-                {
-                    '1': expense1,
-                    '2': expense2,
-                    '3': expense3,
-                    '4': expense4,
-                    '5': expense5,
-                });
+            const bm = new BudgetModelImpl(info, 
+                [expense1, expense2, expense3, expense4, expense5]);
 
             const totalDaysByCountry = getTotalDaysByCountry(bm);
-            expect(totalDaysByCountry).toStrictEqual(
-                {'ES': 2, 'LU': 1}
-            );
+            expect(totalDaysByCountry).toStrictEqual({'ES': 2, 'LU': 1});
         });
     });
 });

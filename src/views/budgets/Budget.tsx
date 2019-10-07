@@ -74,23 +74,21 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
     if (budgetModel) {
         return (
             <React.Fragment>
-                { budgetModel.expenses && 
-                    <React.Fragment>
-                        <BudgetQuickStats 
-                            dailyAverage={budgetModel.average}
-                            expectedDailyAverage={budgetModel.expectedDailyExpensesAverage}
-                            passedDays={budgetModel.daysUntilToday}
-                            totalDays={budgetModel.totalDays}
-                            totalBudget={budgetModel.info.total}
-                            totalSpent={budgetModel.totalExpenses}
-                            urlStats={url.pathStats}
-                            /> 
-                        { budgetModel.expenseGroups && 
-                        <ExpensesCalendar 
-                            budgetModel={budgetModel} 
-                            onDaySelected={handleSelectedDay} /> }
-                    </React.Fragment> 
-                } 
+                <React.Fragment>
+                    <BudgetQuickStats 
+                        dailyAverage={budgetModel.average}
+                        expectedDailyAverage={budgetModel.expectedDailyExpensesAverage}
+                        passedDays={budgetModel.daysUntilToday}
+                        totalDays={budgetModel.totalDays}
+                        totalBudget={budgetModel.info.total}
+                        totalSpent={budgetModel.totalExpenses}
+                        urlStats={url.pathStats}
+                        /> 
+                    { budgetModel.expenseGroups && 
+                    <ExpensesCalendar 
+                        budgetModel={budgetModel} 
+                        onDaySelected={handleSelectedDay} /> }
+                </React.Fragment> 
                 { budgetModel.numberOfExpenses === 0 && 
                     <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
                 <AddButton to={url.pathAddExpense} />
