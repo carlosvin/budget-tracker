@@ -47,7 +47,6 @@ export const ExpenseEdit: React.FC<ExpenseEditProps> = (props) => {
         goBack(
             props.history, 
             budgetUrl.pathExpensesByDay(DateDay.fromTimeMs(expense.when)));
-        
     }
 
     if (budgetModel && expense) {

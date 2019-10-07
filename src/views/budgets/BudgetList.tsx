@@ -3,24 +3,25 @@ import List from '@material-ui/core/List';
 import { RouteComponentProps } from "react-router";
 import { BudgetListItem } from "../../components/budgets/BudgetListItem";
 import { HeaderNotifierProps } from "../../routes";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
 import { AddButton } from "../../components/buttons/AddButton";
 import { ImportExportButton } from "../../components/buttons/ImportExportButton";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { AppPaths } from "../../domain/paths";
-import Typography from "@material-ui/core/Typography";
-import CardHeader from "@material-ui/core/CardHeader";
-import CardActions from "@material-ui/core/CardActions";
-import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
-import { Link as RouterLink } from "react-router-dom";
 import AddIcon from '@material-ui/icons/Add';
 import SyncIcon from '@material-ui/icons/Sync';
 import { useBudgetsIndex } from "../../hooks/useBudgetsIndex";
 import { CloseButton } from "../../components/buttons/CloseButton";
 import MergeIcon from '@material-ui/icons/MergeType';
+import ImportExportIcon from '@material-ui/icons/ImportExport';
 import { ButtonFab } from "../../components/buttons/buttons";
+import { useLoc } from "../../hooks/useLoc";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import Avatar from "@material-ui/core/Avatar";
+import { Link } from "react-router-dom";
+import ListSubheader from "@material-ui/core/ListSubheader";
+
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
 
@@ -28,9 +29,10 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
 
     const budgets = useBudgetsIndex();
     const [selectedBudgets, setSelectedBudgets] = React.useState(new Set<string>());
+    const loc = useLoc();
     
     React.useEffect(() => {
-        props.onTitleChange('Budget list');
+        props.onTitleChange(loc('Budget list'));
     // eslint-disable-next-line
     }, []);
 
@@ -40,13 +42,13 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
         }
 
         if (selectedBudgets.size === 0) {
-            props.onTitleChange('Budget list');
+            props.onTitleChange(loc('Budget list'));
             props.onActions([ 
                 <AddButton to={BudgetPath.add} key='add-budget'/>, 
                 <ImportExportButton to={AppPaths.ImportExport} key='import-export-data'/>
             ]);
         } else {
-            props.onTitleChange('Selecting budgets');
+            props.onTitleChange(loc('Selecting budgets'));
             props.onActions([
                 <ButtonFab 
                     to={BudgetPath.pathCombinedWithQuery(selectedBudgets)}
@@ -86,20 +88,41 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
             }
             </List>);
     } else {
-        return <Card>
-            <CardHeader title='There are no budgets'></CardHeader>
-            <CardContent>
-                <Typography>
-                    You can just <Link component={RouterLink} to={BudgetPath.add}>create a new one</Link>, <Link component={RouterLink} to={AppPaths.Sync}>synchronize your account</Link> to fetch your data from the cloud, <Link component={RouterLink}to={AppPaths.ImportExport}>import it from a JSON file</Link>
-                </Typography>
-            </CardContent>
-            <CardActions>
-                <Button component={RouterLink} to={BudgetPath.add} ><AddIcon/></Button>
-                <Button component={RouterLink} to={AppPaths.Sync} ><SyncIcon/></Button>
-                <ImportExportButton to={AppPaths.ImportExport}/>
-            </CardActions>
-        </Card>;
+        return <List subheader={
+                    <ListSubheader component="div" id="no-budgets-header">
+                        {loc('No budgets')}
+                    </ListSubheader>}>
+                    <OptionItem
+                        primary={loc('Create new budget')} 
+                        icon={<AddIcon/>}
+                        path={BudgetPath.add} />
+                    <OptionItem
+                        primary={loc('Synchronize your account')} 
+                        icon={<SyncIcon/>}
+                        path={AppPaths.Sync} />
+                    <OptionItem
+                        primary={loc('Import from JSON')} 
+                        icon={<ImportExportIcon/>}
+                        path={AppPaths.ImportExport} />
+                </List>;
     }
 }
+
+interface OptionItemProps {
+    primary: string;
+    icon: React.ReactNode;
+    path: string;
+};
+
+const OptionItem: React.FC<OptionItemProps> = (props) => (
+    <ListItem component={Link} to={props.path} button>
+        <ListItemAvatar>
+            <Avatar>
+            {props.icon}
+            </Avatar>
+        </ListItemAvatar>
+        <ListItemText primary={props.primary}></ListItemText>
+    </ListItem>
+);
 
 export default BudgetList;

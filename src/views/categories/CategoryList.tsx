@@ -8,6 +8,9 @@ import { CategoryPaths } from '../../domain/paths/CategoryPaths';
 import { useAppContext } from '../../contexts/AppContext';
 import { HeaderNotifierProps } from '../../routes';
 import { useCategoriesStore } from '../../hooks/useCategoriesStore';
+import { useLoc } from '../../hooks/useLoc';
+import { useHeaderContext } from '../../hooks/useHeaderContext';
+import { CloseButtonHistory } from '../../components/buttons/CloseButton';
 
 interface CategoriesMapViewProps {
     onDelete: (id: string) => void;
@@ -41,6 +44,7 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
     const [deleteCategories, setDeleteCategories] = React.useState<Set<string>>(new Set<string>());
     const [updatedCategories, setUpdatedCategories] = React.useState<Set<string>>(new Set<string>());
     const store = useCategoriesStore();
+    const loc = useLoc();
 
     React.useEffect(() => {
         async function init() {
@@ -55,13 +59,9 @@ export const CategoryList: React.FC<RouterProps&HeaderNotifierProps> = (props) =
         setViewCategories({...categories});
     }, [categories]);
 
-    React.useLayoutEffect(() => {
-        props.onTitleChange('Categories');
-        return function () {
-            props.onTitleChange('');
-        };
-    // eslint-disable-next-line
-    }, []);
+    useHeaderContext(
+        loc('Categories'), 
+        <CloseButtonHistory history={props.history}/>, props);
 
     const [changed, setChanged] = React.useState(false);
 
