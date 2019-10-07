@@ -10,6 +10,8 @@ import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { HeaderNotifierProps } from "../../routes";
 import { useAppContext } from "../../contexts/AppContext";
 import { useHeaderContext } from "../../hooks/useHeaderContext";
+import { useLoc } from "../../hooks/useLoc";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 interface BudgetEditProps extends 
     RouteComponentProps<{ budgetId: string }>, 
@@ -36,15 +38,14 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
         };
     }
 
-    React.useEffect(
-        () => {
-            if (budget) {
-                setBudgetInfo(budget.info);
-            }
-        }, [budget]
-    );
+    React.useEffect(() => {
+        budget && setBudgetInfo(budget.info);
+    }, [budget]);
 
-    useHeaderContext(budgetId ? 'Edit budget' : 'Add Budget',
+    const loc = useLoc();
+
+    useHeaderContext(
+        budgetId ? loc('Edit budget') : loc('Add Budget'),
         <CloseButtonHistory history={props.history}/>, 
         props);
 
@@ -68,7 +69,7 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
         disabled={saving}
         />;
     }
-    return <p>Loading...</p>;
+    return <CircularProgress/>;
 
 }
 

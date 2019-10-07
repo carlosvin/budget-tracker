@@ -1,6 +1,7 @@
 {
     "Add": "Add",
     "Budgets": "Budgets",
+    "Synchronize your account": "Synchronize your account to fetch your data from the cloud",
     "Account sync": "Account sync",
     "Error signing in": "Error signing in",
     "Error synchronizing account": "Error synchronizing account",
@@ -18,7 +19,26 @@
     "No data loss desc": "Your data is backed up remotely",
     "Benefits": "Benefits of synchronized accounts",
     "Import & Export": "Import & Export",
+    "Import from JSON": "Import your data from previously saved data in JSON file",
     "Track your expenses": "Track your expenses",
-    "Edit expense": "Edit expense"
+    "Edit expense": "Edit expense",
+
+    "Add category": "Add category",
+    "Categories": "Categories",
+
+    "Budget list": "Budget list",
+    "Selecting budgets": "Selecting budgets",
+    "Edit budget": "Edit budget",
+    "Add budget": "Add budget",
+    "Delete budget?": "Do your really want to delete this budget?",
+    "Expenses will be deleted": "All expenses linked to this budget will be deleted",
+    "Combined budgets": "Combined budgets",
+    "No budgets": "There are no budgets",
+    "Create new budget": "Create new budget",
+
+    "No expenses": "There are no expenses",
+
+    "Loading": "Loading...",
+    "Options": "Options"
 
 }
