@@ -1,9 +1,11 @@
 import { ObjectMap } from '../api';
 import { LocalizationApi } from '.';
 
+const DEFAULT_LANG = 'en';
+
 const LANG_STRINGS: ObjectMap<Promise<any>> = {
+    [DEFAULT_LANG]: import('../constants/strings/en.json'),
     'es': import('../constants/strings/es.json'),
-    'en': import('../constants/strings/en.json'),
 };
 
 export class LocalizationImpl implements LocalizationApi {
@@ -12,7 +14,9 @@ export class LocalizationImpl implements LocalizationApi {
     private strings: ObjectMap<string>;
 
     constructor(lang: string) {
-        this.lang = lang.slice(0, 2);
+        lang = lang.slice(0, 2);
+
+        this.lang = lang in LANG_STRINGS ? lang : DEFAULT_LANG;
         this.strings = {};
         this.initStrings();
     }
