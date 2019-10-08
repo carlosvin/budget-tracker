@@ -19,7 +19,13 @@ export const AppMenu: React.FC = () => {
     const handleClick = (event: React.SyntheticEvent) => (setAnchorEl(event.currentTarget));
 
     const handleClose = () => (setAnchorEl(null));
-    
+
+    const AppMenuItem = React.forwardRef((props: {name: string, path: string}, ref) => {
+        return <MenuItem onClick={handleClose} component={Link} to={props.path}>
+                {props.name}
+            </MenuItem>;
+    });
+
     return (
         <React.Fragment>
             <IconButton edge="start" color="inherit" aria-label="Menu" onClick={handleClick}>
@@ -40,10 +46,4 @@ export const AppMenu: React.FC = () => {
             </Menu>
         </React.Fragment>
     );
-
-    function AppMenuItem (props: {name: string, path: string}) {
-        return <MenuItem onClick={handleClose} component={Link} to={props.path}>
-            {props.name}
-        </MenuItem>;
-    }
 }
