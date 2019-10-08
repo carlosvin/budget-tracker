@@ -12,9 +12,9 @@ exports[`AmountInput value is 11 1`] = `
   <label
     className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiFormLabel-filled Mui-required Mui-required"
     data-shrink={true}
-    htmlFor="input-field-Amount"
+    htmlFor="input-field-Amount input"
   >
-    Amount
+    Amount input
     <span
       className="MuiFormLabel-asterisk MuiInputLabel-asterisk"
     >
@@ -32,7 +32,7 @@ exports[`AmountInput value is 11 1`] = `
       autoFocus={true}
       className="MuiInputBase-input MuiInput-input MuiInputBase-inputMarginDense MuiInput-inputMarginDense"
       disabled={false}
-      id="input-field-Amount"
+      id="input-field-Amount input"
       onAnimationStart={[Function]}
       onBlur={[Function]}
       onChange={[Function]}

@@ -6,6 +6,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
+import { useLoc } from '../../hooks/useLoc';
 
 interface BudgetQuickStatsProps {
     totalBudget: number,
@@ -19,34 +20,35 @@ interface BudgetQuickStatsProps {
 
 const spacing = '0.5rem';
 
-export const BudgetQuickStats: React.FC<BudgetQuickStatsProps> = (props) => (
-    <Card style={{ marginBottom: '1rem' }}>
+export const BudgetQuickStats: React.FC<BudgetQuickStatsProps> = (props) => {
+    const loc = useLoc();
+    
+    return <Card style={{ marginBottom: '1rem' }}>
         <CardContent>
             <VersusInfo
                 total={props.totalBudget}
                 spent={props.totalSpent}
-                title='Spent' />
+                title={loc('Spent')} />
             <Box marginTop={spacing}>
                 <VersusInfo
                     total={props.totalDays}
                     spent={props.passedDays}
-                    title='Days' /></Box>
+                    title={loc('Days')} /></Box>
             {props.dailyAverage !== undefined &&
                 <Box marginTop={spacing}>
                     <VersusInfo
                         total={props.expectedDailyAverage}
                         spent={props.dailyAverage}
-                        title='Daily Average' /></Box>}
+                        title={loc('Daily Average')} /></Box>}
         </CardContent>
-        { props.urlStats && <CardActions>
-            <Button 
-                size='small' 
-                component={Link} 
-                color='primary' 
+        {props.urlStats && <CardActions>
+            <Button
+                size='small'
+                component={Link}
+                color='primary'
                 to={props.urlStats}>
-                More Stats
+                {loc('More Stats')}
             </Button>
-        </CardActions> }
-    </Card>
-
-);
+        </CardActions>}
+    </Card>;
+}

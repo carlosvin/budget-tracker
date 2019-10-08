@@ -15,44 +15,40 @@ import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { ImportExportButton } from "../../components/buttons/ImportExportButton";
 import { HeaderNotifierProps } from "../../routes";
 import { useAppContext } from "../../contexts/AppContext";
+import { useLoc } from "../../hooks/useLoc";
+import { useHeaderContext } from "../../hooks/useHeaderContext";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps {}
 
 export const BudgetView: React.FC<BudgetViewProps> = (props) => {
 
     const {budgetId} = props.match.params;
-    const {onActions, onTitleChange} = props;
+    const {onTitleChange} = props;
 
-    const url = new BudgetPath(budgetId); 
+    const url = new BudgetPath(budgetId);
 
     const [showConfirmDialog, setShowConfirmDialog] = React.useState(false);
 
     const budgetModel = useBudgetModel(budgetId);
     
     const btApp = useAppContext();
+    const loc = useLoc();
 
     React.useEffect(() => {
-        if (budgetModel) {
-            onTitleChange(budgetModel.name);
-        }
+        budgetModel && onTitleChange(budgetModel.name);
     },
     // eslint-disable-next-line
     [budgetModel]);
 
-    React.useEffect(
-        () => {
-            onActions([
-                <AppButton key='cb-edit-budget' icon={EditIcon} aria-label='Edit budget' to={url.pathEdit}/>,
-                <ImportExportButton key='cb-export-budget' to={url.pathExport}/>,
-                <DeleteButton onClick={handleDeleteRequest} key='cb-delete-budget'/>
-            ]);
-            return () => onActions(null);
-        }
-    ,[onActions, budgetModel, url.pathEdit, url.pathExport]);
-    
     function handleDeleteRequest () {
         setShowConfirmDialog(true);
     }
+
+    useHeaderContext('...', [
+        <AppButton key='cb-edit-budget' icon={EditIcon} aria-label={loc('Edit budget')} to={url.pathEdit}/>,
+        <ImportExportButton key='cb-export-budget' to={url.pathExport}/>,
+        <DeleteButton onClick={handleDeleteRequest} key='cb-delete-budget'/>
+    ], props);
 
     function handleSelectedDay (date: YMD) {
         props.history.push(url.pathExpensesByDay(date));
@@ -90,13 +86,13 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
                         onDaySelected={handleSelectedDay} /> }
                 </React.Fragment> 
                 { budgetModel.numberOfExpenses === 0 && 
-                    <Typography variant='h5' color='textSecondary'>There are no expenses</Typography> }
+                    <Typography variant='h5' color='textSecondary'>{loc('No expenses')}</Typography> }
                 <AddButton to={url.pathAddExpense} />
                 <YesNoDialog 
                     open={showConfirmDialog} 
                     onClose={handleDelete}
-                    question='Do your really want to delete this budget?'
-                    description='All the related expenses will be deleted.'/>
+                    question={loc('Delete budget?')}
+                    description={loc('Expenses will be deleted')}/>
             </React.Fragment>
         );
     }

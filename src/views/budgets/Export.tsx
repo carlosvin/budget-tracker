@@ -8,6 +8,8 @@ import { ExportDataSet } from "../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
+import { useHeaderContext } from "../../hooks/useHeaderContext";
+import { useLoc } from "../../hooks/useLoc";
 
 interface ExportBudgetProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -15,21 +17,22 @@ export const ExportBudget: React.FC<ExportBudgetProps> = (props) => {
 
     const {budgetId} = props.match.params;
     const budgetPath = new BudgetPath(budgetId);
-    const {onTitleChange, onActions, history} = props;
+    const {onTitleChange, history} = props;
     const budgetModel = useBudgetModel(budgetId);
     const categories = useCategories();
 
     const [data, setData] = React.useState<ExportDataSet>();
+    const loc = useLoc();
+
+    useHeaderContext(
+        loc('Export'), 
+        <CloseButtonHistory history={history} to={budgetPath.path}/>, props);
 
     React.useEffect(() => {
-        onActions(<CloseButtonHistory history={history} to={budgetPath.path}/>);
         if (budgetModel && categories) {
-            onTitleChange(`Export ${budgetModel.info.name}`);
+            onTitleChange(`${loc('Export')} ${budgetModel.info.name}`);
             setData(budgetModel.export(categories));
         }
-        return function () {
-            onTitleChange('');
-        } 
     // eslint-disable-next-line
     }, [budgetModel, categories]);
 

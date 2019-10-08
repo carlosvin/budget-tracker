@@ -1,3 +1,11 @@
+# [2.13.0] - 2019-10-08
+## Add
+- Translation support.
+- Supported languages: es, en.
+
+## Fix 
+- Combined budget view error.
+
 # [2.12.2] - 2019-10-06
 ## Changed
 - Performance improvements.

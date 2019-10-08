@@ -15,6 +15,7 @@ import NavigateBefore from "@material-ui/icons/NavigateBefore";
 import NavigateNext from "@material-ui/icons/NavigateNext";
 import DateRange from "@material-ui/icons/DateRange";
 import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
+import { useHeaderContext } from "../../hooks/useHeaderContext";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
@@ -45,7 +46,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
         nextDate: DateDay.fromYMD({year, month, day}).addDays(1),
     }), [year, month, day]);
 
-    props.onTitleChange(dateDay.shortString);
+    useHeaderContext(dateDay.shortString, [], props);
 
     const [expenses, setExpenses] = React.useState<ExpensesDayMap>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState();

@@ -14,6 +14,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { useCurrenciesStore } from "../../hooks/useCurrenciesStore";
 import { CurrenciesStore } from "../../domain/stores/interfaces";
 import { useHeaderContext } from "../../hooks/useHeaderContext";
+import { useLoc } from "../../hooks/useLoc";
 
 interface ExpenseViewProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string }> { }
@@ -31,6 +32,7 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
     const currentCountry = useCurrentCountry();
     
     const budgetUrl = React.useMemo(() => (new BudgetPath(budgetId)), [budgetId]);
+    const loc = useLoc();
 
     const {identifier, now} = React.useMemo(() => ({
         identifier: uuid(), 
@@ -68,7 +70,7 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
         }
     }, [budgetModel, currency]);
 
-    useHeaderContext('Add expense', <CloseButtonHistory history={history}/>, props);
+    useHeaderContext(loc('Add expense'), <CloseButtonHistory history={history}/>, props);
 
     async function handleSubmit (expense: Expense) {
         goBack(

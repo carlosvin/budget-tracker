@@ -22,7 +22,7 @@ export class BudgetModelCombined extends BudgetModelImpl {
     }
 
     private static combineExpenses(expenses: Iterable<Expense>[]): Iterable<Expense> {
-        return expenses.reduce((a, b) => ({...a, ...b}));
+        return expenses.reduce((a, b) => ([...a, ...b]));
     }
 
 }
