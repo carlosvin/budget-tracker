@@ -13,6 +13,7 @@ import { useBudgetsIndex } from "../../hooks/useBudgetsIndex";
 import { CloseButton } from "../../components/buttons/CloseButton";
 import MergeIcon from '@material-ui/icons/MergeType';
 import ImportExportIcon from '@material-ui/icons/ImportExport';
+
 import { ButtonFab } from "../../components/buttons/buttons";
 import { useLoc } from "../../hooks/useLoc";
 import ListItem from "@material-ui/core/ListItem";
@@ -105,6 +106,8 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
                         icon={<ImportExportIcon/>}
                         path={AppPaths.ImportExport} />
                 </List>;
+                        path={AppPaths.ImportExport} history={props.history} />
+                </List>
     }
 }
 
@@ -123,6 +126,7 @@ const OptionItem: React.FC<OptionItemProps> = (props) => (
         </ListItemAvatar>
         <ListItemText primary={props.primary}></ListItemText>
     </ListItem>
+);
 );
 
 export default BudgetList;
