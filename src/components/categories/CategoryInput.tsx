@@ -7,6 +7,7 @@ import CategoryIconDialogSelector from '../../views/categories/CategoryIconSelec
 import { Category } from '../../api';
 import { DeleteButton } from '../buttons/DeleteButton';
 import { YesNoDialog } from '../YesNoDialog';
+import { useLoc } from '../../hooks/useLoc';
 
 interface CategoryInputProps {
     direction?: GridDirection;
@@ -19,6 +20,7 @@ export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
     const [category, setCategory] = React.useState<Category>(props.category);
+    const loc = useLoc();
     
     const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
         event.preventDefault();
@@ -57,7 +59,7 @@ export const CategoryInput: React.FC<CategoryInputProps> = (props) => {
             <Grid container direction={props.direction || 'row'} wrap='nowrap'>
                 <Grid item>
                     <TextInput 
-                        label={ props.direction === 'row' ? '' : 'Name' }
+                        label={ props.direction === 'row' ? '' : loc('Name') }
                         value={ category.name }
                         onChange={ handleChangeName }/>
                 </Grid>

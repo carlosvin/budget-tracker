@@ -10,20 +10,30 @@ import Typography from "@material-ui/core/Typography";
 import CardHeader from "@material-ui/core/CardHeader";
 import DownloadIcon from '@material-ui/icons/SaveAlt';
 import { SnackbarInfo } from "./snackbars";
+import { useLoc } from "../hooks/useLoc";
 
 interface ExportCardProps {
     fileName: string;
     dataToExport: ExportDataSet;
 }
 
-function download (fileName: string) {
+function download(fileName: string) {
     return `${fileName}-${new Date().toLocaleDateString()}.json`;
 }
 
 export const ExportCard: React.FC<ExportCardProps> = (props) => {
-
     const [info, setInfo] = React.useState<string>();
     const [json, setJson] = React.useState<string>();
+    const loc = useLoc();
+
+    const url = React.useMemo(() => {
+        if (json) {
+            const blob = new Blob([json], { type: 'application/octet-stream' });
+            return URL.createObjectURL(blob);
+        } else {
+            return '#';
+        }
+    }, [json]);
 
     React.useEffect(() => {
         setJson(JSON.stringify(props.dataToExport));
@@ -32,52 +42,59 @@ export const ExportCard: React.FC<ExportCardProps> = (props) => {
     async function handleCopy() {
         if (json) {
             navigator.clipboard.writeText(json);
-            setInfo('Copied to clipboard');
+            setInfo(loc('Copied to clipboard'));
         }
-    }
-
-    function url () {
-        if (json) {
-            const blob = new Blob([json], { type: 'application/octet-stream' });
-            return URL.createObjectURL(blob);    
-        }
-        return '#';
     }
 
     return <Card>
-        <CardHeader title='Export to JSON' />
+        <CardHeader title={loc('Export JSON')} />
         {info && <SnackbarInfo message={info} />}
         <CardContent>
-            {!json && info && <Typography color='error'>{info}</Typography> }
-            {json && <Content fileName={props.fileName} url={url()} /> }
+            {!json && info && <Typography color='error'>{info}</Typography>}
+            {json && <Content 
+                fileName={props.fileName} 
+                url={url}
+                description={loc('Download JSON file')}
+                />
+            }
         </CardContent>
         {json && <CardActions>
-            <IconButton 
+            <IconButton
                 color='primary'
-                disabled={!json} 
-                href={url()} 
+                disabled={!json}
+                href={url}
                 download={download(props.fileName)}>
                 <DownloadIcon />
             </IconButton>
             <IconButton
-                disabled={!json} 
+                disabled={!json}
                 key='export-copy-to-clipboard'
-                aria-label='Copy JSON' 
+                aria-label={loc('Copy JSON')}
                 onClick={handleCopy} >
-                <FileCopy/>
+                <FileCopy />
             </IconButton>
-        </CardActions> }
+        </CardActions>}
     </Card>;
 }
 
-const Content: React.FC<{fileName: string, url: string}> = (props) => (
+interface ContentProps { 
+    fileName: string;
+    url: string; 
+    description: string 
+};
+
+const Content: React.FC<ContentProps> = (props) => (
     <React.Fragment>
-        <Typography 
-            color='textSecondary' 
-            variant='body2'>You can download all the data saved in this app in JSON file.
-        </Typography>
-        <Link href={props.url} download={ download(props.fileName) } variant='body1'>
-            { `${props.fileName}.json` }
+        <Typography
+            color='textSecondary'
+            variant='body2'>
+            {props.description}
+            : <Link href={props.url} 
+            download={download(props.fileName)} 
+            variant='body1'>
+            {`${props.fileName}.json`}
         </Link>
+        </Typography>
+        
     </React.Fragment>
 );

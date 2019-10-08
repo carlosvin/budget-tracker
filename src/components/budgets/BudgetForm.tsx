@@ -6,6 +6,7 @@ import { getISODateString } from '../../domain/date';
 import { AmountInput } from '../AmountInput';
 import { CurrencyInput } from '../CurrencyInput';
 import { SaveButtonFab } from '../buttons/SaveButton';
+import { useLoc } from '../../hooks/useLoc';
 
 interface BudgetFormProps {
     budget: Budget;
@@ -18,6 +19,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
     const [error, setError] = React.useState();
     const [saveDisabled, setSaveDisabled] = React.useState(true);
     const {disabled} = props;
+    const loc = useLoc();
 
     function onChange () {
         setError(undefined);
@@ -64,20 +66,20 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
 
     function validate () {
         if (budget.from >= budget.to) {
-            return 'Invalid date range';
+            return loc('Invalid date range');
         }
         return undefined;
     }
 
     return (
         <form onSubmit={handleSubmit} >
-            <TextInput label='Name' value={budget.name} onChange={handleNameChange} required disabled={disabled}/>
-            <TextInput label='Start' value={getISODateString(new Date(budget.from))} type='date' onChange={handleFromChange} error={error} required  disabled={disabled}/>
-            <TextInput label='End' value={getISODateString(new Date(budget.to))} type='date' error={error} onChange={handleToChange} disabled={disabled}/>
+            <TextInput label={loc('Name')} value={budget.name} onChange={handleNameChange} required disabled={disabled}/>
+            <TextInput label={loc('Start')} value={getISODateString(new Date(budget.from))} type='date' onChange={handleFromChange} error={error} required  disabled={disabled}/>
+            <TextInput label={loc('End')} value={getISODateString(new Date(budget.to))} type='date' error={error} onChange={handleToChange} disabled={disabled}/>
             <AmountInput 
                 disabled={disabled}
                 onAmountChange={handleAmountChange}
-                label='Total'
+                label={loc('Total')}
                 amountInput={budget.total}
             />
             <CurrencyInput 

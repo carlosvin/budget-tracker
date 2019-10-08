@@ -7,6 +7,7 @@ import { AmountInput } from "./AmountInput";
 import { CurrencyRates } from "../api";
 import applyRate from "../domain/utils/applyRate";
 import { getCurrencyWithSymbol } from "../domain/utils/getCurrencyWithSymbol";
+import { useLoc } from "../hooks/useLoc";
 
 interface AmountCurrencyInputProps  {
     selectedCurrency: string;
@@ -14,13 +15,14 @@ interface AmountCurrencyInputProps  {
     amountInBaseCurrency?: number;
     onChange: (amount: number, currency: string, amountBase: number) => void;
     amountInput?: number;
-    label?: string;
+    label: string;
     disabled?: boolean;
     onError?: (error?: string) => void;
 }
 
 export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (props) => {
 
+    const loc  = useLoc();
     const [error, setError] = React.useState<string|undefined>(); 
     
     const {onChange, onError} = props;
@@ -48,7 +50,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         if (rate) {
             return applyRate(inputAmount, rate);
         } else {
-            throw new Error('Cannot get currency exchange rate');
+            throw new Error(loc('Error fetching currencies'));
         }
     }
 
@@ -92,8 +94,9 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
             { error !== undefined && 
             <Card>
                 <CardContent>
-                    Error calculating amount in base currency. Please connect to Internet to get last currency rates.
-                    You can still add the amount in budget base currency.
+                    {loc('Error converting to base"')}.
+                    {loc('Connect to get last rates')}.
+                    {loc('Still add amount in base')}.
                 </CardContent>
             </Card> }
         </Grid>);

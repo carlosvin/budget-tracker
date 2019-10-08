@@ -1,8 +1,10 @@
 import { createStorageMock } from "./storage";
+import { BudgetTracker } from "../api";
 
-export function createBudgetTrackerMock () {
+export function createBudgetTrackerMock (): BudgetTracker {
     return {
             storage: createStorageMock(),
+            localization: { get: (k) => (k), lang: 'test'},
             getAuth: jest.fn(),
             getBudgetsStore: jest.fn(),
             getCategoriesStore: jest.fn(),

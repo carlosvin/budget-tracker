@@ -11,6 +11,7 @@ import { ExpenseModel } from "../../domain/ExpenseModel";
 import { useRates } from "../../hooks/useRates";
 import { useAppContext } from "../../contexts/AppContext";
 import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
+import { useLoc } from "../../hooks/useLoc";
 
 interface ExpenseFormProps extends Expense {
     baseCurrency: string;
@@ -32,6 +33,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
 
     const [modified, setModified] = React.useState(false);
     const btApp = useAppContext();
+    const loc = useLoc();
 
     // For now only currency and country code might be updated from parent component
     React.useEffect(() => {
@@ -70,7 +72,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
     const WhenInput = () => (
         <TextInput
             required
-            label='When'
+            label={loc('When')}
             type='date'
             value={ dateString }
             InputLabelProps={ {shrink: true,} }
@@ -104,7 +106,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
 
     function amountPerDay () {
         if (amountBaseCurrency && splitInDays && splitInDays > 1) {
-            return `${getCurrencyWithSymbol(amountBaseCurrency / splitInDays, props.baseCurrency)} per day`;
+            return `${getCurrencyWithSymbol(amountBaseCurrency / splitInDays, props.baseCurrency)} ${loc('per day')}`;
         }
         return undefined;
     }
@@ -117,6 +119,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                 alignContent='stretch'>
                 <Grid item >
                     { rates && currency && <AmountWithCurrencyInput
+                        label={loc('Amount')}
                         rates={ rates }
                         amountInput={amount}
                         amountInBaseCurrency={amountBaseCurrency}
@@ -139,14 +142,14 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                 </Grid>
                 <Grid item >
                     <TextInput 
-                        label='Description' 
+                        label={loc('Description')} 
                         value={ description || '' }
                         onChange={ handleDescription } />
                 </Grid>
                 <Grid item>
                     <TextInput 
                         type='number'
-                        label={'Split in days'}
+                        label={loc('Split in days')}
                         value={ splitInDays || '' }
                         helperText={ amountPerDay() }
                         onChange={ handleSplitInDays }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { TextInput } from './TextInput';
 import { useCurrenciesStore } from '../hooks/useCurrenciesStore';
+import { useLoc } from '../hooks/useLoc';
 
 export interface CurrencyInputProps  {
     onCurrencyChange: (selected: string) => void;
@@ -13,6 +14,7 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
     const [currencies, setCurrencies] = React.useState();
     const {onCurrencyChange} = props;
     const store = useCurrenciesStore();
+    const loc = useLoc();
 
     React.useEffect(() => {
         if (store) {
@@ -20,7 +22,7 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
         }
     }, [store]);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         const selectedValue = event.target.value;
         if (onCurrencyChange && selectedValue) {
             onCurrencyChange(selectedValue);
@@ -29,7 +31,7 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
 
     return (
         <TextInput
-            label='Currency'
+            label={loc('Currency')}
             select
             SelectProps={{ native: true }}
             onChange={handleChange}

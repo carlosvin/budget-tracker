@@ -11,7 +11,7 @@ import { BudgetPath } from "../domain/paths/BudgetPath";
 import { CategoryPaths } from "../domain/paths/CategoryPaths";
 import { AppPaths } from "../domain/paths";
 
-export const AppMenu: React.FC<{}> = (props) => {
+export const AppMenu: React.FC = () => {
 
     const [anchorEl, setAnchorEl] = React.useState<Element | null>(null);
     const loc = useLoc();

@@ -4,6 +4,7 @@ import MuiLink from '@material-ui/core/Link';
 import { CategoriesMap, Category } from '../../api';
 import { CategoryFormDialog } from './CategoryFormDialog';
 import { useAppContext } from '../../contexts/AppContext';
+import { useLoc } from '../../hooks/useLoc';
 
 interface CategoriesSelectProps {
     onCategoryChange: (categoryId: string) => void;
@@ -26,8 +27,12 @@ const CategoryOptions: React.FC<{categories: CategoriesMap}> = (props) => {
 export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
 
     const {selectedCategory} = props;
+    const loc = useLoc();
 
-    const [categories, setCategories] = React.useState<CategoriesMap>();
+    const [categories, setCategories] = React.useState<CategoriesMap>(
+        {[selectedCategory]: {
+            identifier: selectedCategory, 
+            name: '...', icon: ''}});
     const [addCategoryOpen, setAddCategoryOpen] = React.useState(false);
 
     const btApp = useAppContext();
@@ -68,30 +73,26 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
         props.onCategoryChange(e.target.value);
     }
 
-    if (categories) {
-        return (
-            <React.Fragment>
-                <TextInput
-                    label='Category'
-                    onChange={handleChange}
-                    value={selectedCategory}
-                    helperText={
-                        <MuiLink onClick={handleAddCategoryClick}>
-                            Add category
-                        </MuiLink>}
-                    select
-                    required 
-                    SelectProps={{ native: true }} >
-                    <CategoryOptions categories={categories}/>
-                </TextInput>
-                <CategoryFormDialog
-                    open={addCategoryOpen} 
-                    onClose={handleAddCategoryClose} />
-            </React.Fragment>
-        );
-    } else {
-        return <span>Loading categories...</span>;
-    }
+    return (
+        <React.Fragment>
+            <TextInput
+                label={loc('Category')}
+                onChange={handleChange}
+                value={selectedCategory}
+                helperText={
+                    <MuiLink onClick={handleAddCategoryClick}>
+                        Add category
+                    </MuiLink>}
+                select
+                required 
+                SelectProps={{ native: true }} >
+                <CategoryOptions categories={categories}/>
+            </TextInput>
+            <CategoryFormDialog
+                open={addCategoryOpen} 
+                onClose={handleAddCategoryClose} />
+        </React.Fragment>
+    );
 }
 
 export default CategoriesSelect;

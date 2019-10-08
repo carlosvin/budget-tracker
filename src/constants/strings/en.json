@@ -22,9 +22,11 @@
     "Export": "Export",
     "Track your expenses": "Track your expenses",
     "Edit expense": "Edit expense",
-
+    "Expenses": "Expenses",
+    
     "Add category": "Add category",
     "Categories": "Categories",
+    "Category": "Category",
 
     "Budget list": "Budget list",
     "Selecting budgets": "Selecting budgets",
@@ -35,8 +37,13 @@
     "Combined budgets": "Combined budgets",
     "No budgets": "There are no budgets",
     "Create new budget": "Create new budget",
-
     "No expenses": "There are no expenses",
+    "Description": "Description",
+    "Name": "Name",
+    "Save": "Save",
+    "Delete": "Delete",
+    "Split in days": "Split in days",
+    "When": "When",
 
     "Loading": "Loading...",
     "Options": "Options",
@@ -46,6 +53,31 @@
 
     "Invalid input JSON": "Invalid input format. Expected a JSON file with following format {budgets, categories, expenses}",
     "Import from JSON": "Import your data from previously saved data in JSON file",
-    "Import JSON": "Import JSON"
+    "Import JSON": "Import JSON",
+    "Export JSON": "Export JSON",
+    "Copy JSON": "Copy JSON",
+    "Download JSON file": "You can download all data saved in this app as JSON file",
+    "Copied to clipboard": "Copied to clipboard",
+    "Currency": "Currency",
+    "Error fetching currencies": "Cannot get currency exchange rate",
+    "Still add amount in base": "You can still add the amount in budget base currency",
+    "Error converting to base": "Error calculating amount in base currency",
+    "Connect to get last rates": "Please connect to Internet to get last currency rates",
+    "Amount": "Amount",
+
+    "By date": "By date",
+    "Heat map": "Heat map",
+    "Days in a country": "Days in a country", 
+    "Daily avg country": "Daily average by country",
+    "By country": "By country",
+    "By category": "By category",
+    "per day": "per day",
+    "Daily Average": "Daily Average",
+    "Days": "Days",
+    "Spent": "Spent",
+    "More Stats": "More Stats",
+
+    "Invalid date range": "Invalid date range"
+
 
 }

@@ -5,6 +5,7 @@ import { CategoriesMap } from "../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getTotalsByCategory } from "../../domain/stats/getTotalsByCategory";
 import { PieChart } from "./charts/Pie";
+import { useLoc } from "../../hooks/useLoc";
 
 interface GraphByCategoryProps {
     budget: BudgetModel, 
@@ -16,6 +17,7 @@ function getCategoryName (index: string, categories: CategoriesMap) {
 }
 
 export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
+    const loc = useLoc();
     const {budget} = props;
 
     const categoriesMap = useCategories();
@@ -35,7 +37,7 @@ export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
     }, [budget, categoriesMap]);
 
     if (data) {
-        return <PieChart title='By Category' {...data} />;
+        return <PieChart title={loc('By category')} {...data} />;
     } else {
         return <CircularProgress/>;
     }
