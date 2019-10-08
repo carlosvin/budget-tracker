@@ -11,7 +11,6 @@ import { Link as RouterLink } from 'react-router-dom';
 import { AppPaths } from "../domain/paths";
 import { HeaderNotifierProps } from "../routes";
 import { useHeaderContext } from "../hooks/useHeaderContext";
-import { BudgetPath } from "../domain/paths/BudgetPath";
 import { useLoc } from "../hooks/useLoc";
 
 const About: React.FC<HeaderNotifierProps> = (props) => {
@@ -23,13 +22,11 @@ const About: React.FC<HeaderNotifierProps> = (props) => {
             <CardHeader title={loc('Track your expenses')} />
             <CardContent>
                 <Typography>
-                    {// TODO implement placeholders in localization service for React elements 
-                    }
-                    It helps you to verify how your expenses stick to your <RouterLink to={BudgetPath.base}>budget</RouterLink>.
+                    {loc('Track your expenses Desc')}.
                 </Typography>
 
                 <Typography variant='body2'>
-                    Do not hesitate to add <Link href='https://github.com/carlosvin/budget-tracker/issues'>issues or requests at github</Link>.
+                {loc('Add issue to github')}.
                 </Typography>
             </CardContent>
             <CardActions>
@@ -37,7 +34,7 @@ const About: React.FC<HeaderNotifierProps> = (props) => {
                     to={AppPaths.Privacy}
                     variant='text'>{loc('Privacy')}</Button>
                 <Button component={Link}
-                    href='https://github.com/carlosvin/budget-tracker/issues' >Issues</Button>
+                    href='https://github.com/carlosvin/budget-tracker/issues' >{loc('Issues')}</Button>
             </CardActions>
         </Card>
     );
