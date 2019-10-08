@@ -106,8 +106,6 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
                         icon={<ImportExportIcon/>}
                         path={AppPaths.ImportExport} />
                 </List>;
-                        path={AppPaths.ImportExport} history={props.history} />
-                </List>
     }
 }
 
@@ -126,7 +124,6 @@ const OptionItem: React.FC<OptionItemProps> = (props) => (
         </ListItemAvatar>
         <ListItemText primary={props.primary}></ListItemText>
     </ListItem>
-);
 );
 
 export default BudgetList;
