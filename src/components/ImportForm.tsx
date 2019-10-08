@@ -6,6 +6,7 @@ import { SnackbarError } from './snackbars';
 import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
 import { useBudgetsStore } from '../hooks/useBudgetsStore';
+import { useLoc } from '../hooks/useLoc';
 
 interface ImportFormProps {
     onImportedData: (data: Partial<ExportDataSet>) => void;
@@ -18,6 +19,7 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
     const [error, setError] = React.useState();
 
     const budgetsStore = useBudgetsStore();
+    const loc = useLoc();
 
     React.useEffect(() => setError(undefined), [selectedFile]);
 
@@ -39,7 +41,7 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
                 setFile(undefined);
             } catch (error) {
                 console.error(error);
-                setError('Invalid input format. Expected a JSON file with following format {budgets, categories, expenses}');
+                setError(loc('Invalid input JSON'));
             }
             setProcessing(false);
         }

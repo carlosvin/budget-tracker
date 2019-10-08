@@ -20,7 +20,6 @@
     "Benefits": "Benefits of synchronized accounts",
     "Import & Export": "Import & Export",
     "Export": "Export",
-    "Import from JSON": "Import your data from previously saved data in JSON file",
     "Track your expenses": "Track your expenses",
     "Edit expense": "Edit expense",
 
@@ -41,6 +40,12 @@
 
     "Loading": "Loading...",
     "Options": "Options",
-    "Statistics": "Statistics"
+    "Statistics": "Statistics",
+    "Agree": "Agree",
+    "Disagree": "Disagree",
+
+    "Invalid input JSON": "Invalid input format. Expected a JSON file with following format {budgets, categories, expenses}",
+    "Import from JSON": "Import your data from previously saved data in JSON file",
+    "Import JSON": "Import JSON"
 
 }
