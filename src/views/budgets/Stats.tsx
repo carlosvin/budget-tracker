@@ -5,6 +5,8 @@ import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 import { BudgetStatsComponents } from "../../components/stats/BudgetStats";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { useLoc } from "../../hooks/useLoc";
 
 interface BudgetStatsViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -15,17 +17,18 @@ export const BudgetStatsView: React.FC<BudgetStatsViewProps> = (props) => {
     const budgetPath = new BudgetPath(budgetId);
     
     const budget = useBudgetModel(budgetId);
+    const loc = useLoc();
 
     React.useEffect(
         () => {
-            onTitleChange(`Statistics: ${budget && budget.name}`);
+            onTitleChange(`${loc('Statistics')}: ${budget && budget.name}`);
             onActions(<CloseButtonHistory history={history} to={budgetPath.path}/>);
             return function () { onActions([]); }
         // eslint-disable-next-line 
         }, [budget]);
 
     if (budget === undefined) {
-        return <p>Loading budget...</p>;
+        return <CircularProgress/>;
     } else {
         return <BudgetStatsComponents budget={budget}/>;
     }
