@@ -103,9 +103,13 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     // eslint-disable-next-line
     }, [year, month, day, budgetModel]);
 
-    return (<React.Fragment>
+    if (expenses) {
+        return (<React.Fragment>
             <Box padding={1} marginBottom={2} >
-                <VersusInfo title='Daily expenses' spent={totalSpent} total={expectedDailyAvg}/>
+                <VersusInfo 
+                    title='Daily expenses' 
+                    spent={totalSpent} 
+                    total={expectedDailyAvg * expenses.size}/>
                 <Grid container justify='space-between' direction='row' style={{marginTop: '1.5em'}}>
     { prevDate && <AppButton to={url.pathExpensesByDay(prevDate)} icon={NavigateBefore} replace/> }
                     <AppButton to={url.path} icon={DateRange} replace/>
@@ -119,6 +123,9 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
                 expectedDailyAvg={expectedDailyAvg} /> }
             <AddButton to={pathAddExpense}/>
         </React.Fragment>);
+    } else {
+        return null;
+    }
 }
 
 export default ExpensesView;
