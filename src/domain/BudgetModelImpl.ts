@@ -4,8 +4,7 @@ import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
 import applyRate from "./utils/applyRate";
 import { BudgetModel } from "./BudgetModel";
-import { ExpensesYearMap } from "./ExpensesYearMap";
-import { DateDay } from "./DateDay";
+import { ExpensesYearMap, ExpensesDayMap } from "./ExpensesYearMap";
 
 export class BudgetModelImpl implements BudgetModel {
 
@@ -83,7 +82,7 @@ export class BudgetModelImpl implements BudgetModel {
         return this.nestedTotalExpenses.getSubtotal(keys);
     }
 
-    getExpensesByDay (year?: number, month?: number, day?: number): Map<DateDay, Map<string, ExpenseModel>> | undefined {
+    getExpensesByDay (year?: number, month?: number, day?: number): ExpensesDayMap | undefined {
         if (year === undefined) {
             return ExpensesYearMap.addExpensesByDate(this._expenses.values());
         } else {

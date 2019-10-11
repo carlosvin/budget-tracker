@@ -1,7 +1,5 @@
 import { ExpenseModel } from "./ExpenseModel";
 import { YMD } from "../api";
-import { DateDay } from "./DateDay";
-
 
 export class ExpensesYearMap extends Map<number, ExpensesMonthMap> {
 
@@ -37,26 +35,26 @@ export class ExpensesYearMap extends Map<number, ExpensesMonthMap> {
         }
     }
 
-    private static addDailyExpensesByDate (inputDays: ExpensesDayMap, output:  Map<DateDay,  Map<string, ExpenseModel>>) {
+    private static addDailyExpensesByDate (inputDays: ExpensesDayMap, output: ExpensesDayMap) {
         for (const d of inputDays.values()) {
             ExpensesYearMap.addExpensesByDate(d.values(), output);
         }
     }
 
-    static addExpensesByDate (input: Iterable<ExpenseModel>, output: Map<DateDay, Map<string, ExpenseModel>> = new Map()) {
+    static addExpensesByDate (input: Iterable<ExpenseModel>, output: ExpensesDayMap = new ExpensesDayMap()) {
         for (const e of input) {
-            let expensesMap = output.get(e.date);
+            let expensesMap = output.get(e.when);
             if (!expensesMap) {
                 expensesMap = new Map();
-                output.set(e.date, expensesMap);
+                output.set(e.when, expensesMap);
             }
             expensesMap.set(e.identifier, e);
         }
         return output;
     }
 
-    getAllGroupedByDate(year: number, month?: number, day?: number): Map<DateDay, Map<string, ExpenseModel>> | undefined {
-        const expenses: Map<DateDay, Map<string, ExpenseModel>> = new Map();
+    getAllGroupedByDate(year: number, month?: number, day?: number): ExpensesDayMap | undefined {
+        const expenses: ExpensesDayMap = new ExpensesDayMap();
         if (month === undefined) {
             const months = this.get(year);
             if (months) {

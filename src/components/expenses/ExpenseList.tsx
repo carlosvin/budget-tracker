@@ -1,13 +1,13 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
-import { Budget, Expense } from "../../api";
+import { Budget } from "../../api";
 import { ExpensesListGroup } from "./ExpenseListGroup";
 import { DateDay } from "../../domain/DateDay";
-import { ExpenseModel } from "../../domain/ExpenseModel";
+import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
 
 interface ExpenseListProps {
     budget: Budget;
-    expensesByDay: Map<DateDay, Map<string, ExpenseModel>>;
+    expensesByDay: ExpensesDayMap;
     expectedDailyAvg: number;
 }
 
@@ -18,17 +18,14 @@ export const ExpenseList: React.FC<ExpenseListProps> = (props) => (
         position: 'relative', 
         overflow: 'auto', 
         listStyleType: 'none'}}>
-        {[...props.expensesByDay.values()]
-            .map(e => [...e.values()])
-            .filter((expenses: Expense[]) => expenses && expenses.length > 0)
-            .map((expenses: Expense[]) => ({
-                expenses: Object.values(expenses), 
-                date: new Date(expenses[0].when)}))
-            .map(({expenses, date}) => 
+        {[...props.expensesByDay.entries()]
+            .map(([when, expenses]) => (
                 <ExpensesListGroup
-                    key={`lg-${date.getTime()}`} 
-                    budget={props.budget}
-                    expenses={expenses}
-                    expectedDailyAvg={props.expectedDailyAvg}/>)}
+                key={`lg-${when}`} 
+                date={DateDay.fromTimeMs(when)}
+                budget={props.budget}
+                expenses={expenses.values()}
+                expectedDailyAvg={props.expectedDailyAvg}/>)
+        )}
     </List>
 );

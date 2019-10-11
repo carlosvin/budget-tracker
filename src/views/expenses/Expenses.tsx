@@ -15,7 +15,7 @@ import NavigateBefore from "@material-ui/icons/NavigateBefore";
 import NavigateNext from "@material-ui/icons/NavigateNext";
 import DateRange from "@material-ui/icons/DateRange";
 import { monthYearToString } from "../../domain/date";
-import { ExpenseModel } from "../../domain/ExpenseModel";
+import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
@@ -78,7 +78,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
         };
     }, [year, month, day]);
 
-    const [expenses, setExpenses] = React.useState<Map<DateDay, Map<string, ExpenseModel>>>();
+    const [expenses, setExpenses] = React.useState<ExpensesDayMap>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState();
     const [totalSpent, setTotalSpent] = React.useState(0);
 

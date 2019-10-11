@@ -1,7 +1,7 @@
 import { Budget, Expense, CategoriesMap, CurrencyRates, ExportDataSet } from "../api";
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
-import { ExpensesYearMap } from "./ExpensesYearMap";
+import { ExpensesYearMap, ExpensesDayMap } from "./ExpensesYearMap";
 import { DateDay } from "./DateDay";
 
 export interface BudgetModel extends Budget {
@@ -21,7 +21,7 @@ export interface BudgetModel extends Budget {
     getTotalExpenses(year: number, month?: number, day?: number): number;
     setExpense(expense: Expense): void;
     getExpense (expenseId: string): ExpenseModel;
-    getExpensesByDay(year?: number, month?: number, day?: number): Map<DateDay, Map<string, ExpenseModel>> | undefined;
+    getExpensesByDay(year?: number, month?: number, day?: number): ExpensesDayMap | undefined;
     deleteExpense (expenseId: string): boolean;
     setBudget(info: Budget, rates?: CurrencyRates): Promise<void>;
     export(categories: CategoriesMap): ExportDataSet;
