@@ -1,0 +1,4 @@
+Sitemap: https://carlosvin.github.io/budget-tracker/sitemapindex.xml
+
+User-Agent: *
+Host: carlosvin.github.io
