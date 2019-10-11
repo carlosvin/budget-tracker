@@ -15,7 +15,6 @@ import NavigateBefore from "@material-ui/icons/NavigateBefore";
 import NavigateNext from "@material-ui/icons/NavigateNext";
 import DateRange from "@material-ui/icons/DateRange";
 import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
-import { useHeaderContext } from "../../hooks/useHeaderContext";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
@@ -38,7 +37,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     // TODO get expenses even if a search param is missing
     const year = getParamInt('year', params) || 0;
     const month = getParamInt('month', params) || 0;
-    const day = getParamInt('day', params)|| 0;
+    const day = getParamInt('day', params) || 0;
 
     const {dateDay, prevDate, nextDate} = React.useMemo(() => ({
         dateDay: DateDay.fromYMD({year, month, day}),
@@ -46,15 +45,14 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
         nextDate: DateDay.fromYMD({year, month, day}).addDays(1),
     }), [year, month, day]);
 
-    useHeaderContext(dateDay.shortString, [], props);
-
     const [expenses, setExpenses] = React.useState<ExpensesDayMap>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState();
-    const [totalSpent, setTotalSpent] = React.useState();
+    const [totalSpent, setTotalSpent] = React.useState(0);
 
     const budgetModel = useBudgetModel(budgetId);
     
     React.useEffect(() => {
+        props.onTitleChange(dateDay.shortString);
         if (budgetModel) {
             const expenseGroups = budgetModel.expenseGroups;
             if (expenseGroups) {
@@ -71,10 +69,10 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
                 setExpectedDailyAvg(budgetModel.expectedDailyExpensesAverage);
             }
         }
+    // eslint-disable-next-line
     }, [year, month, day, budgetModel]);
 
-    return (
-        <React.Fragment>
+    return (<React.Fragment>
             <Box padding={1} marginBottom={2} >
                 <VersusInfo title='Daily expenses' spent={totalSpent} total={expectedDailyAvg}/>
                 <Grid container justify='space-between' direction='row' style={{marginTop: '1.5em'}}>
