@@ -14,7 +14,8 @@ import { AppButton } from "../../components/buttons/buttons";
 import NavigateBefore from "@material-ui/icons/NavigateBefore";
 import NavigateNext from "@material-ui/icons/NavigateNext";
 import DateRange from "@material-ui/icons/DateRange";
-import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
+import { monthYearToString } from "../../domain/date";
+import { ExpenseModel } from "../../domain/ExpenseModel";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
@@ -34,34 +35,64 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     
     const params = new URLSearchParams(props.location.search);
 
-    // TODO get expenses even if a search param is missing
-    const year = getParamInt('year', params) || 0;
-    const month = getParamInt('month', params) || 0;
-    const day = getParamInt('day', params) || 0;
+    const year = getParamInt('year', params);
+    const month = getParamInt('month', params);
+    const day = getParamInt('day', params);
 
-    const {dateDay, prevDate, nextDate} = React.useMemo(() => ({
-        dateDay: DateDay.fromYMD({year, month, day}),
-        prevDate: DateDay.fromYMD({year, month, day}).addDays(-1),
-        nextDate: DateDay.fromYMD({year, month, day}).addDays(1),
-    }), [year, month, day]);
+    const {dateTitle, prevDate, nextDate} = React.useMemo(() => {
+        function getTitle(year?: number, month?: number, day?: number) {
+            if (day === undefined) {
+                if (month === undefined) {
+                    return year === undefined ? 'All' : year.toString();
+                } else {
+                    if (year === undefined) {
+                        throw new Error('Year is required');
+                    }
+                    return monthYearToString(year, month);
+                }
+            } else {
+                if (year === undefined || month === undefined) {
+                    throw new Error('Year and month are required');
+                }
+                return DateDay.fromYMD({year, month, day}).shortString;
+            }
+        }
 
-    const [expenses, setExpenses] = React.useState<ExpensesDayMap>();
+        function getNextDate(increment=1) {
+            if (year === undefined) {
+                return undefined;
+            } else {
+                if (month === undefined) {
+                    return DateDay.fromYMD({year, month: 0, day: 0}).addYears(increment)
+                } else if (day === undefined) {
+                    return DateDay.fromYMD({year, month, day: 0}).addMonths(increment)
+                } else {
+                    return DateDay.fromYMD({year, month, day}).addDays(increment)
+                }
+            }
+        }
+        return {
+            dateTitle: getTitle(year, month, day),
+            prevDate: getNextDate(-1),
+            nextDate: getNextDate(1),
+        };
+    }, [year, month, day]);
+
+    const [expenses, setExpenses] = React.useState<Map<DateDay, Map<string, ExpenseModel>>>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState();
     const [totalSpent, setTotalSpent] = React.useState(0);
 
     const budgetModel = useBudgetModel(budgetId);
     
     React.useEffect(() => {
-        props.onTitleChange(dateDay.shortString);
+        props.onTitleChange(dateTitle);
         if (budgetModel) {
             const expenseGroups = budgetModel.expenseGroups;
             if (expenseGroups) {
-                const expensesMap = expenseGroups.getExpenses({year, month, day});
-                if (expensesMap) {
-                    const dayMap = new ExpensesDayMap();
-                    dayMap.set(day, expensesMap);
-                    setExpenses(dayMap);
-                    setTotalSpent(budgetModel.getTotalExpensesByDay(year, month, day));
+                const expensesByDay = budgetModel.getExpensesByDay(year, month, day);
+                if (expensesByDay) {
+                    setExpenses(expensesByDay);
+                    setTotalSpent(year ? budgetModel.getTotalExpenses(year, month, day) : budgetModel.total);
                 } else {
                     setExpenses(undefined);
                     setTotalSpent(0);
@@ -76,9 +107,9 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
             <Box padding={1} marginBottom={2} >
                 <VersusInfo title='Daily expenses' spent={totalSpent} total={expectedDailyAvg}/>
                 <Grid container justify='space-between' direction='row' style={{marginTop: '1.5em'}}>
-                    <AppButton to={url.pathExpensesByDay(prevDate)} icon={NavigateBefore} replace/>
+    { prevDate && <AppButton to={url.pathExpensesByDay(prevDate)} icon={NavigateBefore} replace/> }
                     <AppButton to={url.path} icon={DateRange} replace/>
-                    <AppButton to={url.pathExpensesByDay(nextDate)} icon={NavigateNext} replace/>
+    { nextDate && <AppButton to={url.pathExpensesByDay(nextDate)} icon={NavigateNext} replace/> }
                 </Grid>
             </Box>
             { expenses===undefined && <Typography>No expenses</Typography> }

@@ -1,5 +1,6 @@
 import { ExpenseModel } from "./ExpenseModel";
 import { YMD } from "../api";
+import { DateDay } from "./DateDay";
 
 
 export class ExpensesYearMap extends Map<number, ExpensesMonthMap> {
@@ -34,6 +35,48 @@ export class ExpensesYearMap extends Map<number, ExpensesMonthMap> {
                 return days.get(day);
             }
         }
+    }
+
+    private static addDailyExpensesByDate (inputDays: ExpensesDayMap, output:  Map<DateDay,  Map<string, ExpenseModel>>) {
+        for (const d of inputDays.values()) {
+            ExpensesYearMap.addExpensesByDate(d.values(), output);
+        }
+    }
+
+    static addExpensesByDate (input: Iterable<ExpenseModel>, output: Map<DateDay, Map<string, ExpenseModel>> = new Map()) {
+        for (const e of input) {
+            let expensesMap = output.get(e.date);
+            if (!expensesMap) {
+                expensesMap = new Map();
+                output.set(e.date, expensesMap);
+            }
+            expensesMap.set(e.identifier, e);
+        }
+        return output;
+    }
+
+    getAllGroupedByDate(year: number, month?: number, day?: number): Map<DateDay, Map<string, ExpenseModel>> | undefined {
+        const expenses: Map<DateDay, Map<string, ExpenseModel>> = new Map();
+        if (month === undefined) {
+            const months = this.get(year);
+            if (months) {
+                for (const m of months.values()) {
+                    ExpensesYearMap.addDailyExpensesByDate(m, expenses);
+                }    
+            }
+        } else if (day === undefined) {
+            const months = this.get(year);
+            if (months) {
+                const days = months.get(month);
+                if (days) {
+                    ExpensesYearMap.addDailyExpensesByDate(days, expenses);
+                }
+            }
+        } else {
+            const dayExpenses = this.getExpenses({year, month, day});
+            dayExpenses && ExpensesYearMap.addExpensesByDate(dayExpenses.values(), expenses);
+        }
+        return expenses;
     }
 
     getExpense(date: YMD, identifier: string){

@@ -29,6 +29,6 @@ export const CalendarYear: React.FC<CalendarYearProps> = (props) => {
         <SubHeader 
             variant='h5' 
             leftText={year} 
-            rightText={getCurrencyWithSymbol(budgetModel.getTotalExpensesByYear(year), currency)}/>
+            rightText={getCurrencyWithSymbol(budgetModel.getTotalExpenses(year), currency)}/>
     </React.Fragment>);
 }

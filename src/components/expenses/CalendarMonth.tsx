@@ -19,7 +19,7 @@ interface CalendarMonthProps {
 export const CalendarMonth: React.FC<CalendarMonthProps> = (props) => {
     const { year, month, budgetModel, days } = props;
     const total = React.useMemo(() => {
-        const totalByMonth = budgetModel.getTotalExpensesByMonth(year, month);
+        const totalByMonth = budgetModel.getTotalExpenses(year, month);
         return Math.round(totalByMonth).toLocaleString();
     }, [budgetModel, year, month]);
 
@@ -30,7 +30,7 @@ export const CalendarMonth: React.FC<CalendarMonthProps> = (props) => {
                 <CalendarDay
                     onDaySelected={props.onDaySelected}
                     expected={budgetModel.expectedDailyExpensesAverage}
-                    total={budgetModel.getTotalExpensesByDay(year, month, day)}
+                    total={budgetModel.getTotalExpenses(year, month, day)}
                     budgetId={budgetModel.identifier}
                     date={{ year, month, day }}
                     key={`calendar-day-${year}-${month}-${day}`} />))

@@ -5,6 +5,7 @@ import { ExpenseModel } from "./ExpenseModel";
 import applyRate from "./utils/applyRate";
 import { BudgetModel } from "./BudgetModel";
 import { ExpensesYearMap } from "./ExpensesYearMap";
+import { DateDay } from "./DateDay";
 
 export class BudgetModelImpl implements BudgetModel {
 
@@ -75,16 +76,19 @@ export class BudgetModelImpl implements BudgetModel {
         return this._nestedTotalExpenses;
     }
 
-    getTotalExpensesByDay(year: number, month: number, day: number) {
-        return this.nestedTotalExpenses.getSubtotal([year, month, day]);
+    getTotalExpenses(year: number, month?: number, day?: number) {
+        const keys = [year];
+        month !== undefined && keys.push(month);
+        day !== undefined && keys.push(day);
+        return this.nestedTotalExpenses.getSubtotal(keys);
     }
 
-    getTotalExpensesByMonth(year: number, month: number) {
-        return this.nestedTotalExpenses.getSubtotal([year, month]);
-    }
-
-    getTotalExpensesByYear(year: number) {
-        return this.nestedTotalExpenses.getSubtotal([year,]);
+    getExpensesByDay (year?: number, month?: number, day?: number): Map<DateDay, Map<string, ExpenseModel>> | undefined {
+        if (year === undefined) {
+            return ExpensesYearMap.addExpensesByDate(this._expenses.values());
+        } else {
+            return this.expenseGroups.getAllGroupedByDate(year, month, day);
+        }
     }
 
     private _updateTotalExpenses(newExpense: ExpenseModel, oldExpense?: ExpenseModel) {

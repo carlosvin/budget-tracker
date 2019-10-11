@@ -2,11 +2,12 @@ import * as React from "react";
 import List from '@material-ui/core/List';
 import { Budget, Expense } from "../../api";
 import { ExpensesListGroup } from "./ExpenseListGroup";
-import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
+import { DateDay } from "../../domain/DateDay";
+import { ExpenseModel } from "../../domain/ExpenseModel";
 
 interface ExpenseListProps {
     budget: Budget;
-    expensesByDay: ExpensesDayMap;
+    expensesByDay: Map<DateDay, Map<string, ExpenseModel>>;
     expectedDailyAvg: number;
 }
 

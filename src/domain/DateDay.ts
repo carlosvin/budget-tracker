@@ -50,6 +50,22 @@ export class DateDay implements YMD {
         return this;
     }
 
+    /**
+     * @returns current object instance with months added to previous date
+     */
+    addMonths (months: number) {
+        this._date.setMonth(this._date.getMonth() + months);
+        return this;
+    }
+
+    /**
+     * @returns current object instance with years added to previous date
+     */
+    addYears (years: number) {
+        this._date.setMonth(this._date.getFullYear() + years);
+        return this;
+    }
+
     static isToday(date: YMD) {
         const now = new Date();
         return date.day === now.getDate() && 
