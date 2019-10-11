@@ -44,9 +44,10 @@ export const ExpenseEdit: React.FC<ExpenseEditProps> = (props) => {
     }, [budgetModel, expenseId]);
 
     async function handleSubmit(expense: Expense) {
+        const {year, month, day} = DateDay.fromTimeMs(expense.when);
         goBack(
             props.history, 
-            budgetUrl.pathExpensesByDay(DateDay.fromTimeMs(expense.when)));
+            budgetUrl.pathExpensesByDay(year, month, day));
     }
 
     if (budgetModel && expense) {

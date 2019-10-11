@@ -71,12 +71,20 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
                 }
             }
         }
+
+        function getNextUrl(increment=1) {
+            const date = getNextDate(increment);
+            if (date) {
+                return url.pathExpensesByDay(date.year, month && date.month, day && date.day);
+            }
+        }
+
         return {
             dateTitle: getTitle(year, month, day),
-            prevDate: getNextDate(-1),
-            nextDate: getNextDate(1),
+            prevDate: getNextUrl(-1),
+            nextDate: getNextUrl(1),
         };
-    }, [year, month, day]);
+    }, [year, month, day, url]);
 
     const [expenses, setExpenses] = React.useState<ExpensesDayMap>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState();
@@ -111,9 +119,9 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
                     spent={totalSpent} 
                     total={expectedDailyAvg * expenses.size}/>
                 <Grid container justify='space-between' direction='row' style={{marginTop: '1.5em'}}>
-    { prevDate && <AppButton to={url.pathExpensesByDay(prevDate)} icon={NavigateBefore} replace/> }
+    { prevDate && <AppButton to={prevDate} icon={NavigateBefore} replace/> }
                     <AppButton to={url.path} icon={DateRange} replace/>
-    { nextDate && <AppButton to={url.pathExpensesByDay(nextDate)} icon={NavigateNext} replace/> }
+    { nextDate && <AppButton to={nextDate} icon={NavigateNext} replace/> }
                 </Grid>
             </Box>
             { expenses===undefined && <Typography>No expenses</Typography> }
