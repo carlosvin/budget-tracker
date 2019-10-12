@@ -62,7 +62,7 @@ export class DateDay implements YMD {
      * @returns current object instance with years added to previous date
      */
     addYears (years: number) {
-        this._date.setMonth(this._date.getFullYear() + years);
+        this._date.setFullYear(this._date.getFullYear() + years);
         return this;
     }
 
