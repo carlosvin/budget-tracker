@@ -5,7 +5,7 @@ import { Expense, CategoriesMap } from "../../api";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { useLoc } from "../../hooks/useLoc";
 import { HeaderNotifierProps } from "../../routes";
-import { Box } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
 import { VersusInfo } from "../VersusInfo";
 
 interface ExpensesByCategoryProps extends HeaderNotifierProps {

@@ -6,7 +6,7 @@ import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { ExpensesByCategory } from "../../components/expenses/ExpensesByCategory";
 import { ExpensesByDate } from "../../components/expenses/ExpensesByDate";
 import { AddButton } from "../../components/buttons/AddButton";
-import { CircularProgress } from "@material-ui/core";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import { useCategories } from "../../hooks/useCategories";
 
 interface ExpensesViewProps extends
