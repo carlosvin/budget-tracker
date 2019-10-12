@@ -9,6 +9,7 @@ import { useCategory } from "../../hooks/useCategory";
 import CategoryIcon from "../categories/CategoryIcon";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
+import Avatar from "@material-ui/core/Avatar";
 
 interface ExpenseListItemProps {
     budget: Budget;
@@ -50,9 +51,10 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
             id={expense.identifier}
             >
             { category && <ListItemAvatar>
-                    <CategoryIcon name={category.icon}/> 
-                </ListItemAvatar> 
-            }
+                    <Avatar style={{backgroundColor:'#eee'}}>
+                        <CategoryIcon name={category.icon}/>
+                    </Avatar> 
+                </ListItemAvatar> }
             <ListItemText 
                 primary={category && category.name} 
                 secondary={expense.description}

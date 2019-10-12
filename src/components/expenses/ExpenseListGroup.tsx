@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Expense, Budget } from "../../api";
 import { ExpenseListItem } from "./ExpenseListItem";
-import { ListSubheader } from "@material-ui/core";
+import ListSubheader from "@material-ui/core/ListSubheader";
 import { DateDay } from "../../domain/DateDay";
 
 interface ExpensesListGroupProps {
