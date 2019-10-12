@@ -7,6 +7,8 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import Card from "@material-ui/core/Card";
 import { CalendarDay } from "./CalendarDay";
+import { Link } from "react-router-dom";
+import { BudgetPath } from "../../domain/paths/BudgetPath";
 
 interface CalendarMonthProps {
     days: Iterable<number>;
@@ -22,6 +24,16 @@ export const CalendarMonth: React.FC<CalendarMonthProps> = (props) => {
         const totalByMonth = budgetModel.getTotalExpenses(year, month);
         return Math.round(totalByMonth).toLocaleString();
     }, [budgetModel, year, month]);
+
+    const linkView = React.useMemo(() => {
+        const montString = monthToString(month);
+        if (budgetModel) {
+            const path = new BudgetPath(budgetModel.identifier).pathExpensesByDay(year, month);
+            return <Link to={path}>{montString}</Link>;
+        } else {
+            return monthToString;
+        }
+    }, [budgetModel, month, year]);
 
     const daysView = React.useMemo(() => (
         [...days]
@@ -41,7 +53,7 @@ export const CalendarMonth: React.FC<CalendarMonthProps> = (props) => {
         <Card key={`expenses-month-${year}-${month}`} style={{ marginBottom: '1rem' }}>
             <CardHeader
                 title={<SubHeader
-                    leftText={monthToString(props.month)}
+                    leftText={linkView}
                     rightText={total}
                     variant='h6' />} />
             <CardContent>
