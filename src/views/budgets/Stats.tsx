@@ -8,6 +8,7 @@ import { BudgetStatsComponents } from "../../components/stats/BudgetStats";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useLoc } from "../../hooks/useLoc";
 import { useHeaderContext } from "../../hooks/useHeaderContext";
+import { useCategories } from "../../hooks/useCategories";
 
 interface BudgetStatsViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -18,6 +19,7 @@ export const BudgetStatsView: React.FC<BudgetStatsViewProps> = (props) => {
     const budgetPath = new BudgetPath(budgetId);
     
     const budget = useBudgetModel(budgetId);
+    const categories = useCategories();
     const loc = useLoc();
 
     React.useEffect(() => (
@@ -32,7 +34,7 @@ export const BudgetStatsView: React.FC<BudgetStatsViewProps> = (props) => {
     if (budget === undefined) {
         return <CircularProgress/>;
     } else {
-        return <BudgetStatsComponents budget={budget}/>;
+        return <BudgetStatsComponents budget={budget} categories={categories}/>;
     }
 }
 

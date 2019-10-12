@@ -21,6 +21,6 @@ export const BudgetStatsComponents: React.FC<BudgetStatsComponentProps> = (props
         <Grid item xs={12} sm={6}><GraphDailyAverageByCountry budget={budget}/></Grid>
         <Grid item xs={12} sm={6}><GraphByCountry budget={budget}/></Grid>
         <Grid item xs={12} sm={6}><GraphDaysPerCountry budget={budget}/></Grid>
-        <Grid item xs={12} sm={6}><GraphExpensesTimeLine budget={budget}/></Grid>
+        <Grid item xs={12} sm={12}><GraphExpensesTimeLine budget={budget}/></Grid>
     </Grid>;
 }
