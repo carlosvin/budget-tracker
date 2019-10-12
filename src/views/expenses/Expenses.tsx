@@ -39,7 +39,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     const month = getParamInt('month', params);
     const day = getParamInt('day', params);
 
-    const {dateTitle, prevDate, nextDate} = React.useMemo(() => {
+    const {dateTitle, prevDate, nextDate, numberOfDays} = React.useMemo(() => {
         function getTitle(year?: number, month?: number, day?: number) {
             if (day === undefined) {
                 if (month === undefined) {
@@ -79,10 +79,21 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
             }
         }
 
+        function getNumberOfDays () {
+            if (month === undefined) {
+                return 365;
+            } else if (day === undefined) {
+                return 30
+            } else {
+                return 1;
+            }
+        }
+
         return {
             dateTitle: getTitle(year, month, day),
             prevDate: getNextUrl(-1),
             nextDate: getNextUrl(1),
+            numberOfDays: getNumberOfDays()
         };
     }, [year, month, day, url]);
 
@@ -117,7 +128,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
                 <VersusInfo 
                     title='Daily expenses' 
                     spent={totalSpent} 
-                    total={expectedDailyAvg * expenses.size}/>
+                    total={expectedDailyAvg * numberOfDays}/>
                 <Grid container justify='space-between' direction='row' style={{marginTop: '1.5em'}}>
     { prevDate && <AppButton to={prevDate} icon={NavigateBefore} replace/> }
                     <AppButton to={url.path} icon={DateRange} replace/>
