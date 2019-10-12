@@ -45,6 +45,10 @@ export class BudgetPath {
         return `${this.pathExpenses}?year=${year}${monthPart}${dayPart}`;
     }
 
+    pathExpensesByCategory(categoryId: string){
+        return `${this.pathExpenses}?category=${categoryId}`;
+    }
+
     static pathCombinedWithQuery(identifiers: Iterable<string>) {
         const usp = new URLSearchParams();
         for (const id of identifiers) {

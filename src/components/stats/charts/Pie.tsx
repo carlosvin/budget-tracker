@@ -6,14 +6,19 @@ interface PieChartProps {
     labels: string[];
     values: number[];
     maxSlices?: number;
+    onSelect?: (identifier: string) => void;
 }
 
-export const PieChart: React.FC<PieChartProps> = (props) => (
-    <ReactFrappeChart type='percentage' title={props.title} isNavigable={true} 
+export const PieChart: React.FC<PieChartProps> = (props) => {
+    function handleSelect (event: {label: string}) {
+        props.onSelect && props.onSelect(event.label);
+    }
+
+    return <ReactFrappeChart type='percentage' title={props.title} onDataSelect={handleSelect}
         maxSlices={props.maxSlices||8}
         data={{
             labels: props.labels,
             datasets: [{ values: props.values }], 
         }}
-    />
-);
+    />;
+}

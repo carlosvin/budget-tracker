@@ -36,8 +36,12 @@ export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
         }
     }, [budget, categoriesMap]);
 
+    function handleCategory (categoryId: string) {
+        console.log(categoryId);
+    }
+
     if (data) {
-        return <PieChart title={loc('By category')} {...data} />;
+        return <PieChart title={loc('By category')} {...data} onSelect={handleCategory} />;
     } else {
         return <CircularProgress/>;
     }

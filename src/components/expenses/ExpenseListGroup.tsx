@@ -2,21 +2,19 @@ import * as React from "react";
 import { Expense, Budget } from "../../api";
 import { ExpenseListItem } from "./ExpenseListItem";
 import ListSubheader from "@material-ui/core/ListSubheader";
-import { DateDay } from "../../domain/DateDay";
 
 interface ExpensesListGroupProps {
     budget: Budget;
     expenses: Iterable<Expense>;
-    expectedDailyAvg: number;
-    date: DateDay;
+    name: string;
 }
 
 export const ExpensesListGroup: React.FC<ExpensesListGroupProps> = (props) => (
     <React.Fragment>
         <ListSubheader 
             component='div' 
-            id={`subheader-${props.date}`} >
-            { props.date.shortString }
+            id={`subheader-${props.name}`} >
+            { props.name }
         </ListSubheader>
         {
             Array.from(props.expenses).map((expense) => (

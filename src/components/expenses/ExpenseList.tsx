@@ -1,14 +1,11 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
-import { Budget } from "../../api";
+import { Budget, Expense } from "../../api";
 import { ExpensesListGroup } from "./ExpenseListGroup";
-import { DateDay } from "../../domain/DateDay";
-import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
 
 interface ExpenseListProps {
     budget: Budget;
-    expensesByDay: ExpensesDayMap;
-    expectedDailyAvg: number;
+    expensesByGroup: Map<string, Map<string, Expense>>;
 }
 
 export const ExpenseList: React.FC<ExpenseListProps> = (props) => (
@@ -18,14 +15,13 @@ export const ExpenseList: React.FC<ExpenseListProps> = (props) => (
         position: 'relative', 
         overflow: 'auto', 
         listStyleType: 'none'}}>
-        {[...props.expensesByDay.entries()]
-            .map(([when, expenses]) => (
+        {[...props.expensesByGroup.entries()]
+            .map(([group, expenses]) => (
                 <ExpensesListGroup
-                key={`lg-${when}`} 
-                date={DateDay.fromTimeMs(when)}
+                key={`lg-${group}`} 
+                name={group}
                 budget={props.budget}
-                expenses={expenses.values()}
-                expectedDailyAvg={props.expectedDailyAvg}/>)
+                expenses={expenses.values()}/>)
         )}
     </List>
 );
