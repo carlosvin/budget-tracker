@@ -5,7 +5,7 @@ import { SubHeader } from "./SubHeader";
 import { CalendarMonth } from "./CalendarMonth";
 import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
-import { Link } from "react-router-dom";
+import { Link } from "../Link";
 
 interface CalendarYearProps {
     year: number;

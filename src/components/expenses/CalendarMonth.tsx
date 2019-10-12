@@ -7,8 +7,8 @@ import CardContent from "@material-ui/core/CardContent";
 import CardHeader from "@material-ui/core/CardHeader";
 import Card from "@material-ui/core/Card";
 import { CalendarDay } from "./CalendarDay";
-import { Link } from "react-router-dom";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
+import { Link } from "../Link";
 
 interface CalendarMonthProps {
     days: Iterable<number>;
