@@ -13,16 +13,17 @@ import NavigateNext from "@material-ui/icons/NavigateNext";
 import DateRange from "@material-ui/icons/DateRange";
 import { monthYearToString } from "../../domain/date";
 import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
-import { Expense, YMD } from "../../api";
+import { Expense, YMD, CategoriesMap } from "../../api";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { useLoc } from "../../hooks/useLoc";
 
 interface ExpensesByDateProps extends Partial<YMD>, HeaderNotifierProps {
     budget: BudgetModel;
+    categories: CategoriesMap;
 }
 
-export const ExpensesByDate: React.FC<ExpensesByDateProps> = ({year, month, day, budget, onTitleChange}) => {
-
+export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
+    const {year, month, day, budget, categories, onTitleChange} = props;
     const path = new BudgetPath(budget.identifier);
     const loc = useLoc();
     const [expenses, setExpenses] = React.useState<Map<string, Map<string, Expense>>>();
@@ -126,6 +127,6 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = ({year, month, day,
             { expenses===undefined && <Typography>{loc('No expenses')}</Typography> }
             { expenses && <ExpenseList 
                 budget={budget}
-                expensesByGroup={expenses} /> }
+                expensesByGroup={expenses} categories={categories} /> }
         </React.Fragment>);
 }

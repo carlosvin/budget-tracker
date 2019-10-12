@@ -2,10 +2,9 @@ import * as React from "react";
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import { Budget, Expense } from "../../api";
+import { Budget, Expense, CategoriesMap } from "../../api";
 import { Redirect } from 'react-router-dom';
 import { ExpensePath } from "../../domain/paths/ExpensePath";
-import { useCategory } from "../../hooks/useCategory";
 import CategoryIcon from "../categories/CategoryIcon";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
@@ -14,14 +13,15 @@ import Avatar from "@material-ui/core/Avatar";
 interface ExpenseListItemProps {
     budget: Budget;
     expense: Expense;
+    categories: CategoriesMap;
 }
 
 export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
-    const {expense, budget} = props;
+    const {expense, budget, categories} = props;
     const {categoryId} = expense;
-    const expenseUrl = new ExpensePath(props.expense.identifier, new BudgetPath(props.budget.identifier));
-
-    const category = useCategory(categoryId);
+    const expenseUrl = new ExpensePath(
+        props.expense.identifier, 
+        new BudgetPath(props.budget.identifier));
 
     const [redirect, setRedirect] = React.useState();
 
@@ -38,6 +38,8 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
     }
 
     const handleClick = () => ( setRedirect(expenseUrl.path) );
+
+    const category = React.useMemo(() => (categories[categoryId]), [categoryId, categories]);
 
     if (redirect) {
         return <Redirect push to={redirect} />

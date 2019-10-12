@@ -11,6 +11,7 @@ import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 import { useHeaderContext } from "../../hooks/useHeaderContext";
 import { useLoc } from "../../hooks/useLoc";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { useCategories } from "../../hooks/useCategories";
 
 interface BudgetCombinedViewProps extends
     HeaderNotifierProps,
@@ -21,6 +22,7 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
     
     const params = new URLSearchParams(props.location.search);
     const store = useBudgetsStore();
+    const categories = useCategories();
 
     const [budgetModel, setBudgetModel] = React.useState<BudgetModel>();
     const loc = useLoc();
@@ -54,7 +56,7 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
                 totalBudget={budgetModel.total}
                 totalSpent={budgetModel.totalExpenses}
             />
-            <BudgetStatsComponents budget={budgetModel}/>
+            <BudgetStatsComponents categories={categories} budget={budgetModel}/>
         </React.Fragment>);
     } else {
         return <CircularProgress/>

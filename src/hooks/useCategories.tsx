@@ -1,23 +1,20 @@
 import { useState, useEffect } from 'react';
 import { CategoriesMap } from '../api';
 import { useCategoriesStore } from './useCategoriesStore';
+import { CategoriesStore } from '../domain/stores/interfaces';
 
 export function useCategories() {
     const [categories, setCategories] = useState<CategoriesMap>();
     const store = useCategoriesStore();
 
     useEffect(() => {
-        async function fetchCategories () {
-            if (store) {
-                setCategories(await store.getCategories());
-            }
+        
+        async function fetchCategories (store: CategoriesStore) {
+            const cs = await store.getCategories();
+            setCategories(cs);
         }
 
-        let isSubscribed = true;
-        if (isSubscribed) {
-            fetchCategories();
-        }
-        return () => {isSubscribed = false};
+        store && fetchCategories(store);
     }, [store]);
 
     return categories;
