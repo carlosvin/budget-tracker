@@ -36,7 +36,7 @@ export const VersusInfo: React.FC<VersusInfoProps> = (props) => {
     return (<React.Fragment>
         <Grid container justify='space-between' direction='row'>
             <FieldDataView text={Math.round(spent)}/>
-            <FieldDataView text={title} secondary={` (${total})`}/>
+            <FieldDataView text={title} secondary={` (${Math.round(total)})`}/>
             <FieldDataView text={Math.round(total - spent)}/>
         </Grid>
         <LinearProgress 

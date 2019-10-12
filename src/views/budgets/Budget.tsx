@@ -51,7 +51,8 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
     ], props);
 
     function handleSelectedDay (date: YMD) {
-        props.history.push(url.pathExpensesByDay(date));
+        const {year, month, day} = date;
+        props.history.push(url.pathExpensesByDay(year, month, day));
     }
 
     async function handleDelete(deletionConfirmed: boolean) {

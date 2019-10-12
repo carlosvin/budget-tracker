@@ -3,8 +3,8 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 
 interface SubHeaderProps {
+    leftText: React.ReactNode;
     rightText: string|number;
-    leftText: string|number;
     variant: 'h3'|'h4'|'h5'|'h6'|'body1';
 }
 

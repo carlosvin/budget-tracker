@@ -1,33 +1,30 @@
 import * as React from "react";
 import List from '@material-ui/core/List';
-import { Budget, Expense } from "../../api";
+import { Budget, Expense, CategoriesMap } from "../../api";
 import { ExpensesListGroup } from "./ExpenseListGroup";
-import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
 
 interface ExpenseListProps {
     budget: Budget;
-    expensesByDay: ExpensesDayMap;
-    expectedDailyAvg: number;
+    expensesByGroup: Map<string, Map<string, Expense>>;
+    categories: CategoriesMap;
 }
 
-export const ExpenseList: React.FC<ExpenseListProps> = (props) => (
-    <List style={{
+export const ExpenseList: React.FC<ExpenseListProps> = (props) => {
+
+    return <List style={{
         height: '100%', 
         backgroundColor: '#fff', 
         position: 'relative', 
         overflow: 'auto', 
         listStyleType: 'none'}}>
-        {[...props.expensesByDay.values()]
-            .map(e => [...e.values()])
-            .filter((expenses: Expense[]) => expenses && expenses.length > 0)
-            .map((expenses: Expense[]) => ({
-                expenses: Object.values(expenses), 
-                date: new Date(expenses[0].when)}))
-            .map(({expenses, date}) => 
+        {[...props.expensesByGroup.entries()]
+            .map(([group, expenses]) => (
                 <ExpensesListGroup
-                    key={`lg-${date.getTime()}`} 
-                    budget={props.budget}
-                    expenses={expenses}
-                    expectedDailyAvg={props.expectedDailyAvg}/>)}
-    </List>
-);
+                key={`lg-${group}`} 
+                name={group}
+                budget={props.budget}
+                expenses={expenses.values()}
+                categories={props.categories}/>)
+        )}
+    </List>;
+}

@@ -63,7 +63,7 @@ describe('Budget Model Creation', () => {
         const bm = await store.getBudgetModel(budgetInfo.identifier);
         expect(expectedGroups).toStrictEqual(bm.expenseGroups);
 
-        const observedByDay = expectedDates.map(d => bm.getTotalExpensesByDay(d.year, d.month, d.day));
+        const observedByDay = expectedDates.map(d => bm.getTotalExpenses(d.year, d.month, d.day));
         expect(observedByDay).toStrictEqual([1,1,1,1]);
     });
 

@@ -73,9 +73,10 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
     useHeaderContext(loc('Add expense'), <CloseButtonHistory history={history}/>, props);
 
     async function handleSubmit (expense: Expense) {
+        const {year, month, day} = DateDay.fromTimeMs(expense.when);
         goBack(
             props.history, 
-            budgetUrl.pathExpensesByDay(DateDay.fromTimeMs(expense.when)));
+            budgetUrl.pathExpensesByDay(year, month, day));
         
     }
 

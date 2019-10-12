@@ -1,4 +1,3 @@
-import { YMD } from "../../api";
 
 export class BudgetPath {
 
@@ -40,9 +39,14 @@ export class BudgetPath {
         return `${this.path}/export`;
     }
 
-    pathExpensesByDay(date: YMD){
-        const {year, month, day} = date;
-        return `${this.pathExpenses}?year=${year}&month=${month}&day=${day}`
+    pathExpensesByDay(year: number, month?: number, day?: number){
+        const monthPart = month === undefined ? '' : `&month=${month}`;
+        const dayPart = day === undefined ? '' : `&day=${day}`;
+        return `${this.pathExpenses}?year=${year}${monthPart}${dayPart}`;
+    }
+
+    pathExpensesByCategory(categoryId: string){
+        return `${this.pathExpenses}?category=${categoryId}`;
     }
 
     static pathCombinedWithQuery(identifiers: Iterable<string>) {

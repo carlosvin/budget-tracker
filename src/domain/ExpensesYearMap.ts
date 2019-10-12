@@ -1,7 +1,6 @@
 import { ExpenseModel } from "./ExpenseModel";
 import { YMD } from "../api";
 
-
 export class ExpensesYearMap extends Map<number, ExpensesMonthMap> {
 
     addExpense(expense: ExpenseModel) {
@@ -34,6 +33,48 @@ export class ExpensesYearMap extends Map<number, ExpensesMonthMap> {
                 return days.get(day);
             }
         }
+    }
+
+    private static addDailyExpensesByDate (inputDays: ExpensesDayMap, output: ExpensesDayMap) {
+        for (const d of inputDays.values()) {
+            ExpensesYearMap.addExpensesByDate(d.values(), output);
+        }
+    }
+
+    static addExpensesByDate (input: Iterable<ExpenseModel>, output: ExpensesDayMap = new ExpensesDayMap()) {
+        for (const e of input) {
+            let expensesMap = output.get(e.when);
+            if (!expensesMap) {
+                expensesMap = new Map();
+                output.set(e.when, expensesMap);
+            }
+            expensesMap.set(e.identifier, e);
+        }
+        return output;
+    }
+
+    getAllGroupedByDate(year: number, month?: number, day?: number): ExpensesDayMap | undefined {
+        const expenses: ExpensesDayMap = new ExpensesDayMap();
+        if (month === undefined) {
+            const months = this.get(year);
+            if (months) {
+                for (const m of months.values()) {
+                    ExpensesYearMap.addDailyExpensesByDate(m, expenses);
+                }    
+            }
+        } else if (day === undefined) {
+            const months = this.get(year);
+            if (months) {
+                const days = months.get(month);
+                if (days) {
+                    ExpensesYearMap.addDailyExpensesByDate(days, expenses);
+                }
+            }
+        } else {
+            const dayExpenses = this.getExpenses({year, month, day});
+            dayExpenses && ExpensesYearMap.addExpensesByDate(dayExpenses.values(), expenses);
+        }
+        return expenses;
     }
 
     getExpense(date: YMD, identifier: string){
