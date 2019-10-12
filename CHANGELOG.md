@@ -1,3 +1,13 @@
+# [2.14.0] - 2019-10-12
+## Add
+- Contextual navigation to expenses by category and date.
+
+## Change
+- Small styling changes.
+
+## Fix
+- Expenses list navigation backwards and forwards.
+
 # [2.13.0] - 2019-10-08
 ## Add
 - Translation support.
