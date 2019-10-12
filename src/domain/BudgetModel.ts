@@ -2,7 +2,6 @@ import { Budget, Expense, CategoriesMap, CurrencyRates, ExportDataSet } from "..
 import { NestedTotal } from "./NestedTotal";
 import { ExpenseModel } from "./ExpenseModel";
 import { ExpensesYearMap, ExpensesDayMap } from "./ExpensesYearMap";
-import { DateDay } from "./DateDay";
 
 export interface BudgetModel extends Budget {
 
