@@ -63,9 +63,9 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
                 return undefined;
             } else {
                 if (month === undefined) {
-                    return DateDay.fromYMD({year, month: 0, day: 0}).addYears(increment)
+                    return DateDay.fromYMD({year, month: 0, day: 1}).addYears(increment)
                 } else if (day === undefined) {
-                    return DateDay.fromYMD({year, month, day: 0}).addMonths(increment)
+                    return DateDay.fromYMD({year, month, day: 1}).addMonths(increment)
                 } else {
                     return DateDay.fromYMD({year, month, day}).addDays(increment)
                 }
