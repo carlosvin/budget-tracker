@@ -9,6 +9,7 @@ import CategoryIcon from "../categories/CategoryIcon";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
 import Avatar from "@material-ui/core/Avatar";
+import { Link } from "../Link";
 
 interface ExpenseListItemProps {
     budget: Budget;
@@ -18,10 +19,9 @@ interface ExpenseListItemProps {
 
 export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
     const {expense, budget, categories} = props;
-    const {categoryId} = expense;
-    const expenseUrl = new ExpensePath(
-        props.expense.identifier, 
-        new BudgetPath(props.budget.identifier));
+    const {categoryId, identifier} = expense;
+    const budgetPath = new BudgetPath(props.budget.identifier);
+    const expensePath = new ExpensePath(identifier, budgetPath);
 
     const [redirect, setRedirect] = React.useState();
 
@@ -37,7 +37,7 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
         return budget.currency === expense.currency;
     }
 
-    const handleClick = () => ( setRedirect(expenseUrl.path) );
+    const handleClick = () => ( setRedirect(expensePath.path) );
 
     const category = React.useMemo(() => (categories[categoryId]), [categoryId, categories]);
 
@@ -46,11 +46,7 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
     }
 
     return (
-        <ListItem 
-            divider
-            button 
-            onClick={ handleClick }
-            id={expense.identifier}
+        <ListItem divider button onClick={ handleClick } id={identifier}
             >
             { category && <ListItemAvatar>
                     <Avatar style={{backgroundColor:'#eee'}}>
@@ -58,7 +54,8 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
                     </Avatar> 
                 </ListItemAvatar> }
             <ListItemText 
-                primary={category && category.name} 
+                primary={
+                    category && <Link to={budgetPath.pathExpensesByCategory(category.identifier)}>{category.name}</Link>} 
                 secondary={expense.description}
                 secondaryTypographyProps={{ noWrap: true }}
             />
