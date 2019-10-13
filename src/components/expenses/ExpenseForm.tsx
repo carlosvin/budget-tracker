@@ -91,6 +91,11 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
         setModified(true);
     }
 
+    function handleCategoryChanged (categoryId: string) {
+        setCategoryId(categoryId);
+        setModified(true);
+    }
+
     function handleAmountChange(amountI: number, currencyI: string, amountBaseCurrencyI?:number) {
         setCurrency(currencyI);
         setAmount(amountI);
@@ -129,7 +134,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                     /> }
                 </Grid>
                 <Grid item >
-                    <CategoriesSelect onCategoryChange={setCategoryId} selectedCategory={categoryId}/>
+                    <CategoriesSelect onCategoryChange={handleCategoryChanged} selectedCategory={categoryId}/>
                 </Grid>
                 <Grid item>
                     <WhenInput />
