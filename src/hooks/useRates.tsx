@@ -1,23 +1,25 @@
 import { useState, useEffect } from 'react';
 import { CurrencyRates } from '../api';
-import { useAppContext } from '../contexts/AppContext';
+import { useCurrenciesStore } from './useCurrenciesStore';
+import { CurrenciesStore } from '../domain/stores/interfaces';
 
 export function useRates(baseCurrency: string) {
     const [rates, setRates] = useState<CurrencyRates>();
-    const btApp = useAppContext();
+    const store = useCurrenciesStore();
 
     useEffect(() => {
-        async function fetch () {
-            const store = await btApp.getCurrenciesStore();
-            setRates(await store.getRates(baseCurrency));
+        async function fetch (store: CurrenciesStore) {
+            const r = await store.getRates(baseCurrency);
+            setRates(r);
         }
 
         let isSubscribed = true;
-        if (isSubscribed) {
-            fetch();
+        if (isSubscribed && store) {
+            setRates(store.getLocalRates(baseCurrency));
+            fetch(store);
         }
         return () => {isSubscribed = false};
-    }, [baseCurrency, btApp]);
+    }, [baseCurrency, store]);
 
     return rates;
 }

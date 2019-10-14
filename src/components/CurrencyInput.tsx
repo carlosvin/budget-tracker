@@ -11,20 +11,33 @@ export interface CurrencyInputProps  {
 
 export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
 
-    const [currencies, setCurrencies] = React.useState();
     const {onCurrencyChange} = props;
     const store = useCurrenciesStore();
     const loc = useLoc();
 
-    React.useEffect(() => {
-        if (store) {
-            setCurrencies(store.currencies);
+    const options = React.useMemo(() => {
+        function createOption (k: string, v: string) {
+            return <option key={`currency-option-${k}`} value={k}>{v}</option>;
         }
+
+        const opts: React.ReactElement[] = [];
+        if (store) {
+            const {currencies, lastCurrenciesUsed} = store;
+            const currenciesMix = new Set([...lastCurrenciesUsed, ...currencies.keys()]);
+            for (const code of currenciesMix) {
+                const name = currencies.get(code);
+                name && opts.push(createOption(code, name));
+            }
+        } else {
+            opts.push(createOption('loading', 'Loading'));
+        }
+        return opts;
     }, [store]);
 
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         const selectedValue = event.target.value;
         if (onCurrencyChange && selectedValue) {
+            store && store.setLastCurrencyUsed(selectedValue);
             onCurrencyChange(selectedValue);
         }
     }
@@ -37,13 +50,9 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
             onChange={handleChange}
             value={props.selectedCurrency}
             required
-            disabled={props.disabled || currencies === undefined}
+            disabled={props.disabled}
         >
-            { currencies === undefined ? 
-                <option>Loading...</option> : 
-                Object.keys(currencies).map(
-                (k: string) => (
-                    <option key={`currency-option-${k}`} value={k}>{currencies[k]}</option>))}
+            { options }
         </TextInput>
     );
 }
