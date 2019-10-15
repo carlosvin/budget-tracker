@@ -74,7 +74,7 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         for (const expense of expenses) {
             model.setExpense(expense);
         }
-        this._storage.setExpenses(expenses);
+        return this._storage.setExpenses(expenses);
     }
 
     async getExpense(budgetId: string, expenseId: string){

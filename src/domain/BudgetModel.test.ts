@@ -220,6 +220,27 @@ describe('Expense operations', () => {
         expect(bm.average).toBe(
             (expense1.amountBaseCurrency * 4)/ dateDiff(info.from, Date.now()));
     });
+
+    it('Edit split in days expense', () => {
+        const bm = new BudgetModelImpl(createBudget());
+        let split = 2;
+        const e2 = {...createExpense('1', bm), splitInDays: split};
+        bm.setExpense(e2);
+        const date2 = new ExpenseModel(e2).date;
+        for (let i=0; i<split; i++) {
+            expect(bm.getTotalExpenses(date2.year, date2.month, date2.day)).toBe(e2.amountBaseCurrency / split);
+            date2.addDays(1)
+        }
+
+        split++;
+        const e3 = {...e2, splitInDays: split};
+        bm.setExpense(e3);
+        const date3 = new ExpenseModel(e3).date;
+        for (let i=0; i<split; i++) {
+            expect(bm.getTotalExpenses(date3.year, date3.month, date3.day)).toBe(e3.amountBaseCurrency / split);
+            date3.addDays(1)
+        }
+    });
     
 });
 

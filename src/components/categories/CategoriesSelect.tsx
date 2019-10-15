@@ -5,6 +5,7 @@ import { CategoriesMap, Category } from '../../api';
 import { CategoryFormDialog } from './CategoryFormDialog';
 import { useAppContext } from '../../contexts/AppContext';
 import { useLoc } from '../../hooks/useLoc';
+import { useCategoriesStore } from '../../hooks/useCategoriesStore';
 
 interface CategoriesSelectProps {
     onCategoryChange: (categoryId: string) => void;
@@ -26,33 +27,30 @@ const CategoryOptions: React.FC<{categories: CategoriesMap}> = (props) => {
 
 export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
 
-    const {selectedCategory} = props;
+    const {selectedCategory, onCategoryChange} = props;
+    const btApp = useAppContext();
     const loc = useLoc();
-
     const [categories, setCategories] = React.useState<CategoriesMap>(
         {[selectedCategory]: {
             identifier: selectedCategory, 
             name: '...', icon: ''}});
     const [addCategoryOpen, setAddCategoryOpen] = React.useState(false);
 
-    const btApp = useAppContext();
+    const store = useCategoriesStore();
 
     React.useEffect(() => {
         async function initCategories () {
-            const store = await btApp.getCategoriesStore();
-            const cs = await store.getCategories();
-            setCategories(cs);
+            if (store) {
+                const cs = await store.getCategories();
+                if (!(selectedCategory in cs)) {
+                    onCategoryChange(Object.keys(cs)[0]);
+                }
+                setCategories(cs);   
+            }
         }
         initCategories();
     // eslint-disable-next-line
-    }, []);
-
-    React.useEffect(() => {
-        if (!selectedCategory && categories) {
-            props.onCategoryChange(Object.keys(categories)[0]);
-        }
-    // eslint-disable-next-line
-    }, [selectedCategory, categories]);
+    }, [store]);
 
     const handleAddCategoryClick = (e: React.SyntheticEvent) => {
         e.preventDefault();
@@ -65,12 +63,12 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
             const store = await btApp.getCategoriesStore();
             await store.setCategories([category]);
             setCategories({...categories, category});
-            props.onCategoryChange(category.identifier);
+            onCategoryChange(category.identifier);
         }
     }
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        props.onCategoryChange(e.target.value);
+        onCategoryChange(e.target.value);
     }
 
     return (
@@ -81,10 +79,9 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = (props) => {
                 value={selectedCategory}
                 helperText={
                     <MuiLink onClick={handleAddCategoryClick}>
-                        Add category
+                        {loc('Add category')}
                     </MuiLink>}
-                select
-                required 
+                select required 
                 SelectProps={{ native: true }} >
                 <CategoryOptions categories={categories}/>
             </TextInput>
