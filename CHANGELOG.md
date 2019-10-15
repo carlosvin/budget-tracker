@@ -1,3 +1,6 @@
+# [2.15.0] - 2019-10-15
+## Add
+- Keep list with last currencies saved.
 
 # [2.14.1] - 2019-10-13
 ## Fix

@@ -1,4 +1,4 @@
-import { CategoriesMap, Category, Budget, Expense, CurrencyRates, CountryEntry, Importer, Exporter, BudgetsMap, YMD, ObjectMap } from "../../api";
+import { CategoriesMap, Category, Budget, Expense, CurrencyRates, CountryEntry, Importer, Exporter, BudgetsMap, YMD } from "../../api";
 import { BudgetModel } from '../BudgetModel';
 import { SvgIconProps } from "@material-ui/core/SvgIcon";
 import { LazyExoticComponent, ReactElement } from "react";
@@ -40,7 +40,7 @@ export interface IconsStore {
 
 export interface CurrenciesStore {
 
-    readonly currencies: ObjectMap<string>;
+    readonly currencies: Map<string, string>;
 
     /** 
      * @returns Currency exchange rate
@@ -52,6 +52,12 @@ export interface CurrenciesStore {
      * @returns Currency exchange rates for a base currency
      */
     getRates(baseCurrency: string): Promise<CurrencyRates>;
+
+    /** 
+     * @returns Currency exchange rates for a base currency from local storage
+     */
+    getLocalRates(baseCurrency: string): CurrencyRates|undefined;
+
 
     /** 
      * @returns amount in base currency. \ 
@@ -67,6 +73,8 @@ export interface CurrenciesStore {
     getFromCountry(countryCode: string): Promise<string>;
 
     readonly lastCurrencyUsed?: string;
+    readonly lastCurrenciesUsed: Iterable<string>;
+    setLastCurrencyUsed (currency: string): void;
 }
 
 export interface CountriesStore {

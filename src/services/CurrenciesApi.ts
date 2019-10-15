@@ -22,16 +22,16 @@ class CurrenciesApi {
         return this.backup.get<CurrencyRates>('latest', {base: baseCurrency});
     }
 
-    private async getRatesPrimary (baseCurrency: string, targetCurrencies: string[]) {
+    private async getRatesPrimary (baseCurrency: string, targetCurrencies: Iterable<string>) {
         return this.primary.get<CurrencyRates>('currency', 
             {
                 base: baseCurrency,
-                target: targetCurrencies.join(','),
+                target: Array.from(targetCurrencies).join(','),
                 apikey: process.env.REACT_APP_CURRENCY_API_KEY || ''
             });
     }
     
-    async getRates(baseCurrency: string, availableCurrencies: string[], expectedCurrencyMatch?: string) {
+    async getRates(baseCurrency: string, availableCurrencies: Iterable<string>, expectedCurrencyMatch?: string) {
         let resp;
         try {
             resp = await this.getRatesPrimary(baseCurrency, availableCurrencies);

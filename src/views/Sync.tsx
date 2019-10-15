@@ -19,22 +19,22 @@ import { useAppContext } from '../contexts/AppContext';
 import { useHeaderContext } from '../hooks/useHeaderContext';
 import { useLoc } from '../hooks/useLoc';
 
-export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
+export const Sync: React.FC<HeaderNotifierProps & RouterProps> = (props) => {
 
     const btApp = useAppContext();
 
-    const [isLoggedIn, setIsLoggedIn] = React.useState<boolean|undefined>();
+    const [isLoggedIn, setIsLoggedIn] = React.useState<boolean | undefined>();
     const [error, setError] = React.useState();
-    const {history} = props;
+    const { history } = props;
 
     const loc = useLoc();
 
     useHeaderContext(
-        loc('Account sync'), 
-        <CloseButtonHistory history={history}/>, props);
+        loc('Account sync'),
+        <CloseButtonHistory history={history} />, props);
 
     React.useEffect(() => {
-        async function initUserId () {
+        async function initUserId() {
             try {
                 const auth = await btApp.getAuth();
                 const userId = await auth.getUserId();
@@ -42,20 +42,20 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
             } catch (error) {
                 setError(btApp.localization.get('Error signing in'));
                 setIsLoggedIn(false);
-            }  
+            }
         }
         initUserId();
         return function () { }
     }, [btApp]);
 
-    React.useLayoutEffect(()=>{}, [isLoggedIn]);
+    React.useLayoutEffect(() => { }, [isLoggedIn]);
 
     function handleLogin() {
         setIsLoggedIn(undefined);
         login();
     }
 
-    async function login(){
+    async function login() {
         try {
             const uid = await (await btApp.getAuth()).startAuth();
             setIsLoggedIn(!!uid);
@@ -72,7 +72,7 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
         logout();
     }
 
-    async function logout () {
+    async function logout() {
         const auth = await btApp.getAuth();
         try {
             await auth.logout();
@@ -84,7 +84,7 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
         }
     }
 
-    function title () {
+    function title() {
         if (isLoggedIn === undefined) {
             return loc('Synchronizing') + '...';
         } else if (isLoggedIn) {
@@ -94,32 +94,41 @@ export const Sync: React.FC<HeaderNotifierProps&RouterProps> = (props) => {
         }
     }
 
-    function avatar () {
+    function avatar() {
         if (isLoggedIn === undefined) {
-            return <CircularProgress/>;
+            return <CircularProgress />;
         } else if (isLoggedIn) {
-            return <SyncIcon/>;
+            return <SyncIcon />;
         } else {
             return <SyncDisabledIcon />;
         }
     }
 
+    function action() {
+        return isLoggedIn ? loc('Logout') : loc('Synchronize');
+    }
+
+    function color() {
+        return isLoggedIn ? 'secondary' : 'primary';
+    }
+
     return <Card>
-        {error && <SnackbarError message={error}/>}
+        {error && <SnackbarError message={error} />}
         <CardHeader
-            action={ avatar() } 
-            title={ title() }/>
+            action={avatar()}
+            title={title()} />
         <CardContent>
             <Benefits />
         </CardContent>
         <CardActions>
             <ActionButton
-                disabled={ isLoggedIn === undefined } 
-                onAction={ isLoggedIn ? handleLogout : handleLogin }>
-                { isLoggedIn ? loc('Logout') : loc('Synchronize') }
+                color={color()}
+                disabled={isLoggedIn === undefined}
+                onAction={isLoggedIn ? handleLogout : handleLogin}>
+                {action()}
             </ActionButton>
             <Button component={Link}
-                to={AppPaths.Privacy} 
+                to={AppPaths.Privacy}
                 variant='text'>{loc('Privacy policy')}</Button>
         </CardActions>
     </Card>;
@@ -129,20 +138,26 @@ const Benefits = () => {
     const loc = useLoc();
 
     return <List>
-        <ListItemText 
-            primary={loc('Benefits')} primaryTypographyProps={{variant: 'subtitle1'}}/>
-        <ListItemText 
-            primary={loc('Different devices')} 
-            secondary={loc('Different devices desc')}/>
-        <ListItemText 
-            primary={loc('No data loss')} 
-            secondary={loc('No data loss desc')}/>
+        <ListItemText
+            primary={loc('Benefits')} primaryTypographyProps={{ variant: 'subtitle1' }} />
+        <ListItemText
+            primary={loc('Different devices')}
+            secondary={loc('Different devices desc')} />
+        <ListItemText
+            primary={loc('No data loss')}
+            secondary={loc('No data loss desc')} />
     </List>;
 }
 
-const ActionButton: React.FC<{onAction: () => void, disabled?: boolean}> = (props) => (
-    <Button onClick={props.onAction} color='primary' disabled={props.disabled}>
-        {props.children}
+interface ActionButtonProps {
+    onAction: () => void;
+    disabled?: boolean;
+    color: 'primary' | 'secondary';
+};
+
+const ActionButton: React.FC<ActionButtonProps> = ({ onAction, disabled, color, children }) => (
+    <Button onClick={onAction} disabled={disabled} color={color}>
+        {children}
     </Button>
 );
 

@@ -19,7 +19,7 @@ test.skip('Amount Input changes', () => {
         <AmountWithCurrencyInput
             rates={rates}
             onChange={handleChange} 
-            selectedCurrency='USD' />,
+            selectedCurrency='USD' label='amount' />,
     );
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();

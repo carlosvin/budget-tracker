@@ -29,8 +29,8 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     const {rates, base} = props.rates;
 
     function handleChange(amount: number, currency: string) {
-        if (base && props.selectedCurrency && amount) {
-            if (base === props.selectedCurrency) {
+        if (base && currency && amount) {
+            if (base === currency) {
                 onChange(amount, currency, amount);
             } else {
                 try {

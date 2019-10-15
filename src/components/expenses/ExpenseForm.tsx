@@ -61,6 +61,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
         });
         const store = await btApp.getBudgetsStore();
         await store.setExpenses(props.budgetId, [expenseModel]);
+        (await btApp.getCurrenciesStore()).setLastCurrencyUsed(expenseModel.currency);
         props.onSubmit(expenseModel);
     }
     

@@ -6,18 +6,17 @@ import applyRate from "../utils/applyRate";
 export class CurrenciesStoreImpl implements CurrenciesStore {
     static readonly KEY = 'currencyRates';
     static readonly KEY_TS = 'currencyTimestamps';
-    static readonly KEY_LAST = 'lastCurrency';
+    static readonly KEY_LAST = 'lastCurrencies';
     static readonly UPDATE_RATES_MS = 12 * 3600 * 1000;
     
-    readonly currencies: ObjectMap<string>;
+    readonly currencies: Map<string, string>;
     private _rates: ObjectMap<CurrencyRates>;
     private _timestamps: ObjectMap<number>;
     private _countriesCurrencyMap?: ObjectMap<string>;
-    private _lastCurrencyUsed?: string;
+    private _lastCurrenciesUsed?: string[];
 
     constructor(importedCurrencies: ObjectMap<string>) {
-        this.currencies = importedCurrencies;
-            
+        this.currencies = new Map(Object.entries(importedCurrencies));
         this._timestamps = this.getTimestampsFromDisk();
         this._rates = this.getRatesFromDisk();
     }
@@ -39,6 +38,10 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
             }
         }
         return this._rates[baseCurrency].rates[currencyTo];
+    }
+
+    getLocalRates(baseCurrency: string) {
+        return this._rates && this._rates[baseCurrency];
     }
 
     /** 
@@ -91,7 +94,7 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
         }
         const rates = await currenciesApi.getRates(
             baseCurrency, 
-            Object.keys(this.currencies),
+            this.currencies.keys(),
             expectedCurrencyMatch);
         if (Object.keys(rates.rates).length > 0) {
             this._rates[baseCurrency] = rates;
@@ -149,17 +152,33 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
         return currency;
     }
 
-    get lastCurrencyUsed () {
-        if (!this._lastCurrencyUsed) {
-            this._lastCurrencyUsed =  localStorage.getItem(CurrenciesStoreImpl.KEY_LAST) || undefined;
+    get lastCurrenciesUsed () {
+        if (!this._lastCurrenciesUsed) {
+            const currenciesRead = localStorage.getItem(CurrenciesStoreImpl.KEY_LAST);
+            if (currenciesRead) {
+                try {
+                    const parsed = JSON.parse(currenciesRead);
+                    this._lastCurrenciesUsed = [...parsed];
+                } catch (error) {
+                    console.warn(error);
+                    this._lastCurrenciesUsed = [];
+                }
+            } else {
+                this._lastCurrenciesUsed = [];
+            }
         }
-        return this._lastCurrencyUsed;
+        return this._lastCurrenciesUsed;
     }
 
-    private setLastCurrencyUsed (currency: string) {
-        if (this._lastCurrencyUsed !== currency) {
-            this._lastCurrencyUsed = currency;
-            localStorage.setItem(CurrenciesStoreImpl.KEY_LAST, currency);
-        }
+    get lastCurrencyUsed () {
+        return this.lastCurrenciesUsed[0];
+    }
+
+    setLastCurrencyUsed (currency: string) {
+        this._lastCurrenciesUsed = [
+            currency, 
+            ...this.lastCurrenciesUsed.filter(c=> c!==currency)];
+        localStorage.setItem(CurrenciesStoreImpl.KEY_LAST, 
+            JSON.stringify(Array.from(this.lastCurrenciesUsed).slice(0, 5)));
     }
 }
