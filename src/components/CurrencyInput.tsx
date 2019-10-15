@@ -37,7 +37,6 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
     function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
         const selectedValue = event.target.value;
         if (onCurrencyChange && selectedValue) {
-            store && store.setLastCurrencyUsed(selectedValue);
             onCurrencyChange(selectedValue);
         }
     }

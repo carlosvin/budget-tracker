@@ -13,7 +13,7 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
     private _rates: ObjectMap<CurrencyRates>;
     private _timestamps: ObjectMap<number>;
     private _countriesCurrencyMap?: ObjectMap<string>;
-    private _lastCurrenciesUsed?: Set<string>;
+    private _lastCurrenciesUsed?: string[];
 
     constructor(importedCurrencies: ObjectMap<string>) {
         this.currencies = new Map(Object.entries(importedCurrencies));
@@ -158,29 +158,27 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
             if (currenciesRead) {
                 try {
                     const parsed = JSON.parse(currenciesRead);
-                    this._lastCurrenciesUsed = new Set(parsed);
+                    this._lastCurrenciesUsed = [...parsed];
                 } catch (error) {
                     console.warn(error);
-                    this._lastCurrenciesUsed = new Set();
+                    this._lastCurrenciesUsed = [];
                 }
             } else {
-                this._lastCurrenciesUsed = new Set();
+                this._lastCurrenciesUsed = [];
             }
         }
         return this._lastCurrenciesUsed;
     }
 
     get lastCurrencyUsed () {
-        for (const c of this.lastCurrenciesUsed) {
-            return c;
-        }
-        return undefined;
+        return this.lastCurrenciesUsed[0];
     }
 
     setLastCurrencyUsed (currency: string) {
-        this.lastCurrenciesUsed.delete(currency);
-        this.lastCurrenciesUsed.add(currency);
+        this._lastCurrenciesUsed = [
+            currency, 
+            ...this.lastCurrenciesUsed.filter(c=> c!==currency)];
         localStorage.setItem(CurrenciesStoreImpl.KEY_LAST, 
-            JSON.stringify(Array.from(this.lastCurrenciesUsed)));
+            JSON.stringify(Array.from(this.lastCurrenciesUsed).slice(0, 5)));
     }
 }
