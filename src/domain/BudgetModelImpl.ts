@@ -92,6 +92,7 @@ export class BudgetModelImpl implements BudgetModel {
 
     private _updateTotalExpenses(newExpense: ExpenseModel, oldExpense?: ExpenseModel) {
         if (oldExpense === undefined ||
+            oldExpense.splitInDays !== newExpense.splitInDays ||
             oldExpense.amountBaseCurrency !== newExpense.amountBaseCurrency ||
             oldExpense.when !== newExpense.when ||
             oldExpense.categoryId !== newExpense.categoryId ||

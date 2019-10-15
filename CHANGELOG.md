@@ -1,3 +1,9 @@
+
+# [2.14.1] - 2019-10-13
+## Fix
+- Edit split in days didn't update budget view.
+- Category change was not reflected in expense form.
+
 # [2.14.0] - 2019-10-12
 ## Add
 - Contextual navigation to expenses by category and date.
