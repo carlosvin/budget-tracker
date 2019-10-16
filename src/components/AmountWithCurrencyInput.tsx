@@ -4,14 +4,14 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { CurrencyInput } from "./CurrencyInput";
 import { AmountInput } from "./AmountInput";
-import { CurrencyRates } from "../api";
 import applyRate from "../domain/utils/applyRate";
 import { getCurrencyWithSymbol } from "../domain/utils/getCurrencyWithSymbol";
 import { useLoc } from "../hooks/useLoc";
+import { useRate } from "../hooks/useRate";
 
 interface AmountCurrencyInputProps  {
     selectedCurrency: string;
-    rates: CurrencyRates;
+    baseCurrency: string;
     amountInBaseCurrency?: number;
     onChange: (amount: number, currency: string, amountBase: number) => void;
     amountInput?: number;
@@ -24,17 +24,18 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
 
     const loc  = useLoc();
     const [error, setError] = React.useState<string|undefined>(); 
+    const {baseCurrency, selectedCurrency} = props;
     
     const {onChange, onError} = props;
-    const {rates, base} = props.rates;
+    const rate = useRate(baseCurrency, selectedCurrency);
 
     function handleChange(amount: number, currency: string) {
-        if (base && currency && amount) {
-            if (base === currency) {
+        if (baseCurrency && currency && amount) {
+            if (baseCurrency === currency) {
                 onChange(amount, currency, amount);
             } else {
                 try {
-                    onChange(amount, currency, calculateAmountInBaseCurrency(amount, currency));
+                    onChange(amount, currency, calculateAmountInBaseCurrency(amount));
                     setError(undefined);
                 } catch (error) {
                     setError(error);
@@ -45,8 +46,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         }
     }
 
-    function calculateAmountInBaseCurrency(inputAmount: number, inputCurrency: string) {
-        const rate = rates[inputCurrency];
+    function calculateAmountInBaseCurrency(inputAmount: number) {
         if (rate) {
             return applyRate(inputAmount, rate);
         } else {
@@ -57,8 +57,8 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     React.useEffect(() => (onError && onError(error)), [error, onError]);
 
     const baseAmountString = () => {
-        if (base !== props.selectedCurrency && props.amountInBaseCurrency) {
-            return getCurrencyWithSymbol(props.amountInBaseCurrency, base);
+        if (baseCurrency !== props.selectedCurrency && props.amountInBaseCurrency) {
+            return getCurrencyWithSymbol(props.amountInBaseCurrency, baseCurrency);
         }
         return undefined;
     }
@@ -94,7 +94,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
             { error !== undefined && 
             <Card>
                 <CardContent>
-                    {loc('Error converting to base"')}.
+                    {loc('Error converting to base')}.
                     {loc('Connect to get last rates')}.
                     {loc('Still add amount in base')}.
                 </CardContent>

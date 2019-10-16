@@ -27,7 +27,7 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
      */
     async getRate(baseCurrency: string, currencyTo: string): Promise<number> {
         let promise = undefined;
-        if (this.shouldFetch(baseCurrency)) {
+        if (this.shouldFetch(baseCurrency, currencyTo)) {
             promise = this.fetchRates(baseCurrency, currencyTo);
         }
         if (promise && !this.isPresent(baseCurrency, currencyTo)) {
@@ -89,25 +89,24 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
      * @throws Error when it returns invalid response after fetching currencies  
      */
     private async fetchRates(baseCurrency: string, expectedCurrencyMatch?: string) {
-        if (this._rates === undefined) {
-            this._rates = {};
-        }
         const rates = await currenciesApi.getRates(
             baseCurrency, 
             this.currencies.keys(),
             expectedCurrencyMatch);
         if (Object.keys(rates.rates).length > 0) {
-            this._rates[baseCurrency] = rates;
+            const olRates = this._rates[baseCurrency] || {};
+            this._rates[baseCurrency] = {...olRates, ...rates};
             this._timestamps[baseCurrency] = Date.now()
             this.saveTimestampsToDisk();
             this.saveRatesToDisk();
         }
     }
 
-    private shouldFetch (baseCurrency: string) {
+    private shouldFetch (baseCurrency: string, toCurrency?: string) {
         return this._rates === undefined || 
             !(baseCurrency in this._rates) || 
-            !this.isUpdated(baseCurrency);
+            !this.isUpdated(baseCurrency) ||
+            (toCurrency && !this.isPresent(baseCurrency, toCurrency));
     }
 
     private isPresent(baseCurrency: string, toCurrency: string){

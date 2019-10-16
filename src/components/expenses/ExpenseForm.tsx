@@ -8,7 +8,6 @@ import { Expense } from "../../api";
 import CategoriesSelect from "../../components/categories/CategoriesSelect";
 import { SaveButtonFab } from "../../components/buttons/SaveButton";
 import { ExpenseModel } from "../../domain/ExpenseModel";
-import { useRates } from "../../hooks/useRates";
 import { useAppContext } from "../../contexts/AppContext";
 import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
 import { useLoc } from "../../hooks/useLoc";
@@ -40,8 +39,6 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
         setCurrency(props.currency);
         setCountryCode(props.countryCode);
     }, [props.currency, props.countryCode]);
-
-    const rates = useRates(props.baseCurrency);
 
     const handleSubmit = async (e: React.SyntheticEvent) => {
         e.preventDefault();
@@ -124,9 +121,9 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                 alignItems='baseline'
                 alignContent='stretch'>
                 <Grid item >
-                    { rates && currency && <AmountWithCurrencyInput
+                    { currency && <AmountWithCurrencyInput
                         label={loc('Amount')}
-                        rates={ rates }
+                        baseCurrency={ props.baseCurrency }
                         amountInput={amount}
                         amountInBaseCurrency={amountBaseCurrency}
                         selectedCurrency={currency}
