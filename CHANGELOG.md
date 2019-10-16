@@ -1,3 +1,7 @@
+# [2.15.2] - 2019-10-16
+## Fix
+- Statistics calculations: Expenses daily average, ignore when there are more than one country in same day. 
+
 # [2.15.1] - 2019-10-16
 ## Fix
 - After fetching rates from backup API, missing ones were cleared out.
