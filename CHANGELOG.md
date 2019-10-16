@@ -1,3 +1,7 @@
+# [2.15.1] - 2019-10-16
+## Fix
+- After fetching rates from backup API, missing ones were cleared out.
+
 # [2.15.0] - 2019-10-15
 ## Add
 - Keep list with last currencies saved.
