@@ -95,7 +95,15 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
             if (expensesByDay) {
                 const expensesByGroups = new Map<string, Map<string, Expense>>();
                 for (const [when, expensesMap] of expensesByDay) {
-                    expensesByGroups.set(DateDay.fromTimeMs(when).shortString, expensesMap);
+                    const key = DateDay.fromTimeMs(when).shortString;
+                    let savedExpensesMap = expensesByGroups.get(key);
+                    if (!savedExpensesMap) {
+                        savedExpensesMap = new Map();
+                        expensesByGroups.set(key, savedExpensesMap);
+                    }
+                    for (const [identifier, expense] of expensesMap) {
+                        savedExpensesMap.set(identifier, expense);
+                    }
                 }
                 setExpenses(expensesByGroups);
                 setTotalSpent(year ? budget.getTotalExpenses(year, month, day) : budget.total);

@@ -1,3 +1,7 @@
+# [2.15.3] - 2019-10-17
+## Fix
+- Expenses by date view was not showing split expenses.
+
 # [2.15.2] - 2019-10-16
 ## Fix
 - Statistics calculations: Expenses daily average, ignore when there are more than one country in same day. 
