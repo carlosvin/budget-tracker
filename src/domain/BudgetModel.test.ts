@@ -6,6 +6,7 @@ import { createBudget } from "../__mocks__/createBudget";
 import { createExpense } from "../__mocks__/createExpense";
 import { dateDiff } from "./date";
 import { ExpensesYearMap } from "./ExpensesYearMap";
+import { BudgetModel } from "./BudgetModel";
 
 describe('Budget Model Creation', () => {
 
@@ -222,24 +223,43 @@ describe('Expense operations', () => {
     });
 
     it('Edit split in days expense', () => {
-        const bm = new BudgetModelImpl(createBudget());
-        let split = 2;
-        const e2 = {...createExpense('1', bm), splitInDays: split};
-        bm.setExpense(e2);
-        const date2 = new ExpenseModel(e2).date;
-        for (let i=0; i<split; i++) {
-            expect(bm.getTotalExpenses(date2.year, date2.month, date2.day)).toBe(e2.amountBaseCurrency / split);
-            date2.addDays(1)
-        }
+        function assertSplit (e: Expense, bm: BudgetModel) {
+            const {date, amountBaseCurrency, splitInDays, identifier} = new ExpenseModel(e);
+            for (let i=0; i<splitInDays; i++) {
+                expect(
+                    bm.getTotalExpenses(date.year, date.month, date.day)
+                ).toBe(amountBaseCurrency / splitInDays);
 
-        split++;
-        const e3 = {...e2, splitInDays: split};
-        bm.setExpense(e3);
-        const date3 = new ExpenseModel(e3).date;
-        for (let i=0; i<split; i++) {
-            expect(bm.getTotalExpenses(date3.year, date3.month, date3.day)).toBe(e3.amountBaseCurrency / split);
-            date3.addDays(1)
+                const expensesInDay = bm.expenseGroups.getAllGroupedByDate(date.year, date.month, date.day);
+                expect(expensesInDay).toBeTruthy();
+                const expensesMap = expensesInDay && expensesInDay.get(date.timeMs);
+                expect(expensesMap).toBeTruthy();
+                const expense = expensesMap && expensesMap.get(identifier);
+                expect(expense).toBeTruthy();
+                expect(expense && expense.amountBaseCurrency).toBe(amountBaseCurrency / splitInDays);
+                expect(expense && expense.date.shortString).toBe(date.shortString);
+                date.addDays(1);
+            }
         }
+        const bm = new BudgetModelImpl(createBudget());
+        let splitInDays = 4;
+        let amountBaseCurrency = 300;
+        const expenseId = '1';
+        const e2 = {...createExpense(expenseId, bm), splitInDays, amountBaseCurrency};
+        bm.setExpense(e2);
+        assertSplit(e2, bm);
+
+        splitInDays = 5;
+        amountBaseCurrency = 200;
+        const e3 = {...e2, amountBaseCurrency, splitInDays};
+        bm.setExpense(e3);
+        assertSplit(e3, bm);
+
+        splitInDays = 3;
+        amountBaseCurrency = 99;
+        const e4 = {...e2, amountBaseCurrency, splitInDays};
+        bm.setExpense(e4);
+        assertSplit(e4, bm);
     });
     
 });
