@@ -79,4 +79,8 @@ export class DateDay implements YMD {
             {day: 'numeric', month: 'long', year: 'numeric'});
         return dt.format(this._date);
     }
+
+    equals(date: DateDay) {
+        return this._date.getTime() === date._date.getTime();
+    }
 }
