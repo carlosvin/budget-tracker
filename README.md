@@ -9,7 +9,7 @@ App to track the expenses during a period of time. It is quite useful for keepin
 
 ## Create a budget
 First time application is loaded there is no information, you can start using it by adding a new budget, importing budgets or if you already are using  [![Budget Tracker logo](./public/favicon-16x16.png "Budget Tracker Logo")
-Budget Tracker](https://btapp.netlify.com) from other device, you can [Synchronize devices][synchronize devices].
+Budget Tracker](https://btapp.netlify.com) from other device, you can [Synchronize devices](#synchronize-devices).
 
 !["Create a budget"](./doc/img/create-budget.gif)
 
