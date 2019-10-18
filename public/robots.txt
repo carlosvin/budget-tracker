@@ -1,4 +1,4 @@
-Sitemap: https://carlosvin.github.io/budget-tracker/sitemapindex.xml
+Sitemap: https://btapp.netlify.com/sitemapindex.xml
 
 User-Agent: *
 Host: carlosvin.github.io
