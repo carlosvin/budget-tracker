@@ -1,0 +1,4 @@
+Sitemap: https://btapp.netlify.com/sitemapindex.xml
+
+User-Agent: *
+Host: carlosvin.github.io

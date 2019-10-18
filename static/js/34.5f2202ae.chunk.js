@@ -1,0 +1,2 @@
+(this["webpackJsonpbudget-tracker"]=this["webpackJsonpbudget-tracker"]||[]).push([[34],{146:function(e,t,a){"use strict";var c=a(25);Object.defineProperty(t,"__esModule",{value:!0}),t.default=void 0;var u=c(a(0)),d=(0,c(a(30)).default)(u.default.createElement("path",{d:"M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z"}),"LocalHospital");t.default=d}}]);
+//# sourceMappingURL=34.5f2202ae.chunk.js.map

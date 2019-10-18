@@ -1,0 +1,2 @@
+(this["webpackJsonpbudget-tracker"]=this["webpackJsonpbudget-tracker"]||[]).push([[26],{159:function(e,t,a){"use strict";var u=a(25);Object.defineProperty(t,"__esModule",{value:!0}),t.default=void 0;var c=u(a(0)),d=(0,u(a(30)).default)(c.default.createElement("path",{d:"M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"}),"Label");t.default=d}}]);
+//# sourceMappingURL=26.cc71e425.chunk.js.map
