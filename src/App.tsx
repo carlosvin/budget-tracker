@@ -16,7 +16,7 @@ const App: React.FC<{btApp: BudgetTracker}> = (props) => {
     const [actions, setActions] = React.useState();
 
     return (
-        <Router basename='/budget-tracker'>
+        <Router>
             <AppProvider value={props.btApp}>
                 <CssBaseline />
                 <Header title={title} actions={actions} />
