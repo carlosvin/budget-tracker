@@ -1,3 +1,8 @@
+# [3.0.0] - 2019-10-18
+## Changed
+- Application moved to [https://btapp.netlify.com](btapp.netlify.com).
+- Upgrade dependencies.
+
 # [2.15.3] - 2019-10-17
 ## Fix
 - Expenses by date view was not showing split expenses.
