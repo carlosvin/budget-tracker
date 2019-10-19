@@ -1,2 +1,0 @@
-(this["webpackJsonpbudget-tracker"]=this["webpackJsonpbudget-tracker"]||[]).push([[29],{131:function(e,t,a){"use strict";var l=a(25);Object.defineProperty(t,"__esModule",{value:!0}),t.default=void 0;var r=l(a(0)),u=(0,l(a(30)).default)(r.default.createElement("path",{d:"M21 5V3H3v2l8 9v5H6v2h12v-2h-5v-5l8-9zM7.43 7L5.66 5h12.69l-1.78 2H7.43z"}),"LocalBar");t.default=u}}]);
-//# sourceMappingURL=29.744547f2.chunk.js.map

@@ -1,2 +1,0 @@
-(this["webpackJsonpbudget-tracker"]=this["webpackJsonpbudget-tracker"]||[]).push([[46],{152:function(e,t,a){"use strict";var l=a(25);Object.defineProperty(t,"__esModule",{value:!0}),t.default=void 0;var u=l(a(0)),d=(0,l(a(30)).default)(u.default.createElement("path",{d:"M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"}),"School");t.default=d}}]);
-//# sourceMappingURL=46.79bc62a9.chunk.js.map
