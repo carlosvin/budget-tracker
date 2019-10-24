@@ -1,3 +1,8 @@
+# [3.0.1] - 2019-10-24
+## Changed
+- Use same manifest base color in MUI theme.
+- Upgrade dependencies.
+
 # [3.0.0] - 2019-10-18
 ## Changed
 - Application moved to [https://btapp.netlify.com](btapp.netlify.com).
