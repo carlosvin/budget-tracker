@@ -8,6 +8,10 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { BudgetTracker } from './api';
 import { AppProvider } from './contexts/AppContext';
+import { createMuiTheme } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/styles';
+
+const theme = createMuiTheme({palette: { primary: { main: '#4a148c' }}});
 
 const App: React.FC<{btApp: BudgetTracker}> = (props) => {
 
@@ -18,17 +22,19 @@ const App: React.FC<{btApp: BudgetTracker}> = (props) => {
     return (
         <Router>
             <AppProvider value={props.btApp}>
+                <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <Header title={title} actions={actions} />
-                <main>
-                    <Container maxWidth='lg'>
-                        <Box mt={2} marginBottom={8}>
-                            <ErrorBoundary>
-                                <Routes onTitleChange={setTitle} onActions={setActions}/>
-                            </ErrorBoundary>
-                        </Box>
-                    </Container>
-                </main>
+                    <Header title={title} actions={actions} />
+                    <main>
+                        <Container maxWidth='lg'>
+                            <Box mt={2} marginBottom={8}>
+                                <ErrorBoundary>
+                                    <Routes onTitleChange={setTitle} onActions={setActions}/>
+                                </ErrorBoundary>
+                            </Box>
+                        </Container>
+                    </main>
+                </ThemeProvider>
             </AppProvider>
         </Router>);
 }
