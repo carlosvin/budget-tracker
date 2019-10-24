@@ -1,2 +1,0 @@
-(this["webpackJsonpbudget-tracker"]=this["webpackJsonpbudget-tracker"]||[]).push([[39],{148:function(e,t,a){"use strict";var h=a(25);Object.defineProperty(t,"__esModule",{value:!0}),t.default=void 0;var l=h(a(0)),v=(0,h(a(31)).default)(l.default.createElement("path",{d:"M21 5h-2.64l1.14-3.14L17.15 1l-1.46 4H3v2l2 6-2 6v2h18v-2l-2-6 2-6V5zm-5 9h-3v3h-2v-3H8v-2h3V9h2v3h3v2z"}),"LocalPharmacy");t.default=v}}]);
-//# sourceMappingURL=39.0e631b22.chunk.js.map

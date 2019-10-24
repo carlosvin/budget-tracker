@@ -1,2 +1,0 @@
-(this["webpackJsonpbudget-tracker"]=this["webpackJsonpbudget-tracker"]||[]).push([[50],{154:function(e,t,a){"use strict";var c=a(25);Object.defineProperty(t,"__esModule",{value:!0}),t.default=void 0;var r=c(a(0)),u=(0,c(a(31)).default)(r.default.createElement("path",{d:"M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"}),"Smartphone");t.default=u}}]);
-//# sourceMappingURL=50.7e90114b.chunk.js.map
