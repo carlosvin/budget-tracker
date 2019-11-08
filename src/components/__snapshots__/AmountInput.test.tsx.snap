@@ -13,6 +13,7 @@ exports[`AmountInput value is 11 1`] = `
     className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-shrink MuiInputLabel-marginDense MuiFormLabel-filled Mui-required Mui-required"
     data-shrink={true}
     htmlFor="input-field-Amount input"
+    id="input-field-Amount input-label"
   >
     Amount input
     <span
