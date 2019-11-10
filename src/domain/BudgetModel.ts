@@ -10,7 +10,7 @@ export interface BudgetModel extends Budget {
     readonly expenses: Iterable<ExpenseModel>;
     readonly totalExpenses: number;
     readonly nestedTotalExpenses: NestedTotal;
-    readonly daysUntilToday: number;
+    readonly daysPassed: number;
     readonly totalDays: number;
     readonly average: number;
     readonly expectedDailyExpensesAverage: number;

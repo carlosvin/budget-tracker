@@ -51,7 +51,7 @@ export const BudgetCombinedView: React.FC<BudgetCombinedViewProps> = (props) => 
             <BudgetQuickStats 
                 dailyAverage={budgetModel.average}
                 expectedDailyAverage={budgetModel.expectedDailyExpensesAverage}
-                passedDays={budgetModel.daysUntilToday}
+                passedDays={budgetModel.daysPassed}
                 totalDays={budgetModel.totalDays}
                 totalBudget={budgetModel.total}
                 totalSpent={budgetModel.totalExpenses}
