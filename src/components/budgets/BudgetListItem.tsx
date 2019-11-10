@@ -7,6 +7,9 @@ import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { dateDiff } from "../../domain/date";
 import Checkbox from "@material-ui/core/Checkbox";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import Chip from "@material-ui/core/Chip";
+import { useLoc } from "../../hooks/useLoc";
+import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
 
 interface BudgetListItemProps extends Budget {
     onChanged: (identifier: string, checked: boolean) => void;
@@ -18,6 +21,8 @@ export const BudgetListItem: React.FC<BudgetListItemProps> = (props) => {
     const { from, to, identifier, showCheckbox, onChanged, name, total, checked, currency } = props;
     const days = dateDiff(from, to);
     const idName = `li-name-${identifier}`;
+    const isPassed = to < Date.now();
+    const loc = useLoc();
 
     function handleToggle() {
         onChanged(identifier, !checked);
@@ -33,13 +38,17 @@ export const BudgetListItem: React.FC<BudgetListItemProps> = (props) => {
             <ListItemText
                 id={idName}
                 primary={name}
-                secondary={`${days} days`}
+                secondary={`${days} ${loc('days')}`}
             />
             <ListItemText
                 id={`li-info-${identifier}`}
                 style={{ textAlign: 'right', marginRight: showCheckbox ? '1rem' : undefined }}
-                primary={total}
-                secondary={currency}
+                primary={getCurrencyWithSymbol(total, currency)}
+                secondary={<Chip 
+                    component='span' 
+                    label={isPassed ? loc('Passed'): loc('Active')} 
+                    size='small' 
+                    disabled={isPassed}/>}
             />
             {showCheckbox && <ListItemSecondaryAction>
                 <Checkbox
