@@ -130,9 +130,9 @@ export class BudgetModelImpl implements BudgetModel {
         throw new Error(`Expense with ID "${expenseId}" not found`);
     }
 
-    get daysUntilToday() {
+    get daysPassed() {
         if (!this._days) {
-            this._days = dateDiff(this._info.from, Date.now());
+            this._days = dateDiff(this.from, Math.min(Date.now(), this.to));
         }
         return this._days;
     }
@@ -145,8 +145,8 @@ export class BudgetModelImpl implements BudgetModel {
     }
 
     get average() {
-        if (this.daysUntilToday > 0 && this.totalExpenses > 0) {
-            return Math.round(this.totalExpenses / this.daysUntilToday);
+        if (this.daysPassed > 0 && this.totalExpenses > 0) {
+            return Math.round(this.totalExpenses / this.daysPassed);
         } else {
             return 0;
         }

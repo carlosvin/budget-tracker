@@ -13,7 +13,7 @@ describe('Budget Model Creation', () => {
     it('Budget model creation without expenses', async () => {
         const bm = new BudgetModelImpl(createBudget());
         expect(bm.totalExpenses).toBe(0);
-        expect(bm.daysUntilToday).toBe(16);
+        expect(bm.daysPassed).toBe(16);
         expect(bm.totalDays).toBe(30);
         expect(bm.expectedDailyExpensesAverage).toBe(33);
         expect(bm.expenseGroups).toStrictEqual(new ExpensesYearMap());
@@ -55,9 +55,9 @@ describe('Budget Model Creation', () => {
         expect(bm.totalExpenses).toBe(200);
         expect(bm.expectedDailyExpensesAverage).toBe(Math.round(bm.info.total / bm.totalDays));
 
-        expect(bm.daysUntilToday).toBe(31);
+        expect(bm.daysPassed).toBe(31);
         expect(bm.totalDays).toBe(days);
-        expect(bm.average).toBe(Math.round(200/bm.daysUntilToday));
+        expect(bm.average).toBe(Math.round(200/bm.daysPassed));
         expect(bm.getExpense(expense1.identifier).info).toStrictEqual(expense1);
         expect(bm.getExpense(expense2.identifier).info).toStrictEqual(expense2);
         expect(bm.totalExpenses).toBe(200);
@@ -69,7 +69,7 @@ describe('Budget Model Creation', () => {
             from: DateDay.fromTimeMs(budget.from).addDays(-30).timeMs, 
             to: DateDay.fromTimeMs(budget.to).addDays(30).timeMs
         });
-        expect(bm.daysUntilToday).toBe(61);
+        expect(bm.daysPassed).toBe(61);
         expect(bm.totalDays).toBe(days + 60);
         expect(bm.average).toBe(3);
         expect(bm.totalExpenses).toBe(200);
@@ -77,6 +77,18 @@ describe('Budget Model Creation', () => {
         expect(bm.getExpense('2').info).toStrictEqual(expense2);
 
         expect(bm.expenseGroups).toStrictEqual(expectedGroups);
+    });
+
+    it('Budget in the past', async () => {
+        const info = createBudget();
+        info.to = new DateDay().addDays(-30).timeMs;
+        info.from = new DateDay().addDays(-60).timeMs;
+        const expense = {...createExpense('1', info), amountBaseCurrency: 310};
+        const bm = new BudgetModelImpl(info, [expense]);
+        expect(bm.totalDays).toBe(31);
+        expect(bm.daysPassed).toBe(bm.totalDays);
+        expect(bm.average).toBe(expense.amountBaseCurrency/bm.totalDays);
+        expect(bm.totalExpenses).toBe(expense.amountBaseCurrency);
     });
 });
 
@@ -284,11 +296,11 @@ describe('Expense groups in budget model', () => {
         expect(bm.expenseGroups).toStrictEqual(expenseGroups);
     
         expect(bm.totalExpenses).toBe(98);
-        expect(bm.daysUntilToday).toBe(16);
+        expect(bm.daysPassed).toBe(16);
         expect(bm.totalDays).toBe(30);
         expect(bm.expectedDailyExpensesAverage).toBe(33);
     
-        expect(bm.average).toBe(Math.round(100/bm.daysUntilToday));
+        expect(bm.average).toBe(Math.round(100/bm.daysPassed));
         expect(bm.getExpense(expense1.identifier).info).toStrictEqual(expense1);
         expect(bm.getExpense(expense2.identifier).info).toStrictEqual(expense2);
         expect(bm.totalExpenses).toBe(98);
