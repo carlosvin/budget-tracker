@@ -1,3 +1,10 @@
+# [3.1.0] - 2019-11-10
+## Changed
+- Show when a budget end date is in the past in budgets list.
+
+## Fix
+- Number of days left in a budget where not shown correctly, when the budget was in the past: https://github.com/carlosvin/budget-tracker/issues/153.
+
 # [3.0.1] - 2019-10-24
 ## Changed
 - Use same manifest base color in MUI theme.
