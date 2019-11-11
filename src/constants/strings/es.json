@@ -82,5 +82,10 @@
     "Invalid date range": "Rango de fechas inválido",
     "Track your expenses Desc": "Budget tracker te ayuda a verificar si tus gastos se ajustan a tu presupuesto",
     "Add issue to github": "Si tienes alguna peticion o quiere reportar algún problema, puede hacerlo en Github",
-    "Issues": "Peticiones"
+    "Issues": "Peticiones",
+
+    "Move to": "Mover a",
+    "Old": "Antiguo",
+    "Active": "Activo"
+
 }

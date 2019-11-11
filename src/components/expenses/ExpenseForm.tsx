@@ -11,6 +11,7 @@ import { ExpenseModel } from "../../domain/ExpenseModel";
 import { useAppContext } from "../../contexts/AppContext";
 import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
 import { useLoc } from "../../hooks/useLoc";
+import { useBudgetsIndex } from "../../hooks/useBudgetsIndex";
 
 interface ExpenseFormProps extends Expense {
     baseCurrency: string;
@@ -29,6 +30,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
     const [amountBaseCurrency, setAmountBaseCurrency] = React.useState(props.amountBaseCurrency);
     const [description, setDescription] = React.useState(props.description);
     const [splitInDays, setSplitInDays] = React.useState<number|undefined>(props.splitInDays);
+    const [budgetId, setBudgetId] = React.useState(props.budgetId);
+    const budgets = useBudgetsIndex();
 
     const [modified, setModified] = React.useState(false);
     const btApp = useAppContext();
@@ -53,11 +56,11 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
             categoryId,
             description,
             when: date.getTime(),
-            budgetId: props.budgetId,
+            budgetId: budgetId,
             splitInDays: max
         });
         const store = await btApp.getBudgetsStore();
-        await store.setExpenses(props.budgetId, [expenseModel]);
+        await store.setExpenses(budgetId, [expenseModel]);
         (await btApp.getCurrenciesStore()).setLastCurrencyUsed(expenseModel.currency);
         props.onSubmit(expenseModel);
     }
@@ -104,6 +107,11 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
     function handleSplitInDays (e: React.ChangeEvent<HTMLInputElement>) {
         const days = parseInt(e.target.value);
         setSplitInDays(days || undefined);
+        setModified(true);
+    }
+
+    function handleBudgetId(e: React.ChangeEvent<{ value: any }>) {
+        setBudgetId(e.target.value);
         setModified(true);
     }
 
@@ -160,6 +168,16 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                         disabled={ !amountBaseCurrency }
                     />
                 </Grid>
+                { budgets && <Grid item> 
+                    <TextInput
+                        label={loc('Move to')}
+                        select
+                        SelectProps={{ native: true }}
+                        onChange={handleBudgetId}
+                        value={budgetId}>
+                        { budgets.map( b => (<option value={b.identifier}>{b.name}</option>)) }
+                    </TextInput>
+                </Grid> }
             </Grid>
             <SaveButtonFab type='submit' color='primary' disabled={error !== undefined || !modified}/>
         </form>

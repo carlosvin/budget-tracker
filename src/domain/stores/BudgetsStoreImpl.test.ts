@@ -91,4 +91,46 @@ describe('Budget Model Creation', () => {
         expect(exported.budgets).toStrictEqual(budgets);
         expect(Object.values(exported.expenses)).toStrictEqual(expenses);
     });
+
+    it('Move expense from budget A to B', async () => {
+        
+        btApp.getCategoriesStore.mockReturnValue({ 
+            getCategories: () => ([]),
+            setCategories: (categories: CategoriesMap) => {}
+        });
+        const budgetInfo1 = createBudget({identifier: 'A'});
+        const budgetInfo2 = createBudget({identifier: 'B'});
+        const budgets = {
+            [budgetInfo1.identifier]: budgetInfo1,
+            [budgetInfo2.identifier]: budgetInfo2
+        };
+        const expenses = [
+            createExpense('0', budgetInfo1), 
+            createExpense('1', budgetInfo1), 
+            createExpense('2', budgetInfo2)];
+        btApp.storage.getBudgets.mockReturnValue(budgets);
+        btApp.storage.getBudget.mockImplementation((id: string) => budgets[id]);
+        btApp.storage.getExpenses.mockImplementation(
+            (budgetId: string) => (expenses.filter(e => e.budgetId === budgetId)));
+        btApp.storage.getExpense.mockImplementation(
+            (expenseId: string) => (expenses.filter(e => e.identifier === expenseId)[0]));
+
+        let bm1 = await store.getBudgetModel(budgetInfo1.identifier);
+        let bm2 = await store.getBudgetModel(budgetInfo2.identifier);
+        expect([...bm1.expenses].map(e => e.info)).toStrictEqual([expenses[0], expenses[1]]);
+        expect([...bm2.expenses].map(e => e.info)).toStrictEqual([expenses[2]]);
+
+        // move second expense to budget B
+        await store.setExpenses(budgetInfo2.identifier, 
+            [{...expenses[1], budgetId: budgetInfo2.identifier}]);
+        expenses[1].budgetId = budgetInfo2.identifier;
+
+        bm1 = await store.getBudgetModel(budgetInfo1.identifier);
+        bm2 = await store.getBudgetModel(budgetInfo2.identifier);
+
+        expect([...bm1.expenses].map(e => e.info)).toStrictEqual([expenses[0]]);
+        expect([...bm2.expenses].map(e => e.info)).toStrictEqual([expenses[2], expenses[1]]);
+    });
+
+    
 });

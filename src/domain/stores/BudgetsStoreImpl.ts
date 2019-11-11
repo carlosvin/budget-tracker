@@ -72,6 +72,12 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
     async setExpenses(budgetId: string, expenses: Expense[]) {
         const model = await this.getBudgetModel(budgetId);
         for (const expense of expenses) {
+            const oldExpense = await this._storage.getExpense(expense.identifier);
+            // Check if expense was moved to other budget
+            if (oldExpense && oldExpense.budgetId !== budgetId) {
+                const oldModel = await this.getBudgetModel(oldExpense.budgetId);
+                oldModel && oldModel.deleteExpense(expense.identifier);
+            }
             model.setExpense(expense);
         }
         return this._storage.setExpenses(expenses);
