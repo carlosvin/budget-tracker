@@ -1,3 +1,7 @@
+# [3.2.0] - 2019-11-11
+## Add
+- Now you can move en expense from a budget to other.
+
 # [3.1.0] - 2019-11-10
 ## Changed
 - Show when a budget end date is in the past in budgets list.
