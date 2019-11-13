@@ -46,7 +46,7 @@ export const BudgetListItem: React.FC<BudgetListItemProps> = (props) => {
                 primary={getCurrencyWithSymbol(total, currency)}
                 secondary={<Chip 
                     component='span' 
-                    label={isPassed ? loc('Passed'): loc('Active')} 
+                    label={isPassed ? loc('Old'): loc('Active')} 
                     size='small' 
                     disabled={isPassed}/>}
             />
