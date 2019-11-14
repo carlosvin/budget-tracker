@@ -26,8 +26,7 @@ const OptionItem: React.FC<OptionItemProps> = (props) => (
             </Avatar>
         </ListItemAvatar>
         <ListItemText primary={props.primary}></ListItemText>
-    </ListItem>
-);
+    </ListItem>);
 
 
 export function BudgetsListEmpty({loc}: {loc: (key: string) => string}) {

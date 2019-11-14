@@ -61,7 +61,7 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
     }
     if (budgets.length > 0) {
         return <BudgetsListComponent 
-            budgets={budgets} 
+            budgets={[...budgets]} 
             selected={selectedBudgets} 
             onSelected={setSelectedBudgets}/>;
     } else {

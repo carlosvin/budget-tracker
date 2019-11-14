@@ -22,7 +22,7 @@ export function BudgetsList({budgets, selected, onSelected}: BudgetsListProps) {
     }
 
     return <List>{ 
-        budgets.map(
+        budgets.sort(b => -b.to).map(
             budget => <BudgetListItem 
                 showCheckbox={showCheckbox}
                 key={`list-item-${budget.identifier}`} {...budget} 
