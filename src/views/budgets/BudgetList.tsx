@@ -1,27 +1,19 @@
 import * as React from "react";
-import List from '@material-ui/core/List';
 import { RouteComponentProps } from "react-router";
-import { BudgetListItem } from "../../components/budgets/BudgetListItem";
 import { HeaderNotifierProps } from "../../routes";
 import { AddButton } from "../../components/buttons/AddButton";
 import { ImportExportButton } from "../../components/buttons/ImportExportButton";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { AppPaths } from "../../domain/paths";
-import AddIcon from '@material-ui/icons/Add';
-import SyncIcon from '@material-ui/icons/Sync';
+
 import { useBudgetsIndex } from "../../hooks/useBudgetsIndex";
 import { CloseButton } from "../../components/buttons/CloseButton";
 import MergeIcon from '@material-ui/icons/MergeType';
-import ImportExportIcon from '@material-ui/icons/ImportExport';
 
 import { ButtonFab } from "../../components/buttons/buttons";
 import { useLoc } from "../../hooks/useLoc";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import { Link } from "react-router-dom";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import { BudgetsList as BudgetsListComponent } from "../../components/budgets/BudgetsList";
+import { BudgetsListEmpty } from "../../components/budgets/BudgetsListEmpty";
 
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
@@ -64,66 +56,17 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
     // eslint-disable-next-line
     }, [selectedBudgets]);
 
-    function handleChanged (identifier: string, checked: boolean) {
-        if (checked) {
-            selectedBudgets.add(identifier);
-        } else {
-            selectedBudgets.delete(identifier);
-        }
-        setSelectedBudgets(new Set(selectedBudgets));
-    }
-
     if (budgets === undefined) {
         return null;
     }
     if (budgets.length > 0) {
-        const showCheckbox = budgets.length > 1;
-        return (
-            <List>{
-                budgets
-                    .map(budget => <BudgetListItem 
-                        showCheckbox={showCheckbox}
-                        key={`list-item-${budget.identifier}`} {...budget} 
-                        onChanged={handleChanged} 
-                        checked={selectedBudgets.has(budget.identifier)}/>)
-            }
-            </List>);
+        return <BudgetsListComponent 
+            budgets={[...budgets]} 
+            selected={selectedBudgets} 
+            onSelected={setSelectedBudgets}/>;
     } else {
-        return <List subheader={
-                    <ListSubheader component="div" id="no-budgets-header">
-                        {loc('No budgets')}
-                    </ListSubheader>}>
-                    <OptionItem
-                        primary={loc('Create new budget')} 
-                        icon={<AddIcon/>}
-                        path={BudgetPath.add} />
-                    <OptionItem
-                        primary={loc('Synchronize your account')} 
-                        icon={<SyncIcon/>}
-                        path={AppPaths.Sync} />
-                    <OptionItem
-                        primary={loc('Import from JSON')} 
-                        icon={<ImportExportIcon/>}
-                        path={AppPaths.ImportExport} />
-                </List>;
+        return <BudgetsListEmpty loc={loc}/>;
     }
 }
-
-interface OptionItemProps {
-    primary: string;
-    icon: React.ReactNode;
-    path: string;
-};
-
-const OptionItem: React.FC<OptionItemProps> = (props) => (
-    <ListItem component={Link} to={props.path} button>
-        <ListItemAvatar>
-            <Avatar>
-            {props.icon}
-            </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary={props.primary}></ListItemText>
-    </ListItem>
-);
 
 export default BudgetList;
