@@ -1,3 +1,7 @@
+# [3.2.1] - 2019-11-11
+## Change
+- Budgets in budget list view are sorted by end date.
+
 # [3.2.0] - 2019-11-11
 ## Add
 - Now you can move en expense from a budget to other.
