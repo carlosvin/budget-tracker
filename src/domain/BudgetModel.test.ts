@@ -204,7 +204,8 @@ describe('Expense operations', () => {
 
         expect(bm.totalExpenses).toBe(0);
         expect(bm.average).toBe(0);        
-
+        expect(bm.expenseGroupsOut).toBeTruthy();
+        expect(bm.expenseGroupsOut && bm.expenseGroupsOut.size).toBe(2);
     });
 
     it('Set expense split in dates with correct totals', () => {

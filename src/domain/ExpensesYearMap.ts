@@ -1,5 +1,6 @@
 import { ExpenseModel } from "./ExpenseModel";
 import { YMD } from "../api";
+import { DateDay } from "./DateDay";
 
 export class ExpensesYearMap extends Map<number, ExpensesMonthMap> {
 
@@ -100,6 +101,17 @@ export class ExpensesYearMap extends Map<number, ExpensesMonthMap> {
 
     get years(): Iterable<number> {
         return this.keys();
+    }
+
+    get allGroupedByDate() {
+        const byDate = new Map<string, Map<string, ExpenseModel>>();
+        for (const year of this.years) {
+            const byYear = this.getAllGroupedByDate(year);
+            if (byYear) {
+                byYear.forEach((v, k) => byDate.set(DateDay.fromTimeMs(k).shortString, v))
+            }
+        }
+        return byDate;
     }
 
 }

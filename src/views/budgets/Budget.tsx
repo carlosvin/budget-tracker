@@ -85,6 +85,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
                     <ExpensesCalendar 
                         budgetModel={budgetModel} 
                         onDaySelected={handleSelectedDay} /> }
+                    
                 </React.Fragment> 
                 { budgetModel.numberOfExpenses === 0 && 
                     <Typography variant='h5' color='textSecondary'>{loc('No expenses')}</Typography> }

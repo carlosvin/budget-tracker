@@ -15,6 +15,7 @@ export interface BudgetModel extends Budget {
     readonly average: number;
     readonly expectedDailyExpensesAverage: number;
     readonly expenseGroups: ExpensesYearMap;
+    readonly expenseGroupsOut?: ExpensesYearMap;
     readonly info: Budget;
 
     getTotalExpenses(year: number, month?: number, day?: number): number;

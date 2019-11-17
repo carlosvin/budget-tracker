@@ -11,6 +11,7 @@ export class BudgetModelImpl implements BudgetModel {
     private readonly _info: Budget;
     private readonly _expenses: Map<string, ExpenseModel>;
     private _expenseGroups?: ExpensesYearMap;
+    private _expenseGroupsOut?: ExpensesYearMap;
 
     private _nestedTotalExpenses?: NestedTotal;
 
@@ -202,7 +203,16 @@ export class BudgetModelImpl implements BudgetModel {
     private _addToTotal(expense: ExpenseModel) {
         if (expense.inBudgetDates(this._info)) {
             expense.addToTotals(this.nestedTotalExpenses);
+        } else {
+            if (this._expenseGroupsOut === undefined) {
+                this._expenseGroupsOut = new ExpensesYearMap();
+            }
+            this._expenseGroupsOut.addExpense(expense);
         }
+    }
+
+    get expenseGroupsOut() {
+        return this._expenseGroupsOut;
     }
 
     private _subtractTotal(expense: ExpenseModel) {
