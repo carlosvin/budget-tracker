@@ -16,7 +16,7 @@ class CurrenciesApi {
         if (!resp) {
             throw new Error(`There is no response for ${baseCurrency}`);
         }
-        if (expectedCurrencyMatch && resp && !(expectedCurrencyMatch in resp.rates)) {
+        if (expectedCurrencyMatch && expectedCurrencyMatch!==baseCurrency && resp && !(expectedCurrencyMatch in resp.rates)) {
             throw new Error(`There is no match for ${baseCurrency} => ${expectedCurrencyMatch}`);
         }
         if (Object.keys(resp.rates).length <= 0) {

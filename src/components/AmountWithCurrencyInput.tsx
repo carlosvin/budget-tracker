@@ -7,7 +7,8 @@ import { AmountInput } from "./AmountInput";
 import applyRate from "../domain/utils/applyRate";
 import { getCurrencyWithSymbol } from "../domain/utils/getCurrencyWithSymbol";
 import { useLoc } from "../hooks/useLoc";
-import { useRate } from "../hooks/useRate";
+import { useCurrenciesStore } from "../hooks/useCurrenciesStore";
+import { CurrenciesStore } from "../domain/stores/interfaces";
 
 interface AmountCurrencyInputProps  {
     selectedCurrency: string;
@@ -24,34 +25,52 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
 
     const loc  = useLoc();
     const [error, setError] = React.useState<string|undefined>(); 
-    const {baseCurrency, selectedCurrency} = props;
-    
+    const {baseCurrency, selectedCurrency, amountInput} = props;
+    const store = useCurrenciesStore();
+
+    const [rate, setRate] = React.useState<number|undefined>(0);
+
     const {onChange, onError} = props;
-    const rate = useRate(baseCurrency, selectedCurrency);
+
+    React.useEffect(() => {
+        async function fetch (store: CurrenciesStore) {
+            try {
+                const rate = await store.getRate(baseCurrency, selectedCurrency);
+                setRate(rate);    
+            } catch (error) {
+                setRate(undefined);
+            }
+        }
+
+        function setLocalRate (store: CurrenciesStore) {
+            const localRates = store.getLocalRates(baseCurrency);
+            if (localRates && selectedCurrency in localRates) {
+                setRate(localRates.rates[selectedCurrency]);
+            }
+        }
+
+        if (baseCurrency === selectedCurrency) {
+            setRate(1);
+        } else if (store) {
+            setLocalRate(store);
+            fetch(store);
+        }
+    }, [baseCurrency, selectedCurrency, store]);
+
+    React.useEffect(() => {
+        if (rate === undefined) {
+            setError('Cannot fetch rate');
+        } else if (amountInput !== undefined) {
+            const amountBase = applyRate(amountInput, rate);
+            setError(undefined);
+            onChange(amountInput, selectedCurrency, amountBase);
+        }
+    // eslint-disable-next-line
+    }, [rate, amountInput, selectedCurrency]);
 
     function handleChange(amount: number, currency: string) {
-        if (baseCurrency && currency && amount) {
-            if (baseCurrency === currency) {
-                onChange(amount, currency, amount);
-            } else {
-                try {
-                    onChange(amount, currency, calculateAmountInBaseCurrency(amount));
-                    setError(undefined);
-                } catch (error) {
-                    setError(error);
-                }
-            }
-        } else {
-            onChange(amount, currency, amount);
-        }
-    }
-
-    function calculateAmountInBaseCurrency(inputAmount: number) {
-        if (rate) {
-            return applyRate(inputAmount, rate);
-        } else {
-            throw new Error(loc('Error fetching currencies'));
-        }
+        setError(undefined);
+        onChange(amount, currency, 0);
     }
 
     React.useEffect(() => (onError && onError(error)), [error, onError]);
@@ -64,22 +83,19 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     }
 
     function handleCurrencyChange (currency: string) {
-        if (props.amountInput !== undefined) {
-            handleChange(props.amountInput, currency);
-        }
+        setRate(undefined);
+        handleChange(amountInput || 0, currency);
     }
 
     function handleAmountChange (amount: number) {
-        if (props.selectedCurrency) {
-            handleChange(amount, props.selectedCurrency);
-        }
+        handleChange(amount, selectedCurrency);
     }
     
     return (
         <Grid container direction='row' alignItems='baseline'>
             <Grid item>
                 <AmountInput
-                    amountInput={props.amountInput}
+                    amountInput={amountInput}
                     label={props.label}
                     onAmountChange={handleAmountChange}
                     helperText={baseAmountString()} 
