@@ -90,8 +90,7 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
      */
     private async fetchRates(baseCurrency: string, expectedCurrencyMatch?: string) {
         const rates = await currenciesApi.getRates(
-            baseCurrency, 
-            this.currencies.keys(),
+            baseCurrency,
             expectedCurrencyMatch);
         if (Object.keys(rates.rates).length > 0) {
             const olRates = this._rates[baseCurrency] || {};
