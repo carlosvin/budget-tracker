@@ -64,7 +64,7 @@
     "Error fetching currencies": "No se puede obtener el tipo de cambio",
     "Still add amount in base": "Aún puede añadir la cantidad en la moneda base del presupuesto",
     "Error converting to base": "Error al convertir el gasto a la moneda base del presupuesto",
-    "Connect to get last rates": "Por favor, conéctese a Internet para obtener los últimos tipos de cambio",
+    "Connect to get last rates": "Debe estar conectado a Internet para obtener los últimos tipos de cambio",
     "Amount": "Cantidad gastada",
 
     "By date": "Por fecha",

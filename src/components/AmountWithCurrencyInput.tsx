@@ -9,6 +9,7 @@ import { getCurrencyWithSymbol } from "../domain/utils/getCurrencyWithSymbol";
 import { useLoc } from "../hooks/useLoc";
 import { useCurrenciesStore } from "../hooks/useCurrenciesStore";
 import { CurrenciesStore } from "../domain/stores/interfaces";
+import Typography from "@material-ui/core/Typography";
 
 interface AmountCurrencyInputProps  {
     selectedCurrency: string;
@@ -110,9 +111,9 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
             { error !== undefined && 
             <Card>
                 <CardContent>
-                    {loc('Error converting to base')}.
-                    {loc('Connect to get last rates')}.
-                    {loc('Still add amount in base')}.
+                    <Typography color='error'>{loc('Error converting to base')}.</Typography>
+                    <Typography color='textPrimary'>{loc('Still add amount in base')}.</Typography>
+                    <Typography color='textSecondary'>{loc('Connect to get last rates')}.</Typography>
                 </CardContent>
             </Card> }
         </Grid>);
