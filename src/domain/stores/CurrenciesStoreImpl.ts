@@ -37,7 +37,11 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
                 console.warn(error);
             }
         }
-        return this._rates[baseCurrency].rates[currencyTo];
+        const rate = this._rates[baseCurrency].rates[currencyTo];
+        if (rate === undefined) {
+            throw Error(`Rate not found ${baseCurrency} > ${currencyTo}`);
+        }
+        return rate;
     }
 
     getLocalRates(baseCurrency: string) {
@@ -90,8 +94,7 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
      */
     private async fetchRates(baseCurrency: string, expectedCurrencyMatch?: string) {
         const rates = await currenciesApi.getRates(
-            baseCurrency, 
-            this.currencies.keys(),
+            baseCurrency,
             expectedCurrencyMatch);
         if (Object.keys(rates.rates).length > 0) {
             const olRates = this._rates[baseCurrency] || {};

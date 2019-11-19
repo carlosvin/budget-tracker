@@ -1,3 +1,11 @@
+# [3.3.0] - 2019-11-19
+## Fix
+- Race condition changing currencies and amounts in expense form.
+
+## Change
+- Switch from api.currencystack.io to api.exchangeratesapi.io.
+- Improve error messages when there is an error getting rates.
+
 # [3.2.1] - 2019-11-11
 ## Change
 - Budgets in budget list view are sorted by end date.
