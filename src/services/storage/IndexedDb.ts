@@ -1,6 +1,7 @@
 import { DbItem, SubStorageApi } from "./StorageApi";
 import { openDB, IDBPDatabase, DBSchema } from 'idb';
 import { Budget, Category, Expense, BudgetsMap, ExpensesMap, CategoriesMap, ExportDataSet, EntityNames } from "../../api";
+import { DateDay } from "../../domain/DateDay";
 
 interface ExpenseDb extends Expense, DbItem { }
 interface BudgetDb extends Budget, DbItem { }
@@ -34,14 +35,20 @@ export class IndexedDb implements SubStorageApi {
     private async createDb() {
         return openDB<Schema>(this.name, this.version, {
             upgrade(db) {
-                const budgetsStore = db.createObjectStore(EntityNames.Budgets, keyPath);
-                budgetsStore.createIndex('deleted, to', ['deleted', 'to']);
+                if (!(EntityNames.Budgets in db.objectStoreNames)) {
+                    const budgetsStore = db.createObjectStore(EntityNames.Budgets, keyPath);
+                    budgetsStore.createIndex('deleted, to', ['deleted', 'to']);    
+                }
 
-                const categoriesStore = db.createObjectStore(EntityNames.Categories, keyPath);
-                categoriesStore.createIndex('deleted, name', ['deleted', 'name']);
+                if (!(EntityNames.Categories in db.objectStoreNames)) {
+                    const categoriesStore = db.createObjectStore(EntityNames.Categories, keyPath);
+                    categoriesStore.createIndex('deleted, name', ['deleted', 'name']);
+                }
 
-                const expensesStore = db.createObjectStore(EntityNames.Expenses, keyPath);
-                expensesStore.createIndex('deleted, budgetId, when', ['deleted', 'budgetId', 'when']);
+                if (!(EntityNames.Expenses in db.objectStoreNames)) {
+                    const expensesStore = db.createObjectStore(EntityNames.Expenses, keyPath);
+                    expensesStore.createIndex('deleted, budgetId, when', ['deleted', 'budgetId', 'when']);
+                }
             },
         });
     }
@@ -113,9 +120,10 @@ export class IndexedDb implements SubStorageApi {
         const db = await this.getDb();
         const budget = await db.get(EntityNames.Budgets, budgetId);
         if (budget) {
+            const topDate = DateDay.fromTimeMs(budget.to).addYears(3).timeMs;
             const bound = IDBKeyRange.bound(
-                [0, budgetId, budget.from],
-                [0, budgetId, budget.to]);
+                [0, budgetId, 0],
+                [0, budgetId, topDate]);
             const expensesResult = await db.getAllFromIndex(
                 EntityNames.Expenses,
                 'deleted, budgetId, when',

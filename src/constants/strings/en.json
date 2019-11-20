@@ -86,5 +86,8 @@
 
     "Move to": "Move to",
     "Old": "Old",
-    "Active": "Active"
+    "Active": "Active",
+
+    "Expenses Out": "Expenses out of range",
+    "Expenses Out desc": "List with expenses out of budget dates range"
 }

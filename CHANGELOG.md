@@ -1,3 +1,7 @@
+# [3.4.0] - 2019-11-20
+## Add
+- Allow to edit expenses outside of budget dates range.
+
 # [3.3.0] - 2019-11-19
 ## Fix
 - Race condition changing currencies and amounts in expense form.

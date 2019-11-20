@@ -80,11 +80,13 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
                         totalBudget={budgetModel.info.total}
                         totalSpent={budgetModel.totalExpenses}
                         urlStats={url.pathStats}
+                        urlOut={budgetModel.expenseGroupsOut.size > 0 ? url.pathExpensesOut : undefined}
                         /> 
-                    { budgetModel.expenseGroups && 
+                    { budgetModel.expenseGroupsIn && 
                     <ExpensesCalendar 
                         budgetModel={budgetModel} 
                         onDaySelected={handleSelectedDay} /> }
+                    
                 </React.Fragment> 
                 { budgetModel.numberOfExpenses === 0 && 
                     <Typography variant='h5' color='textSecondary'>{loc('No expenses')}</Typography> }

@@ -60,11 +60,9 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
 
     async getExpensesByDay(budgetId: string, date: YMD) {
         const budgetModel = await this.getBudgetModel(budgetId);
-        if (budgetModel.expenseGroups) {
-            const expenses = budgetModel.expenseGroups.getExpenses(date);
-            if (expenses) {
-                return expenses;
-            }
+        const expenses = budgetModel.expenseGroupsIn.getExpenses(date);
+        if (expenses) {
+            return expenses;
         }
         throw new Error('No expenses found');
     }

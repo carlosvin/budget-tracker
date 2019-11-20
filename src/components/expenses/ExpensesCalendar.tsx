@@ -14,7 +14,7 @@ export const ExpensesCalendar: React.FC<ExpensesCalendarProps> = (props) => {
 
     return <React.Fragment>
         {
-            [...budgetModel.expenseGroups.years].reverse()
+            [...budgetModel.expenseGroupsIn.years].reverse()
                 .map(year => (
                     <CalendarYear 
                         budgetModel={budgetModel}

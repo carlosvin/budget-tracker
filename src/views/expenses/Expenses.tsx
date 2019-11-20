@@ -8,6 +8,7 @@ import { ExpensesByDate } from "../../components/expenses/ExpensesByDate";
 import { AddButton } from "../../components/buttons/AddButton";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useCategories } from "../../hooks/useCategories";
+import { ExpensesOutOfBudget } from "../../components/expenses/ExpensesOutOfBudget";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
@@ -31,10 +32,12 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     const month = getParamInt('month', params);
     const day = getParamInt('day', params);
     const category = params.get('category');
+    const outOfBudget = getParamInt('out', params);
 
     const budgetModel = useBudgetModel(budgetId);
     const categories = useCategories();
 
+    
     function ByCategory () {
         return (budgetModel && category && categories) ? 
             <ExpensesByCategory 
@@ -52,7 +55,20 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
             month={month}
             day={day}
             categories={categories}
-            {...props} /> : <CircularProgress/>;
+            {...props} /> : 
+            <CircularProgress/>;
+    }
+
+    function OutOfBudget () {
+        return (budgetModel && categories) ? 
+            <ExpensesOutOfBudget 
+                budget={budgetModel} 
+                categories={categories} {...props} /> : 
+            <CircularProgress/>;
+    }
+
+    if (outOfBudget) {
+       return <OutOfBudget/>;
     }
     
     return <React.Fragment>

@@ -6,11 +6,52 @@ import applyRate from "./utils/applyRate";
 import { BudgetModel } from "./BudgetModel";
 import { ExpensesYearMap, ExpensesDayMap } from "./ExpensesYearMap";
 
+class ExpenseGroups {
+    private readonly _in: ExpensesYearMap;
+    private readonly _out: ExpensesYearMap;
+    private readonly _budgetModel: BudgetModel;
+
+    constructor(budgetModel: BudgetModel) {
+        this._in = new ExpensesYearMap();
+        this._out = new ExpensesYearMap();
+        this._budgetModel = budgetModel;
+        for (const expense of this._budgetModel.expenses) {
+            for (const splitExpense of expense.split()) {
+                this.add(splitExpense);
+            }
+        }
+    }
+
+    add(expense: ExpenseModel) {
+        if (expense.inBudgetDates(this._budgetModel)) {
+            this._in.addExpense(expense);
+        } else {
+            this._out.addExpense(expense);
+        }
+    }
+
+    delete (expense: ExpenseModel) {
+        if (expense.inBudgetDates(this._budgetModel)) {
+            this._in.deleteExpense(expense);
+        } else {
+            this._out.deleteExpense(expense);
+        }
+    }
+
+    get inRange () {
+        return this._in;
+    }
+
+    get outRange () {
+        return this._out;
+    }
+}
+
 export class BudgetModelImpl implements BudgetModel {
 
     private readonly _info: Budget;
     private readonly _expenses: Map<string, ExpenseModel>;
-    private _expenseGroups?: ExpensesYearMap;
+    private _expenseGroups?: ExpenseGroups;
 
     private _nestedTotalExpenses?: NestedTotal;
 
@@ -21,9 +62,7 @@ export class BudgetModelImpl implements BudgetModel {
         this._info = info;
         this._expenses = new Map();
         for (const expense of expenses) {
-            this._expenses.set(
-                expense.identifier, 
-                new ExpenseModel(expense));
+            this._expenses.set(expense.identifier, new ExpenseModel(expense));
         }
     }
 
@@ -75,6 +114,21 @@ export class BudgetModelImpl implements BudgetModel {
         return this._nestedTotalExpenses;
     }
 
+    get expenseGroups() {
+        if (!this._expenseGroups) {
+            this._expenseGroups = new ExpenseGroups(this);
+        }
+        return this._expenseGroups;
+    }
+
+    get expenseGroupsIn(): ExpensesYearMap {
+        return this.expenseGroups.inRange;
+    }
+
+    get expenseGroupsOut(): ExpensesYearMap {
+        return this.expenseGroups.outRange;
+    }
+
     getTotalExpenses(year: number, month?: number, day?: number) {
         const keys = [year];
         month !== undefined && keys.push(month);
@@ -86,7 +140,7 @@ export class BudgetModelImpl implements BudgetModel {
         if (year === undefined) {
             return ExpensesYearMap.addExpensesByDate(this._expenses.values());
         } else {
-            return this.expenseGroups.getAllGroupedByDate(year, month, day);
+            return this.expenseGroupsIn.getAllGroupedByDate(year, month, day);
         }
     }
 
@@ -110,14 +164,14 @@ export class BudgetModelImpl implements BudgetModel {
         if (oldExpense) {
             const oldExpenses = oldExpense.split();
             for (const oe of oldExpenses) {
-                this.expenseGroups.deleteExpense(oe);
+                this.expenseGroups.delete(oe);
             }
             this._updateTotalExpenses(newExpense, oldExpense);
         } else {
             this._updateTotalExpenses(newExpense);
         }
         for (const ne of newExpense.split()) {
-            this.expenseGroups.addExpense(ne);
+            this.expenseGroups.add(ne);
         }
         this._expenses.set(expense.identifier, newExpense);
     }
@@ -160,21 +214,10 @@ export class BudgetModelImpl implements BudgetModel {
         const expense = this._expenses.get(expenseId);
         if (expense && this._expenses.delete(expenseId)) {
             this._subtractTotal(expense);
-            this.expenseGroups.deleteExpense(expense);
+            this.expenseGroups.delete(expense);
             return true;
         }
         return false;
-    }
-
-    get expenseGroups() {
-        if (!this._expenseGroups) {
-            const eg = new ExpensesYearMap();
-            this._expenses
-                .forEach(expense => expense.split()
-                .forEach(splitExpense => eg.addExpense(splitExpense)));
-            this._expenseGroups = eg;
-        }
-        return this._expenseGroups;
     }
 
     private static _getBaseAmount(expense: Expense, rates: CurrencyRates) {
@@ -202,7 +245,7 @@ export class BudgetModelImpl implements BudgetModel {
     private _addToTotal(expense: ExpenseModel) {
         if (expense.inBudgetDates(this._info)) {
             expense.addToTotals(this.nestedTotalExpenses);
-        }
+        }    
     }
 
     private _subtractTotal(expense: ExpenseModel) {

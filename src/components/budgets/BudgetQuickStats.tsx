@@ -16,9 +16,20 @@ interface BudgetQuickStatsProps {
     expectedDailyAverage: number,
     dailyAverage?: number,
     urlStats?: string;
+    urlOut?: string;
 }
 
 const spacing = '0.5rem';
+
+const ActionButton: React.FC<{url: string}> = ({url, children}) => (
+     <Button
+        size='small'
+        component={Link}
+        color='primary'
+        to={url}>
+        {children}
+    </Button>
+);
 
 export const BudgetQuickStats: React.FC<BudgetQuickStatsProps> = (props) => {
     const loc = useLoc();
@@ -41,14 +52,13 @@ export const BudgetQuickStats: React.FC<BudgetQuickStatsProps> = (props) => {
                         spent={props.dailyAverage}
                         title={loc('Daily Average')} /></Box>}
         </CardContent>
-        {props.urlStats && <CardActions>
-            <Button
-                size='small'
-                component={Link}
-                color='primary'
-                to={props.urlStats}>
+        <CardActions>
+            { props.urlStats && <ActionButton url={props.urlStats}>
                 {loc('More Stats')}
-            </Button>
-        </CardActions>}
+            </ActionButton> }
+            { props.urlOut && <ActionButton url={props.urlOut}>
+                {loc('Expenses Out')}
+            </ActionButton> }
+        </CardActions>
     </Card>;
 }

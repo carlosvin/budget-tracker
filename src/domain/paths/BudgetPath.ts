@@ -23,6 +23,10 @@ export class BudgetPath {
         return `${this.path}/expenses`;   
     }
 
+    get pathExpensesOut () {
+        return `${this.pathExpenses}?out=1`;
+    }
+
     get pathAddExpense () {
         return `${this.path}/expenses/add`;   
     }
