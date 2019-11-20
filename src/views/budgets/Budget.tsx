@@ -81,7 +81,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
                         totalSpent={budgetModel.totalExpenses}
                         urlStats={url.pathStats}
                         /> 
-                    { budgetModel.expenseGroups && 
+                    { budgetModel.expenseGroupsIn && 
                     <ExpensesCalendar 
                         budgetModel={budgetModel} 
                         onDaySelected={handleSelectedDay} /> }

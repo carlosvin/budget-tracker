@@ -16,14 +16,14 @@ interface CalendarYearProps {
 export const CalendarYear: React.FC<CalendarYearProps> = (props) => {
 
     const {budgetModel, year} = props;
-    const {expenseGroups, currency, identifier} = budgetModel;
+    const {expenseGroupsIn, currency, identifier} = budgetModel;
     const url = new BudgetPath(identifier);
 
     return (
     <React.Fragment>
-        {[...expenseGroups.getMonths(year)].reverse().map((month) => (
+        {[...expenseGroupsIn.getMonths(year)].reverse().map((month) => (
             <CalendarMonth
-                days={expenseGroups.getDays(year, month)}
+                days={expenseGroupsIn.getDays(year, month)}
                 key={`calendar-month-${year}-${month}`} 
                 budgetModel={budgetModel}
                 onDaySelected={props.onDaySelected}

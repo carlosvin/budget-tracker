@@ -4,13 +4,13 @@ import { ObjectMap } from "../../api";
 
 export function getTotalDaysByCountry (budgetModel: BudgetModel) {
     const daysByCountry: ObjectMap<number> = {};
-    const {expenseGroups, from} = budgetModel;
+    const {expenseGroupsIn, from} = budgetModel;
     const todayMs = Date.now();
     const fromDay = DateDay.fromTimeMs(from);
     const countriesInADay = new Set<string>();
 
     do {
-        const expenses = expenseGroups.getExpenses(fromDay);
+        const expenses = expenseGroupsIn.getExpenses(fromDay);
         if (expenses) {
             countriesInADay.clear();
             expenses.forEach(e => countriesInADay.add(e.countryCode));

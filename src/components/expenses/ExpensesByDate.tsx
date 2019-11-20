@@ -89,7 +89,7 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
     }, [year, month, day, path]);
 
     React.useEffect(() => {
-        const expenseGroups = budget.expenseGroups;
+        const expenseGroups = budget.expenseGroupsIn;
         if (expenseGroups) {
             const expensesByDay: ExpensesDayMap|undefined = budget.getExpensesByDay(year, month, day);
             if (expensesByDay) {

@@ -61,7 +61,7 @@ describe('Budget Model Creation', () => {
                 new ExpenseModel({...splitExpense, when: dateDay.timeMs})));
 
         const bm = await store.getBudgetModel(budgetInfo.identifier);
-        expect(expectedGroups).toStrictEqual(bm.expenseGroups);
+        expect(expectedGroups).toStrictEqual(bm.expenseGroupsIn);
 
         const observedByDay = expectedDates.map(d => bm.getTotalExpenses(d.year, d.month, d.day));
         expect(observedByDay).toStrictEqual([1,1,1,1]);

@@ -16,7 +16,7 @@ describe('Budget Model Creation', () => {
         expect(bm.daysPassed).toBe(16);
         expect(bm.totalDays).toBe(30);
         expect(bm.expectedDailyExpensesAverage).toBe(33);
-        expect(bm.expenseGroups).toStrictEqual(new ExpensesYearMap());
+        expect(bm.expenseGroupsIn).toStrictEqual(new ExpensesYearMap());
         expect(await bm.average).toBe(0);
         expect(() => bm.getExpense('whatever')).toThrowError('Expense with ID "whatever" not found');
         expect(await bm.totalExpenses).toBe(0);
@@ -50,7 +50,7 @@ describe('Budget Model Creation', () => {
         expectedGroups.addExpense(em1);
         expectedGroups.addExpense(em2);
 
-        expect(bm.expenseGroups).toStrictEqual(expectedGroups);
+        expect(bm.expenseGroupsIn).toStrictEqual(expectedGroups);
 
         expect(bm.totalExpenses).toBe(200);
         expect(bm.expectedDailyExpensesAverage).toBe(Math.round(bm.info.total / bm.totalDays));
@@ -76,7 +76,7 @@ describe('Budget Model Creation', () => {
         expect(bm.getExpense('1').info).toStrictEqual(expense1);
         expect(bm.getExpense('2').info).toStrictEqual(expense2);
 
-        expect(bm.expenseGroups).toStrictEqual(expectedGroups);
+        expect(bm.expenseGroupsIn).toStrictEqual(expectedGroups);
     });
 
     it('Budget in the past', async () => {
@@ -122,7 +122,7 @@ describe('Expense operations', () => {
         const budget = createBudget();
         const expense1 = createExpense('1', budget);
         const bm = new BudgetModelImpl(budget, [expense1]);
-        bm.expenseGroups.deleteExpense(new ExpenseModel(expense1));
+        bm.expenseGroupsIn.deleteExpense(new ExpenseModel(expense1));
         expect(bm.deleteExpense('1')).toBe(true);
     });
     
@@ -143,11 +143,11 @@ describe('Expense operations', () => {
         expect(bm.getExpense('2').amountBaseCurrency)
             .toBe(modifiedExpense2.amountBaseCurrency);
 
-        const expenseGroups = new ExpensesYearMap(); 
-        expenseGroups.addExpense(new ExpenseModel(expense1));
-        expenseGroups.addExpense(new ExpenseModel(modifiedExpense2));
+        const expenseGroupsIn = new ExpensesYearMap(); 
+        expenseGroupsIn.addExpense(new ExpenseModel(expense1));
+        expenseGroupsIn.addExpense(new ExpenseModel(modifiedExpense2));
     
-        expect(bm.expenseGroups).toStrictEqual(expenseGroups);
+        expect(bm.expenseGroupsIn).toStrictEqual(expenseGroupsIn);
     
         const modifiedExpense2Date = {
             ...expense2, 
@@ -165,7 +165,7 @@ describe('Expense operations', () => {
         const expenseGroupsModified = new ExpensesYearMap();
         expenseGroupsModified.addExpense(new ExpenseModel(expense1));
         expenseGroupsModified.addExpense(new ExpenseModel(modifiedExpense2Date));
-        expect(bm.expenseGroups).toStrictEqual(expenseGroupsModified);
+        expect(bm.expenseGroupsIn).toStrictEqual(expenseGroupsModified);
     });
 
     it('Sets Expense without base amount throws error', () => {
@@ -204,8 +204,8 @@ describe('Expense operations', () => {
 
         expect(bm.totalExpenses).toBe(0);
         expect(bm.average).toBe(0);        
-        expect(bm.expenseGroupsOut).toBeTruthy();
         expect(bm.expenseGroupsOut && bm.expenseGroupsOut.size).toBe(2);
+        expect(bm.expenseGroupsIn && bm.expenseGroupsIn.size).toBe(0);
     });
 
     it('Set expense split in dates with correct totals', () => {
@@ -243,7 +243,7 @@ describe('Expense operations', () => {
                     bm.getTotalExpenses(date.year, date.month, date.day)
                 ).toBe(amountBaseCurrency / splitInDays);
 
-                const expensesInDay = bm.expenseGroups.getAllGroupedByDate(date.year, date.month, date.day);
+                const expensesInDay = bm.expenseGroupsIn.getAllGroupedByDate(date.year, date.month, date.day);
                 expect(expensesInDay).toBeTruthy();
                 const expensesMap = expensesInDay && expensesInDay.get(date.timeMs);
                 expect(expensesMap).toBeTruthy();
@@ -290,11 +290,13 @@ describe('Expense groups in budget model', () => {
         };
         const bm = new BudgetModelImpl(budget, [expense1, expense2]);
     
-        const expenseGroups = new ExpensesYearMap();
-        expenseGroups.addExpense(new ExpenseModel(expense1));
-        expenseGroups.addExpense(new ExpenseModel(expense2));
+        const expenseGroupsIn = new ExpensesYearMap();
+        expenseGroupsIn.addExpense(new ExpenseModel(expense1));
+        const expenseGroupsOut = new ExpensesYearMap();
+        expenseGroupsOut.addExpense(new ExpenseModel(expense2));
     
-        expect(bm.expenseGroups).toStrictEqual(expenseGroups);
+        expect(bm.expenseGroupsIn).toStrictEqual(expenseGroupsIn);
+        expect(bm.expenseGroupsOut).toStrictEqual(expenseGroupsOut);
     
         expect(bm.totalExpenses).toBe(98);
         expect(bm.daysPassed).toBe(16);
@@ -420,9 +422,9 @@ describe('Number of days in a country', () => {
                 when: new Date(fromDate.year + 3, fromDate.month, fromDate.day).getTime()
             },
             createExpense('2', info)];
-        const {expenseGroups} = new BudgetModelImpl(info, expenses);
+        const {expenseGroupsIn} = new BudgetModelImpl(info, expenses);
 
-        expect(Array.from(expenseGroups.years))
+        expect(Array.from(expenseGroupsIn.years))
             .toEqual([fromDate.year + 3, fromDate.year]);
     });
 
@@ -441,18 +443,18 @@ describe('Number of days in a country', () => {
             }
         };
         const model = new BudgetModelImpl(info, Object.values(expenses));
-        const {expenseGroups} = model;
+        const {expenseGroupsIn} = model;
 
         if (day1.month === day2.month) {
             expect(
-                Array.from(expenseGroups.getDays(day1.year, day1.month))
+                Array.from(expenseGroupsIn.getDays(day1.year, day1.month))
             ).toStrictEqual([day1.day, day2.day]);    
         } else {
             expect(
-                expenseGroups.getDays(day1.year, day1.month)
+                expenseGroupsIn.getDays(day1.year, day1.month)
             ).toStrictEqual([day1.day]);    
             expect(
-                expenseGroups.getDays(day2.year, day2.month)
+                expenseGroupsIn.getDays(day2.year, day2.month)
             ).toStrictEqual([day2.day]);    
         }
     });

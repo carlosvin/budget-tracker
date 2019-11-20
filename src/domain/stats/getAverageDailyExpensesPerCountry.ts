@@ -6,9 +6,9 @@ import { ObjectMap } from "../../api";
 export function getAverageDailyExpensesPerCountry(budget: BudgetModel) {
     const totals = new NestedTotal();
     const toMs = Math.min(new DateDay().timeMs, budget.to);
-    const {from, expenseGroups} = budget;
+    const {from, expenseGroupsIn} = budget;
     
-    for (const [year, months] of expenseGroups) {
+    for (const [year, months] of expenseGroupsIn) {
         for (const [month, days] of months) {
             for (const [day, expenses] of days) {
                 let prevCountry;
