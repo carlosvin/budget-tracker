@@ -7,49 +7,22 @@ class CurrenciesApi {
     private _backup?: RemoteApi;
 
     constructor () {
-        this.primary = new RemoteApi('https://api.currencystack.io');
+        this.primary = new RemoteApi('https://api.exchangeratesapi.io');
     }
 
-    // most likely it won't be instantiated, that's why it is lazy loaded
-    private get backup () {
-        if (this._backup === undefined) {
-            this._backup = new RemoteApi('https://api.exchangeratesapi.io');
-        }
-        return this._backup;
-    }
-
-    private async getRatesBackup (baseCurrency: string) {
-        return this.backup.get<CurrencyRates>('latest', {base: baseCurrency});
-    }
-
-    private async getRatesPrimary (baseCurrency: string, targetCurrencies: Iterable<string>) {
-        return this.primary.get<CurrencyRates>('currency', 
-            {
-                base: baseCurrency,
-                target: Array.from(targetCurrencies).join(','),
-                apikey: process.env.REACT_APP_CURRENCY_API_KEY || ''
-            });
-    }
+    async getRates(baseCurrency: string, expectedCurrencyMatch?: string) {
+        const resp = await this.primary.get<CurrencyRates>('latest', {base: baseCurrency});
     
-    async getRates(baseCurrency: string, availableCurrencies: Iterable<string>, expectedCurrencyMatch?: string) {
-        let resp;
-        try {
-            resp = await this.getRatesPrimary(baseCurrency, availableCurrencies);
-        } catch (error) {
-            console.warn('Trying to fetch backup API: ', error);
-            resp = await this.getRatesBackup(baseCurrency);
-        } finally {
-            if (!resp) {
-                throw new Error(`There is no response for ${baseCurrency}`);
-            }
-            if (expectedCurrencyMatch && resp && !(expectedCurrencyMatch in resp.rates)) {
-                throw new Error(`There is no match for ${baseCurrency} => ${expectedCurrencyMatch}`);
-            }
-            if (Object.keys(resp.rates).length <= 0) {
-                throw new Error(`Empty response for ${baseCurrency}`);
-            }
-            return resp;
+        if (!resp) {
+            throw new Error(`There is no response for ${baseCurrency}`);
         }
+        if (expectedCurrencyMatch && expectedCurrencyMatch!==baseCurrency && resp && !(expectedCurrencyMatch in resp.rates)) {
+            throw new Error(`There is no match for ${baseCurrency} => ${expectedCurrencyMatch}`);
+        }
+        if (Object.keys(resp.rates).length <= 0) {
+            throw new Error(`Empty response for ${baseCurrency}`);
+        }
+        return resp;
     }
 }
 

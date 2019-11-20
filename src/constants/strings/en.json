@@ -64,7 +64,7 @@
     "Error fetching currencies": "Cannot get currency exchange rate",
     "Still add amount in base": "You can still add the amount in budget base currency",
     "Error converting to base": "Error calculating amount in base currency",
-    "Connect to get last rates": "Please connect to Internet to get last currency rates",
+    "Connect to get last rates": "You must be connected to Internet to get last currency rates",
     "Amount": "Amount",
 
     "By date": "By date",
