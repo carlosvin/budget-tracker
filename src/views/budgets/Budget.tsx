@@ -80,6 +80,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
                         totalBudget={budgetModel.info.total}
                         totalSpent={budgetModel.totalExpenses}
                         urlStats={url.pathStats}
+                        urlOut={budgetModel.expenseGroupsOut.size > 0 ? url.pathExpensesOut : undefined}
                         /> 
                     { budgetModel.expenseGroupsIn && 
                     <ExpensesCalendar 

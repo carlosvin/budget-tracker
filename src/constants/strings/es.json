@@ -86,6 +86,8 @@
 
     "Move to": "Mover a",
     "Old": "Antiguo",
-    "Active": "Activo"
+    "Active": "Activo",
 
+    "Expenses Out": "Gastos fuera del presupuesto",
+    "Expenses Out desc": "Listado con los gastos fuera de las fechas del presupuesto"
 }

@@ -8,7 +8,7 @@ import { ExpensesByDate } from "../../components/expenses/ExpensesByDate";
 import { AddButton } from "../../components/buttons/AddButton";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useCategories } from "../../hooks/useCategories";
-import { ExpenseList } from "../../components/expenses/ExpenseList";
+import { ExpensesOutOfBudget } from "../../components/expenses/ExpensesOutOfBudget";
 
 interface ExpensesViewProps extends
     HeaderNotifierProps,
@@ -37,6 +37,7 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
     const budgetModel = useBudgetModel(budgetId);
     const categories = useCategories();
 
+    
     function ByCategory () {
         return (budgetModel && category && categories) ? 
             <ExpensesByCategory 
@@ -54,14 +55,20 @@ export const ExpensesView: React.FC<ExpensesViewProps> = (props) => {
             month={month}
             day={day}
             categories={categories}
-            {...props} /> : <CircularProgress/>;
+            {...props} /> : 
+            <CircularProgress/>;
     }
 
-    if (outOfBudget && budgetModel && categories) {
-        return <ExpenseList 
-            budget={budgetModel} 
-            categories={categories} 
-            expensesByGroup={ budgetModel.expenseGroupsOut ? budgetModel.expenseGroupsOut.allGroupedByDate : new Map()}/>
+    function OutOfBudget () {
+        return (budgetModel && categories) ? 
+            <ExpensesOutOfBudget 
+                budget={budgetModel} 
+                categories={categories} {...props} /> : 
+            <CircularProgress/>;
+    }
+
+    if (outOfBudget) {
+       return <OutOfBudget/>;
     }
     
     return <React.Fragment>
