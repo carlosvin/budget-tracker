@@ -1,43 +1,51 @@
 import * as React from 'react';
 import { TextInput } from './TextInput';
 import { CountryEntry } from '../api';
-import { useCountriesStore } from '../hooks/useCountriesStore';
 import { useLoc } from '../hooks/useLoc';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { useCountriesStore } from '../hooks/useCountriesStore';
 
 interface CountryInputProps {
-    onCountryChange: (countryCode: string) => void;
-    selectedCountry: string;
+    onChange: (countryCode: string) => void;
+    disabled?: boolean;
+    selected: string;
 }
 
-export const CountryInput: React.FC<CountryInputProps> = (props) => {
+export const CountryInput: React.FC<CountryInputProps> = ({selected, disabled, onChange}) => {
     const loc = useLoc();
-    const [countries, setCountries] = React.useState<CountryEntry[]>([{name: loc('Countries'), code: props.selectedCountry}]);
-    const countriesStore = useCountriesStore();
+    const store = useCountriesStore();
 
-    React.useEffect(() => {
-        countriesStore && setCountries(countriesStore.countries);
-    }, [countriesStore]);
+    const {countries, defaultValue} = React.useMemo(
+        () => (store ? 
+            {
+                countries: store.countries,
+                defaultValue: store.countries.find(c => c.code === selected)
+            } : 
+            {countries: [], defaultValue: undefined}),
+        // eslint-disable-next-line
+        [store]);
 
-    function handleCountryChange(e: React.ChangeEvent<HTMLInputElement>) {
-        props.onCountryChange(e.target.value);
+    function handleChange (event: React.ChangeEvent<{}>, value: CountryEntry) {
+        onChange(value.code);
     }
 
-    return (<TextInput
-        label={loc('Country')}
-        onChange={handleCountryChange}
-        value={props.selectedCountry}
-        select
-        required 
-        SelectProps={{ native: true }} >
-        {
-            countries
-                .map(c => (
-                    <option 
-                        key={`country-option-${c.code}`} 
-                        value={c.code}>
-                        {c.name}
-                    </option>))}
-    </TextInput>);
+    return ( countries.length > 0 ? 
+        <Autocomplete
+            id='currencies-input-autocomplete'
+            options={countries} 
+            onChange={handleChange}
+            defaultValue={defaultValue}
+            getOptionLabel={(option: CountryEntry) => option.name}
+            loading={!defaultValue}
+            disableClearable autoComplete
+            renderInput={(params: any) => (
+                <TextInput {...params} 
+                    label={loc('Country')}
+                    disabled={disabled}
+                    required fullWidth />
+            )}
+        /> : <p>loading</p>
+    );
 }
 
 export default CountryInput;
