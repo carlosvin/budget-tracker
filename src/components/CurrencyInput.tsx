@@ -1,57 +1,72 @@
 import React from 'react';
-import { TextInput } from './TextInput';
-import { useCurrenciesStore } from '../hooks/useCurrenciesStore';
 import { useLoc } from '../hooks/useLoc';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { TextInput } from './TextInput';
 
 export interface CurrencyInputProps  {
     onCurrencyChange: (selected: string) => void;
-    selectedCurrency?: string;
+    currencies: Map<string, string>;
+    valuesToTop: string[];
+    selectedCurrency: string;
     disabled?: boolean;
+}
+
+interface CurrencyOption {
+    code: string;
+    name: string;
+}
+
+function createOption (currencies: Map<string, string>, code: string): CurrencyOption {
+    return {code, name: currencies.get(code) || code };
 }
 
 export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
 
-    const {onCurrencyChange} = props;
-    const store = useCurrenciesStore();
+    const {onCurrencyChange, selectedCurrency, valuesToTop, currencies} = props;
     const loc = useLoc();
 
+    const [value, setValue] = React.useState<CurrencyOption>(
+        createOption(currencies, selectedCurrency));
+    
     const options = React.useMemo(() => {
-        function createOption (k: string, v: string) {
-            return <option key={`currency-option-${k}`} value={k}>{v}</option>;
-        }
-
-        const opts: React.ReactElement[] = [];
-        if (store) {
-            const {currencies, lastCurrenciesUsed} = store;
-            const currenciesMix = new Set([...lastCurrenciesUsed, ...currencies.keys()]);
-            for (const code of currenciesMix) {
-                const name = currencies.get(code);
-                name && opts.push(createOption(code, name));
-            }
-        } else {
-            opts.push(createOption('loading', 'Loading'));
+        const opts: CurrencyOption[] = [];
+        const currenciesMix = new Set([...valuesToTop, ...currencies.keys()]);
+        for (const code of currenciesMix) {
+            opts.push(createOption(currencies, code));
         }
         return opts;
-    }, [store]);
+    }, [currencies, valuesToTop]);
 
-    function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-        const selectedValue = event.target.value;
-        if (onCurrencyChange && selectedValue) {
-            onCurrencyChange(selectedValue);
+    React.useEffect(() => {
+        const name = currencies.get(selectedCurrency);
+        name && setValue({code: selectedCurrency, name});
+    }, [currencies, selectedCurrency]);
+
+    function handleChange(event: React.ChangeEvent<any>, value: CurrencyOption) {
+        event.preventDefault();
+        setValue(value);
+        if (onCurrencyChange && value && value.code) {
+            onCurrencyChange(value.code);
         }
     }
 
     return (
-        <TextInput
-            label={loc('Currency')}
-            select
-            SelectProps={{ native: true }}
+        <Autocomplete
+            id='currencies-input-autocomplete'
+            options={options} 
             onChange={handleChange}
-            value={props.selectedCurrency}
-            required
-            disabled={props.disabled}
-        >
-            { options }
-        </TextInput>
+            defaultValue={value}
+            value={value}
+            getOptionLabel={(option: CurrencyOption) => option.name}
+            loading={options.length === 0}
+            disableClearable autoComplete
+            renderInput={(params: any) => (
+                <TextInput {...params} 
+                    label={loc('Currency')}
+                    disabled={props.disabled}
+                    required
+                    fullWidth />
+            )}
+        />
     );
 }

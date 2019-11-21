@@ -39,6 +39,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                 const rate = await store.getRate(baseCurrency, selectedCurrency);
                 setRate(rate);    
             } catch (error) {
+                console.warn(error);
                 setRate(undefined);
             }
         }
@@ -93,8 +94,13 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     }
     
     return (
-        <Grid container direction='row' alignItems='baseline'>
-            <Grid item>
+        <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="baseline"
+            >
+                <Grid item>
                 <AmountInput
                     amountInput={amountInput}
                     label={props.label}
@@ -103,10 +109,13 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                     disabled={props.disabled}/>
             </Grid>
             <Grid item >
-                <CurrencyInput 
+                { store && <CurrencyInput 
+                    currencies={store.currencies}
+                    valuesToTop={[...store.lastCurrenciesUsed]}
                     selectedCurrency={props.selectedCurrency}
                     onCurrencyChange={handleCurrencyChange} 
                     disabled={props.disabled}/>
+                }
             </Grid>
             { error !== undefined && 
             <Card>
