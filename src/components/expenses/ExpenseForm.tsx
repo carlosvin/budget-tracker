@@ -128,7 +128,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                 justify='space-between'
                 alignItems='baseline'
                 alignContent='stretch'>
-                <Grid item >
+                <Grid item>
                     { currency && <AmountWithCurrencyInput
                         label={loc('Amount')}
                         baseCurrency={ props.baseCurrency }
@@ -145,10 +145,10 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                 <Grid item>
                     <WhenInput />
                 </Grid>
-                <Grid item>
+                <Grid item xl={12} xs={6}>
                     { countryCode && <CountryInput 
-                        selectedCountry={ countryCode } 
-                        onCountryChange={ handleCountry }/>
+                        selected={ countryCode } 
+                        onChange={ handleCountry }/>
                     }
                 </Grid>
                 <Grid item >

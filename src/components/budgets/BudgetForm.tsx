@@ -7,6 +7,7 @@ import { AmountInput } from '../AmountInput';
 import { CurrencyInput } from '../CurrencyInput';
 import { SaveButtonFab } from '../buttons/SaveButton';
 import { useLoc } from '../../hooks/useLoc';
+import { useCurrenciesStore } from '../../hooks/useCurrenciesStore';
 
 interface BudgetFormProps {
     budget: Budget;
@@ -20,6 +21,13 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
     const [saveDisabled, setSaveDisabled] = React.useState(true);
     const {disabled} = props;
     const loc = useLoc();
+    const store = useCurrenciesStore();
+
+    const {currencies, lastCurrenciesUsed} = React.useMemo(() => (
+        store ? 
+            {currencies: store.currencies, lastCurrenciesUsed: [...store.lastCurrenciesUsed]} : 
+            {currencies: new Map(), lastCurrenciesUsed: []}
+    ), [store]);
 
     function onChange () {
         setError(undefined);
@@ -82,11 +90,13 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
                 label={loc('Total')}
                 amountInput={budget.total}
             />
-            <CurrencyInput 
+            { store && <CurrencyInput 
                 disabled={disabled}
                 onCurrencyChange={handleCurrencyChange}
                 selectedCurrency={budget.currency}
-            />
+                currencies={currencies}
+                valuesToTop={lastCurrenciesUsed}
+            /> }
             <SaveButtonFab disabled={disabled || saveDisabled} color='primary' type='submit'/>
         </form>
     );

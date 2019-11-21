@@ -1,3 +1,7 @@
+# [3.5.0] - 2019-11-21
+## Add
+- Use auto complete for currencies and countries selection.
+
 # [3.4.0] - 2019-11-20
 ## Add
 - Allow to edit expenses outside of budget dates range.

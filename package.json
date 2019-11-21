@@ -1,10 +1,11 @@
 {
     "name": "budget-tracker",
-    "version": "3.4.0",
+    "version": "3.5.0",
     "private": true,
     "dependencies": {
         "@material-ui/core": "^4",
         "@material-ui/icons": "^4",
+        "@material-ui/lab": "^4.0.0-alpha.32",
         "firebase": "^7",
         "firebaseui": "^4",
         "idb": "^4",

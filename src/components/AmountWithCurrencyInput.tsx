@@ -1,5 +1,4 @@
 import * as React from "react";
-import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { CurrencyInput } from "./CurrencyInput";
@@ -39,7 +38,8 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                 const rate = await store.getRate(baseCurrency, selectedCurrency);
                 setRate(rate);    
             } catch (error) {
-                setRate(undefined);
+                console.warn(error);
+                setError(error);
             }
         }
 
@@ -59,9 +59,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     }, [baseCurrency, selectedCurrency, store]);
 
     React.useEffect(() => {
-        if (rate === undefined) {
-            setError('Cannot fetch rate');
-        } else if (amountInput !== undefined) {
+        if (rate !== undefined && amountInput !== undefined) {
             const amountBase = applyRate(amountInput, rate);
             setError(undefined);
             onChange(amountInput, selectedCurrency, amountBase);
@@ -92,22 +90,20 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         handleChange(amount, selectedCurrency);
     }
     
-    return (
-        <Grid container direction='row' alignItems='baseline'>
-            <Grid item>
+    return (<React.Fragment>
                 <AmountInput
                     amountInput={amountInput}
                     label={props.label}
                     onAmountChange={handleAmountChange}
                     helperText={baseAmountString()} 
                     disabled={props.disabled}/>
-            </Grid>
-            <Grid item >
-                <CurrencyInput 
+                { store && <CurrencyInput 
+                    currencies={store.currencies}
+                    valuesToTop={[...store.lastCurrenciesUsed]}
                     selectedCurrency={props.selectedCurrency}
                     onCurrencyChange={handleCurrencyChange} 
                     disabled={props.disabled}/>
-            </Grid>
+                }
             { error !== undefined && 
             <Card>
                 <CardContent>
@@ -116,7 +112,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                     <Typography color='textSecondary'>{loc('Connect to get last rates')}.</Typography>
                 </CardContent>
             </Card> }
-        </Grid>);
+        </React.Fragment>);
 }
 
 export default AmountWithCurrencyInput;

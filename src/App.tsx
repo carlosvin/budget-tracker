@@ -8,8 +8,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { BudgetTracker } from './api';
 import { AppProvider } from './contexts/AppContext';
-import { createMuiTheme } from '@material-ui/core';
-import { ThemeProvider } from '@material-ui/styles';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 const theme = createMuiTheme({palette: { primary: { main: '#4a148c' }}});
 
