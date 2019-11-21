@@ -1,5 +1,4 @@
 import * as React from "react";
-import Grid from "@material-ui/core/Grid";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import { CurrencyInput } from "./CurrencyInput";
@@ -91,22 +90,13 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         handleChange(amount, selectedCurrency);
     }
     
-    return (
-        <Grid
-            container
-            direction="row"
-            justify="flex-start"
-            alignItems="baseline"
-            >
-                <Grid item>
+    return (<React.Fragment>
                 <AmountInput
                     amountInput={amountInput}
                     label={props.label}
                     onAmountChange={handleAmountChange}
                     helperText={baseAmountString()} 
                     disabled={props.disabled}/>
-            </Grid>
-            <Grid item >
                 { store && <CurrencyInput 
                     currencies={store.currencies}
                     valuesToTop={[...store.lastCurrenciesUsed]}
@@ -114,7 +104,6 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                     onCurrencyChange={handleCurrencyChange} 
                     disabled={props.disabled}/>
                 }
-            </Grid>
             { error !== undefined && 
             <Card>
                 <CardContent>
@@ -123,7 +112,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                     <Typography color='textSecondary'>{loc('Connect to get last rates')}.</Typography>
                 </CardContent>
             </Card> }
-        </Grid>);
+        </React.Fragment>);
 }
 
 export default AmountWithCurrencyInput;

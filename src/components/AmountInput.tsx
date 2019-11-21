@@ -18,8 +18,7 @@ export const AmountInput: React.FC<AmountInputProps> = (props) => {
 
     return (
         <TextInput
-            autoFocus
-            required
+            autoFocus required
             type='number'
             label={props.label}
             value={props.amountInput || ''}
