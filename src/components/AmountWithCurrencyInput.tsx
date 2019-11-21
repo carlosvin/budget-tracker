@@ -40,7 +40,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                 setRate(rate);    
             } catch (error) {
                 console.warn(error);
-                setRate(undefined);
+                setError(error);
             }
         }
 
@@ -60,9 +60,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     }, [baseCurrency, selectedCurrency, store]);
 
     React.useEffect(() => {
-        if (rate === undefined) {
-            setError('Cannot fetch rate');
-        } else if (amountInput !== undefined) {
+        if (rate !== undefined && amountInput !== undefined) {
             const amountBase = applyRate(amountInput, rate);
             setError(undefined);
             onChange(amountInput, selectedCurrency, amountBase);
