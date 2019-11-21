@@ -1,3 +1,8 @@
+# [3.6.0] - 2019-11-21
+## Add
+- Ability to navigate to expenses by category from budget stats view.
+- Use auto complete for categories selection.
+
 # [3.5.0] - 2019-11-21
 ## Add
 - Use auto complete for currencies and countries selection.
