@@ -1,11 +1,14 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { CategoriesMap, Category } from "../../api";
+import { CategoriesMap } from "../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getTotalsByCategory } from "../../domain/stats/getTotalsByCategory";
 import { PieChart } from "./charts/Pie";
 import { useLoc } from "../../hooks/useLoc";
 import { CategoriesSelectInput } from "../categories/CategoriesSelectInput";
+import { Redirect } from "react-router";
+import { BudgetPath } from "../../domain/paths/BudgetPath";
+import { Box } from "@material-ui/core";
 
 interface GraphByCategoryProps {
     budget: BudgetModel, 
@@ -20,7 +23,7 @@ function getCategoryName (index: string, categories: CategoriesMap) {
 export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
     const loc = useLoc();
     const {budget, categories} = props;
-
+    const [category, setCategory] = React.useState();
 
     const data = React.useMemo(() => {
         if (categories && Object.keys(categories).length > 0) {
@@ -36,17 +39,22 @@ export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
         }
     }, [budget, categories]);
 
-    function handleCategory (category: Category) {
-        console.log('selected ', category);
+    if (category) {
+        return <Redirect 
+            push
+            to={new BudgetPath(props.budget.identifier)
+                    .pathExpensesByCategory(category.identifier)}/>;
     }
 
     if (data) {
         return <React.Fragment>
-            { categories && <CategoriesSelectInput 
-                categories={Object.values(categories)}
-                onCategoryChange={handleCategory}/>
-            }
             <PieChart title={loc('By category')} {...data} />
+            { categories && <Box paddingX='1rem'>
+                <CategoriesSelectInput 
+                    categories={Object.values(categories)}
+                    onCategoryChange={setCategory}
+                    label={loc('List by category')}/>
+            </Box> }
         </React.Fragment>;
     } else {
         return <CircularProgress/>;

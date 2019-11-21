@@ -7,15 +7,19 @@ import { useLoc } from '../../hooks/useLoc';
 interface CategoriesSelectInputProps {
     onCategoryChange: (category: Category) => void;
     categories: Category[];
-    defaultCategory?: Category;
+    selected?: Category;
     helperText?: React.ReactNode;
+    required?: boolean;
+    label?: string;
 }
 
 export const CategoriesSelectInput: React.FC<CategoriesSelectInputProps> = ({
     onCategoryChange, 
     categories, 
     helperText, 
-    defaultCategory}) => {
+    required,
+    label,
+    selected}) => {
 
     const loc = useLoc();
 
@@ -28,14 +32,14 @@ export const CategoriesSelectInput: React.FC<CategoriesSelectInputProps> = ({
             id='categories-input-autocomplete'
             options={categories} 
             onChange={handleChange}
-            defaultValue={defaultCategory || categories[0]}
+            value={selected || categories[0]}
             getOptionLabel={(option: Category) => option.name}
             disableClearable autoComplete
             renderInput={(params: any) => (
                 <TextInput {...params} 
-                    label={loc('Category')}
+                    label={label || loc('Category')}
                     helperText={helperText} 
-                    required 
+                    required={required}
                     fullWidth />
             )} />);
 }

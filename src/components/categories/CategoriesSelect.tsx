@@ -61,7 +61,8 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = ({selectedCateg
             <CategoriesSelectInput
                 categories={Object.values(categories)}
                 onCategoryChange={handleChange}
-                defaultCategory={categories[selectedCategory]}
+                selected={categories[selectedCategory]}
+                required
                 helperText={
                     <MuiLink onClick={handleAddCategoryClick}>
                         {loc('Add category')}
