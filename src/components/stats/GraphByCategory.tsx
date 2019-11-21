@@ -1,10 +1,11 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { CategoriesMap } from "../../api";
+import { CategoriesMap, Category } from "../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getTotalsByCategory } from "../../domain/stats/getTotalsByCategory";
 import { PieChart } from "./charts/Pie";
 import { useLoc } from "../../hooks/useLoc";
+import { CategoriesSelectInput } from "../categories/CategoriesSelectInput";
 
 interface GraphByCategoryProps {
     budget: BudgetModel, 
@@ -35,12 +36,18 @@ export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
         }
     }, [budget, categories]);
 
-    function handleCategory (categoryId: string) {
-        console.log(categoryId);
+    function handleCategory (category: Category) {
+        console.log('selected ', category);
     }
 
     if (data) {
-        return <PieChart title={loc('By category')} {...data} onSelect={handleCategory} />;
+        return <React.Fragment>
+            { categories && <CategoriesSelectInput 
+                categories={Object.values(categories)}
+                onCategoryChange={handleCategory}/>
+            }
+            <PieChart title={loc('By category')} {...data} />
+        </React.Fragment>;
     } else {
         return <CircularProgress/>;
     }
