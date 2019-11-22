@@ -37,6 +37,7 @@ export const CountryInput: React.FC<CountryInputProps> = ({selected, disabled, o
             defaultValue={defaultValue}
             getOptionLabel={(option: CountryEntry) => option.name}
             loading={!defaultValue}
+            style={{marginRight: '1rem'}}
             disableClearable autoComplete
             renderInput={(params: any) => (
                 <TextInput {...params} 

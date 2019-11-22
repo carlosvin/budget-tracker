@@ -34,7 +34,8 @@ export const CategoriesSelectInput: React.FC<CategoriesSelectInputProps> = ({
             onChange={handleChange}
             value={selected || categories[0]}
             getOptionLabel={(option: Category) => option.name}
-            disableClearable autoComplete
+            disableClearable autoComplete 
+            style={{marginRight: '1rem'}}
             renderInput={(params: any) => (
                 <TextInput {...params} 
                     label={label || loc('Category')}
