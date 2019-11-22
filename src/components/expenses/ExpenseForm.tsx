@@ -124,11 +124,8 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
 
     return (            
         <form onSubmit={handleSubmit} autoComplete='on'>
-            <Grid container
-                justify='space-between'
-                alignItems='baseline'
-                alignContent='stretch'>
-                <Grid item>
+            <Grid container spacing={2} justify={'space-between'} alignItems='center'>
+                <Grid item xs={12} sm={3}>
                     { currency && <AmountWithCurrencyInput
                         label={loc('Amount')}
                         baseCurrency={ props.baseCurrency }
@@ -139,25 +136,25 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                         onError={setError}
                     /> }
                 </Grid>
-                <Grid item >
+                <Grid item xs={12} sm={3}>
                     <CategoriesSelect onCategoryChange={handleCategoryChanged} selectedCategory={categoryId}/>
                 </Grid>
-                <Grid item>
+                <Grid item xs={6} sm={3}>
                     <WhenInput />
                 </Grid>
-                <Grid item xl={12} xs={6}>
-                    { countryCode && <CountryInput 
-                        selected={ countryCode } 
-                        onChange={ handleCountry }/>
-                    }
-                </Grid>
-                <Grid item >
+                <Grid item xs={6} sm={3}>
                     <TextInput 
                         label={loc('Description')} 
                         value={ description || '' }
                         onChange={ handleDescription } />
                 </Grid>
-                <Grid item>
+                <Grid item xs={12} sm={3}>
+                    { countryCode && <CountryInput 
+                        selected={ countryCode } 
+                        onChange={ handleCountry }/>
+                    }
+                </Grid>
+                <Grid item xs={12} sm={6}>
                     <TextInput 
                         type='number'
                         label={loc('Split in days')}
@@ -168,7 +165,7 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                         disabled={ !amountBaseCurrency }
                     />
                 </Grid>
-                { budgets && <Grid item> 
+                { budgets && <Grid item xs={6} sm={6}> 
                     <TextInput
                         label={loc('Move to')}
                         select

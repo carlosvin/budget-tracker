@@ -9,6 +9,7 @@ import { useLoc } from "../hooks/useLoc";
 import { useCurrenciesStore } from "../hooks/useCurrenciesStore";
 import { CurrenciesStore } from "../domain/stores/interfaces";
 import Typography from "@material-ui/core/Typography";
+import { Grid } from "@material-ui/core";
 
 interface AmountCurrencyInputProps  {
     selectedCurrency: string;
@@ -90,19 +91,25 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
         handleChange(amount, selectedCurrency);
     }
     
-    return (<React.Fragment>
-                <AmountInput
-                    amountInput={amountInput}
-                    label={props.label}
-                    onAmountChange={handleAmountChange}
-                    helperText={baseAmountString()} 
-                    disabled={props.disabled}/>
-                { store && <CurrencyInput 
+    return (<Grid container spacing={2}>
+                <Grid item xs>
+                    <AmountInput
+                        amountInput={amountInput}
+                        label={props.label}
+                        onAmountChange={handleAmountChange}
+                        helperText={baseAmountString()} 
+                        disabled={props.disabled}
+                        />
+                </Grid>
+                
+                { store && <Grid item xs>
+                    <CurrencyInput 
                     currencies={store.currencies}
                     valuesToTop={[...store.lastCurrenciesUsed]}
                     selectedCurrency={props.selectedCurrency}
                     onCurrencyChange={handleCurrencyChange} 
                     disabled={props.disabled}/>
+                    </Grid>
                 }
             { error !== undefined && 
             <Card>
@@ -112,7 +119,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                     <Typography color='textSecondary'>{loc('Connect to get last rates')}.</Typography>
                 </CardContent>
             </Card> }
-        </React.Fragment>);
+        </Grid>);
 }
 
 export default AmountWithCurrencyInput;
