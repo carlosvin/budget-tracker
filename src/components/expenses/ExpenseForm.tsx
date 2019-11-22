@@ -172,7 +172,9 @@ export const ExpenseForm: React.FC<ExpenseFormProps> = (props) => {
                         SelectProps={{ native: true }}
                         onChange={handleBudgetId}
                         value={budgetId}>
-                        { budgets.map( b => (<option value={b.identifier}>{b.name}</option>)) }
+                        { budgets.map( b => (<option 
+                            value={b.identifier} 
+                            key={`opt-${b.identifier}`}>{b.name}</option>)) }
                     </TextInput>
                 </Grid> }
             </Grid>
