@@ -14,29 +14,28 @@ interface CountryInputProps {
 export const CountryInput: React.FC<CountryInputProps> = ({selected, disabled, onChange}) => {
     const loc = useLoc();
     const store = useCountriesStore();
+    const [country, setCountry] = React.useState();
 
-    const {countries, defaultValue} = React.useMemo(
-        () => (store ? 
-            {
-                countries: store.countries,
-                defaultValue: store.countries.find(c => c.code === selected)
-            } : 
-            {countries: [], defaultValue: undefined}),
-        // eslint-disable-next-line
-        [store]);
+    const countries: CountryEntry[] = React.useMemo(
+        () => (store ? store.countries : []), [store]);
+
+    React.useEffect(() => {
+        setCountry(countries.find(c => c.code === selected));
+    }, [selected, countries]);
 
     function handleChange (event: React.ChangeEvent<{}>, value: CountryEntry) {
         onChange(value.code);
     }
 
-    return ( countries.length > 0 ? 
-        <Autocomplete
-            id='currencies-input-autocomplete'
+    if (countries.length > 0 && country) {
+        return <Autocomplete
+            id='countries-input-autocomplete'
             options={countries} 
             onChange={handleChange}
-            defaultValue={defaultValue}
+            value={country}
+            defaultValue={countries[0]}
             getOptionLabel={(option: CountryEntry) => option.name}
-            loading={!defaultValue}
+            loading={countries.length === 0}
             style={{marginRight: '1rem'}}
             disableClearable autoComplete
             renderInput={(params: any) => (
@@ -44,9 +43,10 @@ export const CountryInput: React.FC<CountryInputProps> = ({selected, disabled, o
                     label={loc('Country')}
                     disabled={disabled}
                     required fullWidth />
-            )}
-        /> : <p>loading</p>
-    );
+            )} />;
+    } else {
+        return <p>loading...</p>;
+    }
 }
 
 export default CountryInput;
