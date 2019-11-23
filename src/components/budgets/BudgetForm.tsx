@@ -38,7 +38,7 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
         e.preventDefault();
         const err = validate();
         if (err) {
-            setError(validate());
+            setError(err);
         } else if (!saveDisabled) {
             props.onSubmit(budget);
         }
