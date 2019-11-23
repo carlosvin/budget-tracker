@@ -1,3 +1,9 @@
+# [3.7.0] - 2019-11-23
+## Change
+- Expense form organization and styling.
+## Fix
+- Regression: Guess current country on new expense creation.
+
 # [3.6.0] - 2019-11-21
 ## Add
 - Ability to navigate to expenses by category from budget stats view.

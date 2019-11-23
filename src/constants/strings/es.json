@@ -65,7 +65,7 @@
     "Still add amount in base": "Aún puede añadir la cantidad en la moneda base del presupuesto",
     "Error converting to base": "Error al convertir el gasto a la moneda base del presupuesto",
     "Connect to get last rates": "Debe estar conectado a Internet para obtener los últimos tipos de cambio",
-    "Amount": "Cantidad gastada",
+    "Amount": "Gasto",
 
     "By date": "Por fecha",
     "Heat map": "Mapa de calor",

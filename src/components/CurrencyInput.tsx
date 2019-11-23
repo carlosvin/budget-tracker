@@ -60,6 +60,7 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
             getOptionLabel={(option: CurrencyOption) => option.name}
             loading={options.length === 0}
             disableClearable autoComplete
+            style={{marginRight: '1rem'}}
             renderInput={(params: any) => (
                 <TextInput {...params} 
                     label={loc('Currency')}
