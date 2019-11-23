@@ -26,7 +26,7 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
 
     const loc  = useLoc();
     const [error, setError] = React.useState<string|undefined>(); 
-    const {baseCurrency, selectedCurrency, amountInput} = props;
+    const {baseCurrency, selectedCurrency, amountInput, amountInBaseCurrency} = props;
     const store = useCurrenciesStore();
 
     const [rate, setRate] = React.useState<number|undefined>(0);
@@ -74,13 +74,12 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     }
 
     React.useEffect(() => (onError && onError(error)), [error, onError]);
-
-    const baseAmountString = () => {
-        if (baseCurrency !== props.selectedCurrency && props.amountInBaseCurrency) {
-            return getCurrencyWithSymbol(props.amountInBaseCurrency, baseCurrency);
-        }
-        return undefined;
-    }
+    
+    const baseAmountString = React.useMemo(() => (
+        amountInBaseCurrency && baseCurrency !== selectedCurrency ? 
+            getCurrencyWithSymbol(amountInBaseCurrency, baseCurrency) : 
+            undefined), 
+        [amountInBaseCurrency, baseCurrency, selectedCurrency]);
 
     function handleCurrencyChange (currency: string) {
         setRate(undefined);
@@ -97,18 +96,18 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
                         amountInput={amountInput}
                         label={props.label}
                         onAmountChange={handleAmountChange}
-                        helperText={baseAmountString()} 
+                        helperText={baseAmountString} 
                         disabled={props.disabled}
                         />
                 </Grid>
                 
                 { store && <Grid item xs>
                     <CurrencyInput 
-                    currencies={store.currencies}
-                    valuesToTop={[...store.lastCurrenciesUsed]}
-                    selectedCurrency={props.selectedCurrency}
-                    onCurrencyChange={handleCurrencyChange} 
-                    disabled={props.disabled}/>
+                        currencies={store.currencies}
+                        valuesToTop={[...store.lastCurrenciesUsed]}
+                        selectedCurrency={props.selectedCurrency}
+                        onCurrencyChange={handleCurrencyChange} 
+                        disabled={props.disabled} />
                     </Grid>
                 }
             { error !== undefined && 
