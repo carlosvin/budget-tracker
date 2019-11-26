@@ -1,3 +1,8 @@
+# [3.7.1] - 2019-11-23
+## Change
+- Change loading currencies from static file to use currencies-map library.
+- Upgrade dependencies.
+
 # [3.7.0] - 2019-11-23
 ## Change
 - Expense form organization and styling.
