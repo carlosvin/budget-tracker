@@ -100,9 +100,8 @@ export class BudgetTrackerImpl implements BudgetTracker {
 
     async getCurrenciesStore (): Promise<CurrenciesStore> {
         if (!this._currenciesStore) {
-            const currencies = await import('./constants/currencies.json');
             const store = await import('./domain/stores/CurrenciesStoreImpl');
-            this._currenciesStore = new store.CurrenciesStoreImpl(currencies.default);
+            this._currenciesStore = new store.CurrenciesStoreImpl();
         }
         return this._currenciesStore;
     }
