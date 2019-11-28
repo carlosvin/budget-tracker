@@ -1,7 +1,3 @@
-# [3.7.2] - 2019-11-28
-## Add
-- Currency default names.
-
 # [3.7.1] - 2019-11-23
 ## Change
 - Change loading currencies from static file to use currencies-map library.
