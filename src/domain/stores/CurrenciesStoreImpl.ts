@@ -3,6 +3,7 @@ import { currenciesApi } from "../../services/CurrenciesApi";
 import { CurrenciesStore } from "./interfaces";
 import applyRate from "../utils/applyRate";
 import { Currencies } from 'currencies-map';
+import { CURRENCY_DEFAULTS } from "../../constants/currencies";
 
 export class CurrenciesStoreImpl implements CurrenciesStore {
     static readonly KEY = 'currencyRates';
@@ -17,7 +18,7 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
     private _lastCurrenciesUsed?: string[];
 
     constructor() {
-        this.currencies = Currencies.names;
+        this.currencies = Currencies.names.loadDefaults(Object.entries(CURRENCY_DEFAULTS));
         this._timestamps = this.getTimestampsFromDisk();
         this._rates = this.getRatesFromDisk();
     }
