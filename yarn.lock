@@ -3762,10 +3762,10 @@ csstype@^2.2.0, csstype@^2.5.2, csstype@^2.6.5, csstype@^2.6.7:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.7.tgz#20b0024c20b6718f4eda3853a1f5a1cce7f5e4a5"
   integrity sha512-9Mcn9sFbGBAdmimWb2gLVDtFJzeKtDGIr76TUqmjZrw9LFXBMSU70lcs+C0/7fyCd6iBDqmksUcCOUIkisPHsQ==
 
-currencies-map@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/currencies-map/-/currencies-map-3.2.0.tgz#bb8653590c96a5ec1da78bcc0778429b9c28b025"
-  integrity sha512-hkdGIYL1UbCYc0FKezedaQFirxokNC3O//gsnOCJgYRcV1EDq1CXAXOhRXuuYiavyimToUfdOceZZpq+BfIMlA==
+currencies-map@^3.2.1:
+  version "3.2.1"
+  resolved "https://registry.yarnpkg.com/currencies-map/-/currencies-map-3.2.1.tgz#a1f0d187a7fc049a600c096147e1de1a3b672923"
+  integrity sha512-LKg9GKYhhkiH9LNnp3BdnV+uO3EVGpdep1ARk446se2/FlTe877QZ3ugM2nlsEQ+sZhDUtHfhOPWtsv8y+P+UA==
 
 cyclist@^1.0.1:
   version "1.0.1"
