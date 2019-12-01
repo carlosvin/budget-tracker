@@ -1,3 +1,7 @@
+# [3.7.3] - 2019-12-01
+## Change
+- Show local persistence state.
+
 # [3.7.2] - 2019-11-28
 ## Add
 - Currency default names.
