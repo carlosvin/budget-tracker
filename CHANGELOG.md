@@ -1,3 +1,14 @@
+# [3.8.0] - 2019-12-01
+## Add
+- Add index to database to speed up filtering entities by timestamp and deleted flag.
+- Old deleted entities cleaning up on application startup.
+
+## Change
+- Better IndexedDB version upgrade handling.
+
+## Fix
+- After local database is removed, allow user to get data remotely by setting local timestamp to 0, so data will be fetched.
+
 # [3.7.3] - 2019-12-01
 ## Change
 - Show local persistence state.
