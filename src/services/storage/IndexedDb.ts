@@ -1,7 +1,9 @@
 import { DbItem, SubStorageApi } from "./StorageApi";
-import { openDB, IDBPDatabase, DBSchema } from 'idb';
+import { openDB, IDBPDatabase, DBSchema, IDBPTransaction, IDBPObjectStore } from 'idb';
 import { Budget, Category, Expense, BudgetsMap, ExpensesMap, CategoriesMap, ExportDataSet, EntityNames } from "../../api";
 import { DateDay } from "../../domain/DateDay";
+
+const TOO_OLD_MS = 3600000 * 24 * 7;
 
 interface ExpenseDb extends Expense, DbItem { }
 interface BudgetDb extends Budget, DbItem { }
@@ -13,41 +15,79 @@ interface Schema extends DBSchema {
     [EntityNames.Budgets]: {
         key: string,
         value: BudgetDb,
-        indexes: { 'deleted, to': string },
+        indexes: { 
+            'deleted, to': string, 
+            'deleted, timestamp': [number, number] },
     },
     [EntityNames.Categories]: {
         value: CategoryDb,
         key: string,
-        indexes: { 'deleted, name': string },
+        indexes: { 
+            'deleted, name': string, 
+            'deleted, timestamp': [number, number] },
     },
     [EntityNames.Expenses]: {
         value: ExpenseDb,
         key: string,
-        indexes: { 'deleted, budgetId, when': [number, string, number] },
+        indexes: { 
+            'deleted, budgetId, when': [number, string, number], 
+            'deleted, timestamp': [number, number] },
     }
 }
 
 export class IndexedDb implements SubStorageApi {
     private readonly name = 'budgetTrackerDb';
-    private readonly version = 1;
+    private readonly version = 2;
     private _db?: IDBPDatabase<Schema>;
+
+    // types of idb are wrong, contains method is not exposed in entry.ts
+    private static contains(store: IDBPObjectStore<any, any, any>, indexName: string) {
+        return (store.indexNames as any).contains(indexName);
+    }
 
     private async createDb() {
         return openDB<Schema>(this.name, this.version, {
-            upgrade(db) {
-                if (!(EntityNames.Budgets in db.objectStoreNames)) {
-                    const budgetsStore = db.createObjectStore(EntityNames.Budgets, keyPath);
-                    budgetsStore.createIndex('deleted, to', ['deleted', 'to']);    
+            upgrade(db, oldVersion, newVersion, transaction) {
+                console.info(`Upgrading DB ${oldVersion} to ${newVersion}`);
+
+                let budgetsStore;
+                if (db.objectStoreNames.contains(EntityNames.Budgets)) {
+                    budgetsStore = transaction.objectStore(EntityNames.Budgets);
+                } else {
+                    budgetsStore = db.createObjectStore(EntityNames.Budgets, keyPath);
                 }
 
-                if (!(EntityNames.Categories in db.objectStoreNames)) {
-                    const categoriesStore = db.createObjectStore(EntityNames.Categories, keyPath);
+                if (!IndexedDb.contains(budgetsStore, 'deleted, to')) {
+                    budgetsStore.createIndex('deleted, to', ['deleted', 'to']);
+                }
+                if (!IndexedDb.contains(budgetsStore, 'deleted, timestamp')) {
+                    budgetsStore.createIndex('deleted, timestamp', ['deleted', 'timestamp']);
+                }
+                
+                let categoriesStore;
+                if (db.objectStoreNames.contains(EntityNames.Categories)) {
+                    categoriesStore = transaction.objectStore(EntityNames.Categories);
+                } else {
+                    categoriesStore = db.createObjectStore(EntityNames.Categories, keyPath);
+                }
+                if (!IndexedDb.contains(categoriesStore, 'deleted, name')) {
                     categoriesStore.createIndex('deleted, name', ['deleted', 'name']);
                 }
-
-                if (!(EntityNames.Expenses in db.objectStoreNames)) {
-                    const expensesStore = db.createObjectStore(EntityNames.Expenses, keyPath);
+                if (!IndexedDb.contains(categoriesStore, 'deleted, timestamp')) {
+                    categoriesStore.createIndex('deleted, timestamp', ['deleted', 'timestamp']);
+                }
+                
+                let expensesStore;
+                if (db.objectStoreNames.contains(EntityNames.Expenses)) {
+                    expensesStore = transaction.objectStore(EntityNames.Expenses);
+                } else {
+                    expensesStore = db.createObjectStore(EntityNames.Expenses, keyPath);
+                }
+                if (!IndexedDb.contains(expensesStore, 'deleted, budgetId, when')) {
                     expensesStore.createIndex('deleted, budgetId, when', ['deleted', 'budgetId', 'when']);
+                }
+                if (!IndexedDb.contains(expensesStore, 'deleted, timestamp')) {
+                    expensesStore.createIndex('deleted, timestamp', ['deleted', 'timestamp']);
                 }
             },
         });
@@ -56,6 +96,7 @@ export class IndexedDb implements SubStorageApi {
     async getDb() {
         if (this._db === undefined) {
             this._db = await this.createDb();
+            this.cleanupOldDeleted();
         }
         return this._db;
     }
@@ -254,5 +295,30 @@ export class IndexedDb implements SubStorageApi {
     }
     async setLastTimeSaved(timestamp: number): Promise<void> {
         localStorage.setItem('timestamp', timestamp.toString());
+    }
+
+    private async keysToDelete (tx: IDBPTransaction<Schema, EntityNames[]>): Promise<Map<EntityNames, string[]>> {
+        const threshold = Date.now() - TOO_OLD_MS;
+        const keyRange =  IDBKeyRange.bound([1, 0], [1, threshold]);
+        const indexName = 'deleted, timestamp';
+        const keyMap = new Map();
+        for (const name of Object.values(EntityNames)) {
+            keyMap.set(name, await tx.db.getAllKeysFromIndex(name, indexName, keyRange));
+        }
+        return keyMap;
+    }
+
+    private async cleanupOldDeleted () {
+        const db = await this.getDb();
+        const tx = db.transaction(
+            [EntityNames.Budgets, EntityNames.Categories, EntityNames.Expenses],
+            'readwrite');
+        const keyMap = await this.keysToDelete(tx);
+        console.debug('Cleaning deleted old entities: ', keyMap);
+
+        keyMap.forEach((keys, name) => (
+            keys.forEach(k => tx.objectStore(name).delete(k))));
+
+        return tx.done;
     }
 }
