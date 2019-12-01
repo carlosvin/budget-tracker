@@ -1,7 +1,6 @@
 import { SubStorageApi, AppStorageApi, StorageObserver } from "./StorageApi";
 import { Budget, Expense, Category } from "../../api";
 import { DataSync } from "./DataSync";
-import { uuid } from "../../domain/utils/uuid";
 
 export class AppStorageManager implements AppStorageApi {
     private local: SubStorageApi;
@@ -9,7 +8,7 @@ export class AppStorageManager implements AppStorageApi {
     private observers: Set<StorageObserver>;
 
     constructor (local: SubStorageApi) {
-        console.log('Instantiated', this);
+        AppStorageManager.persist();
         this.local = local;
         this.observers = new Set();
     }
@@ -26,19 +25,6 @@ export class AppStorageManager implements AppStorageApi {
         this.observers.forEach(o=>o.onStorageDataChanged());
     }
     
-    private loadDeviceId () {
-        const key = 'deviceId';
-        const deviceId = localStorage.getItem(key);
-        if (deviceId) {
-            return deviceId;
-        } else {
-            console.debug('First time app starts, generating device ID');
-            const deviceId = uuid();
-            localStorage.setItem(key, deviceId)
-            return deviceId;
-        }
-    }
-
     async setRemote (remote?: SubStorageApi) {
         if (this.remote !== remote) {
             this.remote = remote;
@@ -141,5 +127,19 @@ export class AppStorageManager implements AppStorageApi {
             this.remote.deleteCategory(identifier, timestamp);
         }
         return localPromise;
+    }
+
+    static async persist() {
+        const {storage} = navigator;
+        if (storage && storage.persist && await storage.persist()) {
+            console.info("Storage will not be cleared except by explicit user action");
+        } else {
+            console.warn("Storage may be cleared by the UA under storage pressure.")
+        }
+    }
+
+    static async isPersisted () {
+        const {storage} = navigator;
+        return storage && storage.persist && storage.persisted();
     }
 }

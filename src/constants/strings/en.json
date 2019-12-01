@@ -91,5 +91,7 @@
     "Active": "Active",
 
     "Expenses Out": "Expenses out of range",
-    "Expenses Out desc": "List with expenses out of budget dates range"
+    "Expenses Out desc": "List with expenses out of budget dates range",
+
+    "Persistence disabled": "Persistence permissions are no granted"
 }

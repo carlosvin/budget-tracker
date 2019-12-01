@@ -91,5 +91,7 @@
     "Active": "Activo",
 
     "Expenses Out": "Gastos fuera del presupuesto",
-    "Expenses Out desc": "Listado con los gastos fuera de las fechas del presupuesto"
+    "Expenses Out desc": "Listado con los gastos fuera de las fechas del presupuesto",
+
+    "Persistence disabled": "La aplicación no tiene permisos para mantener datos localmente"
 }

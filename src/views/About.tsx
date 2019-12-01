@@ -12,15 +12,30 @@ import { AppPaths } from "../domain/paths";
 import { HeaderNotifierProps } from "../routes";
 import { useHeaderContext } from "../hooks/useHeaderContext";
 import { useLoc } from "../hooks/useLoc";
+import WarningIcon from '@material-ui/icons/Warning';
+import { AppStorageManager } from "../services/storage/AppStorageManager";
 
 const About: React.FC<HeaderNotifierProps> = (props) => {
     useHeaderContext(`Budget tracker ${version}`, [], props);
     const loc = useLoc();
 
+    const [persisted, setPersisted] = React.useState<boolean>();
+
+    React.useEffect(() => {
+        AppStorageManager
+            .isPersisted()
+            .then((p)=> setPersisted(p))
+            .catch((_)=>setPersisted(false));
+    }, 
+    []);
+
     return (
         <Card>
             <CardHeader title={loc('Track your expenses')} />
             <CardContent>
+                {persisted === false && <Typography color='secondary'>
+                    <WarningIcon/> {loc('Persistence disabled')}.
+                </Typography>}
                 <Typography>
                     {loc('Track your expenses Desc')}.
                 </Typography>
@@ -28,6 +43,7 @@ const About: React.FC<HeaderNotifierProps> = (props) => {
                 <Typography variant='body2'>
                 {loc('Add issue to github')}.
                 </Typography>
+
             </CardContent>
             <CardActions>
                 <Button component={RouterLink}
