@@ -89,6 +89,9 @@ export class IndexedDb implements SubStorageApi {
                 if (!IndexedDb.contains(expensesStore, 'deleted, timestamp')) {
                     expensesStore.createIndex('deleted, timestamp', ['deleted', 'timestamp']);
                 }
+                if (oldVersion === 0) {
+                    IndexedDb.setLastTimeSaved(0);
+                }
             },
         });
     }
@@ -294,6 +297,10 @@ export class IndexedDb implements SubStorageApi {
         return parseInt(localStorage.getItem('timestamp') || '0');
     }
     async setLastTimeSaved(timestamp: number): Promise<void> {
+        IndexedDb.setLastTimeSaved(timestamp);
+    }
+
+    private static setLastTimeSaved(timestamp: number) {
         localStorage.setItem('timestamp', timestamp.toString());
     }
 
