@@ -1,6 +1,11 @@
 {
-  "short_name": "Budget Tracker",
-  "name": "Track your expenses",
+  "short_name": "BudgetTracker",
+  "name": "Budget Tracker",
+  "description": "Track expenses and analyse if they stick to a budget",
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4a148c",
+  "background_color": "#2f0d59",
   "icons": [
     {
       "src": "favicon.ico",
@@ -18,8 +23,36 @@
       "type": "image/png"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#4a148c",
-  "background_color": "#4a148c"
+  "screenshots" : [
+    {
+      "src": "screenshots/budget-list.webp",
+      "sizes": "360x590",
+      "type": "image/webp"
+    },
+    {
+      "src": "screenshots/budget-view.webp",
+      "sizes": "360x590",
+      "type": "image/webp"
+    },
+    {
+      "src": "screenshots/budget-view.webp",
+      "sizes": "360x590",
+      "type": "image/webp"
+    },
+    {
+      "src": "screenshots/edit-budget.webp",
+      "sizes": "360x590",
+      "type": "image/webp"
+    },
+    {
+      "src": "screenshots/edit-expense.webp",
+      "sizes": "360x590",
+      "type": "image/webp"
+    },
+    {
+      "src": "screenshots/statistics.webp",
+      "sizes": "360x590",
+      "type": "image/webp"
+    }
+  ]
 }
