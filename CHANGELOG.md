@@ -1,3 +1,7 @@
+# [3.8.1] - 2019-12-02
+## Change
+- Bump dependencies.
+
 # [3.8.0] - 2019-12-01
 ## Add
 - Add index to database to speed up filtering entities by timestamp and deleted flag.
