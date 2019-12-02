@@ -9,7 +9,6 @@
         "currencies-map": "^3.2.1",
         "firebase": "^7.5.0",
         "firebaseui": "^4.3.0",
-        "grpc": "1.24.2",
         "idb": "^4",
         "nanoid": "^2",
         "react": "^16",
