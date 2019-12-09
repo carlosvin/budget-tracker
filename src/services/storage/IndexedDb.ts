@@ -1,5 +1,5 @@
 import { DbItem, SubStorageApi } from "./StorageApi";
-import { openDB, IDBPDatabase, DBSchema, IDBPTransaction, IDBPObjectStore } from 'idb';
+import { openDB, IDBPDatabase, DBSchema, IDBPObjectStore } from 'idb';
 import { Budget, Category, Expense, BudgetsMap, ExpensesMap, CategoriesMap, ExportDataSet, EntityNames } from "../../api";
 import { DateDay } from "../../domain/DateDay";
 
@@ -304,28 +304,25 @@ export class IndexedDb implements SubStorageApi {
         localStorage.setItem('timestamp', timestamp.toString());
     }
 
-    private async keysToDelete (tx: IDBPTransaction<Schema, EntityNames[]>): Promise<Map<EntityNames, string[]>> {
+    private async keysToDelete (db: IDBPDatabase<Schema>): Promise<Map<EntityNames, string[]>> {
         const threshold = Date.now() - TOO_OLD_MS;
         const keyRange =  IDBKeyRange.bound([1, 0], [1, threshold]);
         const indexName = 'deleted, timestamp';
         const keyMap = new Map();
         for (const name of Object.values(EntityNames)) {
-            keyMap.set(name, await tx.db.getAllKeysFromIndex(name, indexName, keyRange));
+            keyMap.set(name, await db.getAllKeysFromIndex(name, indexName, keyRange));
         }
         return keyMap;
     }
 
     private async cleanupOldDeleted () {
         const db = await this.getDb();
-        const tx = db.transaction(
-            [EntityNames.Budgets, EntityNames.Categories, EntityNames.Expenses],
-            'readwrite');
-        const keyMap = await this.keysToDelete(tx);
+        const keyMap = await this.keysToDelete(db);
         console.debug('Cleaning deleted old entities: ', keyMap);
 
+        const tx = db.transaction(Object.values(EntityNames), 'readwrite');
         keyMap.forEach((keys, name) => (
             keys.forEach(k => tx.objectStore(name).delete(k))));
-
         return tx.done;
     }
 }
