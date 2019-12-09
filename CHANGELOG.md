@@ -1,3 +1,7 @@
+# [3.8.2] - 2019-12-02
+## Fix
+- Cleanup old deleted entities.
+
 # [3.8.1] - 2019-12-02
 ## Change
 - Bump dependencies.
