@@ -24,7 +24,7 @@ exports[`AmountInput value is 11 1`] = `
     </span>
   </label>
   <div
-    className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense"
+    className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-formControl MuiInput-formControl MuiInputBase-marginDense MuiInput-marginDense"
     onClick={[Function]}
   >
     <input
