@@ -10,14 +10,7 @@ export function useCategoriesStore () {
         async function fetchStore () {
             setStore(await btApp.getCategoriesStore());
         }
-
-        let isSubscribed = true;
-        if (isSubscribed) {
-            fetchStore();
-        }
-
-        return () => { isSubscribed = false };
-        
+        fetchStore();
     }, [btApp, store]);
 
     return store;

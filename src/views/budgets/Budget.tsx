@@ -15,8 +15,8 @@ import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { ImportExportButton } from "../../components/buttons/ImportExportButton";
 import { HeaderNotifierProps } from "../../routes";
 import { useAppContext } from "../../contexts/AppContext";
-import { useLoc } from "../../hooks/useLoc";
 import { useHeaderContext } from "../../hooks/useHeaderContext";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface BudgetViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps {}
 
@@ -32,7 +32,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
     const budgetModel = useBudgetModel(budgetId);
     
     const btApp = useAppContext();
-    const loc = useLoc();
+    const loc = useLocalization();
 
     React.useEffect(() => {
         budgetModel && onTitleChange(budgetModel.name);
@@ -45,7 +45,7 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
     }
 
     useHeaderContext('...', [
-        <AppButton key='cb-edit-budget' icon={EditIcon} aria-label={loc('Edit budget')} to={url.pathEdit}/>,
+        <AppButton key='cb-edit-budget' icon={EditIcon} aria-label={loc.get('Edit budget')} to={url.pathEdit}/>,
         <ImportExportButton key='cb-export-budget' to={url.pathExport}/>,
         <DeleteButton onClick={handleDeleteRequest} key='cb-delete-budget'/>
     ], props);
@@ -89,13 +89,13 @@ export const BudgetView: React.FC<BudgetViewProps> = (props) => {
                     
                 </React.Fragment> 
                 { budgetModel.numberOfExpenses === 0 && 
-                    <Typography variant='h5' color='textSecondary'>{loc('No expenses')}</Typography> }
+                    <Typography variant='h5' color='textSecondary'>{loc.get('No expenses')}</Typography> }
                 <AddButton to={url.pathAddExpense} />
                 <YesNoDialog 
                     open={showConfirmDialog} 
                     onClose={handleDelete}
-                    question={loc('Delete budget?')}
-                    description={loc('Expenses will be deleted')}/>
+                    question={loc.get('Delete budget?')}
+                    description={loc.get('Expenses will be deleted')}/>
             </React.Fragment>
         );
     }

@@ -2,15 +2,15 @@ import * as React from 'react';
 import Box from '@material-ui/core/Box';
 import { ExportDataSet, ObjectMap } from '../api';
 import { SubHeader } from './expenses/SubHeader';
-import { useLoc } from '../hooks/useLoc';
+import { useLocalization } from '../hooks/useLocalization';
 
 export const ExportDataInfo: React.FC<Partial<ExportDataSet>> = (props) => {
-    const loc = useLoc();
+    const loc = useLocalization();
 
     return <Box>
-        <ImportedElementInfo name={loc('Budgets')} elements={props.budgets} />
-        <ImportedElementInfo name={loc('Expenses')} elements={props.expenses} />
-        <ImportedElementInfo name={loc('Categories')} elements={props.categories} />
+        <ImportedElementInfo name={loc.get('Budgets')} elements={props.budgets} />
+        <ImportedElementInfo name={loc.get('Expenses')} elements={props.expenses} />
+        <ImportedElementInfo name={loc.get('Categories')} elements={props.categories} />
     </Box>;
 }
 

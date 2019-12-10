@@ -3,7 +3,7 @@ import { BudgetModel } from "../../domain/BudgetModel";
 import { DateDay } from "../../domain/DateDay";
 import { HeatMapChart } from "./charts/HeatMap";
 import { ObjectMap } from "../../api";
-import { useLoc } from "../../hooks/useLoc";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface GraphExpensesHeatMapProps {
     budget: BudgetModel;
@@ -11,7 +11,7 @@ interface GraphExpensesHeatMapProps {
 
 export const GraphExpensesHeatMap: React.FC<GraphExpensesHeatMapProps> = (props) => {
     const {budget} = props;
-    const loc = useLoc();
+    const loc = useLocalization();
 
     const data = React.useMemo(() => {
         const {from, to} = budget;
@@ -29,7 +29,7 @@ export const GraphExpensesHeatMap: React.FC<GraphExpensesHeatMapProps> = (props)
     }, [budget]);
 
     return <HeatMapChart
-        title={loc('Heat map')} 
+        title={loc.get('Heat map')} 
         dataPoints={data}
         start={new Date(budget.from)}
          />;

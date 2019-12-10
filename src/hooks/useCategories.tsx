@@ -10,8 +10,7 @@ export function useCategories() {
     useEffect(() => {
         
         async function fetchCategories (store: CategoriesStore) {
-            const cs = await store.getCategories();
-            setCategories(cs);
+            setCategories(await store.getCategories());
         }
 
         store && fetchCategories(store);

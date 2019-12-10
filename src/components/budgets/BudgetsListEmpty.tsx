@@ -11,6 +11,7 @@ import ImportExportIcon from '@material-ui/icons/ImportExport';
 import { Link } from "react-router-dom";
 import { BudgetPath } from '../../domain/paths/BudgetPath';
 import { AppPaths } from '../../domain/paths';
+import { LocalizationApi } from '../../services';
 
 interface OptionItemProps {
     primary: string;
@@ -29,21 +30,21 @@ const OptionItem: React.FC<OptionItemProps> = (props) => (
     </ListItem>);
 
 
-export function BudgetsListEmpty({loc}: {loc: (key: string) => string}) {
+export function BudgetsListEmpty({loc}: {loc: LocalizationApi}) {
     return <List subheader={
         <ListSubheader component="div" id="no-budgets-header">
-            {loc('No budgets')}
+            {loc.get('No budgets')}
         </ListSubheader>}>
         <OptionItem
-            primary={loc('Create new budget')} 
+            primary={loc.get('Create new budget')} 
             icon={<AddIcon/>}
             path={BudgetPath.add} />
         <OptionItem
-            primary={loc('Synchronize your account')} 
+            primary={loc.get('Synchronize your account')} 
             icon={<SyncIcon/>}
             path={AppPaths.Sync} />
         <OptionItem
-            primary={loc('Import from JSON')} 
+            primary={loc.get('Import from JSON')} 
             icon={<ImportExportIcon/>}
             path={AppPaths.ImportExport} />
     </List>;

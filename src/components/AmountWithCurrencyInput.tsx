@@ -5,11 +5,11 @@ import { CurrencyInput } from "./CurrencyInput";
 import { AmountInput } from "./AmountInput";
 import applyRate from "../domain/utils/applyRate";
 import { getCurrencyWithSymbol } from "../domain/utils/getCurrencyWithSymbol";
-import { useLoc } from "../hooks/useLoc";
 import { useCurrenciesStore } from "../hooks/useCurrenciesStore";
 import { CurrenciesStore } from "../domain/stores";
 import Typography from "@material-ui/core/Typography";
 import { Grid } from "@material-ui/core";
+import { useLocalization } from "../hooks/useLocalization";
 
 interface AmountCurrencyInputProps  {
     selectedCurrency: string;
@@ -24,7 +24,7 @@ interface AmountCurrencyInputProps  {
 
 export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (props) => {
 
-    const loc  = useLoc();
+    const loc = useLocalization();
     const [error, setError] = React.useState<string|undefined>(); 
     const {baseCurrency, selectedCurrency, amountInput, amountInBaseCurrency} = props;
     const store = useCurrenciesStore();
@@ -113,9 +113,9 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
             { error !== undefined && 
             <Card>
                 <CardContent>
-                    <Typography color='error'>{loc('Error converting to base')}.</Typography>
-                    <Typography color='textPrimary'>{loc('Still add amount in base')}.</Typography>
-                    <Typography color='textSecondary'>{loc('Connect to get last rates')}.</Typography>
+                    <Typography color='error'>{loc.get('Error converting to base')}.</Typography>
+                    <Typography color='textPrimary'>{loc.get('Still add amount in base')}.</Typography>
+                    <Typography color='textSecondary'>{loc.get('Connect to get last rates')}.</Typography>
                 </CardContent>
             </Card> }
         </Grid>);

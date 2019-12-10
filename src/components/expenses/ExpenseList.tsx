@@ -2,8 +2,8 @@ import * as React from "react";
 import List from '@material-ui/core/List';
 import { Budget, Expense, CategoriesMap } from "../../api";
 import { ExpensesListGroup } from "./ExpenseListGroup";
-import { useLoc } from "../../hooks/useLoc";
 import Typography from "@material-ui/core/Typography";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface ExpenseListProps {
     budget: Budget;
@@ -12,7 +12,7 @@ interface ExpenseListProps {
 }
 
 export const ExpenseList: React.FC<ExpenseListProps> = (props) => {
-    const loc = useLoc();
+    const loc = useLocalization();
 
     if (props.expensesByGroup.size > 0) {
         return <List style={{
@@ -33,7 +33,7 @@ export const ExpenseList: React.FC<ExpenseListProps> = (props) => {
                 )}
         </List>;
     } else {
-        return <Typography>{loc('No expenses')}</Typography>;
+        return <Typography>{loc.get('No expenses')}</Typography>;
     }
 
 

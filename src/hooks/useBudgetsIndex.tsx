@@ -11,18 +11,7 @@ export function useBudgetsIndex() {
         async function fetchIndex (store: BudgetsStore) {
             setIndex(Object.values(await store.getBudgetsIndex()));
         }
-
-        let isSubscribed = true;
-
-        if (isSubscribed) {
-            if (store) {
-                fetchIndex(store);
-            } else {
-                setIndex(undefined);
-            }
-        }
-        return () => {isSubscribed = false};
-        
+        store ? fetchIndex(store) : setIndex(undefined);
     }, [store]);
 
     return index;

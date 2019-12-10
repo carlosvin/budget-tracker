@@ -3,10 +3,10 @@ import { ExpenseList } from "../../components/expenses/ExpenseList";
 import Typography from "@material-ui/core/Typography";
 import { Expense, CategoriesMap } from "../../api";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { useLoc } from "../../hooks/useLoc";
 import { HeaderNotifierProps } from "../../routes";
 import Box from "@material-ui/core/Box";
 import { VersusInfo } from "../VersusInfo";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface ExpensesByCategoryProps extends HeaderNotifierProps {
     categoryId: string;
@@ -18,10 +18,10 @@ export const ExpensesByCategory: React.FC<ExpensesByCategoryProps> = (props) => 
     const {budget, categoryId, categories} = props;
     const [expenses, setExpenses] = React.useState<Map<string, Map<string, Expense>>>();
     const [total, setTotal] = React.useState(0);
-    const loc = useLoc();
+    const loc = useLocalization();
     
     React.useEffect(() => {
-        props.onTitleChange(`${loc('Expenses in')} ${categories && categories[categoryId].name}`);
+        props.onTitleChange(`${loc.get('Expenses in')} ${categories && categories[categoryId].name}`);
     // eslint-disable-next-line
     }, [categoryId, categories]);
 
@@ -48,7 +48,7 @@ export const ExpensesByCategory: React.FC<ExpensesByCategoryProps> = (props) => 
         return <React.Fragment>
             <Box padding={1} marginBottom={2} >
                 <VersusInfo 
-                    title={loc('Spent')} 
+                    title={loc.get('Spent')} 
                     spent={total}
                     total={budget.totalExpenses}/>
             </Box>
@@ -58,6 +58,6 @@ export const ExpensesByCategory: React.FC<ExpensesByCategoryProps> = (props) => 
                 categories={categories} />
         </React.Fragment>;
     } else {
-        return <Typography>{loc('No expenses')}</Typography>;
+        return <Typography>{loc.get('No expenses')}</Typography>;
     }
 }

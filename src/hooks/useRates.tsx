@@ -4,21 +4,16 @@ import { useCurrenciesStore } from './useCurrenciesStore';
 import { CurrenciesStore } from '../domain/stores';
 
 export function useRates(baseCurrency: string) {
-    const [rates, setRates] = useState<CurrencyRates>();
     const store = useCurrenciesStore();
+    const [rates, setRates] = useState<CurrencyRates|undefined>(
+        store && store.getLocalRates(baseCurrency));
 
     useEffect(() => {
         async function fetch (store: CurrenciesStore) {
-            const r = await store.getRates(baseCurrency);
-            setRates(r);
+            setRates(await store.getRates(baseCurrency));
         }
 
-        let isSubscribed = true;
-        if (isSubscribed && store) {
-            setRates(store.getLocalRates(baseCurrency));
-            fetch(store);
-        }
-        return () => {isSubscribed = false};
+        store && fetch(store);
     }, [baseCurrency, store]);
 
     return rates;

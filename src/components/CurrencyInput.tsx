@@ -1,7 +1,7 @@
 import React from 'react';
-import { useLoc } from '../hooks/useLoc';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextInput } from './TextInput';
+import { useLocalization } from '../hooks/useLocalization';
 
 export interface CurrencyInputProps  {
     onCurrencyChange: (selected: string) => void;
@@ -23,7 +23,7 @@ function createOption (currencies: Map<string, string>, code: string): CurrencyO
 export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
 
     const {onCurrencyChange, selectedCurrency, valuesToTop, currencies} = props;
-    const loc = useLoc();
+    const loc = useLocalization();
 
     const [value, setValue] = React.useState<CurrencyOption>(
         createOption(currencies, selectedCurrency));
@@ -63,7 +63,7 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
             style={{marginRight: '1rem'}}
             renderInput={(params: any) => (
                 <TextInput {...params} 
-                    label={loc('Currency')}
+                    label={loc.get('Currency')}
                     disabled={props.disabled}
                     required
                     fullWidth />

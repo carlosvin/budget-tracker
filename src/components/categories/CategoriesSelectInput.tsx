@@ -2,7 +2,7 @@ import * as React from 'react';
 import { TextInput } from '../TextInput';
 import { Category } from '../../api';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { useLoc } from '../../hooks/useLoc';
+import { useLocalization } from '../../hooks/useLocalization';
 
 interface CategoriesSelectInputProps {
     onCategoryChange: (category: Category) => void;
@@ -21,7 +21,7 @@ export const CategoriesSelectInput: React.FC<CategoriesSelectInputProps> = ({
     label,
     selected}) => {
 
-    const loc = useLoc();
+    const loc = useLocalization();
 
     const handleChange = (e: React.ChangeEvent<{}>, value: Category) => {
         onCategoryChange(value);
@@ -38,7 +38,7 @@ export const CategoriesSelectInput: React.FC<CategoriesSelectInputProps> = ({
             style={{marginRight: '1rem'}}
             renderInput={(params: any) => (
                 <TextInput {...params} 
-                    label={label || loc('Category')}
+                    label={label || loc.get('Category')}
                     helperText={helperText} 
                     required={required}
                     fullWidth />

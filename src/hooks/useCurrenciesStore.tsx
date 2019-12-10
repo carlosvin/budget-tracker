@@ -10,14 +10,7 @@ export function useCurrenciesStore() {
         async function fetchStore () {
             setStore(await btApp.getCurrenciesStore());
         }
-
-        let isSubscribed = true;
-        if (isSubscribed) {
-            fetchStore();
-        }
-
-        return () => { isSubscribed = false };
-        
+        fetchStore();
     }, [btApp]);
 
     return store;

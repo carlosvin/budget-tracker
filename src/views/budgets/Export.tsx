@@ -9,7 +9,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { useHeaderContext } from "../../hooks/useHeaderContext";
-import { useLoc } from "../../hooks/useLoc";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface ExportBudgetProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -22,15 +22,15 @@ export const ExportBudget: React.FC<ExportBudgetProps> = (props) => {
     const categories = useCategories();
 
     const [data, setData] = React.useState<ExportDataSet>();
-    const loc = useLoc();
+    const loc = useLocalization();
 
     useHeaderContext(
-        loc('Export'), 
+        loc.get('Export'), 
         <CloseButtonHistory history={history} to={budgetPath.path}/>, props);
 
     React.useEffect(() => {
         if (budgetModel && categories) {
-            onTitleChange(`${loc('Export')} ${budgetModel.info.name}`);
+            onTitleChange(`${loc.get('Export')} ${budgetModel.info.name}`);
             setData(budgetModel.export(categories));
         }
     // eslint-disable-next-line

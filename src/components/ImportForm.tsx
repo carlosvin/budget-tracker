@@ -2,11 +2,11 @@ import * as React from 'react';
 import {  ExportDataSet } from '../api';
 import { SnackbarError } from './snackbars';
 import { useBudgetsStore } from '../hooks/useBudgetsStore';
-import { useLoc } from '../hooks/useLoc';
 import { getFileContent } from '../services/getFileContent';
 import IconButton from '@material-ui/core/IconButton';
 import SaveIcon from '@material-ui/icons/Save';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { useLocalization } from '../hooks/useLocalization';
 
 interface ImportFormProps {
     onImportedData: (data: Partial<ExportDataSet>) => void;
@@ -19,7 +19,7 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
     const [error, setError] = React.useState();
 
     const budgetsStore = useBudgetsStore();
-    const loc = useLoc();
+    const loc = useLocalization();
 
     React.useEffect(() => setError(undefined), [selectedFile]);
 
@@ -41,7 +41,7 @@ export const ImportForm: React.FC<ImportFormProps> = (props) => {
                 setFile(undefined);
             } catch (error) {
                 console.error(error);
-                setError(loc('Invalid input JSON'));
+                setError(loc.get('Invalid input JSON'));
             }
             setProcessing(false);
         }

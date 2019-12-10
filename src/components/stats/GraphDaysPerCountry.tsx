@@ -2,7 +2,7 @@ import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { getTotalDaysByCountry } from "../../domain/stats/getTotalDaysByCountry";
 import { PieChart } from "./charts/Pie";
-import { useLoc } from "../../hooks/useLoc";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface GraphDaysPerCountryProps {
     budget: BudgetModel
@@ -10,7 +10,7 @@ interface GraphDaysPerCountryProps {
 
 export const GraphDaysPerCountry: React.FC<GraphDaysPerCountryProps> = (props) => {
     const {budget} = props;
-    const loc = useLoc();
+    const loc = useLocalization();
 
     const data = React.useMemo(() => {
         const daysByCountry = getTotalDaysByCountry(budget);
@@ -25,5 +25,5 @@ export const GraphDaysPerCountry: React.FC<GraphDaysPerCountryProps> = (props) =
         return {labels, values};
     }, [budget]);
 
-    return <PieChart title={loc('Days in a country')} {...data} />;
+    return <PieChart title={loc.get('Days in a country')} {...data} />;
 }
