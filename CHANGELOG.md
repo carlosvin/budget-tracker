@@ -2,6 +2,9 @@
 ## Fix
 - Add missing translation for 'days'.
 
+## Change
+- Use device language to show dates.
+
 # [3.8.2] - 2019-12-09
 ## Fix
 - Cleanup old deleted entities.
