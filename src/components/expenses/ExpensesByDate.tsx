@@ -11,11 +11,10 @@ import { AppButton } from "../buttons/buttons";
 import NavigateBefore from "@material-ui/icons/NavigateBefore";
 import NavigateNext from "@material-ui/icons/NavigateNext";
 import DateRange from "@material-ui/icons/DateRange";
-import { monthYearToString } from "../../domain/date";
 import { ExpensesDayMap } from "../../domain/ExpensesYearMap";
 import { Expense, YMD, CategoriesMap } from "../../api";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { useLoc } from "../../hooks/useLoc";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface ExpensesByDateProps extends Partial<YMD>, HeaderNotifierProps {
     budget: BudgetModel;
@@ -25,7 +24,7 @@ interface ExpensesByDateProps extends Partial<YMD>, HeaderNotifierProps {
 export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
     const {year, month, day, budget, categories, onTitleChange} = props;
     const path = new BudgetPath(budget.identifier);
-    const loc = useLoc();
+    const loc = useLocalization();
     const [expenses, setExpenses] = React.useState<Map<string, Map<string, Expense>>>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState();
     const [totalSpent, setTotalSpent] = React.useState(0);
@@ -39,7 +38,7 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
                     if (year === undefined) {
                         throw new Error('Year is required');
                     }
-                    return monthYearToString(year, month);
+                    return loc.monthYearToString(year, month);
                 }
             } else {
                 if (year === undefined || month === undefined) {
@@ -86,7 +85,7 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
             nextDate: getNextUrl(1),
             numberOfDays: getNumberOfDays()
         };
-    }, [year, month, day, path]);
+    }, [year, month, day, path, loc]);
 
     React.useEffect(() => {
         const expenseGroups = budget.expenseGroupsIn;
@@ -123,7 +122,7 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
         <React.Fragment>
             <Box padding={1} marginBottom={2} >
                 <VersusInfo 
-                    title={loc('Daily expenses')} 
+                    title={loc.get('Daily expenses')} 
                     spent={totalSpent}
                     total={expectedDailyAvg * numberOfDays}/>
                 <Grid container justify='space-between' direction='row' style={{marginTop: '1.5em'}}>
@@ -132,7 +131,7 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
                     { nextDate && <AppButton to={nextDate} icon={NavigateNext} replace/> }
                 </Grid>
             </Box>
-            { expenses===undefined && <Typography>{loc('No expenses')}</Typography> }
+            { expenses===undefined && <Typography>{loc.get('No expenses')}</Typography> }
             { expenses && <ExpenseList 
                 budget={budget}
                 expensesByGroup={expenses} categories={categories} /> }

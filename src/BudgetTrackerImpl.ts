@@ -1,20 +1,19 @@
-import { SubStorageApi, AppStorageApi } from './services/storage/StorageApi';
+import { DataIOStorageApi, AppStorageApi } from './services/storage';
 import { 
     CategoriesStore, BudgetsStore, 
     IconsStore, CurrenciesStore, 
-    CountriesStore} from './domain/stores/interfaces';
-import { AuthApi } from './services/AuthApi';
+    CountriesStore} from './domain/stores';
 import { AppStorageManager } from './services/storage/AppStorageManager';
 import { IndexedDb } from './services/storage/IndexedDb';
 import { BudgetTracker } from './api';
-import { LocalizationApi } from './services';
+import { LocalizationApi, AuthApi } from './services';
 import { LocalizationImpl } from './services/LocalizationStoreImpl';
 
 export class BudgetTrackerImpl implements BudgetTracker {
 
     readonly storage: AppStorageApi;
     readonly localization: LocalizationApi;
-    private _firestore?: SubStorageApi;
+    private _firestore?: DataIOStorageApi;
     private _auth?: AuthApi;
     private _authPromise?: Promise<AuthApi>;
     private _budgetsStore?: BudgetsStore;

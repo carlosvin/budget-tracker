@@ -10,6 +10,7 @@ import {
     Importer
 } from "../../api";
 
+
 export interface SyncItem {
     identifier: string;
     type: EntityNames;
@@ -20,6 +21,10 @@ export interface DbItem {
     timestamp: number;
 }
 
+export interface ExpenseDb extends Expense, DbItem { }
+export interface BudgetDb extends Budget, DbItem { }
+export interface CategoryDb extends Category, DbItem { }
+
 export interface WriteStorageApi {
     setBudget(budget: Budget, timestamp?: number): Promise<void>;
     deleteBudget(budgetId: string, timestamp?: number): Promise<void>;
@@ -29,7 +34,6 @@ export interface WriteStorageApi {
 
     setCategories(category: Category[], timestamp?: number): Promise<void>;
     deleteCategory(identifier: string, timestamp?: number): Promise<void>;
-
 }
 
 export interface ReadStorageApi {
@@ -41,12 +45,11 @@ export interface ReadStorageApi {
     
     getCategory(identifier: string): Promise<Category|undefined>;
     getCategories(): Promise<CategoriesMap>;
-
 }
 
 export interface StorageApi extends WriteStorageApi, ReadStorageApi {}
 
-export interface SubStorageApi extends StorageApi, Importer, Exporter {
+export interface DataIOStorageApi extends StorageApi, Importer, Exporter {
     getLastTimeSaved(): Promise<number>;
     setLastTimeSaved(timestamp: number): Promise<void>;
 }
@@ -55,8 +58,11 @@ export interface StorageObserver {
     onStorageDataChanged(): void;
 }
 
+/**
+ * Main application storage
+ */
 export interface AppStorageApi extends StorageApi {
-    setRemote(remote?: SubStorageApi): Promise<void>;
+    setRemote(remote?: DataIOStorageApi): Promise<void>;
 
     addObserver(observer: StorageObserver): void;
     deleteObserver(observer: StorageObserver): void;

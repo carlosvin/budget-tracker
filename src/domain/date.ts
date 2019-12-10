@@ -16,19 +16,3 @@ export function dateDiff(from: number, to: number) {
 export function getISODateString (date = new Date()) {
     return date.toISOString().slice(0,10);
 }
-
-/** 
- * @returns month name from Date input
- */
-export function monthToString (month: number) {
-    const dt = new Intl.DateTimeFormat(undefined, {month: 'long'});
-    return dt.format(new Date(2000, month, 1));
-}
-
-/** 
- * @returns month and year name from Date input
- */
-export function monthYearToString (year: number, month: number) {
-    const dt = new Intl.DateTimeFormat(undefined, {month: 'long', year: 'numeric'});
-    return dt.format(new Date(year, month, 1));
-}

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { BudgetsStore } from '../domain/stores/interfaces';
-import { StorageObserver } from '../services/storage/StorageApi';
+import { BudgetsStore } from '../domain/stores';
+import { StorageObserver } from '../services/storage';
 import { useAppContext } from '../contexts/AppContext';
 
 export function useBudgetsStore() {

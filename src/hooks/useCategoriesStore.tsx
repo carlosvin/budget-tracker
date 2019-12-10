@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CategoriesStore } from '../domain/stores/interfaces';
+import { CategoriesStore } from '../domain/stores';
 import { useAppContext } from '../contexts/AppContext';
 
 export function useCategoriesStore () {

@@ -1,13 +1,13 @@
-import { SubStorageApi, AppStorageApi, StorageObserver } from "./StorageApi";
+import { DataIOStorageApi, AppStorageApi, StorageObserver } from ".";
 import { Budget, Expense, Category } from "../../api";
 import { DataSync } from "./DataSync";
 
 export class AppStorageManager implements AppStorageApi {
-    private local: SubStorageApi;
-    private remote?: SubStorageApi;
+    private local: DataIOStorageApi;
+    private remote?: DataIOStorageApi;
     private observers: Set<StorageObserver>;
 
-    constructor (local: SubStorageApi) {
+    constructor (local: DataIOStorageApi) {
         AppStorageManager.persist();
         this.local = local;
         this.observers = new Set();
@@ -25,7 +25,7 @@ export class AppStorageManager implements AppStorageApi {
         this.observers.forEach(o=>o.onStorageDataChanged());
     }
     
-    async setRemote (remote?: SubStorageApi) {
+    async setRemote (remote?: DataIOStorageApi) {
         if (this.remote !== remote) {
             this.remote = remote;
             if (this.remote) {

@@ -29,4 +29,15 @@ export class LocalizationImpl implements LocalizationApi {
     get(key: string) {
         return this.strings[key] || key;
     }
+
+    monthToString (month: number) {
+        const dt = new Intl.DateTimeFormat(this.lang, {month: 'long'});
+        return dt.format(new Date(2000, month, 1));
+    }
+
+    monthYearToString (year: number, month: number) {
+        const dt = new Intl.DateTimeFormat(this.lang, {month: 'long', year: 'numeric'});
+        return dt.format(new Date(year, month, 1));
+    }
+
 }

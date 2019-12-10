@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BudgetModel } from '../domain/BudgetModel';
 import { useBudgetsStore } from './useBudgetsStore';
-import { BudgetsStore } from '../domain/stores/interfaces';
+import { BudgetsStore } from '../domain/stores';
 
 export function useBudgetModel(budgetId: string) {
     const store = useBudgetsStore();

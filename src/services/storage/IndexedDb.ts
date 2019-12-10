@@ -1,13 +1,9 @@
-import { DbItem, SubStorageApi } from "./StorageApi";
+import { DbItem, DataIOStorageApi, BudgetDb, CategoryDb, ExpenseDb } from ".";
 import { openDB, IDBPDatabase, DBSchema, IDBPObjectStore } from 'idb';
 import { Budget, Category, Expense, BudgetsMap, ExpensesMap, CategoriesMap, ExportDataSet, EntityNames } from "../../api";
 import { DateDay } from "../../domain/DateDay";
 
 const TOO_OLD_MS = 3600000 * 24 * 7;
-
-interface ExpenseDb extends Expense, DbItem { }
-interface BudgetDb extends Budget, DbItem { }
-interface CategoryDb extends Category, DbItem { }
 
 const keyPath = { keyPath: 'identifier' };
 
@@ -35,7 +31,7 @@ interface Schema extends DBSchema {
     }
 }
 
-export class IndexedDb implements SubStorageApi {
+export class IndexedDb implements DataIOStorageApi {
     private readonly name = 'budgetTrackerDb';
     private readonly version = 2;
     private _db?: IDBPDatabase<Schema>;

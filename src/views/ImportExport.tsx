@@ -5,7 +5,7 @@ import { ExportDataSet } from '../api';
 import { ExportCard } from '../components/ExportCard';
 import { CloseButtonHistory } from '../components/buttons/CloseButton';
 import { useBudgetsStore } from '../hooks/useBudgetsStore';
-import { BudgetsStore } from '../domain/stores/interfaces';
+import { BudgetsStore } from '../domain/stores';
 import { useHeaderContext } from '../hooks/useHeaderContext';
 import { ImportCard } from '../components/ImportCard';
 import { useLoc } from '../hooks/useLoc';

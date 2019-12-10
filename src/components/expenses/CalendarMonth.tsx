@@ -1,6 +1,5 @@
 import * as React from "react";
 import { YMD } from "../../api";
-import { monthToString } from "../../domain/date";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { SubHeader } from "./SubHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -9,6 +8,7 @@ import Card from "@material-ui/core/Card";
 import { CalendarDay } from "./CalendarDay";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { Link } from "../Link";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface CalendarMonthProps {
     days: Iterable<number>;
@@ -20,20 +20,21 @@ interface CalendarMonthProps {
 
 export const CalendarMonth: React.FC<CalendarMonthProps> = (props) => {
     const { year, month, budgetModel, days } = props;
+    const loc = useLocalization();
     const total = React.useMemo(() => {
         const totalByMonth = budgetModel.getTotalExpenses(year, month);
         return Math.round(totalByMonth).toLocaleString();
     }, [budgetModel, year, month]);
 
     const linkView = React.useMemo(() => {
-        const montString = monthToString(month);
+        const montString = loc.monthToString(month);
         if (budgetModel) {
             const path = new BudgetPath(budgetModel.identifier).pathExpensesByDay(year, month);
             return <Link to={path}>{montString}</Link>;
         } else {
-            return monthToString;
+            return loc.monthToString;
         }
-    }, [budgetModel, month, year]);
+    }, [budgetModel, month, year, loc]);
 
     const daysView = React.useMemo(() => (
         [...days]

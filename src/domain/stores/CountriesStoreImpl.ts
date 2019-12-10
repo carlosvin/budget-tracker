@@ -1,6 +1,6 @@
 import { GeoApi } from '../../services/GeoApi';
 import { CountryEntry } from '../../api';
-import { CountriesStore } from './interfaces';
+import { CountriesStore } from '.';
 
 interface CachedCountry {
     code: string;

@@ -7,7 +7,7 @@ import applyRate from "../domain/utils/applyRate";
 import { getCurrencyWithSymbol } from "../domain/utils/getCurrencyWithSymbol";
 import { useLoc } from "../hooks/useLoc";
 import { useCurrenciesStore } from "../hooks/useCurrenciesStore";
-import { CurrenciesStore } from "../domain/stores/interfaces";
+import { CurrenciesStore } from "../domain/stores";
 import Typography from "@material-ui/core/Typography";
 import { Grid } from "@material-ui/core";
 

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { stringToColorCss } from '../utils/stringToColor';
-import { LazyIcon, IconsStore } from './interfaces';
+import { LazyIcon, IconsStore } from '.';
 import { ObjectMap } from '../../api';
 
 export class IconsStoreImpl implements IconsStore {

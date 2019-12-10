@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CurrenciesStore } from '../domain/stores/interfaces';
+import { CurrenciesStore } from '../domain/stores';
 import { useAppContext } from '../contexts/AppContext';
 
 export function useCurrenciesStore() {
