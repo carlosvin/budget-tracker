@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CategoriesMap } from '../api';
 import { useCategoriesStore } from './useCategoriesStore';
-import { CategoriesStore } from '../domain/stores/interfaces';
+import { CategoriesStore } from '../domain/stores';
 
 export function useCategories() {
     const [categories, setCategories] = useState<CategoriesMap>();

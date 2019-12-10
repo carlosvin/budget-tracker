@@ -1,7 +1,8 @@
 import { CurrencyRates } from "../api";
 import { RemoteApi } from "./RemoteApi";
+import { CurrenciesApi } from ".";
 
-class CurrenciesApi {
+export class CurrenciesApiImpl implements CurrenciesApi {
 
     private readonly primary: RemoteApi;
     private _backup?: RemoteApi;
@@ -25,5 +26,3 @@ class CurrenciesApi {
         return resp;
     }
 }
-
-export const currenciesApi = new CurrenciesApi();

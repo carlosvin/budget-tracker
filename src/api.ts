@@ -1,6 +1,5 @@
-import { AppStorageApi } from './services/storage';
-import { AuthApi } from './services/AuthApi';
-import { BudgetsStore, CategoriesStore, IconsStore, CurrenciesStore, CountriesStore } from './domain/stores/interfaces';
+import { AuthApi, AppStorageApi } from './services';
+import { BudgetsStore, CategoriesStore, IconsStore, CurrenciesStore, CountriesStore } from './domain/stores';
 import { LocalizationApi } from './services';
 
 

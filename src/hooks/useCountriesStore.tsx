@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CountriesStore } from '../domain/stores/interfaces';
+import { CountriesStore } from '../domain/stores';
 import { useAppContext } from '../contexts/AppContext';
 
 export function useCountriesStore() {

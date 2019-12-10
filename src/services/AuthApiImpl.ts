@@ -1,7 +1,7 @@
 // import { Budget, BudgetsMap } from '../interfaces';
 import firebase from 'firebase/app';
 import 'firebase/auth';
-import { AuthApi } from './AuthApi';
+import { AuthApi } from '.';
 
 // Configure Firebase.
 const config = {

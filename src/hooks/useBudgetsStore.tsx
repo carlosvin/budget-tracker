@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BudgetsStore } from '../domain/stores/interfaces';
+import { BudgetsStore } from '../domain/stores';
 import { StorageObserver } from '../services/storage';
 import { useAppContext } from '../contexts/AppContext';
 

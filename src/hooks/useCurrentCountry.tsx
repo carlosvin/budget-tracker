@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useCountriesStore } from './useCountriesStore';
-import { CountriesStore } from '../domain/stores/interfaces';
+import { CountriesStore } from '../domain/stores';
 
 export function useCurrentCountry() {
     const store = useCountriesStore();

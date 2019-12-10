@@ -2,7 +2,7 @@ import React from "react";
 import { RouteComponentProps } from "react-router";
 import { HeaderNotifierProps } from "../../routes";
 import { useBudgetsStore } from "../../hooks/useBudgetsStore";
-import { BudgetsStore } from "../../domain/stores/interfaces";
+import { BudgetsStore } from "../../domain/stores";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { BudgetModelCombined } from "../../domain/BudgetModelCombined";
 import { BudgetQuickStats } from "../../components/budgets/BudgetQuickStats";

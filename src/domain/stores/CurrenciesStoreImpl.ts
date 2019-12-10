@@ -1,9 +1,10 @@
 import { CurrencyRates, ObjectMap } from "../../api";
-import { currenciesApi } from "../../services/CurrenciesApi";
-import { CurrenciesStore } from "./interfaces";
+import { CurrenciesStore } from ".";
 import applyRate from "../utils/applyRate";
 import { Currencies } from 'currencies-map';
 import { CURRENCY_DEFAULTS } from "../../constants/currencies";
+import { CurrenciesApi } from "../../services";
+import { CurrenciesApiImpl } from "../../services/CurrenciesApiImpl";
 
 export class CurrenciesStoreImpl implements CurrenciesStore {
     static readonly KEY = 'currencyRates';
@@ -16,8 +17,10 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
     private _timestamps: ObjectMap<number>;
     private _countriesCurrencyMap?: ObjectMap<string>;
     private _lastCurrenciesUsed?: string[];
+    private _currenciesApi: CurrenciesApi;
 
     constructor() {
+        this._currenciesApi = new CurrenciesApiImpl();
         this.currencies = Currencies.names.loadDefaults(Object.entries(CURRENCY_DEFAULTS));
         this._timestamps = this.getTimestampsFromDisk();
         this._rates = this.getRatesFromDisk();
@@ -95,7 +98,7 @@ export class CurrenciesStoreImpl implements CurrenciesStore {
      * @throws Error when it returns invalid response after fetching currencies  
      */
     private async fetchRates(baseCurrency: string, expectedCurrencyMatch?: string) {
-        const rates = await currenciesApi.getRates(
+        const rates = await this._currenciesApi.getRates(
             baseCurrency,
             expectedCurrencyMatch);
         if (Object.keys(rates.rates).length > 0) {

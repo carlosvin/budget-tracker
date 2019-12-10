@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CurrencyRates } from '../api';
 import { useCurrenciesStore } from './useCurrenciesStore';
-import { CurrenciesStore } from '../domain/stores/interfaces';
+import { CurrenciesStore } from '../domain/stores';
 
 export function useRates(baseCurrency: string) {
     const [rates, setRates] = useState<CurrencyRates>();

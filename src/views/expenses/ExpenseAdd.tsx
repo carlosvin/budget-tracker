@@ -12,7 +12,7 @@ import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 import { ExpenseForm } from "../../components/expenses/ExpenseForm";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { useCurrenciesStore } from "../../hooks/useCurrenciesStore";
-import { CurrenciesStore } from "../../domain/stores/interfaces";
+import { CurrenciesStore } from "../../domain/stores";
 import { useHeaderContext } from "../../hooks/useHeaderContext";
 import { useLoc } from "../../hooks/useLoc";
 

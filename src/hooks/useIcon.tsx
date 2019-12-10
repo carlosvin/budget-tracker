@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ColoredLazyIcon } from '../domain/stores/interfaces';
+import { ColoredLazyIcon } from '../domain/stores';
 import { useAppContext } from '../contexts/AppContext';
 
 export function useIcon(name: string) {

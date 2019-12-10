@@ -2,12 +2,11 @@ import { DataIOStorageApi, AppStorageApi } from './services/storage';
 import { 
     CategoriesStore, BudgetsStore, 
     IconsStore, CurrenciesStore, 
-    CountriesStore} from './domain/stores/interfaces';
-import { AuthApi } from './services/AuthApi';
+    CountriesStore} from './domain/stores';
 import { AppStorageManager } from './services/storage/AppStorageManager';
 import { IndexedDb } from './services/storage/IndexedDb';
 import { BudgetTracker } from './api';
-import { LocalizationApi } from './services';
+import { LocalizationApi, AuthApi } from './services';
 import { LocalizationImpl } from './services/LocalizationStoreImpl';
 
 export class BudgetTrackerImpl implements BudgetTracker {
