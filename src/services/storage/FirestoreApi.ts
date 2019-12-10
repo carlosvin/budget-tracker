@@ -1,9 +1,9 @@
 import { Budget, BudgetsMap, ExpensesMap, Expense, CategoriesMap, Category, User, ExportDataSet } from '../../api';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { SubStorageApi, DbItem, BudgetDb, CategoryDb, ExpenseDb } from '.';
+import { DataIOStorageApi, DbItem, BudgetDb, CategoryDb, ExpenseDb } from '.';
 
-export class FirestoreApi implements SubStorageApi {
+export class FirestoreApi implements DataIOStorageApi {
     
     private readonly db: firebase.firestore.Firestore;
     private readonly userId: string;

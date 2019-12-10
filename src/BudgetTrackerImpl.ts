@@ -1,4 +1,4 @@
-import { SubStorageApi, AppStorageApi } from './services/storage';
+import { DataIOStorageApi, AppStorageApi } from './services/storage';
 import { 
     CategoriesStore, BudgetsStore, 
     IconsStore, CurrenciesStore, 
@@ -14,7 +14,7 @@ export class BudgetTrackerImpl implements BudgetTracker {
 
     readonly storage: AppStorageApi;
     readonly localization: LocalizationApi;
-    private _firestore?: SubStorageApi;
+    private _firestore?: DataIOStorageApi;
     private _auth?: AuthApi;
     private _authPromise?: Promise<AuthApi>;
     private _budgetsStore?: BudgetsStore;

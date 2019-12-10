@@ -1,14 +1,14 @@
 
-import { SubStorageApi } from ".";
+import { DataIOStorageApi } from ".";
 
 export class DataSync {
 
-    private readonly from: SubStorageApi;
-    private readonly to: SubStorageApi;
+    private readonly from: DataIOStorageApi;
+    private readonly to: DataIOStorageApi;
     private readonly name: string;
 
     // Creator should pass the correct storage depending on the action
-    constructor(from: SubStorageApi, to: SubStorageApi) {
+    constructor(from: DataIOStorageApi, to: DataIOStorageApi) {
         this.from = from;
         this.to = to;
         this.name = `${this.from.constructor.name} > ${this.to.constructor.name}`;

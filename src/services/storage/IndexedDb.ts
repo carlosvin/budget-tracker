@@ -1,4 +1,4 @@
-import { DbItem, SubStorageApi, BudgetDb, CategoryDb, ExpenseDb } from ".";
+import { DbItem, DataIOStorageApi, BudgetDb, CategoryDb, ExpenseDb } from ".";
 import { openDB, IDBPDatabase, DBSchema, IDBPObjectStore } from 'idb';
 import { Budget, Category, Expense, BudgetsMap, ExpensesMap, CategoriesMap, ExportDataSet, EntityNames } from "../../api";
 import { DateDay } from "../../domain/DateDay";
@@ -31,7 +31,7 @@ interface Schema extends DBSchema {
     }
 }
 
-export class IndexedDb implements SubStorageApi {
+export class IndexedDb implements DataIOStorageApi {
     private readonly name = 'budgetTrackerDb';
     private readonly version = 2;
     private _db?: IDBPDatabase<Schema>;
