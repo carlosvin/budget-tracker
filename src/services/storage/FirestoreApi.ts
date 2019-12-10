@@ -1,11 +1,7 @@
 import { Budget, BudgetsMap, ExpensesMap, Expense, CategoriesMap, Category, User, ExportDataSet } from '../../api';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
-import { SubStorageApi, DbItem } from './StorageApi';
-
-interface ExpenseDb extends Expense, DbItem { }
-interface BudgetDb extends Budget, DbItem { }
-interface CategoryDb extends Category, DbItem { }
+import { SubStorageApi, DbItem, BudgetDb, CategoryDb, ExpenseDb } from '.';
 
 export class FirestoreApi implements SubStorageApi {
     
@@ -139,7 +135,7 @@ export class FirestoreApi implements SubStorageApi {
             .values(expenses)
             .forEach(expense => batch.set(
                 this.getExpenseDoc(expense.identifier), 
-                this.removeUndefined({deleted: 0, ...expense, timestamp})));
+                this.removeUndefined<ExpenseDb>({deleted: 0, ...expense, timestamp})));
         this.setLastTimeSaved(timestamp, batch);
         return batch.commit();
     }

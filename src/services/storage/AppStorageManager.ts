@@ -1,4 +1,4 @@
-import { SubStorageApi, AppStorageApi, StorageObserver } from "./StorageApi";
+import { SubStorageApi, AppStorageApi, StorageObserver } from ".";
 import { Budget, Expense, Category } from "../../api";
 import { DataSync } from "./DataSync";
 

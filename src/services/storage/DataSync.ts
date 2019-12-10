@@ -1,5 +1,5 @@
 
-import { SubStorageApi } from "./StorageApi";
+import { SubStorageApi } from ".";
 
 export class DataSync {
 

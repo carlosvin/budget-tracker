@@ -1,4 +1,4 @@
-import { SubStorageApi, AppStorageApi } from './services/storage/StorageApi';
+import { SubStorageApi, AppStorageApi } from './services/storage';
 import { 
     CategoriesStore, BudgetsStore, 
     IconsStore, CurrenciesStore, 

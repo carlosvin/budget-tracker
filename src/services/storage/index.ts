@@ -10,6 +10,7 @@ import {
     Importer
 } from "../../api";
 
+
 export interface SyncItem {
     identifier: string;
     type: EntityNames;
@@ -19,6 +20,10 @@ export interface DbItem {
     deleted: number;
     timestamp: number;
 }
+
+export interface ExpenseDb extends Expense, DbItem { }
+export interface BudgetDb extends Budget, DbItem { }
+export interface CategoryDb extends Category, DbItem { }
 
 export interface WriteStorageApi {
     setBudget(budget: Budget, timestamp?: number): Promise<void>;
