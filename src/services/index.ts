@@ -1,6 +1,6 @@
-export * from './storage';
-
 import { CurrencyRates } from '../api';
+
+export * from './storage';
 
 export interface LocalizationApi {
     readonly lang: string;
