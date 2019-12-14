@@ -7,7 +7,7 @@ export class DateDay implements YMD {
         this._date = new Date(
             date.getFullYear(), 
             date.getMonth(), 
-            date.getDate());
+            date.getDate(), 0, 0, 0, 0);
     }
 
     clone() {
