@@ -6,9 +6,9 @@ import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { CloseButtonHistory } from "../../components/buttons/CloseButton";
 import { BudgetStatsComponents } from "../../components/stats/BudgetStats";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { useLoc } from "../../hooks/useLoc";
 import { useHeaderContext } from "../../hooks/useHeaderContext";
 import { useCategories } from "../../hooks/useCategories";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface BudgetStatsViewProps extends RouteComponentProps<{ budgetId: string }>, HeaderNotifierProps{}
 
@@ -20,14 +20,14 @@ export const BudgetStatsView: React.FC<BudgetStatsViewProps> = (props) => {
     
     const budget = useBudgetModel(budgetId);
     const categories = useCategories();
-    const loc = useLoc();
+    const loc = useLocalization();
 
     React.useEffect(() => (
-        budget && props.onTitleChange(`${loc('Statistics')}: ${budget.name}`)),
+        budget && props.onTitleChange(`${loc.get('Statistics')}: ${budget.name}`)),
     // eslint-disable-next-line 
     [budget]);
 
-    useHeaderContext(`${loc('Statistics')}`, 
+    useHeaderContext(`${loc.get('Statistics')}`, 
         <CloseButtonHistory history={history} to={budgetPath.path}/>, 
         props);
 

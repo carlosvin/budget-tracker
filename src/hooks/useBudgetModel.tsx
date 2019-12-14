@@ -11,19 +11,8 @@ export function useBudgetModel(budgetId: string) {
         async function fetchBudget (store: BudgetsStore) {
             setBudgetModel(await store.getBudgetModel(budgetId));
         }
-        if (budgetId) {
-            let isSubscribed = true;
-
-            if (isSubscribed) {
-                if (store) {
-                    fetchBudget(store);
-                } else {
-                    setBudgetModel(undefined);
-                }
-            }
-            return () => {isSubscribed = false};
-        }
         
+        store ? fetchBudget(store) : setBudgetModel(undefined);
     }, [budgetId, store]);
 
     return budgetModel;

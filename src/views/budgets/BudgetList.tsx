@@ -11,9 +11,9 @@ import { CloseButton } from "../../components/buttons/CloseButton";
 import MergeIcon from '@material-ui/icons/MergeType';
 
 import { ButtonFab } from "../../components/buttons/buttons";
-import { useLoc } from "../../hooks/useLoc";
 import { BudgetsList as BudgetsListComponent } from "../../components/budgets/BudgetsList";
 import { BudgetsListEmpty } from "../../components/budgets/BudgetsListEmpty";
+import { useLocalization } from "../../hooks/useLocalization";
 
 
 interface BudgetListProps extends RouteComponentProps, HeaderNotifierProps {}
@@ -22,10 +22,10 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
 
     const budgets = useBudgetsIndex();
     const [selectedBudgets, setSelectedBudgets] = React.useState(new Set<string>());
-    const loc = useLoc();
+    const loc = useLocalization();
     
     React.useEffect(() => {
-        props.onTitleChange(loc('Budget list'));
+        props.onTitleChange(loc.get('Budget list'));
     // eslint-disable-next-line
     }, []);
 
@@ -35,13 +35,13 @@ export const BudgetList: React.FC<BudgetListProps> = (props) => {
         }
 
         if (selectedBudgets.size === 0) {
-            props.onTitleChange(loc('Budget list'));
+            props.onTitleChange(loc.get('Budget list'));
             props.onActions([ 
                 <AddButton to={BudgetPath.add} key='add-budget'/>, 
                 <ImportExportButton to={AppPaths.ImportExport} key='import-export-data'/>
             ]);
         } else {
-            props.onTitleChange(loc('Selecting budgets'));
+            props.onTitleChange(loc.get('Selecting budgets'));
             props.onActions([
                 <ButtonFab 
                     to={BudgetPath.pathCombinedWithQuery(selectedBudgets)}

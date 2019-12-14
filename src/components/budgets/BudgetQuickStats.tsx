@@ -6,7 +6,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
-import { useLoc } from '../../hooks/useLoc';
+import { useLocalization } from '../../hooks/useLocalization';
 
 interface BudgetQuickStatsProps {
     totalBudget: number,
@@ -32,32 +32,32 @@ const ActionButton: React.FC<{url: string}> = ({url, children}) => (
 );
 
 export const BudgetQuickStats: React.FC<BudgetQuickStatsProps> = (props) => {
-    const loc = useLoc();
+    const loc = useLocalization();
     
     return <Card style={{ marginBottom: '1rem' }}>
         <CardContent>
             <VersusInfo
                 total={props.totalBudget}
                 spent={props.totalSpent}
-                title={loc('Spent')} />
+                title={loc.get('Spent')} />
             <Box marginTop={spacing}>
                 <VersusInfo
                     total={props.totalDays}
                     spent={props.passedDays}
-                    title={loc('Days')} /></Box>
+                    title={loc.get('Days')} /></Box>
             {props.dailyAverage !== undefined &&
                 <Box marginTop={spacing}>
                     <VersusInfo
                         total={props.expectedDailyAverage}
                         spent={props.dailyAverage}
-                        title={loc('Daily Average')} /></Box>}
+                        title={loc.get('Daily Average')} /></Box>}
         </CardContent>
         <CardActions>
             { props.urlStats && <ActionButton url={props.urlStats}>
-                {loc('More Stats')}
+                {loc.get('More Stats')}
             </ActionButton> }
             { props.urlOut && <ActionButton url={props.urlOut}>
-                {loc('Expenses Out')}
+                {loc.get('Expenses Out')}
             </ActionButton> }
         </CardActions>
     </Card>;

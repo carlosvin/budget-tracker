@@ -1,3 +1,14 @@
+# [3.9.0] - 2019-12-13
+## Add
+- New fallback currency APIs.
+
+## Change
+- Upgrade dependencies.
+
+# [3.8.4] - 2019-12-10
+## Add
+- Add Yandex code.
+
 # [3.8.3] - 2019-12-10
 ## Fix
 - Add missing translation for 'days'.

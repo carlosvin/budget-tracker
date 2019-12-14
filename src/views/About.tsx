@@ -11,13 +11,13 @@ import { Link as RouterLink } from 'react-router-dom';
 import { AppPaths } from "../domain/paths";
 import { HeaderNotifierProps } from "../routes";
 import { useHeaderContext } from "../hooks/useHeaderContext";
-import { useLoc } from "../hooks/useLoc";
 import WarningIcon from '@material-ui/icons/Warning';
 import { AppStorageManager } from "../services/storage/AppStorageManager";
+import { useLocalization } from "../hooks/useLocalization";
 
 const About: React.FC<HeaderNotifierProps> = (props) => {
     useHeaderContext(`Budget tracker ${version}`, [], props);
-    const loc = useLoc();
+    const loc = useLocalization();
 
     const [persisted, setPersisted] = React.useState<boolean>();
 
@@ -31,26 +31,26 @@ const About: React.FC<HeaderNotifierProps> = (props) => {
 
     return (
         <Card>
-            <CardHeader title={loc('Track your expenses')} />
+            <CardHeader title={loc.get('Track your expenses')} />
             <CardContent>
                 {persisted === false && <Typography color='secondary'>
-                    <WarningIcon/> {loc('Persistence disabled')}.
+                    <WarningIcon/> {loc.get('Persistence disabled')}.
                 </Typography>}
                 <Typography>
-                    {loc('Track your expenses Desc')}.
+                    {loc.get('Track your expenses Desc')}.
                 </Typography>
 
                 <Typography variant='body2'>
-                {loc('Add issue to github')}.
+                {loc.get('Add issue to github')}.
                 </Typography>
 
             </CardContent>
             <CardActions>
                 <Button component={RouterLink}
                     to={AppPaths.Privacy}
-                    variant='text'>{loc('Privacy')}</Button>
+                    variant='text'>{loc.get('Privacy')}</Button>
                 <Button component={Link}
-                    href='https://github.com/carlosvin/budget-tracker/issues' >{loc('Issues')}</Button>
+                    href='https://github.com/carlosvin/budget-tracker/issues' >{loc.get('Issues')}</Button>
             </CardActions>
         </Card>
     );

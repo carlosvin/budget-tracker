@@ -12,29 +12,17 @@ export function useBudgetsStore() {
             setStore(await btApp.getBudgetsStore());
         }
 
-        let isSubscribed = true;
-        if (isSubscribed) {
-            fetchStore();
-        }
-
-        return () => { isSubscribed = false };
-        
+        fetchStore();        
     }, [store, btApp]);
 
     useEffect(() => {
-        let isSubscribed = true;
         const observer: StorageObserver = {onStorageDataChanged: () => {
             setStore(undefined);
         }};
 
-        if (isSubscribed) {
-            btApp.storage.addObserver(observer);
-        }
+        btApp.storage.addObserver(observer);
 
-        return () => {
-            isSubscribed = false;
-            btApp.storage.deleteObserver(observer);
-        };
+        return () => (btApp.storage.deleteObserver(observer));
     }, [btApp]);
 
     return store;

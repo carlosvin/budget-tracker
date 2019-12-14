@@ -1,5 +1,5 @@
 import { CategoriesMap, Category } from "../../api";
-import { AppStorageApi, StorageObserver } from "../../services/storage";
+import { AppStorageApi, StorageObserver } from "../../services";
 import { CategoriesStore } from '.';
 
 export class CategoriesStoreImpl implements CategoriesStore, StorageObserver {

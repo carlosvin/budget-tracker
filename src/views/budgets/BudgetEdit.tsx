@@ -10,8 +10,8 @@ import { useBudgetModel } from "../../hooks/useBudgetModel";
 import { HeaderNotifierProps } from "../../routes";
 import { useAppContext } from "../../contexts/AppContext";
 import { useHeaderContext } from "../../hooks/useHeaderContext";
-import { useLoc } from "../../hooks/useLoc";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface BudgetEditProps extends 
     RouteComponentProps<{ budgetId: string }>, 
@@ -42,10 +42,10 @@ const BudgetEdit: React.FC<BudgetEditProps> = (props) => {
         budget && setBudgetInfo(budget.info);
     }, [budget]);
 
-    const loc = useLoc();
+    const loc = useLocalization();
 
     useHeaderContext(
-        budgetId ? loc('Edit budget') : loc('Add Budget'),
+        budgetId ? loc.get('Edit budget') : loc.get('Add Budget'),
         <CloseButtonHistory history={props.history}/>, 
         props);
 

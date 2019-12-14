@@ -1,7 +1,7 @@
 import { Budget, Expense, ExportDataSet, BudgetTracker, YMD } from "../../api";
 import { BudgetModel } from "../BudgetModel";
 import { BudgetsStore } from ".";
-import { AppStorageApi, StorageObserver } from "../../services/storage";
+import { AppStorageApi, StorageObserver } from "../../services";
 import { BudgetModelImpl } from "../BudgetModelImpl";
 
 export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {

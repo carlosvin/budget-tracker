@@ -8,8 +8,8 @@ import { dateDiff } from "../../domain/date";
 import Checkbox from "@material-ui/core/Checkbox";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Chip from "@material-ui/core/Chip";
-import { useLoc } from "../../hooks/useLoc";
 import { getCurrencyWithSymbol } from "../../domain/utils/getCurrencyWithSymbol";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface BudgetListItemProps extends Budget {
     onChanged: (identifier: string, checked: boolean) => void;
@@ -22,7 +22,7 @@ export const BudgetListItem: React.FC<BudgetListItemProps> = (props) => {
     const days = dateDiff(from, to);
     const idName = `li-name-${identifier}`;
     const isPassed = to < Date.now();
-    const loc = useLoc();
+    const loc = useLocalization();
 
     function handleToggle() {
         onChanged(identifier, !checked);
@@ -38,7 +38,7 @@ export const BudgetListItem: React.FC<BudgetListItemProps> = (props) => {
             <ListItemText
                 id={idName}
                 primary={name}
-                secondary={`${days} ${loc('days')}`}
+                secondary={`${days} ${loc.get('days')}`}
             />
             <ListItemText
                 id={`li-info-${identifier}`}
@@ -46,7 +46,7 @@ export const BudgetListItem: React.FC<BudgetListItemProps> = (props) => {
                 primary={getCurrencyWithSymbol(total, currency)}
                 secondary={<Chip 
                     component='span' 
-                    label={isPassed ? loc('Old'): loc('Active')} 
+                    label={isPassed ? loc.get('Old'): loc.get('Active')} 
                     size='small' 
                     disabled={isPassed}/>}
             />

@@ -25,8 +25,8 @@ export class RemoteApi {
         throw new Error(`Error fetching ${url} > ${response.status}`);
     }
 
-    async get<T>(path: string, params: ObjectMap<string>): Promise<T> {
+    async get<T>(path: string, params: ObjectMap<string>, headers?: Headers): Promise<T> {
         const url = this.getUrl(path, params)
-        return this.fetch(url, {method: 'GET' });
+        return this.fetch(url, {method: 'GET', headers});
     }
 }

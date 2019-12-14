@@ -3,21 +3,15 @@ import { ColoredLazyIcon } from '../domain/stores';
 import { useAppContext } from '../contexts/AppContext';
 
 export function useIcon(name: string) {
-    const [icon, setIcon] = useState<ColoredLazyIcon>();
     const btApp = useAppContext();
+    const [icon, setIcon] = useState<ColoredLazyIcon>();
 
     useEffect(() => {
         async function fetchIcon () {
             const store = await btApp.getIconsStore();
             setIcon(store.getIcon(name));
         }
-
-        let isSubscribed = true;
-        if (isSubscribed) {
-            fetchIcon();
-        }
-        
-        return () => {isSubscribed = false};
+        fetchIcon();
     }, [name, btApp]);
 
     return icon;

@@ -8,14 +8,14 @@ import { CloseButtonHistory } from '../../components/buttons/CloseButton';
 import { HeaderNotifierProps } from '../../routes';
 import { useAppContext } from '../../contexts/AppContext';
 import { useHeaderContext } from '../../hooks/useHeaderContext';
-import { useLoc } from '../../hooks/useLoc';
+import { useLocalization } from '../../hooks/useLocalization';
 
 export const AddCategory: React.FC<RouterProps&HeaderNotifierProps> = (props) => {
     
     const btApp = useAppContext();
-    const loc = useLoc();
+    const loc = useLocalization();
 
-    useHeaderContext(loc('Add category'), <CloseButtonHistory history={props.history}/>, props);
+    useHeaderContext(loc.get('Add category'), <CloseButtonHistory history={props.history}/>, props);
 
     function close () {
         goBack(props.history, CategoryPaths.List);

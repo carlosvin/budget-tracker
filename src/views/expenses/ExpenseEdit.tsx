@@ -11,7 +11,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import { HeaderNotifierProps } from "../../routes";
 import { useAppContext } from "../../contexts/AppContext";
 import { useHeaderContext } from "../../hooks/useHeaderContext";
-import { useLoc } from "../../hooks/useLoc";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface ExpenseEditProps extends HeaderNotifierProps,
     RouteComponentProps<{ budgetId: string; expenseId: string }> { }
@@ -27,14 +27,14 @@ export const ExpenseEdit: React.FC<ExpenseEditProps> = (props) => {
     const budgetModel = useBudgetModel(budgetId);
 
     const [expense, setExpense] = React.useState<Expense>();
-    const loc = useLoc();
+    const loc = useLocalization();
 
     async function handleDelete () {
         await (await btApp.getBudgetsStore()).deleteExpense(budgetId, expenseId);
         replace(budgetUrl.path);
     }
 
-    useHeaderContext(loc('Edit expense'), <DeleteButton onClick={handleDelete}/>, props);
+    useHeaderContext(loc.get('Edit expense'), <DeleteButton onClick={handleDelete}/>, props);
 
     React.useEffect(() => {
         if (budgetModel) {

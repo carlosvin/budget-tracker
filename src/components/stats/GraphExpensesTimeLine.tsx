@@ -2,7 +2,7 @@ import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
 import { DateDay } from "../../domain/DateDay";
 import { TimeLineChart } from "./charts/TimeLine";
-import { useLoc } from "../../hooks/useLoc";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface GraphExpensesTimeLineProps {
     budget: BudgetModel;
@@ -10,7 +10,7 @@ interface GraphExpensesTimeLineProps {
 
 export const GraphExpensesTimeLine: React.FC<GraphExpensesTimeLineProps> = (props) => {
     const {budget} = props;
-    const loc = useLoc();
+    const loc = useLocalization();
     
     const data = React.useMemo(() => {
         const {from, to} = budget;
@@ -28,7 +28,7 @@ export const GraphExpensesTimeLine: React.FC<GraphExpensesTimeLineProps> = (prop
     }, [budget]);
 
     return <TimeLineChart 
-        title={loc('By date')} 
+        title={loc.get('By date')} 
         {...data}
         avg={budget.average}
         expectedAvg={budget.expectedDailyExpensesAverage}

@@ -8,17 +8,17 @@ import { useBudgetsStore } from '../hooks/useBudgetsStore';
 import { BudgetsStore } from '../domain/stores';
 import { useHeaderContext } from '../hooks/useHeaderContext';
 import { ImportCard } from '../components/ImportCard';
-import { useLoc } from '../hooks/useLoc';
+import { useLocalization } from '../hooks/useLocalization';
 
 const ImportExport = (props: HeaderNotifierProps&RouterProps) => {
 
     const [exportData, setExportData] = React.useState<ExportDataSet>();
     const {history} = props;
-    const loc = useLoc();
+    const loc = useLocalization();
 
     const budgetsStore = useBudgetsStore();
 
-    useHeaderContext(loc('Import & Export'), <CloseButtonHistory history={history}/>, props);
+    useHeaderContext(loc.get('Import & Export'), <CloseButtonHistory history={history}/>, props);
 
     React.useEffect(() => {
         async function exportData (store: BudgetsStore) {

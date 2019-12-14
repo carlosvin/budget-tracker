@@ -4,11 +4,11 @@ import { CategoriesMap } from "../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getTotalsByCategory } from "../../domain/stats/getTotalsByCategory";
 import { PieChart } from "./charts/Pie";
-import { useLoc } from "../../hooks/useLoc";
 import { CategoriesSelectInput } from "../categories/CategoriesSelectInput";
 import { Redirect } from "react-router";
 import { BudgetPath } from "../../domain/paths/BudgetPath";
 import { Box } from "@material-ui/core";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface GraphByCategoryProps {
     budget: BudgetModel, 
@@ -21,7 +21,7 @@ function getCategoryName (index: string, categories: CategoriesMap) {
 }
 
 export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
-    const loc = useLoc();
+    const loc = useLocalization();
     const {budget, categories} = props;
     const [category, setCategory] = React.useState();
 
@@ -48,12 +48,12 @@ export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
 
     if (data) {
         return <React.Fragment>
-            <PieChart title={loc('By category')} {...data} />
+            <PieChart title={loc.get('By category')} {...data} />
             { categories && <Box paddingX='1rem'>
                 <CategoriesSelectInput 
                     categories={Object.values(categories)}
                     onCategoryChange={setCategory}
-                    label={loc('List by category')}/>
+                    label={loc.get('List by category')}/>
             </Box> }
         </React.Fragment>;
     } else {

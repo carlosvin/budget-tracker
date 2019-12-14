@@ -1,13 +1,13 @@
 import { useEffect, ReactNode } from "react";
 import { HeaderNotifierProps } from "../routes";
 
-export function useHeaderContext(title: string, actions: ReactNode, props: HeaderNotifierProps) {
+export function useHeaderContext(title: string, actions: ReactNode, {onTitleChange, onActions}: HeaderNotifierProps) {
     useEffect(() => {
-        props.onTitleChange(title);
-        props.onActions(actions);
+        onTitleChange(title);
+        onActions(actions);
         return function () {
-            props.onTitleChange('');
-            props.onActions(undefined);
+            onTitleChange('');
+            onActions(undefined);
         }
     // eslint-disable-next-line
     }, []);

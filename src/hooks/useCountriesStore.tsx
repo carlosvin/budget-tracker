@@ -10,14 +10,7 @@ export function useCountriesStore() {
         async function fetchStore () {
             setStore(await btApp.getCountriesStore());
         }
-
-        let isSubscribed = true;
-        if (isSubscribed) {
-            fetchStore();
-        }
-
-        return () => { isSubscribed = false };
-        
+        fetchStore();
     }, [btApp, store]);
 
     return store;

@@ -5,7 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import { useLoc } from '../hooks/useLoc';
+import { useLocalization } from '../hooks/useLocalization';
 
 interface YesNoDialogProps {
     open: boolean,
@@ -20,7 +20,7 @@ export const YesNoDialog: React.FC<YesNoDialogProps> = (props) => {
 
     const handleNo = () => (props.onClose(false));
     const handleYes = () => (props.onClose(true));
-    const loc = useLoc();
+    const loc = useLocalization();
 
     return (
         <Dialog
@@ -34,8 +34,8 @@ export const YesNoDialog: React.FC<YesNoDialogProps> = (props) => {
                 <DialogContentText id={descriptionId}>{props.description}</DialogContentText>
             </DialogContent>}
             <DialogActions>
-                <Button onClick={handleNo} color="primary">{loc('Disagree')}</Button>
-                <Button onClick={handleYes} color="primary" autoFocus>{loc('Agree')}</Button>
+                <Button onClick={handleNo} color="primary">{loc.get('Disagree')}</Button>
+                <Button onClick={handleYes} color="primary" autoFocus>{loc.get('Agree')}</Button>
             </DialogActions>
         </Dialog>
     );

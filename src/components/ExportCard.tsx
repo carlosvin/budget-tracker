@@ -10,7 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import CardHeader from "@material-ui/core/CardHeader";
 import DownloadIcon from '@material-ui/icons/SaveAlt';
 import { SnackbarInfo } from "./snackbars";
-import { useLoc } from "../hooks/useLoc";
+import { useLocalization } from "../hooks/useLocalization";
 
 interface ExportCardProps {
     fileName: string;
@@ -24,7 +24,7 @@ function download(fileName: string) {
 export const ExportCard: React.FC<ExportCardProps> = (props) => {
     const [info, setInfo] = React.useState<string>();
     const [json, setJson] = React.useState<string>();
-    const loc = useLoc();
+    const loc = useLocalization();
 
     const url = React.useMemo(() => {
         if (json) {
@@ -42,19 +42,19 @@ export const ExportCard: React.FC<ExportCardProps> = (props) => {
     async function handleCopy() {
         if (json) {
             navigator.clipboard.writeText(json);
-            setInfo(loc('Copied to clipboard'));
+            setInfo(loc.get('Copied to clipboard'));
         }
     }
 
     return <Card>
-        <CardHeader title={loc('Export JSON')} />
+        <CardHeader title={loc.get('Export JSON')} />
         {info && <SnackbarInfo message={info} />}
         <CardContent>
             {!json && info && <Typography color='error'>{info}</Typography>}
             {json && <Content 
                 fileName={props.fileName} 
                 url={url}
-                description={loc('Download JSON file')}
+                description={loc.get('Download JSON file')}
                 />
             }
         </CardContent>
@@ -69,7 +69,7 @@ export const ExportCard: React.FC<ExportCardProps> = (props) => {
             <IconButton
                 disabled={!json}
                 key='export-copy-to-clipboard'
-                aria-label={loc('Copy JSON')}
+                aria-label={loc.get('Copy JSON')}
                 onClick={handleCopy} >
                 <FileCopy />
             </IconButton>

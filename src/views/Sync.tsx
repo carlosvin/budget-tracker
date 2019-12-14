@@ -17,7 +17,8 @@ import { CloseButtonHistory } from '../components/buttons/CloseButton';
 import { RouterProps } from 'react-router';
 import { useAppContext } from '../contexts/AppContext';
 import { useHeaderContext } from '../hooks/useHeaderContext';
-import { useLoc } from '../hooks/useLoc';
+import { useLocalization } from '../hooks/useLocalization';
+import { LocalizationApi } from '../services';
 
 export const Sync: React.FC<HeaderNotifierProps & RouterProps> = (props) => {
 
@@ -27,10 +28,10 @@ export const Sync: React.FC<HeaderNotifierProps & RouterProps> = (props) => {
     const [error, setError] = React.useState();
     const { history } = props;
 
-    const loc = useLoc();
+    const loc = useLocalization();
 
     useHeaderContext(
-        loc('Account sync'),
+        loc.get('Account sync'),
         <CloseButtonHistory history={history} />, props);
 
     React.useEffect(() => {
@@ -60,8 +61,8 @@ export const Sync: React.FC<HeaderNotifierProps & RouterProps> = (props) => {
             const uid = await (await btApp.getAuth()).startAuth();
             setIsLoggedIn(!!uid);
         } catch (error) {
-            setError(`${loc('Error synchronizing account')}. 
-                ${loc('Try later')}.`);
+            setError(`${loc.get('Error synchronizing account')}. 
+                ${loc.get('Try later')}.`);
             setIsLoggedIn(false);
             console.error(error);
         }
@@ -78,19 +79,19 @@ export const Sync: React.FC<HeaderNotifierProps & RouterProps> = (props) => {
             await auth.logout();
             setIsLoggedIn(false);
         } catch (error) {
-            setError(`${loc('Sign out problem')}. 
-            ${loc('Try later')}.`);
+            setError(`${loc.get('Sign out problem')}. 
+            ${loc.get('Try later')}.`);
             console.error(error);
         }
     }
 
     function title() {
         if (isLoggedIn === undefined) {
-            return loc('Synchronizing') + '...';
+            return loc.get('Synchronizing') + '...';
         } else if (isLoggedIn) {
-            return loc('Account synched');
+            return loc.get('Account synched');
         } else {
-            return loc('Account not synched');
+            return loc.get('Account not synched');
         }
     }
 
@@ -105,7 +106,7 @@ export const Sync: React.FC<HeaderNotifierProps & RouterProps> = (props) => {
     }
 
     function action() {
-        return isLoggedIn ? loc('Logout') : loc('Synchronize');
+        return isLoggedIn ? loc.get('Logout') : loc.get('Synchronize');
     }
 
     function color() {
@@ -118,7 +119,7 @@ export const Sync: React.FC<HeaderNotifierProps & RouterProps> = (props) => {
             action={avatar()}
             title={title()} />
         <CardContent>
-            <Benefits />
+            <Benefits loc={loc} />
         </CardContent>
         <CardActions>
             <ActionButton
@@ -129,23 +130,22 @@ export const Sync: React.FC<HeaderNotifierProps & RouterProps> = (props) => {
             </ActionButton>
             <Button component={Link}
                 to={AppPaths.Privacy}
-                variant='text'>{loc('Privacy policy')}</Button>
+                variant='text'>{loc.get('Privacy policy')}</Button>
         </CardActions>
     </Card>;
 }
 
-const Benefits = () => {
-    const loc = useLoc();
+const Benefits = ({loc}: {loc: LocalizationApi}) => {
 
     return <List>
         <ListItemText
-            primary={loc('Benefits')} primaryTypographyProps={{ variant: 'subtitle1' }} />
+            primary={loc.get('Benefits')} primaryTypographyProps={{ variant: 'subtitle1' }} />
         <ListItemText
-            primary={loc('Different devices')}
-            secondary={loc('Different devices desc')} />
+            primary={loc.get('Different devices')}
+            secondary={loc.get('Different devices desc')} />
         <ListItemText
-            primary={loc('No data loss')}
-            secondary={loc('No data loss desc')} />
+            primary={loc.get('No data loss')}
+            secondary={loc.get('No data loss desc')} />
     </List>;
 }
 

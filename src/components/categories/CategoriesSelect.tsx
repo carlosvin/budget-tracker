@@ -3,9 +3,9 @@ import MuiLink from '@material-ui/core/Link';
 import { CategoriesMap, Category } from '../../api';
 import { CategoryFormDialog } from './CategoryFormDialog';
 import { useAppContext } from '../../contexts/AppContext';
-import { useLoc } from '../../hooks/useLoc';
 import { useCategoriesStore } from '../../hooks/useCategoriesStore';
 import { CategoriesSelectInput } from './CategoriesSelectInput';
+import { useLocalization } from '../../hooks/useLocalization';
 
 interface CategoriesSelectProps {
     onCategoryChange: (categoryId: string) => void;
@@ -15,7 +15,7 @@ interface CategoriesSelectProps {
 export const CategoriesSelect: React.FC<CategoriesSelectProps> = ({selectedCategory, onCategoryChange}) => {
 
     const btApp = useAppContext();
-    const loc = useLoc();
+    const loc = useLocalization();
 
     const [categories, setCategories] = React.useState<CategoriesMap>();
 
@@ -65,7 +65,7 @@ export const CategoriesSelect: React.FC<CategoriesSelectProps> = ({selectedCateg
                 required
                 helperText={
                     <MuiLink onClick={handleAddCategoryClick}>
-                        {loc('Add category')}
+                        {loc.get('Add category')}
                     </MuiLink>}
                 />
             <CategoryFormDialog

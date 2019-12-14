@@ -1,7 +1,5 @@
-import { AuthApi, AppStorageApi } from './services';
+import { AuthApi, AppStorageApi, LocalizationApi } from './services';
 import { BudgetsStore, CategoriesStore, IconsStore, CurrenciesStore, CountriesStore } from './domain/stores';
-import { LocalizationApi } from './services';
-
 
 export interface Budget {
     identifier: string;

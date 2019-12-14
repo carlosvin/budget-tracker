@@ -11,13 +11,7 @@ export function useIconNames() {
             setIconNames(store.iconNames);
         }
 
-        let isSubscribed = true;
-        if (isSubscribed) {
-            fetchIconNames();
-        }
-        
-        return () => {isSubscribed = false};
-
+        fetchIconNames();
     }, [btApp]);
 
     return iconNames;

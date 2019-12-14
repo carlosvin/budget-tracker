@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { TextInput } from './TextInput';
 import { CountryEntry } from '../api';
-import { useLoc } from '../hooks/useLoc';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useCountriesStore } from '../hooks/useCountriesStore';
+import { useLocalization } from '../hooks/useLocalization';
 
 interface CountryInputProps {
     onChange: (countryCode: string) => void;
@@ -12,7 +12,7 @@ interface CountryInputProps {
 }
 
 export const CountryInput: React.FC<CountryInputProps> = ({selected, disabled, onChange}) => {
-    const loc = useLoc();
+    const loc = useLocalization();
     const store = useCountriesStore();
     const [country, setCountry] = React.useState();
 
@@ -40,7 +40,7 @@ export const CountryInput: React.FC<CountryInputProps> = ({selected, disabled, o
             disableClearable autoComplete
             renderInput={(params: any) => (
                 <TextInput {...params} 
-                    label={loc('Country')}
+                    label={loc.get('Country')}
                     disabled={disabled}
                     required fullWidth />
             )} />;

@@ -3,7 +3,7 @@ import { BudgetModel } from "../../domain/BudgetModel";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getAverageDailyExpensesPerCountry } from "../../domain/stats/getAverageDailyExpensesPerCountry";
 import { BarChart } from "./charts/Bar";
-import { useLoc } from "../../hooks/useLoc";
+import { useLocalization } from "../../hooks/useLocalization";
 
 interface GraphByCategoryProps {
     budget: BudgetModel, 
@@ -11,7 +11,7 @@ interface GraphByCategoryProps {
 
 export const GraphDailyAverageByCountry: React.FC<GraphByCategoryProps> = (props) => {
     const {budget} = props;
-    const loc = useLoc();
+    const loc = useLocalization();
 
     const data = React.useMemo(() => {
             const totals = getAverageDailyExpensesPerCountry(budget);
@@ -21,7 +21,7 @@ export const GraphDailyAverageByCountry: React.FC<GraphByCategoryProps> = (props
     }, [budget]);
 
     if (data) {
-        return <BarChart title={loc('Daily avg country')} {...data} />;
+        return <BarChart title={loc.get('Daily avg country')} {...data} />;
     } else {
         return <CircularProgress/>;
     }

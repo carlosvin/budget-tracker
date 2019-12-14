@@ -4,7 +4,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import { CategoryForm } from './CategoryForm';
 import { Category } from '../../api';
-import { useLoc } from '../../hooks/useLoc';
+import { useLocalization } from '../../hooks/useLocalization';
 
 interface CategoryFormDialogProps {
     open: boolean;
@@ -13,7 +13,7 @@ interface CategoryFormDialogProps {
 
 export const CategoryFormDialog: React.FC<CategoryFormDialogProps> = (props) => {
     const titleId = 'category-dialog-title';
-    const loc = useLoc();
+    const loc = useLocalization();
 
     const handleClose = () => ( props.onClose() );
 
@@ -23,7 +23,7 @@ export const CategoryFormDialog: React.FC<CategoryFormDialogProps> = (props) => 
             open={props.open}
             onClose={handleClose}>
             <DialogTitle id={titleId}>
-                {loc('Add category')}
+                {loc.get('Add category')}
             </DialogTitle>
             <DialogContent style={{marginBottom: '1rem'}}>
                 <CategoryForm onSubmit={props.onClose} />
