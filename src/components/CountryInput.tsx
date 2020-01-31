@@ -23,8 +23,10 @@ export const CountryInput: React.FC<CountryInputProps> = ({selected, disabled, o
         setCountry(countries.find(c => c.code === selected));
     }, [selected, countries]);
 
-    function handleChange (event: React.ChangeEvent<{}>, value: CountryEntry) {
-        onChange(value.code);
+    function handleChange (event: React.ChangeEvent<{}>, value: CountryEntry|null) {
+        if (value !== null) {
+            onChange(value.code);
+        }
     }
 
     if (countries.length > 0 && country) {

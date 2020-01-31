@@ -23,14 +23,16 @@ export const CategoriesSelectInput: React.FC<CategoriesSelectInputProps> = ({
 
     const loc = useLocalization();
 
-    const handleChange = (e: React.ChangeEvent<{}>, value: Category) => {
-        onCategoryChange(value);
+    const handleChange = (e: React.ChangeEvent<{}>, value: Category|null) => {
+        if (value !== null) {
+            onCategoryChange(value);
+        }
     }
 
     return (
         <Autocomplete
             id='categories-input-autocomplete'
-            options={categories} 
+            options={categories}
             onChange={handleChange}
             value={selected || categories[0]}
             getOptionLabel={(option: Category) => option.name}
