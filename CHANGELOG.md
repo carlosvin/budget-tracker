@@ -1,4 +1,4 @@
-# [3.9.1] - 2020-03-14
+# [3.9.2] - 2020-03-14
 ## Fix
 - Date difference calculation.
 - Bump dependencies with vulnerabilities bugfixes.
