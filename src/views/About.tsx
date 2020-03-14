@@ -22,10 +22,14 @@ const About: React.FC<HeaderNotifierProps> = (props) => {
     const [persisted, setPersisted] = React.useState<boolean>();
 
     React.useEffect(() => {
-        AppStorageManager
-            .isPersisted()
-            .then((p)=> setPersisted(p))
-            .catch((_)=>setPersisted(false));
+        async function initPersistence(){
+            try {
+                setPersisted(await AppStorageManager.isPersisted());
+            } catch (e) {
+                console.warn(e);
+            }
+        }
+        initPersistence();
     }, 
     []);
 
