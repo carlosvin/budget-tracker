@@ -17,7 +17,7 @@ interface BudgetFormProps {
 
 export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
     const [budget, setBudget] = React.useState<Budget>(props.budget);
-    const [error, setError] = React.useState();
+    const [error, setError] = React.useState<string>();
     const [saveDisabled, setSaveDisabled] = React.useState(true);
     const {disabled} = props;
     const loc = useLocalization();
@@ -79,11 +79,15 @@ export const BudgetForm: React.FC<BudgetFormProps> = (props) => {
         return undefined;
     }
 
+    function hasError() : boolean {
+        return error !== undefined;
+    }
+
     return (
         <form onSubmit={handleSubmit} >
             <TextInput label={loc.get('Name')} value={budget.name} onChange={handleNameChange} required disabled={disabled}/>
-            <TextInput label={loc.get('Start')} value={getISODateString(new Date(budget.from))} type='date' onChange={handleFromChange} error={error} required  disabled={disabled}/>
-            <TextInput label={loc.get('End')} value={getISODateString(new Date(budget.to))} type='date' error={error} onChange={handleToChange} disabled={disabled}/>
+            <TextInput label={loc.get('Start')} value={getISODateString(new Date(budget.from))} type='date' onChange={handleFromChange} error={hasError()} required  disabled={disabled}/>
+            <TextInput label={loc.get('End')} value={getISODateString(new Date(budget.to))} type='date' error={hasError()} onChange={handleToChange} disabled={disabled}/>
             <AmountInput 
                 disabled={disabled}
                 onAmountChange={handleAmountChange}

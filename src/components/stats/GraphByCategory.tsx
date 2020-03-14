@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BudgetModel } from "../../domain/BudgetModel";
-import { CategoriesMap } from "../../api";
+import { CategoriesMap, Category } from "../../api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getTotalsByCategory } from "../../domain/stats/getTotalsByCategory";
 import { PieChart } from "./charts/Pie";
@@ -23,7 +23,7 @@ function getCategoryName (index: string, categories: CategoriesMap) {
 export const GraphByCategory: React.FC<GraphByCategoryProps> = (props) => {
     const loc = useLocalization();
     const {budget, categories} = props;
-    const [category, setCategory] = React.useState();
+    const [category, setCategory] = React.useState<Category>();
 
     const data = React.useMemo(() => {
         if (categories && Object.keys(categories).length > 0) {

@@ -26,7 +26,7 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
     const path = new BudgetPath(budget.identifier);
     const loc = useLocalization();
     const [expenses, setExpenses] = React.useState<Map<string, Map<string, Expense>>>();
-    const [expectedDailyAvg, setExpectedDailyAvg] = React.useState();
+    const [expectedDailyAvg, setExpectedDailyAvg] = React.useState<number>();
     const [totalSpent, setTotalSpent] = React.useState(0);
 
     const {dateTitle, prevDate, nextDate, numberOfDays} = React.useMemo(() => {
@@ -121,10 +121,10 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
     return (
         <React.Fragment>
             <Box padding={1} marginBottom={2} >
-                <VersusInfo 
+                { expectedDailyAvg !== undefined && <VersusInfo 
                     title={loc.get('Daily expenses')} 
                     spent={totalSpent}
-                    total={expectedDailyAvg * numberOfDays}/>
+                    total={expectedDailyAvg * numberOfDays}/> }
                 <Grid container justify='space-between' direction='row' style={{marginTop: '1.5em'}}>
                     { prevDate && <AppButton to={prevDate} icon={NavigateBefore} replace/> }
                     <AppButton to={path.path} icon={DateRange} replace/>

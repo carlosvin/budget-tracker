@@ -14,7 +14,7 @@ interface CountryInputProps {
 export const CountryInput: React.FC<CountryInputProps> = ({selected, disabled, onChange}) => {
     const loc = useLocalization();
     const store = useCountriesStore();
-    const [country, setCountry] = React.useState();
+    const [country, setCountry] = React.useState<CountryEntry>();
 
     const countries: CountryEntry[] = React.useMemo(
         () => (store ? store.countries : []), [store]);

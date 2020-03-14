@@ -14,9 +14,9 @@ interface ImportFormProps {
 
 export const ImportForm: React.FC<ImportFormProps> = (props) => {
 
-    const [selectedFile, setFile] = React.useState();
+    const [selectedFile, setFile] = React.useState<File>();
     const [isProcessing, setProcessing] = React.useState(false);
-    const [error, setError] = React.useState();
+    const [error, setError] = React.useState<string>();
 
     const budgetsStore = useBudgetsStore();
     const loc = useLocalization();
