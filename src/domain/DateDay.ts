@@ -31,7 +31,7 @@ export class DateDay implements YMD {
     }
 
     static fromYMD (date: YMD) {
-        return new DateDay(new Date(date.year, date.month, date.day));
+        return new DateDay(new Date(Date.UTC(date.year, date.month, date.day)));
     }
 
     get timeMs () {

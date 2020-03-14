@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Header } from "./components/Header";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Routes } from "./routes";
@@ -16,7 +16,7 @@ const App: React.FC<{btApp: BudgetTracker}> = (props) => {
 
     const [title, setTitle] = React.useState('Budget tracker');
     // maybe use callback effect is for this purpose
-    const [actions, setActions] = React.useState();
+    const [actions, setActions] = React.useState<ReactNode>();
 
     return (
         <Router>

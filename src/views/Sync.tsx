@@ -25,7 +25,7 @@ export const Sync: React.FC<HeaderNotifierProps & RouterProps> = (props) => {
     const btApp = useAppContext();
 
     const [isLoggedIn, setIsLoggedIn] = React.useState<boolean | undefined>();
-    const [error, setError] = React.useState();
+    const [error, setError] = React.useState<string>();
     const { history } = props;
 
     const loc = useLocalization();

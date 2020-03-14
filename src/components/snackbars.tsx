@@ -9,7 +9,7 @@ interface SnackbarAppProps {
 }
 
 export const SnackbarApp: React.FC<SnackbarAppProps> = (props) => {
-    const [close, setClose] = React.useState();
+    const [close, setClose] = React.useState<boolean>();
     const type = props.type || 'default';
     const messageId = `${type}-message-id`;
 

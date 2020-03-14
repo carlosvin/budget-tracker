@@ -1,4 +1,5 @@
 import { DateDay } from "./DateDay";
+import { dateDiff } from "./date";
 
 describe('DateDay', () => {
 
@@ -52,5 +53,12 @@ describe('DateDay', () => {
             expect(date.month).toBe(m);
             expect(date.year).toBe(y + i + 1);
         };
+    });
+
+    it ('Add and remove dates: diff 60 days', () => {
+        const mid = Date.UTC(2020, 2, 26);
+        const from = DateDay.fromTimeMs(mid).addDays(-30);
+        const to = DateDay.fromTimeMs(mid).addDays(30);
+        expect(dateDiff(from.timeMs, to.timeMs)).toBe(61);
     });
 });

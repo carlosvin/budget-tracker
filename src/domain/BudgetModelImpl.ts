@@ -193,7 +193,7 @@ export class BudgetModelImpl implements BudgetModel {
 
     get totalDays() {
         if (!this._totalDays) {
-            this._totalDays = dateDiff(this._info.from, this._info.to);
+            this._totalDays = dateDiff(this.from, this.to);
         }
         return this._totalDays;
     }

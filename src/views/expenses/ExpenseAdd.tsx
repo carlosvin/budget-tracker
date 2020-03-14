@@ -26,7 +26,7 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
     const {budgetId} = props.match.params;
     const {history} = props;
     
-    const [currency, setCurrency] = React.useState();
+    const [currency, setCurrency] = React.useState<string>();
     
     const budgetModel = useBudgetModel(budgetId);
     const currentCountry = useCurrentCountry();
@@ -80,7 +80,7 @@ export const ExpenseAdd: React.FC<ExpenseViewProps> = (props) => {
         
     }
 
-    if (budgetModel) {
+    if (budgetModel && currency) {
         return (
             <ExpenseForm
                 amount={0}

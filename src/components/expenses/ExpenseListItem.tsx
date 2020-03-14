@@ -23,7 +23,7 @@ export const ExpenseListItem: React.FC<ExpenseListItemProps> = (props) => {
     const budgetPath = new BudgetPath(props.budget.identifier);
     const expensePath = new ExpensePath(identifier, budgetPath);
 
-    const [redirect, setRedirect] = React.useState();
+    const [redirect, setRedirect] = React.useState<string>();
 
     function amountBase () {
         return expense.amountBaseCurrency.toLocaleString();
