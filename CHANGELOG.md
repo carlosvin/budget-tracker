@@ -1,3 +1,8 @@
+# [3.9.1] - 2020-03-14
+## Fix
+- Date difference calculation.
+- Bump dependencies with vulnerabilities bugfixes.
+
 # [3.9.0] - 2019-12-13
 ## Add
 - New fallback currency APIs.
