@@ -1,3 +1,7 @@
+# [3.9.3] - 2020-03-14
+## Update
+- Code refactoring: use async/await syntax instead fo old promises one.
+
 # [3.9.2] - 2020-03-14
 ## Fix
 - Date difference calculation.
