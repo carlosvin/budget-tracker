@@ -7,9 +7,9 @@
     "test": "mocha --timeout=10000"
   },
   "devDependencies": {
-    "@firebase/testing": "0.10.0",
-    "filesystem": "1.0.1",
-    "mocha": "5.2.0",
-    "prettier": "1.15.2"
+    "@firebase/testing": "^0.18.2",
+    "filesystem": "^2.0.3",
+    "mocha": "^7.1.1",
+    "prettier": "^2.0.3"
   }
 }
