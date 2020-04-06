@@ -114,6 +114,10 @@ export class ExpensesYearMap extends Map<number, ExpensesMonthMap> {
         return byDate;
     }
 
+    get size() {
+        return this.allGroupedByDate.size;
+    }
+
 }
 
 export class ExpensesMonthMap extends Map<number, ExpensesDayMap> { 
