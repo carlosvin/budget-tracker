@@ -1,3 +1,9 @@
+# [3.9.4] - 2020-04-16
+## Update
+- Fix vulnerability on minimist dependency https://github.com/advisories/GHSA-vh95-rmgr-6w4m.
+## Fix
+- Fix bug counting number of total expenses.
+
 # [3.9.3] - 2020-03-14
 ## Update
 - Code refactoring: use async/await syntax instead fo old promises one.
