@@ -168,7 +168,7 @@ export class FirestoreApi implements DataIOStorageApi {
             .values(categories)
             .forEach(category => batch.set(
                 this.getCategoryDoc(category.identifier), 
-                this.removeUndefined({deleted: 0, ...category, timestamp})));
+                this.removeUndefined({...category, timestamp, deleted: 0})));
         this.setLastTimeSaved(timestamp, batch);
         return batch.commit();
     }

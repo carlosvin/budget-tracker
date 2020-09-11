@@ -17,6 +17,7 @@ exports[`AmountInput value is 11 1`] = `
   >
     Amount input
     <span
+      aria-hidden={true}
       className="MuiFormLabel-asterisk MuiInputLabel-asterisk"
     >
        
