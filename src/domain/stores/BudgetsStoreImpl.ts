@@ -115,7 +115,7 @@ export class BudgetsStoreImpl implements BudgetsStore, StorageObserver {
         // Keep BC compatibility Category.id -> Category.identifier
         const fixedCategories = Object
             .entries(categories)
-            .map(([identifier, c]) => ({identifier, ...c}));
+            .map(([identifier, c]) => ({...c, identifier}));
         await Promise.all([
             this.setBudgets(Object.values(budgets)), 
             this.setExpensesList(Object.values(expenses)), 

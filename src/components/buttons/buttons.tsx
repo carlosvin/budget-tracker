@@ -50,7 +50,7 @@ function style (color?: Color) {
     }
 }
 
-export const ButtonFab = (props: ButtonFabProps&{children: React.ReactNode}) => (
+export const ButtonFab = (props: ButtonFabProps&{children: React.ReactElement}) => (
     <Fab style={{position: 'fixed', bottom: '1rem', zIndex: 10, ...style(props.color)}} 
         color={props.color||'secondary'}
         {...props}
