@@ -23,28 +23,29 @@ interface ExpensesByDateProps extends Partial<YMD>, HeaderNotifierProps {
 
 export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
     const {year, month, day, budget, categories, onTitleChange} = props;
-    const budgetPath = new BudgetPath(budget.identifier);
     const loc = useLocalization();
     const [expenses, setExpenses] = React.useState<Map<string, Map<string, Expense>>>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState<number>();
     const [totalSpent, setTotalSpent] = React.useState(0);
 
+    const budgetPath = React.useMemo(() =>  new BudgetPath(budget.identifier), [budget]);
+    
     const {dateTitle, prevDate, nextDate, numberOfDays} = React.useMemo(() => {
-        function getTitle(year?: number, month?: number, day?: number) {
-            if (day === undefined) {
-                if (month === undefined) {
-                    return year === undefined ? 'All' : year.toString();
+        function getTitle(y?: number, m?: number, d?: number) {
+            if (d === undefined) {
+                if (m === undefined) {
+                    return y === undefined ? 'All' : y.toString();
                 } else {
-                    if (year === undefined) {
+                    if (y === undefined) {
                         throw new Error('Year is required');
                     }
-                    return loc.monthYearToString(year, month);
+                    return loc.monthYearToString(y, m);
                 }
             } else {
-                if (year === undefined || month === undefined) {
+                if (y === undefined || m === undefined) {
                     throw new Error('Year and month are required');
                 }
-                return DateDay.fromYMD({year, month, day}).shortString;
+                return DateDay.fromYMD({year: y, month: m, day: d}).shortString;
             }
         }
 
