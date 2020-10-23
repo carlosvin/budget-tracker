@@ -8,8 +8,10 @@ export function useBudgetModel(budgetId: string) {
     const [budgetModel, setBudgetModel] = useState<BudgetModel>();
 
     useEffect(() => {
-        async function fetchBudget (store: BudgetsStore) {
-            setBudgetModel(await store.getBudgetModel(budgetId));
+        async function fetchBudget (localStore: BudgetsStore) {
+            if (budgetId) {
+                setBudgetModel(await localStore.getBudgetModel(budgetId));
+            }
         }
         
         store ? fetchBudget(store) : setBudgetModel(undefined);

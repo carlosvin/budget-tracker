@@ -23,7 +23,7 @@ interface ExpensesByDateProps extends Partial<YMD>, HeaderNotifierProps {
 
 export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
     const {year, month, day, budget, categories, onTitleChange} = props;
-    const path = new BudgetPath(budget.identifier);
+    const budgetPath = new BudgetPath(budget.identifier);
     const loc = useLocalization();
     const [expenses, setExpenses] = React.useState<Map<string, Map<string, Expense>>>();
     const [expectedDailyAvg, setExpectedDailyAvg] = React.useState<number>();
@@ -65,7 +65,7 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
         function getNextUrl(increment=1) {
             const date = getNextDate(increment);
             if (date) {
-                return path.pathExpensesByDay(date.year, month && date.month, day && date.day);
+                return budgetPath.pathExpensesByDay(date.year, month && date.month, day && date.day);
             }
         }
 
@@ -85,7 +85,7 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
             nextDate: getNextUrl(1),
             numberOfDays: getNumberOfDays()
         };
-    }, [year, month, day, path, loc]);
+    }, [year, month, day, budgetPath, loc]);
 
     React.useEffect(() => {
         const expenseGroups = budget.expenseGroupsIn;
@@ -127,7 +127,7 @@ export const ExpensesByDate: React.FC<ExpensesByDateProps> = (props) => {
                     total={expectedDailyAvg * numberOfDays}/> }
                 <Grid container justify='space-between' direction='row' style={{marginTop: '1.5em'}}>
                     { prevDate && <AppButton to={prevDate} icon={NavigateBefore} replace/> }
-                    <AppButton to={path.path} icon={DateRange} replace/>
+                    <AppButton to={budgetPath.path} icon={DateRange} replace/>
                     { nextDate && <AppButton to={nextDate} icon={NavigateNext} replace/> }
                 </Grid>
             </Box>
