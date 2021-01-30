@@ -6,7 +6,7 @@ export class GeoApi {
 
     async getCurrentLocation () {
         if (navigator.geolocation) {
-            return new Promise<Position>((resolve, reject) => {
+            return new Promise<GeolocationPosition>((resolve, reject) => {
                 navigator.geolocation.getCurrentPosition(resolve, reject);
             });
         }

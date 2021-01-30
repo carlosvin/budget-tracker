@@ -36,6 +36,7 @@ export const CategoriesSelectInput: React.FC<CategoriesSelectInputProps> = ({
             onChange={handleChange}
             value={selected || categories[0]}
             getOptionLabel={(option: Category) => option.name}
+            getOptionSelected={(option, value) => option.identifier === value.identifier}
             disableClearable autoComplete 
             style={{marginRight: '1rem'}}
             renderInput={(params: any) => (
