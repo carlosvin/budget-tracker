@@ -451,10 +451,10 @@ describe('Number of days in a country', () => {
             ).toStrictEqual([day1.day, day2.day]);    
         } else {
             expect(
-                expenseGroupsIn.getDays(day1.year, day1.month)
+                [...expenseGroupsIn.getDays(day1.year, day1.month)]
             ).toStrictEqual([day1.day]);    
             expect(
-                expenseGroupsIn.getDays(day2.year, day2.month)
+                [...expenseGroupsIn.getDays(day2.year, day2.month)]
             ).toStrictEqual([day2.day]);    
         }
     });
