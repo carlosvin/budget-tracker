@@ -10,7 +10,7 @@
         "firebase": "^7",
         "firebaseui": "^4",
         "idb": "^5",
-        "nanoid": "^2",
+        "nanoid": "^3",
         "react": "^16",
         "react-dom": "^16",
         "react-frappe-charts": "^2",
