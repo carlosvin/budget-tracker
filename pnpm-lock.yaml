@@ -5,7 +5,6 @@ specifiers:
   '@material-ui/icons': ^4
   '@material-ui/lab': ^4.0.0-alpha.40
   '@types/jest': ^26
-  '@types/nanoid': ^2
   '@types/node': ^14
   '@types/react': ^16
   '@types/react-dom': ^16
@@ -17,7 +16,7 @@ specifiers:
   firebaseui: ^4
   husky: ^4
   idb: ^7.0.0
-  nanoid: ^2
+  nanoid: ^3.2.0
   react: ^16
   react-dom: ^16
   react-frappe-charts: ^2
@@ -36,7 +35,7 @@ dependencies:
   firebase: 7.24.0
   firebaseui: 4.8.1_firebase@7.24.0
   idb: 7.0.0
-  nanoid: 2.1.11
+  nanoid: 3.2.0
   react: 16.14.0
   react-dom: 16.14.0_react@16.14.0
   react-frappe-charts: 2.2.0_react-dom@16.14.0+react@16.14.0
@@ -44,7 +43,6 @@ dependencies:
 
 devDependencies:
   '@types/jest': 26.0.24
-  '@types/nanoid': 2.1.0
   '@types/node': 14.18.11
   '@types/react': 16.14.23
   '@types/react-dom': 16.9.14
@@ -3526,12 +3524,6 @@ packages:
 
   /@types/minimatch/3.0.5:
     resolution: {integrity: sha512-Klz949h02Gz2uZCMGwDUSDS1YBlTdDDgbWHi+81l29tQALUtvz4rAYi5uoVhE5Lagoq6DeqAUlbrHvW/mXDgdQ==}
-    dev: true
-
-  /@types/nanoid/2.1.0:
-    resolution: {integrity: sha512-xdkn/oRTA0GSNPLIKZgHWqDTWZsVrieKomxJBOQUK9YDD+zfSgmwD5t4WJYra5S7XyhTw7tfvwznW+pFexaepQ==}
-    dependencies:
-      '@types/node': 14.18.11
     dev: true
 
   /@types/node/14.18.11:
@@ -9628,15 +9620,10 @@ packages:
     dev: true
     optional: true
 
-  /nanoid/2.1.11:
-    resolution: {integrity: sha512-s/snB+WGm6uwi0WjsZdaVcuf3KJXlfGl2LcxgwkEwJF0D/BWzVWAZW/XY4bFaiR7s0Jk3FPvlnepg1H1b1UwlA==}
-    dev: false
-
   /nanoid/3.2.0:
     resolution: {integrity: sha512-fmsZYa9lpn69Ad5eDn7FMcnnSR+8R34W9qJEijxYhTbfOWzr22n1QxCMzXLK+ODyW2973V3Fux959iQoUxzUIA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
-    dev: true
 
   /nanomatch/1.2.13:
     resolution: {integrity: sha512-fpoe2T0RbHwBTBUOftAfBPaDEi06ufaUai0mE6Yn1kacc3SnTErfb/h+X94VXzI64rKFHYImXSvdwGGCmwOqCA==}
