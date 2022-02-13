@@ -42,12 +42,12 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = (props) => {
         name && setValue({code: selectedCurrency, name});
     }, [currencies, selectedCurrency]);
 
-    function handleChange(event: React.ChangeEvent<any>, value: CurrencyOption|null) {
-        if (value !== null) {
+    function handleChange(event: React.ChangeEvent<any>, currencyOpt: CurrencyOption|null) {
+        if (currencyOpt !== null) {
             event.preventDefault();
-            setValue(value);
-            if (onCurrencyChange && value && value.code) {
-                onCurrencyChange(value.code);
+            setValue(currencyOpt);
+            if (currencyOpt && currencyOpt.code) {
+                onCurrencyChange(currencyOpt.code);
             }
     
         }

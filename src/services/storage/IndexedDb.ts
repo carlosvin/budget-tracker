@@ -46,7 +46,7 @@ export class IndexedDb implements DataIOStorageApi {
             upgrade(db, oldVersion, newVersion, transaction) {
                 console.info(`Upgrading DB ${oldVersion} to ${newVersion}`);
 
-                let budgetsStore;
+                let budgetsStore: IDBPObjectStore<any, any, any, any>;
                 if (db.objectStoreNames.contains(EntityNames.Budgets)) {
                     budgetsStore = transaction.objectStore(EntityNames.Budgets);
                 } else {
@@ -54,36 +54,36 @@ export class IndexedDb implements DataIOStorageApi {
                 }
 
                 if (!IndexedDb.contains(budgetsStore, 'deleted, to')) {
-                    budgetsStore.createIndex('deleted, to', ['deleted', 'to']);
+                    budgetsStore.createIndex?.('deleted, to', ['deleted', 'to']);
                 }
                 if (!IndexedDb.contains(budgetsStore, 'deleted, timestamp')) {
-                    budgetsStore.createIndex('deleted, timestamp', ['deleted', 'timestamp']);
+                    budgetsStore.createIndex?.('deleted, timestamp', ['deleted', 'timestamp']);
                 }
                 
-                let categoriesStore;
+                let categoriesStore: IDBPObjectStore<any, any, any, any>;
                 if (db.objectStoreNames.contains(EntityNames.Categories)) {
                     categoriesStore = transaction.objectStore(EntityNames.Categories);
                 } else {
                     categoriesStore = db.createObjectStore(EntityNames.Categories, keyPath);
                 }
                 if (!IndexedDb.contains(categoriesStore, 'deleted, name')) {
-                    categoriesStore.createIndex('deleted, name', ['deleted', 'name']);
+                    categoriesStore.createIndex?.('deleted, name', ['deleted', 'name']);
                 }
                 if (!IndexedDb.contains(categoriesStore, 'deleted, timestamp')) {
-                    categoriesStore.createIndex('deleted, timestamp', ['deleted', 'timestamp']);
+                    categoriesStore.createIndex?.('deleted, timestamp', ['deleted', 'timestamp']);
                 }
                 
-                let expensesStore;
+                let expensesStore: IDBPObjectStore<any, any, any, any>;
                 if (db.objectStoreNames.contains(EntityNames.Expenses)) {
                     expensesStore = transaction.objectStore(EntityNames.Expenses);
                 } else {
                     expensesStore = db.createObjectStore(EntityNames.Expenses, keyPath);
                 }
                 if (!IndexedDb.contains(expensesStore, 'deleted, budgetId, when')) {
-                    expensesStore.createIndex('deleted, budgetId, when', ['deleted', 'budgetId', 'when']);
+                    expensesStore.createIndex?.('deleted, budgetId, when', ['deleted', 'budgetId', 'when']);
                 }
                 if (!IndexedDb.contains(expensesStore, 'deleted, timestamp')) {
-                    expensesStore.createIndex('deleted, timestamp', ['deleted', 'timestamp']);
+                    expensesStore.createIndex?.('deleted, timestamp', ['deleted', 'timestamp']);
                 }
                 if (oldVersion === 0) {
                     IndexedDb.setLastTimeSaved(0);

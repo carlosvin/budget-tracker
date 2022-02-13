@@ -34,13 +34,13 @@ export const AmountWithCurrencyInput: React.FC<AmountCurrencyInputProps> = (prop
     const {onChange, onError} = props;
 
     React.useEffect(() => {
-        async function fetch (store: CurrenciesStore) {
+        async function fetch (currentStore: CurrenciesStore) {
             try {
-                const rate = await store.getRate(baseCurrency, selectedCurrency);
-                setRate(rate);    
-            } catch (error) {
-                console.warn(error);
-                setError(error);
+                const currentRate = await currentStore.getRate(baseCurrency, selectedCurrency);
+                setRate(currentRate);    
+            } catch (exception) {
+                console.warn(exception);
+                setError((exception as Error).toString());
             }
         }
 

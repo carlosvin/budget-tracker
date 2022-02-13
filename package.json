@@ -9,7 +9,7 @@
         "currencies-map": "^3.2.1",
         "firebase": "^7",
         "firebaseui": "^4",
-        "idb": "^5",
+        "idb": "^7.0.0",
         "nanoid": "^2",
         "react": "^16",
         "react-dom": "^16",
