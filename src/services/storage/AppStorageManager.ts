@@ -140,6 +140,6 @@ export class AppStorageManager implements AppStorageApi {
 
     static async isPersisted () {
         const {storage} = navigator;
-        return storage && storage.persist && storage.persisted();
+        return storage && await storage.persist() && await storage.persisted();
     }
 }
